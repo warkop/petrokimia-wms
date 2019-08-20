@@ -1,0 +1,117 @@
+.btn-grad-teal {
+    color: #fff;
+    background-image: linear-gradient(-90deg, #00B294, #008CB2);
+    background-color: #1dc9b7;
+    /* border-color: #1dc9b7;  */
+    border-color:#00B294;
+
+    }
+    .btn-grad-teal:hover {
+      color: #fff;
+      /* background-color: #18a899; */
+      background-image: linear-gradient(-70deg, rgb(0, 172, 178), #008CB2, #008CB2);
+      border-color: #179c8e; 
+    
+    }
+    .btn-grad-teal:focus, .btn-grad-teal.focus {
+      -webkit-box-shadow: 0 0 0 0.2rem rgba(63, 209, 194, 0.5);
+      box-shadow: 0 0 0 0.2rem rgba(63, 209, 194, 0.5); }
+    .btn-grad-teal.disabled, .btn-grad-teal:disabled {
+      color: #fff;
+      background-color: #1dc9b7;
+      border-color: #1dc9b7; }
+    .btn-grad-teal:not(:disabled):not(.disabled):active, .btn-grad-teal:not(:disabled):not(.disabled).active,
+    .show > .btn-grad-teal.dropdown-toggle {
+      color: #fff;
+      background-color: #179c8e;
+      border-color: #159184; }
+      .btn-grad-teal:not(:disabled):not(.disabled):active:focus, .btn-grad-teal:not(:disabled):not(.disabled).active:focus,
+      .show > .btn-grad-teal.dropdown-toggle:focus {
+        -webkit-box-shadow: 0 0 0 0.2rem rgba(63, 209, 194, 0.5);
+        box-shadow: 0 0 0 0.2rem rgba(63, 209, 194, 0.5); }
+
+.btn.btn-grad-teal.btn-elevate {
+  -webkit-box-shadow: 0px 4px 16px 0px rgba(29, 201, 183, 0.15);
+  box-shadow: 0px 4px 16px 0px rgba(29, 201, 183, 0.15); }
+  .show > .btn.btn-grad-teal.btn-elevate, .btn.btn-grad-teal.btn-elevate:focus, .btn.btn-grad-teal.btn-elevate.active, .btn.btn-grad-teal.btn-elevate:active, .btn.btn-grad-teal.btn-elevate:hover {
+    -webkit-box-shadow: 0px 9px 16px 0px rgba(29, 201, 183, 0.25) !important;
+    box-shadow: 0px 9px 16px 0px rgba(29, 201, 183, 0.25) !important; }
+    .show > .btn.btn-grad-teal.btn-elevate.btn-sm, .btn-group-sm.show > .btn.btn-grad-teal.btn-elevate, .btn.btn-grad-teal.btn-elevate:focus.btn-sm, .btn-group-sm > .btn.btn-grad-teal.btn-elevate:focus, .btn.btn-grad-teal.btn-elevate.active.btn-sm, .btn-group-sm > .btn.btn-grad-teal.btn-elevate.active, .btn.btn-grad-teal.btn-elevate:active.btn-sm, .btn-group-sm > .btn.btn-grad-teal.btn-elevate:active, .btn.btn-grad-teal.btn-elevate:hover.btn-sm, .btn-group-sm > .btn.btn-grad-teal.btn-elevate:hover {
+      -webkit-box-shadow: 0px 6px 16px 0px rgba(29, 201, 183, 0.25) !important;
+      box-shadow: 0px 6px 16px 0px rgba(29, 201, 183, 0.25) !important; }
+
+
+.login .left img {
+    top: 0;
+    left: 5%;
+    width: 75%;
+    position: absolute;
+    object-fit: contain;
+    /* box-shadow: 0 0 10px 0 rgba(0,0,0,.7) !important; */
+    box-shadow: 0 0 0px 0 rgba(0,0,0,.7) !important;
+
+}
+.login{
+    height: 80vh;
+    background: #46586c;
+}
+.footer-bottom {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    margin-top: 20px;
+}
+.login-wrapper {
+    box-shadow: 0 0 20px 0 rgba(0,0,0,.3) !important;
+    margin: 50px auto;
+    width: 95%;
+    height: 500px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 0.3rem;
+
+}
+.logo-app{
+    text-align: center
+}
+.login-wrapper img {
+    height: 70px;
+    margin-left: 0px;
+}
+
+.password label, .username label{
+    z-index: 100;
+    color: #46586c !important;
+}
+.login .form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    /* border-left-color: #36695A !important; */
+    border-left:solid 5px #008CB2 !important;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  .form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #008CB2 !important;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.041) !important;
+  }
+  /* 00B294 */
+input[type=text]:focus {
+    /* border: 2px solid rgba(0, 139, 178, 0.5 ) !important; */
+    
+    border: 2px solid rgba(0, 178, 148, 0.404) !important;
+    -webkit-box-shadow: 0 -1px 2px #1c2c591e;
+  }
+input[type=password]:focus {
+    border: 2px solid rgba(0, 178, 148, 0.404)  !important;
+    -webkit-box-shadow: 0 -1px 2px #1c2c591e;
+  }
+  .form-login .sub-title {
+    text-align: center
+}
+a {
+    color: #008CB2;
+}
