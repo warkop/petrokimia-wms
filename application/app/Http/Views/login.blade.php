@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">    
-    <title>Login Aplikasi TDUP</title>
-	<link rel="shortcut icon" href="{{ asset('/assets/extends/img/logo/logo-sby.png')}}" />
+    <title>Login Aplikasi WMS</title>
+	<link rel="shortcut icon" href="{{ asset('/assets/extends/img/logo/fav_wms@2x.png')}}" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
@@ -58,7 +58,7 @@
                                       <input type="password" class="form-control" id="exampleFormControlInput1" placeholder="masukkan password">
                                     </div>
                                     <div class="button">
-                                            <a href="assets/metronic/kajian.html" class="btn btn-pills btn-block btn-brand-cta btn-lg float-right btn-shadow-login-invert">
+                                            <a href="{{url('/master-user')}}" class="btn btn-pills btn-block btn-brand-cta btn-lg float-right btn-shadow-login-invert">
                                                 Sign In
                                             </a>
                                     </div>
