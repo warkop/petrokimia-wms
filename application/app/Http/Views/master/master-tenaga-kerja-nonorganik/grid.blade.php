@@ -21,7 +21,7 @@
             </div>
 			<div class="kt-portlet__head-toolbar">
 				<div class="kt-portlet__head-group pt-4">
-					<a href="#" class="btn btn-orens" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
+					<a href="#" class="btn btn-success btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
 				</div>
 			</div>
 		</div>
@@ -62,8 +62,21 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Nama Pekerjaan</label>
-                                <input type="text" class="form-control" placeholder="Masukkan nama pekerjaan">
+                                <label>Nama Tenaga Kerja</label>
+                                <input type="text" class="form-control" placeholder="Masukkan nama tenaga kerja">
+                            </div>
+                            <div class="form-group">
+                                <label>Nomor Hp</label>
+                                <input type="text" class="form-control" placeholder="Masukkan nomor hp">
+                            </div>
+                            <div class="form-group">
+                                <label>Nama Tenaga Kerja</label>
+                                <select class="form-control m-select2" id="kt_select2_1" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
+                                    <option value="">Pilih pekerjaan</option>
+                                    <option value="AK">Admin</option>
+                                    <option value="HI">Checker</option>
+                                    <option value="CA">Loket</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -81,10 +94,21 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row form-group mb-0">
+                        <label class="col-2 col-form-label">Status</label>
+                        <div class="col-2">
+                            <span class="kt-switch kt-switch--primary kt-switch--icon">
+                                <label>
+                                    <input type="checkbox" checked="checked" name="" />
+                                    <span></span>
+                                </label>
+                            </span>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-orens">Simpan data</button>
+                    <button type="button" class="btn btn-success">Simpan data</button>
                 </div>
             </form>
         </div>
@@ -98,6 +122,9 @@
 
 <script src="{{asset('assets/extends/js/page/master-tenaga-kerja.js')}}" type="text/javascript"></script>
 <script>
+$('#kt_select2_1').select2({
+    placeholder: "Pilih pekerjaan"
+});
 $('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,

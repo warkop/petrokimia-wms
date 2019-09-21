@@ -102,7 +102,7 @@
             </div>
 			<div class="kt-portlet__head-toolbar">
 				<div class="kt-portlet__head-group pt-4">
-					<a href="#" class="btn btn-orens" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
+					<a href="#" class="btn btn-success btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
 				</div>
 			</div>
 		</div>
@@ -192,10 +192,21 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row form-group mb-0">
+                        <label class="col-2 col-form-label">Status</label>
+                        <div class="col-2">
+                            <span class="kt-switch kt-switch--primary kt-switch--icon">
+                                <label>
+                                    <input type="checkbox" checked="checked" name="" />
+                                    <span></span>
+                                </label>
+                            </span>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-orens">Simpan data</button>
+                    <button type="button" class="btn btn-success">Simpan data</button>
                 </div>
             </form>
         </div>

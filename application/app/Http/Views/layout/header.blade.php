@@ -36,4 +36,4 @@
 		{{-- <link href="{{asset('assets/metronic')}}/assets/demo/default/skins/brand/dark.css" rel="stylesheet" type="text/css" />  --}}
 		<link href="{{asset('assets/metronic')}}/assets/demo/default/skins/aside/dark.css" rel="stylesheet" type="text/css" />
 
-		<link rel="shortcut icon" href="{{ asset('/assets/extends/img/logo/fav_wms@2x.png')}}" />
+		<link rel="shortcut icon" href="{{ asset('/assets/extends/img/logo/fav_wms_green@2x.png')}}" />

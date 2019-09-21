@@ -4,35 +4,25 @@
 
 @section('content')
 
-<style>
-.bg-navy-custom {
-    background-color: #1f3364;
-    color: #fff;
-    border-bottom: 3px solid rgba(31, 51, 100, 0.87);
-}
-.kt-portlet.kt-portlet--border-bottom-navy {
-    border-bottom: 3px solid rgba(31, 51, 100, 0.87);
-}
-</style>
 
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!-- begin:: Widget -->
     <div class="row">
         <div class="col-lg-3 col-md-3">
-            <div class="kt-portlet kt-portlet--height-fluid-half kt-portlet--border-bottom-navy bg-navy-custom" style="height: 150px;">
+            <div class="kt-portlet kt-portlet--height-fluid-half kt-portlet--border-bottom-green bg-green-custom" style="height: 150px;">
                 <div class="kt-portlet__body kt-portlet__body--fluid">
                     <div class="kt-widget26">
                         <div class="kt-widget26__content">
                             <span class="kt-widget26__number">20</span>
-                            <span class="kt-widget26__desc">Pallet Dipakai</span>
+                            <span class="kt-widget26__desc" style="color: white;">Pallet Dipakai</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-3 col-md-3">
-            <div class="kt-portlet kt-portlet--height-fluid-half kt-portlet--border-bottom-navy" style="height: 150px;">
+            <div class="kt-portlet kt-portlet--height-fluid-half kt-portlet--border-bottom-green" style="height: 150px;">
                 <div class="kt-portlet__body kt-portlet__body--fluid">
                     <div class="kt-widget26">
                         <div class="kt-widget26__content">
@@ -44,7 +34,7 @@
             </div>
         </div>
         <div class="col-lg-3 col-md-3">
-            <div class="kt-portlet kt-portlet--height-fluid-half kt-portlet--border-bottom-navy" style="height: 150px;">
+            <div class="kt-portlet kt-portlet--height-fluid-half kt-portlet--border-bottom-green" style="height: 150px;">
                 <div class="kt-portlet__body kt-portlet__body--fluid">
                     <div class="kt-widget26">
                         <div class="kt-widget26__content">
@@ -74,7 +64,7 @@
                     </div>
                     <div class="kt-portlet__head-toolbar">
                         <div class="kt-portlet__head-group pt-4">
-                            <a href="#" class="btn btn-orens" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
+                            <a href="#" class="btn btn-success btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
                         </div>
                     </div>
                 </div>
@@ -148,7 +138,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-orens">Simpan data</button>
+                    <button type="button" class="btn btn-success">Simpan data</button>
                 </div>
             </form>
         </div>

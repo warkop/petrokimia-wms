@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">    
     <title>Login Aplikasi WMS</title>
-	<link rel="shortcut icon" href="{{ asset('/assets/extends/img/logo/fav_wms@2x.png')}}" />
+	<link rel="shortcut icon" href="{{ asset('/assets/extends/img/logo/fav_wms_green@2x.png')}}" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
@@ -36,7 +36,7 @@
                     <div class="login-wrapper">
                         <div class="top-logo">
                             <span>
-                                    <img src="{{ asset('assets/extends/img/logo/logo-wms.png')}}" alt="PT Petrokimia Gresik">
+                                    <img src="{{ asset('assets/extends/img/logo/logo-wms-green.png')}}" alt="PT Petrokimia Gresik">
                             </span>
                             <!-- <span> <p>Dinas Kebudayaan dan Pariwisata Kota Surabaya </p></span> -->
                         </div>
