@@ -58,7 +58,7 @@
                                       <input type="password" class="form-control" id="exampleFormControlInput1" placeholder="masukkan password">
                                     </div>
                                     <div class="button">
-                                            <a href="{{url('/master-user')}}" class="btn btn-pills btn-block btn-brand-cta btn-lg float-right btn-shadow-login-invert">
+                                            <a href="{{url('/gudang')}}" class="btn btn-pills btn-block btn-brand-cta btn-lg float-right btn-shadow-login-invert">
                                                 Sign In
                                             </a>
                                     </div>

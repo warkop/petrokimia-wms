@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Master User')
+@section('title', 'Master Kategori Alat Berat')
 
 @section('content')
 
@@ -93,10 +93,10 @@
 			<div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
                     {{-- <i class="la la-group"></i> &nbsp; --}}
-                    Data Master Alat Berat
+                    Data Master Kategori Alat Berat
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah data master alat berat yang tercatat pada <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
+                    Berikut ini adalah data master kategori alat berat yang tercatat pada <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
                 </p>
             </div>
 			<div class="kt-portlet__head-toolbar">

@@ -15,6 +15,13 @@ Route::get('/', function () {
     return View::make('login');
 });
 
+
+Route::get('/master-pekerjaan', function () {
+    return view('master.master-pekerjaan.grid');
+});
+Route::get('/master-tenaga-kerja-nonorganik', function () {
+    return view('master.master-tenaga-kerja-nonorganik.grid');
+});
 Route::get('/master-grup', function () {
     return view('master.master-grup.grid');
 });
@@ -23,4 +30,20 @@ Route::get('/master-alat-berat', function () {
 });
 Route::get('/master-user', function () {
     return view('master.master-user.grid');
+});
+
+Route::get('/gudang', function () {
+    return view('gudang.grid');
+});
+Route::get('/list-alat-berat', function () {
+    return view('list-alat-berat.grid');
+});
+Route::get('/list-tenaga-kerja-nonorganik', function () {
+    return view('list-tenaga-kerja-nonorganik.grid');
+});
+Route::get('/list-pallet', function () {
+    return view('list-pallet.grid');
+});
+Route::get('/anggaran-alat-berat', function () {
+    return view('anggaran-alat-berat.grid');
 });

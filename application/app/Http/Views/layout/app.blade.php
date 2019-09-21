@@ -33,6 +33,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					sessionStorage.fonts = true;
 				}
 			});
+			var baseUrl = "{{url('/')}}/";
 		</script>
         <!--end::Fonts -->
         
@@ -51,7 +52,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		<div id="kt_header_mobile" class="kt-header-mobile  kt-header-mobile--fixed ">
 			<div class="kt-header-mobile__logo">
 				<a href="index.html">
-					<img alt="Logo" src="{{asset('assets/metronic')}}/assets/media/logos/logo-light.png" />
+					<img alt="Logo" src="{{asset('assets/extends')}}/img/logo/logo-wms.png" width="20%"/>
 				</a>
 			</div>
 			<div class="kt-header-mobile__toolbar">
@@ -103,7 +104,9 @@ License: You must have a valid license purchased only from themeforest(the above
 					<div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper">
 						<div id="kt_aside_menu" class="kt-aside-menu " data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500">
 							<ul class="kt-menu__nav ">
-								<li class="kt-menu__item  kt-menu__item--active" aria-haspopup="true"><a href="index.html" class="kt-menu__link "><span class="kt-menu__link-icon la la-dashboard"></span><span class="kt-menu__link-text">Dashboard</span></a>
+								<li class="kt-menu__item  kt-menu__item--active" aria-haspopup="true"><a href="{{url('/gudang')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-institution"></span><span class="kt-menu__link-text">Gudang</span></a>
+								</li>
+								<li class="kt-menu__item" aria-haspopup="true"><a href="{{url('/anggaran-alat-berat')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-file-text-o"></span><span class="kt-menu__link-text">Anggaran Alat Berat</span></a>
 								</li>
 								<li class="kt-menu__section ">
 									<h4 class="kt-menu__section-text">DATA MASTER</h4>
@@ -114,6 +117,8 @@ License: You must have a valid license purchased only from themeforest(the above
 									<div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
 										<ul class="kt-menu__subnav">
 											<li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Subheaders</span></span></li>
+											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-tenaga-kerja-nonorganik')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Tenaga Kerja Non Organik</span></a></li>
+											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-pekerjaan')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Pekerjaan</span></a></li>
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-alat-berat')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kategori Alat Berat</span></a></li>
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-grup')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Grup</span></a></li>
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-user')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">User</span></a></li>

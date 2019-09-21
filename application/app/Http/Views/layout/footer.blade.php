@@ -36,9 +36,12 @@
 
 		<!--begin:: Global Optional Vendors -->
 		<script src="{{asset('assets/metronic')}}/assets/vendors/general/jquery-form/dist/jquery.form.min.js" type="text/javascript"></script>
+		<script src="{{asset('assets/metronic')}}/assets/vendors/general/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 		<script src="{{asset('assets/metronic')}}/assets/vendors/general/bootstrap-select/dist/js/bootstrap-select.js" type="text/javascript"></script>
 		<script src="{{asset('assets/metronic')}}/assets/vendors/general/bootstrap-switch/dist/js/bootstrap-switch.js" type="text/javascript"></script>
 		<script src="{{asset('assets/metronic')}}/assets/vendors/general/dropzone/dist/dropzone.js" type="text/javascript"></script>
+		<script src="{{asset('assets/metronic')}}/assets/vendors/general/select2/dist/js/select2.full.js" type="text/javascript"></script>
+		<script src="{{asset('assets/metronic')}}/assets/vendors/general/sweetalert2/dist/sweetalert2.min.js" type="text/javascript"></script>
 		<!--end:: Global Optional Vendors -->
 
 		<!--begin::Global Theme Bundle(used by all pages) -->
@@ -48,6 +51,7 @@
 
 		<!--begin::Page Vendors(used by this page) -->
 		<script src="{{asset('assets/metronic')}}/assets/vendors/custom/datatables/datatables.bundle.js" type="text/javascript"></script>
+		<script src="{{asset('assets/metronic')}}/assets/app/custom/general/components/extended/sweetalert2.js" type="text/javascript"></script>
 		<!--end::Page Vendors -->
 
 		<!--begin::Page Scripts(used by this page) -->
