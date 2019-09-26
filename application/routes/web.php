@@ -40,6 +40,10 @@ Route::get('/master-user', function () {
     return view('master.master-user.grid');
 });
 
+Route::get('/master-material', function () {
+    return view('master.master-material.grid');
+});
+
 Route::get('/layout', function () {
     return view('menu-layout.grid');
 });
@@ -61,6 +65,7 @@ Route::get('/list-pallet', function () {
 Route::get('/anggaran-alat-berat', function () {
     return view('anggaran-alat-berat.grid');
 });
+
 
 Route::get('/rencana-harian', function () {
     return view('rencana-harian.grid');

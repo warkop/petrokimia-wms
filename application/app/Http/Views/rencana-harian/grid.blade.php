@@ -18,10 +18,10 @@
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
                     {{-- <i class="la la-group"></i> &nbsp; --}}
-                    Data Gudang
+                    Data Rencana Harian
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah data gudang untuk menyimpan alat berat yang tercatat pada <span
+                    Berikut ini adalah rencana harian <span
                         class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
                 </p>
             </div>
@@ -39,6 +39,7 @@
                         <th>No</th>
                         <th>Tanggal</th>
                         <th>Shift</th>
+                        <th></th>
                         <th>#</th>
                     </tr>
                 </thead>
@@ -128,8 +129,8 @@
                                     <option value="" selected disabled></option>
                                     <option value="Unggul Mustofa">Unggul Mustofa</option>
                                     <option value="Ganjaran Yolanda">Ganjaran Yolanda</option>
-                                    <option value="Ganjaran Yolanda">Ganjaran Yolanda</option>
-                                    <option value="Ganjaran Yolanda">Ganjaran Yolanda</option>
+                                    <option value="Rahmi Nashiruddin">Rahmi Nashiruddin</option>
+                                    <option value="Sari Dabukke">Sari Dabukke</option>
                                 </select>
                             </div>
                         </div>
