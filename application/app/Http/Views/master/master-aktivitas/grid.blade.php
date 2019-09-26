@@ -105,7 +105,7 @@
             </div>
 			<div class="kt-portlet__head-toolbar">
 				<div class="kt-portlet__head-group pt-4">
-					<a href="#" class="btn btn-success btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
+					<a href="{{url('/master-aktivitas/tambah')}}" class="btn btn-success btn-elevate btn-elevate-air"><i class="la la-plus"></i> Tambah Data</a>
 				</div>
 			</div>
 		</div>

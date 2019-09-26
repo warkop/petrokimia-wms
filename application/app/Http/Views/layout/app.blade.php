@@ -37,7 +37,8 @@ License: You must have a valid license purchased only from themeforest(the above
 		</script>
         <!--end::Fonts -->
         
-        @include('layout.header')
+		@include('layout.header')
+		<link rel="stylesheet" href="{{asset('assets/extends/css/global.css')}}">
         @include('layout.footer')
 	</head>
 
@@ -125,10 +126,10 @@ License: You must have a valid license purchased only from themeforest(the above
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-karu')}}" class="kt-menu__link" ><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Karu</span></a></li>
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-material')}}" class="kt-menu__link" ><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Material</span></a></li>
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-tenaga-kerja-nonorganik')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Tenaga Kerja Non Organik</span></a></li>
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-pekerjaan')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Pekerjaan</span></a></li>
+											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-pekerjaan')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Job Desk</span></a></li>
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-shift-kerja')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Shift Kerja</span></a></li>
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-alat-berat')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kategori Alat Berat</span></a></li>
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-grup')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Grup</span></a></li>
+											{{-- <li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-grup')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Grup</span></a></li> --}}
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-user')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">User</span></a></li>
 										</ul>
 									</div>

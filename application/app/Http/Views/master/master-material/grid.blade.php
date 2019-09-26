@@ -13,10 +13,10 @@
 			<div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
                     {{-- <i class="la la-group"></i> &nbsp; --}}
-                    Data Master Karu
+                    Data Master Material
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah data master karu yang tercatat pada <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
+                    Berikut ini adalah data master material yang tercatat pada <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
                 </p>
             </div>
 			<div class="kt-portlet__head-toolbar">
@@ -30,6 +30,7 @@
 				<thead>
 					<tr>
 						<th>No</th>
+                        <th>Nama</th>
                         <th>Nama</th>
                         <th>Masuk ke Aktivitas</th>
 					</tr>

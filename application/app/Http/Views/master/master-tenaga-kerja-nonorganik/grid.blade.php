@@ -80,7 +80,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Nama Tenaga Kerja</label>
+                                <label>Nama Karu</label>
                                 <select class="form-control m-select2" id="kt_select2_2" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
                                     <option value="">Pilih karu</option>
                                     <option value="AK">Irwan</option>

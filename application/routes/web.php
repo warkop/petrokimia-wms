@@ -18,6 +18,11 @@ Route::get('/', function () {
 Route::get('/master-aktivitas', function () {
     return view('master.master-aktivitas.grid');
 });
+
+Route::get('/master-aktivitas/tambah', function () {
+    return view('master.master-aktivitas.second');
+});
+
 Route::get('/master-karu', function () {
     return view('master.master-karu.grid');
 });

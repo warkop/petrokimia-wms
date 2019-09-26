@@ -13,10 +13,10 @@
 			<div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
                     {{-- <i class="la la-group"></i> &nbsp; --}}
-                    Data Master Pekerjaan
+                    Data Job Desk
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah data master pekerjaan yang tercatat pada <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
+                    Berikut ini adalah data master job desk yang tercatat pada <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
                 </p>
             </div>
 			<div class="kt-portlet__head-toolbar">
@@ -30,7 +30,7 @@
 				<thead>
 					<tr>
 						<th>No</th>
-                        <th>Nama Pekerjaan</th>
+                        <th>Job Desk</th>
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Status</th>
@@ -60,8 +60,8 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Nama Pekerjaan</label>
-                                <input type="text" class="form-control" placeholder="Masukkan nama pekerjaan">
+                                <label>Job Desk</label>
+                                <input type="text" class="form-control" placeholder="Masukkan Job Desk">
                             </div>
                         </div>
                     </div>
