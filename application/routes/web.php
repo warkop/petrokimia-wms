@@ -61,3 +61,7 @@ Route::get('/list-pallet', function () {
 Route::get('/anggaran-alat-berat', function () {
     return view('anggaran-alat-berat.grid');
 });
+
+Route::get('/rencana-harian', function () {
+    return view('rencana-harian.grid');
+});

@@ -132,6 +132,8 @@ License: You must have a valid license purchased only from themeforest(the above
 										</ul>
 									</div>
 								</li>
+
+								<li id="rencanaHarian-nav" class="kt-menu__item rencanaHarian-nav" aria-haspopup="true"><a href="{{url('/rencana-harian')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-calendar"></span><span class="kt-menu__link-text">Rencana Harian</span></a>
 							</ul>
 						</div>
 					</div>
