@@ -1,7 +1,7 @@
 "use strict";
 var KTDatatablesDataSourceHtml = function () {
     var dataJSONArray = JSON.parse(
-        '[[1,"Darmaji", "Checker", "Sift 1 - 00.00-08.00 WIB"], [2, "Yanto", "Checker", "Sift 2 - 08.00-16.00 WIB"], [3,"Suryadi", "Checker", "Sift 3 - 16.00-00.00 WIB"]]');
+        '[[1,"Darmaji", "Checker", "Sift 1 - 08:00:00"], [2, "Yanto", "Checker", "Sift 2 - 16:00:00"], [3,"Suryadi", "Checker", "Sift 3 - 24:00:00"]]');
     var initTable1 = function () {
         var table = $('#kt_table_1');
         // begin first table

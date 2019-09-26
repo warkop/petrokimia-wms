@@ -15,25 +15,39 @@ Route::get('/', function () {
     return View::make('login');
 });
 
-
-Route::get('/master-pekerjaan', function () {
-    return view('master.master-pekerjaan.grid');
+Route::get('/master-aktivitas', function () {
+    return view('master.master-aktivitas.grid');
+});
+Route::get('/master-karu', function () {
+    return view('master.master-karu.grid');
 });
 Route::get('/master-tenaga-kerja-nonorganik', function () {
     return view('master.master-tenaga-kerja-nonorganik.grid');
 });
-Route::get('/master-grup', function () {
-    return view('master.master-grup.grid');
+Route::get('/master-pekerjaan', function () {
+    return view('master.master-pekerjaan.grid');
+});
+Route::get('/master-shift-kerja', function () {
+    return view('master.master-shift-kerja.grid');
 });
 Route::get('/master-alat-berat', function () {
     return view('master.master-alat-berat.grid');
+});
+Route::get('/master-grup', function () {
+    return view('master.master-grup.grid');
 });
 Route::get('/master-user', function () {
     return view('master.master-user.grid');
 });
 
+Route::get('/layout', function () {
+    return view('menu-layout.grid');
+});
 Route::get('/gudang', function () {
     return view('gudang.grid');
+});
+Route::get('/sub-gudang', function () {
+    return view('sub-gudang.grid');
 });
 Route::get('/list-alat-berat', function () {
     return view('list-alat-berat.grid');

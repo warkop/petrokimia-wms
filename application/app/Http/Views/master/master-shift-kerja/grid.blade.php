@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Master Tenaga Kerja Non Organik')
+@section('title', 'Master Shift Kerja')
 
 @section('content')
 
@@ -13,10 +13,10 @@
 			<div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
                     {{-- <i class="la la-group"></i> &nbsp; --}}
-                    Data Master Tenaga Kerja Non Organik
+                    Data Master Shift Kerja
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah data master tenaga kerja non-organik yang tercatat pada <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
+                    Berikut ini adalah data master shift kerja yang tercatat pada <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
                 </p>
             </div>
 			<div class="kt-portlet__head-toolbar">
@@ -30,10 +30,8 @@
 				<thead>
 					<tr>
 						<th>No</th>
-                        <th>Nama</th>
-                        <th>No. Hp</th>
-                        <th>Pekerjaan</th>
-                        <th>Nama Karu</th>
+                        <th>Nama Shift</th>
+                        <th>Mulai Shift</th>
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Status</th>
@@ -63,28 +61,12 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Nama Tenaga Kerja</label>
-                                <input type="text" class="form-control" placeholder="Masukkan nama tenaga kerja">
+                                <label>Nama Shift</label>
+                                <input type="text" class="form-control" placeholder="Masukkan nama shift">
                             </div>
                             <div class="form-group">
-                                <label>Nomor Hp</label>
-                                <input type="text" class="form-control" placeholder="Ex. 0895340952989">
-                            </div>
-                            <div class="form-group">
-                                <label>Nama Tenaga Kerja</label>
-                                <select class="form-control m-select2" id="kt_select2_1" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
-                                    <option value="">Pilih pekerjaan</option>
-                                    <option value="AK">Admin</option>
-                                    <option value="HI">Checker</option>
-                                    <option value="CA">Loket</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Nama Tenaga Kerja</label>
-                                <select class="form-control m-select2" id="kt_select2_2" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
-                                    <option value="">Pilih karu</option>
-                                    <option value="AK">Irwan</option>
-                                </select>
+                                <label>Jam Mulai</label>
+                                <input type="text" class="form-control" placeholder="Ex. 08:00:00">
                             </div>
                         </div>
                     </div>
@@ -128,14 +110,8 @@
 
 
 
-<script src="{{asset('assets/extends/js/page/master-tenaga-kerja.js')}}" type="text/javascript"></script>
+<script src="{{asset('assets/extends/js/page/master-shift-kerja.js')}}" type="text/javascript"></script>
 <script>
-$('#kt_select2_1').select2({
-    placeholder: "Pilih pekerjaan"
-});
-$('#kt_select2_2').select2({
-    placeholder: "Pilih karu"
-});
 $('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,

@@ -74,9 +74,9 @@
                                 <label>Sift Kerja</label>
                                 <select class="form-control kt-selectpicker">
                                     <option value="">Pilih shift kerja</option>
-                                    <option value="HI">Sift 1 - 00.00-08.00 WIB</option>
-                                    <option value="AK">Sift 2 - 08.00-16.00 WIB</option>
-                                    <option value="HI">Sift 3 - 16.00-00.00 WIB</option>
+                                    <option value="HI">Sift 1 - 08:00:00 WIB</option>
+                                    <option value="AK">Sift 2 - 16:00:00 WIB</option>
+                                    <option value="HI">Sift 3 - 24:00:00 WIB</option>
                                 </select>
                             </div>
                         </div>

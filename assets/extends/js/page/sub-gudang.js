@@ -1,7 +1,7 @@
 "use strict";
 var KTDatatablesDataSourceHtml = function () {
     var dataJSONArray = JSON.parse(
-        '[[1,"Gudang A", "10", "5", "100", "100"], [2, "Gudang B", "10", "5", "100", "100"], [3, "Gudang C", "10", "5", "100", "100"], [4,"Gudang D", "10", "5", "100", "100"], [5, "Gudang E", "10", "5", "100", "100"]]');
+        '[[1,"Sub Gudang A", "10", "5", "100", "100"], [2, "Sub Gudang B", "10", "5", "100", "100"]]');
     var initTable1 = function () {
         var table = $('#kt_table_1');
         // begin first table
@@ -19,7 +19,6 @@ var KTDatatablesDataSourceHtml = function () {
                             Actions
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="` + baseUrl + `/sub-gudang"><i class="flaticon-cart"></i> Sub gudang</a>
                             <a class="dropdown-item" href="` + baseUrl + `/list-pallet"><i class="flaticon-layers"></i> List pallet</a>
                             <a class="dropdown-item" href="` + baseUrl + `/list-alat-berat"><i class="flaticon-truck"></i> List alat berat</a>
                             <a class="dropdown-item" href="` + baseUrl + `/list-tenaga-kerja-nonorganik"><i class="flaticon-users"></i> List tenaga non-organik</a>
