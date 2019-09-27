@@ -1,7 +1,7 @@
 "use strict";
 var KTDatatablesDataSourceHtml = function () {
     var dataJSONArray = JSON.parse(
-        '[[1,"Gudang A", "10", "5", "100", "Lengkap"], [2, "Gudang B", "10", "5", "100", "Tidak Lengkap"], [3, "Gudang C", "10", "5", "100", "Lengkap"], [4,"Gudang D", "10", "5", "100", "Tidak Lengkap"], [5, "Gudang E", "10", "5", "100", "Lengkap"]]');
+        '[[1,"Gudang A", "10", "5", "100", "1"], [2, "Gudang B", "10", "5", "100", "2"], [3, "Gudang C", "10", "5", "100", "2"], [4,"Gudang D", "10", "5", "100", "2"], [5, "Gudang E", "10", "5", "100", "1"]]');
     var initTable1 = function () {
         var table = $('#kt_table_1');
         // begin first table
@@ -19,6 +19,7 @@ var KTDatatablesDataSourceHtml = function () {
                             Actions
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="` + baseUrl + `/list-area"><i class="flaticon-symbol"></i> List area</a>
                             <a class="dropdown-item" href="` + baseUrl + `/list-pallet"><i class="flaticon-layers"></i> List pallet</a>
                             <a class="dropdown-item" href="` + baseUrl + `/list-alat-berat"><i class="flaticon-truck"></i> List alat berat</a>
                             <a class="dropdown-item" href="` + baseUrl + `/list-tenaga-kerja-nonorganik"><i class="flaticon-users"></i> List tenaga non-organik</a>
@@ -29,13 +30,35 @@ var KTDatatablesDataSourceHtml = function () {
                 {
                     className: 'text-center',
                     targets: -2,
-                    title: 'Jumlah Alat Berat',
-                    orderable: true,
                     render: function (data, type, full, meta) {
-                        var result = '<a href="" data-toggle="modal" data-target="#kt_modal_alat">' + data + '</a>';
-                        return result;
+                        var status = {
+                            1: {
+                                'title': 'Lengkap',
+                                'state': 'primary'
+                            },
+                            2: {
+                                'title': 'Tidak lengkap',
+                                'state': 'danger'
+                            },
+                        };
+                        if (typeof status[data] === 'undefined') {
+                            return data;
+                        }
+                        return '<a href="" data-toggle="modal" data-target="#kt_modal_alat"><span class="kt-badge kt-badge--' + status[data].state + ' kt-badge--dot"></span>&nbsp;' +
+                            '<span class="kt-font-bold kt-font-' + status[data].state + '">' + status[data].title + '</span></a>';
                     },
-                }, {
+                },
+                // {
+                //     className: 'text-center',
+                //     targets: -2,
+                //     title: 'Jumlah Alat Berat',
+                //     orderable: true,
+                //     render: function (data, type, full, meta) {
+                //         var result = '<a href="" data-toggle="modal" data-target="#kt_modal_alat">' + data + '</a>';
+                //         return result;
+                //     },
+                // }, 
+                {
                     className: 'text-center',
                     targets: -3,
                     title: 'Jumlah Pupuk',

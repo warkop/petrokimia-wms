@@ -15,12 +15,12 @@ var KTDatatablesDataSourceHtml = function () {
                     orderable: false,
                     render: function (data, type, full, meta) {
                         return `
+                        <a href="" data-toggle="modal" data-target="#kt_modal_pupuk">
+                            <button type = "button" class="btn btn-success btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="List tenaga non organik">
+                            <i class="flaticon-users"></i> </button>
+                        </a>
                         <a href="" data-toggle="modal" data-target="#kt_modal_1">
                             <button type = "button" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
-                            <i class="flaticon-edit-1"></i> </button>
-                        </a>
-                        <a href="" data-toggle="modal" data-target="#kt_modal_pupuk">
-                            <button type = "button" class="btn btn-orens success-color btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="List tenaga non organik">
                             <i class="flaticon-edit-1"></i> </button>
                         </a>`;
                     },

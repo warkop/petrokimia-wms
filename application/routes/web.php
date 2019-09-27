@@ -67,9 +67,16 @@ Route::get('/list-tenaga-kerja-nonorganik', function () {
 Route::get('/list-pallet', function () {
     return view('list-pallet.grid');
 });
+Route::get('/list-area', function () {
+    return view('list-area.grid');
+});
 Route::get('/anggaran-alat-berat', function () {
     return view('anggaran-alat-berat.grid');
 });
+Route::get('/anggaran-sdm', function () {
+    return view('anggaran-sdm.grid');
+});
+
 
 
 Route::get('/rencana-harian', function () {
