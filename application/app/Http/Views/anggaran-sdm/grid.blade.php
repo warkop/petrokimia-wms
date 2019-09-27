@@ -17,26 +17,32 @@
                     Data Anggaran SDM
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah data anggaran sdm yang tercatat pada <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
+                    Berikut ini adalah form digunakan untuk setting anggaran SDM <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
                 </p>
             </div>
 			<div class="kt-portlet__head-toolbar">
 				<div class="kt-portlet__head-group pt-4">
-					<a href="#" class="btn btn-success btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
+                    
 				</div>
 			</div>
 		</div>
 		<div class="kt-portlet__body">
-			<table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
-				<thead>
-					<tr>
-						<th>No</th>
-                        <th>Jumlah (ton)</th>
-                        <th>Harga</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-			</table>					
+            <div class="row">
+                <div class="col-md-4 col-lg-4">
+                    <div class="form-group">
+                        <label>Jumlah</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon2" value="10">
+                            <div class="input-group-append"><span class="input-group-text" id="basic-addon2">ton</span></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Harga (Rp.)</label>
+                        <input type="text" class="form-control" placeholder="Username" value="100.000">
+                    </div>
+                    <button type="button" onclick="showme()" class="btn btn-success">Simpan data</button>
+                </div>
+            </div>
 		</div>
 	</div>
 	<!--End::Dashboard 6-->
@@ -44,54 +50,29 @@
 <!-- end:: Content -->
 
 
-<!--begin::Modal-->
-<div class="modal fade" id="kt_modal_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <form action="">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label>Jumlah (ton)</label>
-                                <input type="text" class="form-control" placeholder="Masukkan jumlah">
-                            </div>
-                            <div class="form-group">
-                                <label>Harga per ton</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend"><span class="input-group-text">Rp.</span></div>
-                                    <input type="text" class="form-control" placeholder="Masukkan harga" aria-describedby="basic-addon1">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-success">Simpan data</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!--end::Modal-->
 
-
-
-
-
-<script src="{{asset('assets/extends/js/page/anggaran-sdm.js')}}" type="text/javascript"></script>
 <script>
 $('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
     orientation: "bottom left"
 });
+function showme() {
+    swal.fire({
+        title: 'Are you sure?',
+        text: "Pengaturan anggaran SDM akan disimpan.",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, simpan data!'
+    }).then(function (result) {
+        if (result.value) {
+            swal.fire(
+                'Berhasil!',
+                'Data berhasil dihapus.',
+                'success'
+            )
+        }
+    });
+}
 </script>
 @endsection
