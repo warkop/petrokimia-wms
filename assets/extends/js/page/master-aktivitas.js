@@ -18,7 +18,8 @@ var KTDatatablesDataSourceHtml = function () {
                         <a href="" data-toggle="modal" data-target="#kt_modal_1">
                             <button type = "button" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
                             <i class="flaticon-edit-1"></i> </button>
-                        </a>`;
+                        </a>
+                        `;
                     },
                 },
                 {
