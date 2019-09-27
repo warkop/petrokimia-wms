@@ -54,3 +54,15 @@
 .success-color {
     background: #0ABB87 !important;
 }
+
+.no-border-bottom {
+    border-bottom: none !important;
+}
+
+.no-border-top {
+    border-top: none !important;
+}
+
+.contains-chart-result {
+    transform: translateY(-20px);
+}

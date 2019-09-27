@@ -15,6 +15,10 @@ Route::get('/', function () {
     return View::make('login');
 });
 
+Route::get('/dashboard', function () {
+    return View::make('dashboard.grid');
+});
+
 Route::get('/master-aktivitas', function () {
     return view('master.master-aktivitas.grid');
 });
