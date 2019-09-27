@@ -1,7 +1,7 @@
 "use strict";
 var KTDatatablesDataSourceHtml = function () {
     var dataJSONArray = JSON.parse(
-        '[[1,"Shift1"]]');
+        '[[1,"Pupuk"],[2,"Palet"],[3,"Terplas"]]');
     var initTable1 = function () {
         var table = $('#kt_table_1');
         // begin first table
