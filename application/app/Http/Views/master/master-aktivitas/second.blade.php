@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Data Aktivitas')
+@section('title', 'Tambah Aktivitas')
 
 @section('content')
 
@@ -195,6 +195,14 @@
                         </label>
                     </div>
                 </div>
+                <div class="row form-group mb-0 mb2">
+                    <div class="col-6 offset-col-2">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox"> Butuh alat berat
+                            <span></span>
+                        </label>
+                    </div>
+                </div>
             </div>
             <div class="row form-group mb-0 mt2">
                 <label class="col-2 col-form-label">Status</label>
@@ -208,7 +216,6 @@
                 </div>
             </div>
         </div>
-        
 
         <div class="kt-portlet__foot">
             <div class="kt-form__actions">
@@ -219,8 +226,6 @@
                 </div>
             </div>
         </div>
-
-
 
     </div>
     <!--End::Dashboard 6-->

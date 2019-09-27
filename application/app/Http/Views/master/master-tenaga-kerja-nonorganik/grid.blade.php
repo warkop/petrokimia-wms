@@ -32,7 +32,7 @@
 						<th>No</th>
                         <th>Nama</th>
                         <th>No. Hp</th>
-                        <th>Pekerjaan</th>
+                        <th>Job Desk</th>
                         <th>Nama Karu</th>
                         <th>Start Date</th>
                         <th>End Date</th>
