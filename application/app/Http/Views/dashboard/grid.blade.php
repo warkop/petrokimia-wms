@@ -125,18 +125,18 @@
     labels: [1,2,3,4,5,6,7],
     datasets: [{ 
         data: [86,100,106,20,107,24,133],
-        label: "Shit 1, Alat Berat: Rp 1.000.000, SDM: Rp 800.000",
-        // label: "shit 6",
+        label: "Shift 1, Alat Berat: Rp 1.000.000, SDM: Rp 800.000",
+        // label: "Shift 6",
         borderColor: "#00AE4D",
         fill: false
       }, { 
         data: [1,150,411,202,135,309,247],
-        label: "Shit 2, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+        label: "Shift 2, Alat Berat: Rp 700.000, SDM: Rp 300.000",
         borderColor: "#FAAE32",
         fill: false
       }, { 
         data: [68,50,78,90,203,176,408],
-        label: "Shit 3, Alat Berat: Rp 3.000.000, SDM: Rp 1.800.000",
+        label: "Shift 3, Alat Berat: Rp 3.000.000, SDM: Rp 1.800.000",
         borderColor: "#E14A3A",
         fill: false
       }
