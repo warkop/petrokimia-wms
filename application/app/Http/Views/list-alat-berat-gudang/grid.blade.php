@@ -22,8 +22,8 @@
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-group pt-4">
-                    <a href="#" class="btn btn-success btn-elevate btn-elevate-air" data-toggle="modal"
-                        data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
+                    <button id="btntambahAdjst" class="btn btn-success btn-elevate btn-elevate-air"><i
+                            class="la la-plus"></i> Tambah Data</button>
                 </div>
             </div>
         </div>
@@ -32,29 +32,47 @@
                 <h4 style="padding: 0 10px;">Kategori: Forklift</h4>
             </div> --}}
             <table class="table table-striped- table-bordered table-hover table-checkable">
-                <thead>
+                <thead id="inputAdjst">
                     <tr>
                         <th class="text-center">No</th>
-                        <th  class="text-center">Nomor Lambung</th>
-                        <th  class="text-center">Nomor Polisi</th>                        
-                        <th  class="text-center">Actions</th>
+                        <th class="text-center">Nomor Lambung</th>
+                        <th class="text-center">Nomor Polisi</th>
+                        <th class="text-center">Actions</th>
                     </tr>
-                    <tr  class="text-center">
-                        <td>1</td>
-                        <td>O1</td>
-                        <td>B 777 FGH</td>
-                        <td>
-                            <button type = "button" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i class="flaticon-delete"></i> </button>
-                        </td>
-                    </tr>
-                    <tr  class="text-center">
-                        <td>2</td>
-                        <td>O2</td>
-                        <td>B 8873 GH</td>
-                        <td>
-                            <button type = "button" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i class="flaticon-delete"></i> </button>
-                        </td>
-                    </tr>
+                        <tr class="text-center">
+                            <td>1</td>
+                            <td>
+                                <select class="form-control m-select2 kt_select2_housekeeping" name="param"
+                                    aria-placeholder="Pilih No. Lambung" style="width: 100%;">
+                                    <option value="AK">O1</option>
+                                    <option value="HI">O2</option>
+                                    <option value="HI">O3</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="form-control" placeholder="" value="F 6646 GH" disabled></td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-elevate btn-icon" data-container="body"
+                                    data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i
+                                        class="flaticon-delete"></i> </button>
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td>2</td>
+                            <td>
+                                <select class="form-control m-select2 kt_select2_housekeeping" name="param"
+                                    aria-placeholder="Pilih No. Lambung" style="width: 100%;">
+                                    <option value="AK">O1</option>
+                                    <option value="HI">O2</option>
+                                    <option value="HI">O3</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="form-control" placeholder="" value="B 7777 FG" disabled></td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-elevate btn-icon" data-container="body"
+                                    data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i
+                                        class="flaticon-delete"></i> </button>
+                            </td>
+                        </tr>
                 </thead>
             </table>
         </div>
@@ -105,5 +123,48 @@
     $('#kt_select2_1').select2({
     placeholder: "Select a state"
 });
+</script>
+
+<script>
+    $('.kt-selectpicker').selectpicker();
+    $('#kt_select2_3').select2({
+        placeholder: "Select admin gudang",
+    });
+    
+    $('#HK-1').select2({
+        placeholder: "Select alat berat",
+    });
+    
+    $('#kt_select2_1, #kt_select2_operator, #kt_select2_loket, #kt_select2_checker').select2({
+        placeholder: "Select Alat Berat"
+    });
+    $('.kt_select2_housekeeping').select2({
+        placeholder: "Select Housekepping"
+    });
+    $('#start_date, #end_date').datepicker({
+        rtl: KTUtil.isRTL(),
+        todayHighlight: true,
+        orientation: "top left"
+    });
+</script>
+<script>
+$("#btntambahAdjst").click(function () {
+        $("#inputAdjst").append(`
+        <tr class="text-center">
+            <td>3</td>
+            <td>
+                <select class="form-control m-select2 kt_select2_housekeeping" name="param" aria-placeholder="Pilih No. Lambung" style="width: 100%;">
+                    <option value="AK">O1</option>
+                    <option value="HI">O2</option>
+                    <option value="HI">O3</option>
+                </select>
+            </td>
+            <td><input type="text" class="form-control" placeholder="" value="F 6646 GH" disabled></td>
+            <td>
+            <button type="button" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i class="flaticon-delete"></i> </button>
+            </td>
+        </tr>
+        `);
+    });
 </script>
 @endsection
