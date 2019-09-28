@@ -40,6 +40,9 @@ Route::get('/master-shift-kerja', function () {
 Route::get('/master-alat-berat', function () {
     return view('master.master-alat-berat.grid');
 });
+Route::get('/master-kerusakan-alat', function () {
+    return view('master.master-kerusakan-alat.grid');
+});
 Route::get('/master-grup', function () {
     return view('master.master-grup.grid');
 });
