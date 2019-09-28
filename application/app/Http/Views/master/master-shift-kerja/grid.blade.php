@@ -34,7 +34,6 @@
                         <th>Mulai Shift</th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th>Status</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -82,17 +81,6 @@
                                 <label>End Date</label>
                                 <input type="text" class="form-control" id="end_date" readonly placeholder="Select date">
                             </div>
-                        </div>
-                    </div>
-                    <div class="row form-group mb-0">
-                        <label class="col-2 col-form-label">Status</label>
-                        <div class="col-2">
-                            <span class="kt-switch kt-switch--primary kt-switch--icon">
-                                <label>
-                                    <input type="checkbox" checked="checked" name="" />
-                                    <span></span>
-                                </label>
-                            </span>
                         </div>
                     </div>
                 </div>

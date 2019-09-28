@@ -21,14 +21,12 @@
                     Data Rencana Harian
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah rencana harian <span
-                        class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
+                    Berikut ini adalah rencana harian <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
                 </p>
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-group pt-4">
-                    <a href="#" class="btn btn-success btn-elevate btn-elevate-air" data-toggle="modal"
-                        data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
+                    <a href="{{url('/add-rencana-harian')}}" class="btn btn-success btn-elevate btn-elevate-air"><i class="la la-plus"></i> Tambah Data</a>
                 </div>
             </div>
         </div>
@@ -38,9 +36,8 @@
                     <tr>
                         <th>No</th>
                         <th>Tanggal</th>
-                        <th>Shift</th>
-                        <th></th>
-                        <th>#</th>
+                        <th>Shift Kerja</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
             </table>
@@ -49,6 +46,7 @@
     <!--End::Dashboard 6-->
 </div>
 <!-- end:: Content -->
+
 
 
 <!--begin::Modal-->
@@ -83,8 +81,7 @@
                             <div class="form-group">
                                 <label>Admin Gudang</label>
                                 <select class="form-control m-select2" id="kt_admin_gudang" name="param">
-                                    <option value="" selected disabled>
-                                    </option>
+                                    <option value="" selected disabled></option>
                                     <option value="Asmianto Rahayu">Asmianto Rahayu</option>
                                     <option value="Asmianto Rahayu">Asmianto Rahayu</option>
                                     <option value="Cahyo Prasetyo">Cahyo Prasetyo</option>
@@ -146,129 +143,6 @@
 </div>
 <!--end::Modal-->
 
-<!--begin::Modal jumlah pupuk -->
-<div class="modal fade" id="kt_modal_pupuk" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Detail Jumlah Pupuk</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <form action="">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="table table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Tanggal</th>
-                                        <th>Shift</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td scope="row">1</td>
-                                        <td>Pupuk Urea</td>
-                                        <td>5</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">2</td>
-                                        <td>Pupuk ZA</td>
-                                        <td>3</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">3</td>
-                                        <td>Pupuk SP-36</td>
-                                        <td>80</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">4</td>
-                                        <td>Pupuk Rock Phospate</td>
-                                        <td>10</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">5</td>
-                                        <td>Petro Nitrat</td>
-                                        <td>10</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!--end::Modal-->
-
-<!--begin::Modal jumlah alat berat -->
-<div class="modal fade" id="kt_modal_alat" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Detail Jumlah Alat Berat</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <form action="">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="table table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Kategori Alat Berat</th>
-                                        <th>Jumlah</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td scope="row">1</td>
-                                        <td>Excavator</td>
-                                        <td>5</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">2</td>
-                                        <td>Alat Pengangkut (Truk)</td>
-                                        <td>3</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">3</td>
-                                        <td>Crane</td>
-                                        <td>80</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">4</td>
-                                        <td>Compactor</td>
-                                        <td>10</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">5</td>
-                                        <td>Forklift</td>
-                                        <td>10</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!--end::Modal-->
 
 
 

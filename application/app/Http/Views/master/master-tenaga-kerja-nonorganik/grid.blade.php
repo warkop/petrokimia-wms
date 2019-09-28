@@ -33,10 +33,8 @@
                         <th>Nama</th>
                         <th>No. Hp</th>
                         <th>Job Desk</th>
-                        <th>Nama Karu</th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th>Status</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -71,7 +69,7 @@
                                 <input type="text" class="form-control" placeholder="Ex. 0895340952989">
                             </div>
                             <div class="form-group">
-                                <label>Nama Tenaga Kerja</label>
+                                <label>Job Desk</label>
                                 <select class="form-control m-select2" id="kt_select2_1" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
                                     <option value="">Pilih pekerjaan</option>
                                     <option value="AK">Admin</option>
@@ -102,17 +100,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row form-group mb-0">
-                        <label class="col-2 col-form-label">Status</label>
-                        <div class="col-2">
-                            <span class="kt-switch kt-switch--primary kt-switch--icon">
-                                <label>
-                                    <input type="checkbox" checked="checked" name="" />
-                                    <span></span>
-                                </label>
-                            </span>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
@@ -131,10 +118,7 @@
 <script src="{{asset('assets/extends/js/page/master-tenaga-kerja.js')}}" type="text/javascript"></script>
 <script>
 $('#kt_select2_1').select2({
-    placeholder: "Pilih pekerjaan"
-});
-$('#kt_select2_2').select2({
-    placeholder: "Pilih karu"
+    placeholder: "Select Job Desk"
 });
 $('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),

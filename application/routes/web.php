@@ -22,11 +22,9 @@ Route::get('/dashboard', function () {
 Route::get('/master-aktivitas', function () {
     return view('master.master-aktivitas.grid');
 });
-
 Route::get('/master-aktivitas/tambah', function () {
     return view('master.master-aktivitas.second');
 });
-
 Route::get('/master-karu', function () {
     return view('master.master-karu.grid');
 });
@@ -48,11 +46,9 @@ Route::get('/master-grup', function () {
 Route::get('/master-user', function () {
     return view('master.master-user.grid');
 });
-
 Route::get('/master-material', function () {
     return view('master.master-material.grid');
 });
-
 Route::get('/layout', function () {
     return view('menu-layout.grid');
 });
@@ -85,4 +81,10 @@ Route::get('/anggaran-sdm', function () {
 
 Route::get('/rencana-harian', function () {
     return view('rencana-harian.grid');
+});
+Route::get('/add-rencana-harian', function () {
+    return view('rencana-harian.add');
+});
+Route::get('/realisasi', function () {
+    return view('rencana-harian.realisasi');
 });

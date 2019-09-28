@@ -48,21 +48,6 @@ var KTDatatablesDataSourceHtml = function () {
                         return '<span class="kt-badge kt-badge--' + status[data].state + ' kt-badge--dot"></span>&nbsp;' +
                             '<span class="kt-font-bold kt-font-' + status[data].state + '">' + status[data].title + '</span>';
                     },
-                },
-                {
-                    className: 'text-center',
-                    targets: -2,
-                    title: 'Status',
-                    orderable: false,
-                    render: function () {
-                        return `
-                    <span class="kt-switch kt-switch--primary kt-switch--icon">
-                        <label>
-                            <input type="checkbox" checked="checked" name="">
-                            <span></span>
-                        </label>
-                    </span>`;
-                    },
                 }
             ],
             "drawCallback": function (settings) {

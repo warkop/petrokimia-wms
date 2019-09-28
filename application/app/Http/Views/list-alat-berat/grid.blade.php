@@ -30,7 +30,7 @@
 					<tr>
 						<th>No</th>
                         <th>Kategori Alat Berat</th>
-                        <th>No. Polisi</th>
+                        <th>Nomor Lambung</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -66,8 +66,8 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Nomor Polisi</label>
-                                <input type="text" class="form-control" placeholder="Masukkan nomor polisi">
+                                <label>Nomor Lambung</label>
+                                <input type="text" class="form-control" placeholder="Masukkan nomor lambung">
                             </div>
                         </div>
                     </div>

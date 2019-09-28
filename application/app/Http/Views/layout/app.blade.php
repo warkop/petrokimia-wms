@@ -112,8 +112,8 @@ License: You must have a valid license purchased only from themeforest(the above
 								</li>
 								<li class="kt-menu__item" aria-haspopup="true"><a href="{{url('/gudang')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-institution"></span><span class="kt-menu__link-text">Gudang</span></a>
 								</li>
-								<li class="kt-menu__item" aria-haspopup="true"><a href="{{url('/anggaran-alat-berat')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-file-text-o"></span><span class="kt-menu__link-text">Anggaran Alat Berat</span></a>
-								</li>
+								{{-- <li class="kt-menu__item" aria-haspopup="true"><a href="{{url('/anggaran-alat-berat')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-file-text-o"></span><span class="kt-menu__link-text">Anggaran Alat Berat</span></a>
+								</li> --}}
 								<li class="kt-menu__item" aria-haspopup="true"><a href="{{url('/anggaran-sdm')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-money"></span><span class="kt-menu__link-text">Anggaran SDM</span></a>
 								</li>
 								<li id="rencanaHarian-nav" class="kt-menu__item rencanaHarian-nav" aria-haspopup="true"><a href="{{url('/rencana-harian')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-calendar"></span><span class="kt-menu__link-text">Rencana Harian</span></a></li>
@@ -127,7 +127,7 @@ License: You must have a valid license purchased only from themeforest(the above
 										<ul class="kt-menu__subnav">
 											<li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Data Master</span></span></li>
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-aktivitas')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Aktivitas</span></a></li>
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-karu')}}" class="kt-menu__link" ><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Karu</span></a></li>
+											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-karu')}}" class="kt-menu__link" ><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kepala Regu</span></a></li>
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-material')}}" class="kt-menu__link" ><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Material</span></a></li>
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-tenaga-kerja-nonorganik')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Tenaga Kerja Non Organik</span></a></li>
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-pekerjaan')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Job Desk</span></a></li>
