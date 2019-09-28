@@ -111,9 +111,9 @@
 					<tr>
 						<th>No</th>
                         <th>Nama Kategori Alat Berat</th>
+                        <th>Anggaran Alat Berat</th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th>Status</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -141,7 +141,11 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Nama Kategori Alat Berat</label>
-                                <input type="email" class="form-control" placeholder="Masukkan nama kategori">
+                                <input type="text" class="form-control" placeholder="Masukkan nama kategori">
+                            </div>
+                            <div class="form-group">
+                                <label>Anggaran Alat Berat</label>
+                                <input type="text" class="form-control" placeholder="Masukkan anggaran alat">
                             </div>
                         </div>
                     </div>
@@ -157,17 +161,6 @@
                                 <label>End Date</label>
                                 <input type="text" class="form-control" id="end_date" readonly placeholder="Select date">
                             </div>
-                        </div>
-                    </div>
-                    <div class="row form-group mb-0">
-                        <label class="col-2 col-form-label">Status</label>
-                        <div class="col-2">
-                            <span class="kt-switch kt-switch--primary kt-switch--icon">
-                                <label>
-                                    <input type="checkbox" checked="checked" name="" />
-                                    <span></span>
-                                </label>
-                            </span>
                         </div>
                     </div>
                 </div>

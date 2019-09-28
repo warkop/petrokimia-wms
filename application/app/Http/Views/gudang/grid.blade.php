@@ -4,7 +4,7 @@
 
 @section('content')
 
-
+<script> $('body').addClass("kt-aside--minimize");  </script>
 
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
@@ -32,8 +32,12 @@
 					<tr>
 						<th>No</th>
                         <th>Nama Gudang</th>
-                        <th>Minimal Pallet</th>
-                        <th>Minimal Terplas</th>
+                        <th>Internal</th>
+                        <th>Eksternal</th>
+                        <th>Id Sloc</th>
+                        <th>Id Plant</th>
+                        <th>Min Pallet</th>
+                        <th>Min Terplas</th>
                         <th>Jumlah Pupuk</th>
                         <th>Jumlah Alat Berat</th>
 						<th>Actions</th>
@@ -64,6 +68,22 @@
                             <div class="form-group">
                                 <label>Nama Gudang</label>
                                 <input type="text" class="form-control" placeholder="Masukkan nama gudang">
+                            </div>
+                            <div class="form-group">
+                                <label>Nama Gudang Internal</label>
+                                <input type="text" class="form-control" placeholder="Masukkan nama gudang internal">
+                            </div>
+                            <div class="form-group">
+                                <label>Nama Gudang Eksternal</label>
+                                <input type="text" class="form-control" placeholder="Masukkan nama gudang eksternal">
+                            </div>
+                            <div class="form-group">
+                                <label>Id Sloc</label>
+                                <input type="text" class="form-control" placeholder="Masukkan id sloc">
+                            </div>
+                            <div class="form-group">
+                                <label>Id Plant</label>
+                                <input type="text" class="form-control" placeholder="Masukkan id plant">
                             </div>
                             <div class="form-group">
                                 <label>Jumlah Minimal Pallet</label>

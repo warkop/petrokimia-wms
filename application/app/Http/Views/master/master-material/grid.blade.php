@@ -30,9 +30,10 @@
 				<thead>
 					<tr>
 						<th>No</th>
-                        <th>Nama</th>
-                        <th>Nama</th>
-                        <th>Masuk ke Aktivitas</th>
+                        <th>Nama Material</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Actions</th>
 					</tr>
 				</thead>
 			</table>					
@@ -59,16 +60,29 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Nama Material</label>
-                                <input type="text" class="form-control" placeholder="Masukkan nama material">
-                            </div>
-                            <div class="form-group">                                
-                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                    <input type="checkbox"> Masukkan ke aktifitas
-                                    <span></span>
-                                </label>
+                                <select class="form-control m-select2" id="kt_select2_1" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
+                                    <option value="">Pilih pekerjaan</option>
+                                    <option value="AK">Pupuk</option>
+                                    <option value="HI">Terplas</option>
+                                    <option value="CA">Pallet</option>
+                                </select>
                             </div>
                         </div>
-                    </div>                    
+                    </div>  
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Start Date</label>
+                                <input type="text" class="form-control" id="start_date" readonly placeholder="Select date">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>End Date</label>
+                                <input type="text" class="form-control" id="end_date" readonly placeholder="Select date">
+                            </div>
+                        </div>
+                    </div>                  
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
@@ -86,8 +100,8 @@
 
 <script src="{{asset('assets/extends/js/page/master-material.js')}}" type="text/javascript"></script>
 <script>
-$('#kt_select2_1').select2({
-    placeholder: "Pilih pekerjaan"
+    $('#kt_select2_1').select2({
+    placeholder: "Select Material"
 });
 $('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),

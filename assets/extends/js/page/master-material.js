@@ -1,7 +1,7 @@
 "use strict";
 var KTDatatablesDataSourceHtml = function () {
     var dataJSONArray = JSON.parse(
-        '[[1,"Pupuk"],[2,"Palet"],[3,"Terplas"]]');
+        '[[1,"Pupuk", "10-12-2019", "15-12-2019"],[2,"Palet", "10-12-2019", "15-12-2019"],[3,"Terplas", "10-12-2019", "15-12-2019"]]');
     var initTable1 = function () {
         var table = $('#kt_table_1');
         // begin first table
@@ -9,45 +9,18 @@ var KTDatatablesDataSourceHtml = function () {
             responsive: true,
             data: dataJSONArray,
             columnDefs: [{
-                    className: 'text-center',
-                    targets: 3,
-                    title: 'Masuk ke Aktivitas',
-                    orderable: false,
-                    render: function (data, type, full, meta) {
-                        return `
+                className: 'text-center',
+                targets: -1,
+                title: 'Masuk ke Aktivitas',
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return `
                         <a href="" data-toggle="modal" data-target="#kt_modal_1">
                             <button type = "button" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
                             <i class="flaticon-edit-1"></i> </button>
                         </a>`;
-                    },
                 },
-                {
-                    className: 'text-center',
-                    targets: 2,
-                    title: 'Status',
-                    orderable: true,
-                    render: function (data, type, full, meta) {
-                        return `
-                        <span class="kt-switch kt-switch--primary kt-switch--icon">
-                        <label>
-                            <input type="checkbox" checked="checked" name="">
-                            <span></span>
-                        </label>
-                    </span>
-                        `;
-                    },
-                },
-                //  {
-                //     className: 'text-center',
-                //     targets: -3,
-                //     title: 'Jumlah Pupuk',
-                //     orderable: true,
-                //     render: function (data, type, full, meta) {
-                //         var result = '<a href="" data-toggle="modal" data-target="#kt_modal_pupuk">' + data + '</a>';
-                //         return result;
-                //     },
-                // }
-            ],
+            }],
             "drawCallback": function (settings) {
                 $('[data-toggle="kt-tooltip"]').tooltip();
             }
@@ -63,9 +36,9 @@ var KTDatatablesDataSourceHtml = function () {
 
 
 // Class definition
-var KTSelect2 = function() {
+var KTSelect2 = function () {
     // Private functions
-    var demos = function() {
+    var demos = function () {
         // basic
         $('#kt_select2_1, #kt_select2_1_validate').select2({
             placeholder: "Select a state"
@@ -140,13 +113,13 @@ var KTSelect2 = function() {
                 url: "https://api.github.com/search/repositories",
                 dataType: 'json',
                 delay: 250,
-                data: function(params) {
+                data: function (params) {
                     return {
                         q: params.term, // search term
                         page: params.page
                     };
                 },
-                processResults: function(data, params) {
+                processResults: function (data, params) {
                     // parse the results into the format expected by Select2
                     // since we are using custom formatting functions we do not need to
                     // alter the remote JSON data, except to indicate that infinite
@@ -162,7 +135,7 @@ var KTSelect2 = function() {
                 },
                 cache: true
             },
-            escapeMarkup: function(markup) {
+            escapeMarkup: function (markup) {
                 return markup;
             }, // let our custom formatter work
             minimumInputLength: 1,
@@ -172,7 +145,7 @@ var KTSelect2 = function() {
 
     }
 
-    var modalDemos = function() {
+    var modalDemos = function () {
         $('#kt_modal_1').on('shown.bs.modal', function () {
             // basic
             $('#kt_admin_gudang').select2({
@@ -194,13 +167,13 @@ var KTSelect2 = function() {
             $('#kt_checker').select2({
                 placeholder: "Pilih Checker"
             });
-            
+
         });
     }
 
     // Public functions
     return {
-        init: function() {
+        init: function () {
             modalDemos();
         }
     };

@@ -13,10 +13,10 @@
 			<div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
                     {{-- <i class="la la-group"></i> &nbsp; --}}
-                    Data Master Karu
+                    Data Master Kepala Regu
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah data master karu yang tercatat pada <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
+                    Berikut ini adalah data master kepala regu yang tercatat pada <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
                 </p>
             </div>
 			<div class="kt-portlet__head-toolbar">
@@ -34,7 +34,6 @@
                         <th>No. Hp</th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th>Status</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -69,7 +68,7 @@
                                 <input type="text" class="form-control" placeholder="Masukkan nomor hp">
                             </div>
                             <div class="form-group">
-                                <label>Nama Tenaga Kerja</label>
+                                <label>Job Desk</label>
                                 <select class="form-control m-select2" id="kt_select2_1" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
                                     <option value="">Pilih pekerjaan</option>
                                     <option value="AK">Admin</option>
@@ -91,17 +90,6 @@
                                 <label>End Date</label>
                                 <input type="text" class="form-control" id="end_date" readonly placeholder="Select date">
                             </div>
-                        </div>
-                    </div>
-                    <div class="row form-group mb-0">
-                        <label class="col-2 col-form-label">Status</label>
-                        <div class="col-2">
-                            <span class="kt-switch kt-switch--primary kt-switch--icon">
-                                <label>
-                                    <input type="checkbox" checked="checked" name="" />
-                                    <span></span>
-                                </label>
-                            </span>
                         </div>
                     </div>
                 </div>
@@ -164,7 +152,7 @@
 <script src="{{asset('assets/extends/js/page/master-karu.js')}}" type="text/javascript"></script>
 <script>
 $('#kt_select2_1').select2({
-    placeholder: "Pilih pekerjaan"
+    placeholder: "Pilih job desk"
 });
 $('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),

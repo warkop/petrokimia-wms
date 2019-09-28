@@ -1,7 +1,7 @@
 "use strict";
 var KTDatatablesDataSourceHtml = function () {
     var dataJSONArray = JSON.parse(
-        '[[1,"Gudang A", "10", "5", "100", "1"], [2, "Gudang B", "10", "5", "100", "2"], [3, "Gudang C", "10", "5", "100", "2"], [4,"Gudang D", "10", "5", "100", "2"], [5, "Gudang E", "10", "5", "100", "1"]]');
+        '[[1,"Gudang A", "Gudang Internal", "Gudang Eksternal", "2", "1", "10", "5", "100", "1"], [2,"Gudang B", "Gudang Internal", "Gudang Eksternal", "2", "1", "10", "5", "100", "2"]]');
     var initTable1 = function () {
         var table = $('#kt_table_1');
         // begin first table
@@ -11,7 +11,7 @@ var KTDatatablesDataSourceHtml = function () {
             columnDefs: [{
                     className: 'text-center',
                     targets: -1,
-                    title: '#',
+                    title: 'Actions',
                     orderable: false,
                     render: function (data, type, full, meta) {
                         return `
@@ -48,16 +48,6 @@ var KTDatatablesDataSourceHtml = function () {
                             '<span class="kt-font-bold kt-font-' + status[data].state + '">' + status[data].title + '</span></a>';
                     },
                 },
-                // {
-                //     className: 'text-center',
-                //     targets: -2,
-                //     title: 'Jumlah Alat Berat',
-                //     orderable: true,
-                //     render: function (data, type, full, meta) {
-                //         var result = '<a href="" data-toggle="modal" data-target="#kt_modal_alat">' + data + '</a>';
-                //         return result;
-                //     },
-                // }, 
                 {
                     className: 'text-center',
                     targets: -3,
