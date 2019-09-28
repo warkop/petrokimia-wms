@@ -15,7 +15,8 @@
                     Kategori: Forklift
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah data alat berat Forklift yang terdapat pada <span class="text-ungu kt-font-bolder">Gudang
+                    Berikut ini adalah data alat berat Forklift yang terdapat pada <span
+                        class="text-ungu kt-font-bolder">Gudang
                         A.</span>
                 </p>
             </div>
@@ -30,14 +31,29 @@
             {{-- <div class="row mb3">
                 <h4 style="padding: 0 10px;">Kategori: Forklift</h4>
             </div> --}}
-            <table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
+            <table class="table table-striped- table-bordered table-hover table-checkable">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>Nomor Lambung</th>
-                        <th>Nomor Polisi</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th class="text-center">No</th>
+                        <th  class="text-center">Nomor Lambung</th>
+                        <th  class="text-center">Nomor Polisi</th>                        
+                        <th  class="text-center">Actions</th>
+                    </tr>
+                    <tr  class="text-center">
+                        <td>1</td>
+                        <td>O1</td>
+                        <td>B 777 FGH</td>
+                        <td>
+                            <button type = "button" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i class="flaticon-delete"></i> </button>
+                        </td>
+                    </tr>
+                    <tr  class="text-center">
+                        <td>2</td>
+                        <td>O2</td>
+                        <td>B 8873 GH</td>
+                        <td>
+                            <button type = "button" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i class="flaticon-delete"></i> </button>
+                        </td>
                     </tr>
                 </thead>
             </table>
@@ -84,7 +100,7 @@
 <!--end::Modal-->
 
 
-<script src="{{asset('assets/extends/js/page/list-alat-berat.js')}}" type="text/javascript"></script>
+{{-- <script src="{{asset('assets/extends/js/page/list-alat-berat.js')}}" type="text/javascript"></script> --}}
 <script>
     $('#kt_select2_1').select2({
     placeholder: "Select a state"

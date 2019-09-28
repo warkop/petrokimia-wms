@@ -15,7 +15,7 @@ var KTDatatablesDataSourceHtml = function () {
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return `
-                        <a href="` + baseUrl + `/realisasi">
+                        <a href="` + baseUrl + `realisasi">
                             <button type = "button" class="btn btn-primary btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Realisasi">
                             <i class="flaticon-interface-5"></i> </button>
                         </a>

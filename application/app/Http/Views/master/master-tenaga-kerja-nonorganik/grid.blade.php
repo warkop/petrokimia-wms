@@ -21,6 +21,7 @@
             </div>
 			<div class="kt-portlet__head-toolbar">
 				<div class="kt-portlet__head-group pt-4">
+                        <a href="#" class="btn btn-orens btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_2"><i class="la la-plus"></i> Set Anggaran</a>
 					<a href="#" class="btn btn-success btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
 				</div>
 			</div>
@@ -97,6 +98,37 @@
                             <div class="form-group">
                                 <label>End Date</label>
                                 <input type="text" class="form-control" id="end_date" readonly placeholder="Select date">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-success">Simpan data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--end::Modal-->
+
+<!--begin::Modal-->
+<div class="modal fade" id="kt_modal_2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Anggaran</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form action="">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Nominal Anggaran</label>
+                                <input type="text" class="form-control" placeholder="Masukkan nominal anggaran">
                             </div>
                         </div>
                     </div>

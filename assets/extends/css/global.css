@@ -46,6 +46,15 @@
     margin-top: 6rem !important;
 }
 
+.mt-setengah {
+    margin-top: .5rem !important;
+}
+
+.mb-setengah {
+    margin-bottom: .5rem !important;
+}
+
+
 .kel {
     background: rgba(248, 248, 248, .6);
     padding: 2.25rem 1.5rem;
@@ -59,10 +68,35 @@
     border-bottom: none !important;
 }
 
+.border-bottom {
+    border-bottom: 5px solid rgba(238, 238, 238, .6) !important;
+}
+
+.border-bottom-stgh {
+    border-bottom: 2px solid rgba(238, 238, 238, .6) !important;
+}
+
 .no-border-top {
     border-top: none !important;
 }
 
 .contains-chart-result {
     transform: translateY(-20px);
+}
+
+.hidenn {
+    visibility: hidden;
+}
+
+.boldd {
+    font-weight: bold !important;
+}
+
+.boldd-500{
+    font-weight: 500 !important;
+}
+
+.pembatas {
+    border: 1px solid salmon;
+    height: 5px;
 }

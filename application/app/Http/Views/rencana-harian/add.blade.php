@@ -41,8 +41,6 @@
                             <option>Shift 1</option>
                             <option>Shift 2</option>
                             <option>Shift 3</option>
-                            <option>Shift 4</option>
-                            <option>Shift 5</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -54,24 +52,24 @@
                     </div>
                     <div class="form-group">
                         <label>Admin Loket</label>
-                        <select class="form-control m-select2" id="kt_select2_loket" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
-                            <option>Loket 1</option>
-                            <option>Loket 2</option>
-                            <option>Loket 3</option>
+                        <select class="form-control m-select2" id="kt_select2_4" name="param" multiple="multiple">
+                            <option>Suryani</option>
+                            <option>Joko</option>
+                            <option>Ninda</option>
                         </select>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Operator Alat Berat</label>
-                        <select class="form-control m-select2" id="kt_select2_operator" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
+                        <select class="form-control m-select2" id="kt_select2_5" name="param" multiple="multiple">
                             <option>Surya</option>
                             <option>Pak Dwi</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Alat Berat</label>
-                        <select class="form-control m-select2" id="kt_select2_1" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
+                        <select class="form-control m-select2" id="kt_select2_6" name="param" multiple="multiple">
                             <option value="AK">Forklift</option>
                             <option value="HI">Truck</option>
                             <option value="CA">Dozer</option>
@@ -79,7 +77,7 @@
                     </div>
                     <div class="form-group">
                         <label>Checker</label>
-                        <select class="form-control m-select2" id="kt_select2_checker" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
+                        <select class="form-control m-select2" id="kt_select2_7" name="param" multiple="multiple">
                             <option value="AK">Rahmi</option>
                             <option value="HI">Ganjar</option>
                         </select>
@@ -91,7 +89,7 @@
                     <table class="table">
                         <thead>
                             <th width="10%">No</th>
-                            <th>Nama Housekepper</th>
+                            <th width="30%">Nama Housekepper</th>
                             <th>Area Kerja</th>
                             <th width="10%"><button class="btn btn-success btn-sm btn-block"><i class="fa fa-plus"></i> Tambah</button></th>
                         </thead>
@@ -99,13 +97,13 @@
                             <tr>
                                 <td>1</td>
                                 <td>
-                                    <select class="form-control m-select2 kt_select2_housekeeping" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
+                                    <select class="form-control m-select2 kt_select2_housekeeping" style="width: 100% !important" name="param" multiple="multiple" >
                                         <option value="AK">Suryati</option>
-                                        <option value="HI">Suryati</option>
+                                        <option value="HI">Maya</option>
                                     </select>
                                 </td>
                                 <td>
-                                    <select class="form-control kt-selectpicker">
+                                    <select class="form-control m-select2" id="kt_select2_11" name="param" multiple="multiple">
                                         <option>Pilih area</option>
                                         <option>Area A</option>
                                         <option>Area B</option>
@@ -118,13 +116,13 @@
                             <tr>
                                 <td>2</td>
                                 <td>
-                                    <select class="form-control m-select2 kt_select2_housekeeping" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
+                                    <select class="form-control m-select2 kt_select2_housekeeping" style="width: 100% !important" name="param" multiple="multiple">
                                         <option value="AK">Suryati</option>
                                         <option value="HI">Suryati</option>
                                     </select>
                                 </td>
                                 <td>
-                                    <select class="form-control kt-selectpicker">
+                                    <select class="form-control m-select2" id="kt_select2_12" name="param" multiple="multiple">
                                         <option>Pilih area</option>
                                         <option>Area A</option>
                                         <option>Area B</option>
@@ -137,13 +135,13 @@
                             <tr>
                                 <td>3</td>
                                 <td>
-                                    <select class="form-control m-select2 kt_select2_housekeeping" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
+                                    <select class="form-control m-select2 kt_select2_housekeeping" style="width: 100% !important" name="param" multiple="multiple">
                                         <option value="AK">Suryati</option>
                                         <option value="HI">Suryati</option>
                                     </select>
                                 </td>
                                 <td>
-                                    <select class="form-control kt-selectpicker">
+                                    <select class="form-control m-select2" id="kt_select2_13" name="param" multiple="multiple">
                                         <option>Pilih area</option>
                                         <option>Area A</option>
                                         <option>Area B</option>
@@ -158,7 +156,6 @@
                 </div>
             </div>
         </div>
-
         <div class="kt-portlet__foot">
             <div class="kt-form__actions">
                 <div class="row">
@@ -184,6 +181,32 @@ $('.kt-selectpicker').selectpicker();
 $('#kt_select2_3').select2({
     placeholder: "Select admin gudang",
 });
+$('#kt_select2_4').select2({
+    placeholder: "Select admin loket",
+});
+$('#kt_select2_5').select2({
+    placeholder: "Select operator alat berat",
+});
+$('#kt_select2_6').select2({
+    placeholder: "Select alat berat",
+});
+$('#kt_select2_7').select2({
+    placeholder: "Select checker",
+});
+
+
+$('#kt_select2_11').select2({
+    placeholder: "Select area kerja",
+});
+
+$('#kt_select2_12').select2({
+    placeholder: "Select area kerja",
+});
+
+$('#kt_select2_13').select2({
+    placeholder: "Select area kerja",
+});
+
 $('#kt_select2_1, #kt_select2_operator, #kt_select2_loket, #kt_select2_checker').select2({
     placeholder: "Select Alat Berat"
 });

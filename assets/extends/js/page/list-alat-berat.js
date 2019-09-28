@@ -1,7 +1,7 @@
 "use strict";
 var KTDatatablesDataSourceHtml = function () {
     var dataJSONArray = JSON.parse(
-        '[[1,"Forklif", "B 2832 PFJ"], [2, "Excavator", "B 2832 PFJ"], [3, "Excavator", "B 2832 PFJ"], [4, "Excavator", "B 2832 PFJ"], [5, "Alat Pengangkut (Truk)", "B 2832 PFJ"]]');
+        '[[1,"O1", "B 2832 PFJ", "aktif"],[2,"O2", "B 2832 VFJ", "rusak"]]');
     var initTable1 = function () {
         var table = $('#kt_table_1');
         // begin first table
@@ -19,7 +19,7 @@ var KTDatatablesDataSourceHtml = function () {
                             <button type = "button" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
                             <i class="flaticon-edit-1"></i> </button>
                         </a>
-                        <button type = "button" onclick="showme()" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i class="flaticon-delete"></i> </button>`;
+                        `;
                 },
             }],
             "drawCallback": function (settings) {
@@ -55,3 +55,5 @@ function showme() {
 jQuery(document).ready(function () {
     KTDatatablesDataSourceHtml.init();
 });
+
+//<button type = "button" onclick="showme()" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i class="flaticon-delete"></i> </button>

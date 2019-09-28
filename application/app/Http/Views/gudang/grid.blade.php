@@ -4,33 +4,37 @@
 
 @section('content')
 
-<script> $('body').addClass("kt-aside--minimize");  </script>
+<script>
+    $('body').addClass("kt-aside--minimize");  
+</script>
 
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
-	<div class="kt-portlet">
-		<div class="kt-portlet__head">
-			<div class="kt-portlet__head-title">
+    <div class="kt-portlet">
+        <div class="kt-portlet__head">
+            <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
                     {{-- <i class="la la-group"></i> &nbsp; --}}
                     Data Gudang
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah data gudang untuk menyimpan alat berat yang tercatat pada <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
+                    Berikut ini adalah data gudang untuk menyimpan alat berat yang tercatat pada <span
+                        class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
                 </p>
             </div>
-			<div class="kt-portlet__head-toolbar">
-				<div class="kt-portlet__head-group pt-4">
-					<a href="#" class="btn btn-success btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
-				</div>
-			</div>
-		</div>
-		<div class="kt-portlet__body">
-			<table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
-				<thead>
-					<tr>
-						<th>No</th>
+            <div class="kt-portlet__head-toolbar">
+                <div class="kt-portlet__head-group pt-4">
+                    <a href="#" class="btn btn-success btn-elevate btn-elevate-air" data-toggle="modal"
+                        data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
+                </div>
+            </div>
+        </div>
+        <div class="kt-portlet__body">
+            <table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
+                <thead>
+                    <tr>
+                        <th>No</th>
                         <th>Nama Gudang</th>
                         <th>Internal</th>
                         <th>Eksternal</th>
@@ -40,13 +44,13 @@
                         <th>Min Terplas</th>
                         <th>Jumlah Pupuk</th>
                         <th>Jumlah Alat Berat</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-			</table>					
-		</div>
-	</div>
-	<!--End::Dashboard 6-->
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <!--End::Dashboard 6-->
 </div>
 <!-- end:: Content -->
 
@@ -66,18 +70,6 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Nama Gudang</label>
-                                <input type="text" class="form-control" placeholder="Masukkan nama gudang">
-                            </div>
-                            <div class="form-group">
-                                <label>Nama Gudang Internal</label>
-                                <input type="text" class="form-control" placeholder="Masukkan nama gudang internal">
-                            </div>
-                            <div class="form-group">
-                                <label>Nama Gudang Eksternal</label>
-                                <input type="text" class="form-control" placeholder="Masukkan nama gudang eksternal">
-                            </div>
-                            <div class="form-group">
                                 <label>Id Sloc</label>
                                 <input type="text" class="form-control" placeholder="Masukkan id sloc">
                             </div>
@@ -85,10 +77,46 @@
                                 <label>Id Plant</label>
                                 <input type="text" class="form-control" placeholder="Masukkan id plant">
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label>Jumlah Minimal Pallet</label>
                                 <input type="text" class="form-control" placeholder="Masukkan minimal pallet">
+                            </div> --}}
+                            <div class="form-group">
+                                <label for="exampleSelect1">Pilih Gudang</label>
+                                <select class="form-control" id="pilihGudang">
+                                    <option>Internal</option>
+                                    <option>Eksternal</option>
+                                </select>
                             </div>
+
+                            <label class="boldd">Jumlah Minimal Palet</label>
+                            <div class="kel mb2">
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <label class="col-form-label">Plastik</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" placeholder="Masukkan minimal plastik">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <label class="col-form-label">Kayu Besar</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" placeholder="Masukkan kayu besar">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <label class="col-form-label">Kayu Kecil</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" placeholder="Masukkan kayu kecil">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <label>Jumlah Minimal Terplas</label>
                                 <input type="text" class="form-control" placeholder="Masukkan minimal terplas">

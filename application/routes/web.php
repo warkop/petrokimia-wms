@@ -58,9 +58,14 @@ Route::get('/gudang', function () {
 Route::get('/sub-gudang', function () {
     return view('sub-gudang.grid');
 });
-Route::get('/list-alat-berat', function () {
+Route::get('/master-alat-berat/list-alat-berat', function () {
     return view('list-alat-berat.grid');
 });
+
+Route::get('/gudang/list-alat-berat', function () {
+    return view('list-alat-berat-gudang.grid');
+});
+
 Route::get('/list-tenaga-kerja-nonorganik', function () {
     return view('list-tenaga-kerja-nonorganik.grid');
 });
