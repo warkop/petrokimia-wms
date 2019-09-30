@@ -46,6 +46,9 @@ Route::get('/master-kerusakan-alat', function () {
 Route::get('/master-grup', function () {
     return view('master.master-grup.grid');
 });
+Route::get('/master-jenis-foto', function () {
+    return view('master.master-jenis-foto.grid');
+});
 Route::get('/master-user', function () {
     return view('master.master-user.grid');
 });

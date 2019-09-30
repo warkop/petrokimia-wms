@@ -85,6 +85,10 @@
                                     <option value="AK">Irwan</option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label>Nomor BPJS</label>
+                                <input type="text" class="form-control" placeholder="Masukkan Nomor BPJS">
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -155,7 +159,7 @@ $('#kt_select2_1').select2({
 $('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
-    orientation: "bottom left"
+    orientation: "top left"
 });
 </script>
 @endsection
