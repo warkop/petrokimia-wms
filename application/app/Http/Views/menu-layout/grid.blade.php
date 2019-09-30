@@ -48,10 +48,10 @@
                     </div>
                     <div class="col-12">                        
                         <p class="boldd-500">
-                            Tanggal : 30 September 2019
+                            Tanggal : 1 Oktober 2019
                         </p>
                         <p class="boldd-500">
-                            Jumlah : 100 Ton
+                            Jumlah : 400 Ton
                         </p>
                         <div class="border-pembatas"></div>
                     </div>
