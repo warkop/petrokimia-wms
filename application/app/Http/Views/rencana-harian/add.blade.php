@@ -70,9 +70,10 @@
                     <div class="form-group">
                         <label>Alat Berat</label>
                         <select class="form-control m-select2" id="kt_select2_6" name="param" multiple="multiple">
-                            <option value="AK">Forklift</option>
-                            <option value="HI">Truck</option>
-                            <option value="CA">Dozer</option>
+                            <option value="001">001</option>
+                            <option value="002">002</option>
+                            <option value="003">003</option>
+                            <option value="004">004</option>
                         </select>
                     </div>
                     <div class="form-group">

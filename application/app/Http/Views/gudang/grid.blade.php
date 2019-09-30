@@ -88,8 +88,18 @@
                                     <option>Eksternal</option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label>Kepala Regu</label>
+                                <select class="form-control m-select2" id="kt_select2_1" name="param"
+                                    aria-placeholder="Pilih kepala regu" style="width: 100%;">
+                                    <option value="">Pilih kepala regu</option>
+                                    <option value="AK">Ibrani Mandasari</option>
+                                    <option value="HI">Hari Permata</option>
+                                    <option value="CA">Harjaya Sihombing</option>
+                                </select>
+                            </div>
 
-                            <label class="boldd">Jumlah Minimal Palet</label>
+                            <label class="boldd-500">Jumlah Minimal Palet</label>
                             <div class="kel mb2">
                                 <div class="form-group row">
                                     <div class="col-4">
@@ -263,4 +273,9 @@
 
 
 <script src="{{asset('assets/extends/js/page/gudang.js')}}" type="text/javascript"></script>
+<script>
+    $('#kt_select2_1').select2({
+    placeholder: "Pilih kepala regu"
+});
+</script>
 @endsection

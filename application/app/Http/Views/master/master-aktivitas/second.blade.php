@@ -39,115 +39,121 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td width="50%">
-                                    <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="checkbox"> Pallet stok
-                                        <span></span>
-                                    </label>
-                                </td>
-                                <td width="50%">
-                                    <select class="form-control kt-selectpicker">
-                                        <option>Pilih jenis</option>
-                                        <option>Mengurangi</option>
-                                        <option>Menambah</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="50%">
-                                    <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="checkbox"> Pallet kosong
-                                        <span></span>
-                                    </label>
-                                </td>
-                                <td width="50%">
-                                    <select class="form-control kt-selectpicker">
-                                        <option>Pilih jenis</option>
-                                        <option>Mengurangi</option>
-                                        <option>Menambah</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="50%">
-                                    <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="checkbox"> Pallet dipakai
-                                        <span></span>
-                                    </label>
-                                </td>
-                                <td width="50%">
-                                    <select class="form-control kt-selectpicker">
-                                        <option>Pilih jenis</option>
-                                        <option>Mengurangi</option>
-                                        <option>Menambah</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="50%">
-                                    <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="checkbox"> Terplas stok
-                                        <span></span>
-                                    </label>
-                                </td>
-                                <td width="50%">
-                                    <select class="form-control kt-selectpicker">
-                                        <option>Pilih jenis</option>
-                                        <option>Mengurangi</option>
-                                        <option>Menambah</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="50%">
-                                    <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="checkbox"> Pallet kosong
-                                        <span></span>
-                                    </label>
-                                </td>
-                                <td width="50%">
-                                    <select class="form-control kt-selectpicker">
-                                        <option>Pilih jenis</option>
-                                        <option>Mengurangi</option>
-                                        <option>Menambah</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="50%">
-                                    <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="checkbox"> Terplas dipakai
-                                        <span></span>
-                                    </label>
-                                </td>
-                                <td width="50%">
-                                    <select class="form-control kt-selectpicker">
-                                        <option>Pilih jenis</option>
-                                        <option>Mengurangi</option>
-                                        <option>Menambah</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="50%">
-                                    <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="checkbox"> Produk
-                                        <span></span>
-                                    </label>
-                                </td>
-                                <td width="50%">
-                                    <select class="form-control kt-selectpicker">
-                                        <option>Pilih jenis</option>
-                                        <option>Mengurangi</option>
-                                        <option>Menambah</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="kel mb2">
+                        <div class="row">
+                            <div class="col-4 col-form-label">
+                                <label class="kt-checkbox kt-checkbox--brand">
+                                    <input type="checkbox"> Produk
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <select class="form-control kt-selectpicker">
+                                    <option>Pilih jenis</option>
+                                    <option>Mengurangi</option>
+                                    <option>Menambah</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="kel mb2">
+                        <div class="row">
+                            <div class="col-4 col-form-label">
+                                <label class="kt-checkbox kt-checkbox--brand">
+                                    <input type="checkbox"> Pallet stok
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <select class="form-control kt-selectpicker">
+                                    <option>Pilih jenis</option>
+                                    <option>Mengurangi</option>
+                                    <option>Menambah</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 col-form-label">
+                                <label class="kt-checkbox kt-checkbox--brand">
+                                    <input type="checkbox"> Pallet dipakai
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <select class="form-control kt-selectpicker">
+                                    <option>Pilih jenis</option>
+                                    <option>Mengurangi</option>
+                                    <option>Menambah</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 col-form-label">
+                                <label class="kt-checkbox kt-checkbox--brand">
+                                    <input type="checkbox"> Pallet kosong
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <select class="form-control kt-selectpicker">
+                                    <option>Pilih jenis</option>
+                                    <option>Mengurangi</option>
+                                    <option>Menambah</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="kel mb2">
+                        <div class="row">
+                            <div class="col-4 col-form-label">
+                                <label class="kt-checkbox kt-checkbox--brand">
+                                    <input type="checkbox"> Terplas stok
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <select class="form-control kt-selectpicker">
+                                    <option>Pilih jenis</option>
+                                    <option>Mengurangi</option>
+                                    <option>Menambah</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 col-form-label">
+                                <label class="kt-checkbox kt-checkbox--brand">
+                                    <input type="checkbox"> Terplas dipakai
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <select class="form-control kt-selectpicker">
+                                    <option>Pilih jenis</option>
+                                    <option>Mengurangi</option>
+                                    <option>Menambah</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 col-form-label">
+                                <label class="kt-checkbox kt-checkbox--brand">
+                                    <input type="checkbox"> Terplas kosong
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <select class="form-control kt-selectpicker">
+                                    <option>Pilih jenis</option>
+                                    <option>Mengurangi</option>
+                                    <option>Menambah</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="kel">
@@ -230,7 +236,7 @@
                         <label>Start Date</label>
                         <input type="text" class="form-control" id="start_date" readonly placeholder="Select date">
                     </div>
-                </div> 
+                </div>
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label>End Date</label>
@@ -244,7 +250,8 @@
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="col-lg-12 ml-lg-auto">
-                        <a href="#" class="btn btn-success btn-elevate btn-elevate-air""><i class="la la-save"></i> Simpan Data</a>
+                        <a href="#" class="btn btn-success btn-elevate btn-elevate-air""><i class=" la la-save"></i>
+                            Simpan Data</a>
                     </div>
                 </div>
             </div>
@@ -261,7 +268,7 @@
 
 <script src="{{asset('assets/extends/js/page/master-aktivitas.js')}}" type="text/javascript"></script>
 <script>
-$('.kt-selectpicker').selectpicker();
+    $('.kt-selectpicker').selectpicker();
 $('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,

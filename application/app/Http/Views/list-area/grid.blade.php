@@ -30,6 +30,7 @@
 					<tr>
 						<th>No</th>
                         <th>Nama area</th>
+                        <th>Kapasitas</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -42,7 +43,7 @@
 
 
 <!--begin::Modal-->
-<div class="modal fade" id="kt_modal_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="kt_modal_1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -56,17 +57,12 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Kategori Alat Berat</label><br>
-                                <select class="form-control m-select2" id="kt_select2_1" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
-                                    <option value="AK">Excavator</option>
-                                    <option value="HI">Alat Pengangkut (Truk)</option>
-                                    <option value="CA">Forklif</option>
-                                    <option value="NV">Crane</option>
-                                </select>
+                                <label>Nama Area</label><br>
+                                <input type="text" class="form-control" placeholder="Masukkan nama area">
                             </div>
                             <div class="form-group">
-                                <label>Nomor Polisi</label>
-                                <input type="text" class="form-control" placeholder="Masukkan nomor polisi">
+                                <label>Kapasitas Ton</label>
+                                <input type="text" class="form-control" placeholder="Masukkan kapasitas ton">
                             </div>
                         </div>
                     </div>
@@ -87,5 +83,6 @@
 $('#kt_select2_1').select2({
     placeholder: "Select a state"
 });
+document.title = 'List Area';
 </script>
 @endsection
