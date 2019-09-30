@@ -28,6 +28,7 @@
 		<!--begin::Global Theme Styles(used by all pages) -->
 		<link href="{{asset('assets/metronic')}}/assets/demo/default/base/style.bundle.css" rel="stylesheet" type="text/css" />
 		<link href="{{asset('assets/extends')}}/css/theme_cus.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
 		<!--end::Global Theme Styles -->
 
 		<!--begin::Layout Skins(used by all pages) -->
@@ -35,5 +36,5 @@
 		<link href="{{asset('assets/metronic')}}/assets/demo/default/skins/header/menu/light.css" rel="stylesheet" type="text/css" />
 		{{-- <link href="{{asset('assets/metronic')}}/assets/demo/default/skins/brand/dark.css" rel="stylesheet" type="text/css" />  --}}
 		<link href="{{asset('assets/metronic')}}/assets/demo/default/skins/aside/dark.css" rel="stylesheet" type="text/css" />
-
+		
 		<link rel="shortcut icon" href="{{ asset('/assets/extends/img/logo/fav_wms_green@2x.png')}}" />

@@ -19,8 +19,9 @@ var KTDatatablesDataSourceHtml = function () {
                             Actions
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="` + baseUrl + `/list-area"><i class="flaticon-symbol"></i> List area</a>
-                            <a class="dropdown-item" href="` + baseUrl + `/list-pallet"><i class="flaticon-layers"></i> List pallet</a>
+                            <a class="dropdown-item" href="` + baseUrl + `stok-adjustment"><i class="flaticon-cogwheel-1"></i> Stok adjustment</a> 
+                            <a class="dropdown-item" href="` + baseUrl + `list-area"><i class="flaticon-symbol"></i> List area</a>
+                            <a class="dropdown-item" href="` + baseUrl + `list-pallet"><i class="flaticon-layers"></i> List pallet</a>
                             <a class="dropdown-item" href="` + baseUrl + `gudang/list-alat-berat"><i class="flaticon-truck"></i> List alat berat</a>
                             <a class="dropdown-item" href="" data-toggle="modal" data-target="#kt_modal_1"><i class="flaticon-edit-1"></i> Edit data</a>
                         </div>`;
