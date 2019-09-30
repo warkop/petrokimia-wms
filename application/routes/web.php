@@ -67,7 +67,9 @@ Route::get('/sub-gudang', function () {
 Route::get('/master-alat-berat/list-alat-berat', function () {
     return view('list-alat-berat.grid');
 });
-
+Route::get('/stok-adjustment', function () {
+    return view('stok-adjusment.grid');
+});
 Route::get('/gudang/list-alat-berat', function () {
     return view('list-alat-berat-gudang.grid');
 });
