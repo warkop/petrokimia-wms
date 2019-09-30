@@ -23,19 +23,19 @@
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-group pt-4">
-                    <a href="#" class="btn btn-success btn-elevate btn-elevate-air">
-                        {{-- <i class="la la-plus"></i>  --}}
+                    {{-- <a href="#" class="btn btn-success btn-elevate btn-elevate-air">
+                        <i class="la la-plus"></i> 
                         Edit Layout
-                    </a>
+                    </a> --}}
                 </div>
             </div>
         </div>
         <div class="kt-portlet__body">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-9">
                     <div id="kt_gmap_1" style="height:500px;"></div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <h4 class="col-12 mb2 ">Info Detail Area</h4>
                     <div class="col-12 mb1">
                         <p class="boldd-500">
