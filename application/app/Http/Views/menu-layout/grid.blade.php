@@ -63,5 +63,6 @@
 </div>
 <!-- end:: Content -->
 
+<script src="{{asset('assets/extends/js/page/maps.js')}}"></script>
 
 @endsection
