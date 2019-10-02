@@ -5,7 +5,9 @@
 @section('content')
 
 <link rel="stylesheet" href="{{asset('assets/extends/css/map.css')}}">
-
+<script src="//maps.google.com/maps/api/js?key=AIzaSyBTGnKT7dt597vo9QgeQ7BFhvSRP4eiMSM" type="text/javascript"></script>
+<script src="{{aset_tema()}}vendors/custom/gmaps/gmaps.js" type="text/javascript"></script>
+<script src="{{aset_tema()}}app/custom/general/components/maps/google-maps.js" type="text/javascript"></script>
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->

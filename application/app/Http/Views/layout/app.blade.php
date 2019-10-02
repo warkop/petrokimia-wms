@@ -38,7 +38,7 @@ License: You must have a valid license purchased only from themeforest(the above
         <!--end::Fonts -->
         
 		@include('layout.header')
-		<link rel="stylesheet" href="{{asset('assets/extends/css/global.css')}}">
+		<link rel="stylesheet" href="{{aset_extends('css/global.css')}}">
         @include('layout.footer')
 	</head>
 
@@ -53,7 +53,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		<div id="kt_header_mobile" class="kt-header-mobile  kt-header-mobile--fixed ">
 			<div class="kt-header-mobile__logo">
 				<a href="{{url('/gudang')}}">
-					<img alt="Logo" src="{{asset('assets/extends')}}/img/logo/logo-wms-green.png" width="20%"/>
+					<img alt="Logo" src="{{aset_extends()}}/img/logo/logo-wms-green.png" width="20%"/>
 				</a>
 			</div>
 			<div class="kt-header-mobile__toolbar">
@@ -75,7 +75,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					<div class="kt-aside__brand kt-grid__item " id="kt_aside_brand" style="background-color: #ffffff">
 						<div class="kt-aside__brand-logo">
 							<a href="{{url('/gudang')}}">
-								<img alt="Logo" src="{{asset('assets/extends')}}/img/logo/logo-wms-green.png" width="100%" />
+								<img alt="Logo" src="{{aset_extends()}}/img/logo/logo-wms-green.png" width="100%" />
 							</a>
 						</div>
 						<div class="kt-aside__brand-tools">
@@ -235,7 +235,7 @@ License: You must have a valid license purchased only from themeforest(the above
 									<div class="kt-header__topbar-user">
 										<span class="kt-header__topbar-welcome kt-hidden-mobile">Hi,</span>
 										<span class="kt-header__topbar-username kt-hidden-mobile">Administrator</span>
-										<img class="kt-hidden" alt="Pic" src="{{asset('assets/metronic')}}/assets/media/users/300_25.jpg" />
+										<img class="kt-hidden" alt="Pic" src="{{aset_tema()}}media/users/300_25.jpg" />
 
 										<!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
 										<span class="kt-badge kt-badge--username kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold">S</span>
@@ -244,9 +244,9 @@ License: You must have a valid license purchased only from themeforest(the above
 								<div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl">
 
 									<!--begin: Head -->
-									<div class="kt-user-card kt-user-card--skin-dark kt-notification-item-padding-x" style="background-image: url({{asset('assets/metronic')}}/assets/media/misc/bg-1.jpg)">
+									<div class="kt-user-card kt-user-card--skin-dark kt-notification-item-padding-x" style="background-image: url({{aset_tema()}}media/misc/bg-1.jpg)">
 										<div class="kt-user-card__avatar">
-											<img class="kt-hidden" alt="Pic" src="{{asset('assets/metronic')}}/assets/media/users/300_25.jpg" />
+											<img class="kt-hidden" alt="Pic" src="{{aset_tema()}}media/users/300_25.jpg" />
 											<!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
 											<span class="kt-badge kt-badge--lg kt-badge--rounded kt-badge--bold kt-font-success">S</span>
 										</div>
