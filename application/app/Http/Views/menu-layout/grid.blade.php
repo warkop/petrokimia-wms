@@ -5,7 +5,8 @@
 @section('content')
 
 <link rel="stylesheet" href="{{asset('assets/extends/css/map.css')}}">
-<script src="//maps.google.com/maps/api/js?key=AIzaSyBDHDV2ksjKZ8xtSOZEOBe4_DQM87VrXgI" type="text/javascript" defer></script>
+<script src="//maps.google.com/maps/api/js?key=AIzaSyBDHDV2ksjKZ8xtSOZEOBe4_DQM87VrXgI" type="text/javascript" defer>
+</script>
 <script src="{{aset_tema()}}vendors/custom/gmaps/gmaps.js" type="text/javascript"></script>
 <script src="{{aset_tema()}}app/custom/general/components/maps/google-maps.js" type="text/javascript"></script>
 <!-- begin:: Content -->
@@ -50,7 +51,7 @@
                         </p>
                         <div class="border-pembatas"></div>
                     </div>
-                    <div class="col-12">                        
+                    <div class="col-12">
                         <p class="boldd-500">
                             Tanggal : 1 Oktober 2019
                         </p>
@@ -59,6 +60,13 @@
                         </p>
                         <div class="border-pembatas"></div>
                     </div>
+                </div>
+                <div class="col-12 mt1"> 
+                    <label class="boldd" >Keterangan : </label><br>
+                    <button type="button" class="btn btn-success" style="margin: 10px"></button><span>Kosong</span>
+                    <button type="button" class="btn btn-warning" style="margin: 10px"></button><span>Hampir
+                        Penuh</span>
+                    <button type="button" class="btn btn-danger" style="margin: 10px"></button><span>Penuh</span>
                 </div>
             </div>
         </div>
