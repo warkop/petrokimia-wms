@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableJenisFoto extends Migration
+class CreateTableShiftKerja extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateTableJenisFoto extends Migration
      */
     public function up()
     {
-        Schema::create('jenis_foto', function (Blueprint $table) {
-            $table->increments('jenis_foto_id');
-            $table->string('nama_jenis')->nullable();
-            $table->date('from_date')->nullable();
+        Schema::create('shift_kerja', function (Blueprint $table) {
+            $table->increments('shift_kerja_id');
+            $table->string('nama_shift')->nullable();
+            $table->time('mulai_shift')->nullable();
+            $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->string('created_by')->nullable();
             $table->string('updated_by')->nullable();
@@ -33,6 +34,6 @@ class CreateTableJenisFoto extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jenis_foto');
+        Schema::dropIfExists('shift_kerja');
     }
 }

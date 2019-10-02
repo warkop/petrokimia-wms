@@ -21,7 +21,14 @@ class CreateUsersTable extends Migration
             $table->string('password')->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('token')->nullable();
+            $table->string('device')->nullable();
+            $table->string('os_type')->nullable();
+            $table->string('imei')->nullable();
+            $table->string('build_number')->nullable();
+            $table->string('ip_address')->nullable();
+            $table->string('mac_address')->nullable();
             $table->string('user_gcid')->nullable();
+            $table->datetime('last_login')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->string('created_by')->nullable();

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableJenisFoto extends Migration
+class CreateTableTenagaKerjaNonOrganik extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class CreateTableJenisFoto extends Migration
      */
     public function up()
     {
-        Schema::create('jenis_foto', function (Blueprint $table) {
-            $table->increments('jenis_foto_id');
-            $table->string('nama_jenis')->nullable();
-            $table->date('from_date')->nullable();
+        Schema::create('tenaga_kerja_non_organik', function (Blueprint $table) {
+            $table->increments('tenaga_kerja_non_organik_id');
+            $table->integer('job_desk_id')->nullable();
+            $table->string('nama_tenaga_kerja')->nullable();
+            $table->string('nomor_hp')->nullable();
+            $table->string('nomor_bpjs')->nullable();
+            $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->string('created_by')->nullable();
             $table->string('updated_by')->nullable();
@@ -33,6 +36,6 @@ class CreateTableJenisFoto extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jenis_foto');
+        Schema::dropIfExists('tenaga_kerja_non_organik');
     }
 }
