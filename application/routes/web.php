@@ -107,3 +107,10 @@ Route::get('/add-rencana-harian', function () {
 Route::get('/realisasi', function () {
     return view('rencana-harian.realisasi');
 });
+Route::get('/aktivitas', function () {
+    return view('aktivitas.grid');
+});
+Route::get('/aktivitas/detail', function () {
+    return view('aktivitas.detail');
+});
+

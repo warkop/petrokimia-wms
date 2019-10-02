@@ -119,6 +119,7 @@ License: You must have a valid license purchased only from themeforest(the above
 								{{-- <li class="kt-menu__item" aria-haspopup="true"><a href="{{url('/anggaran-sdm')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-money"></span><span class="kt-menu__link-text">Anggaran SDM</span></a> --}}
 								</li>
 								<li id="rencanaHarian-nav" class="kt-menu__item rencanaHarian-nav" aria-haspopup="true"><a href="{{url('/rencana-harian')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-calendar"></span><span class="kt-menu__link-text">Rencana Harian</span></a></li>
+								<li id="aktivitas-nav" class="kt-menu__item aktivitas-nav" aria-haspopup="true"><a href="{{url('/aktivitas')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-line-chart"></span><span class="kt-menu__link-text">Aktivitas</span></a></li>
 								<li class="kt-menu__section ">
 									<h4 class="kt-menu__section-text">DATA MASTER</h4>
 									<i class="kt-menu__section-icon flaticon-more-v2"></i>

@@ -100,3 +100,30 @@
     border: 1px solid salmon;
     height: 5px;
 }
+
+.border-bottom-dash{
+    border-bottom: 1px dashed #ebedf2;
+}
+
+.color-green {
+    color: #00AE4D !important;
+}
+
+.color-oren{
+    color: #FFA000 !important;
+}
+
+.col-20{
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.hov-none:hover{
+
+}

@@ -38,7 +38,9 @@
                     <div id="kt_gmap_1" style="height:500px;"></div>
                 </div>
                 <div class="col-md-3">
-                    <h4 class="col-12 mb2 ">Info Detail Area</h4>
+                    <h4 class="col-12">Info Detail Area</h4>
+                    <p class="col-12 mb2">Kapasitas Area : <strong>400 Ton</strong></p>
+                    <div class="border-pembatas mb1"></div>
                     <div class="col-12 mb1">
                         <p class="boldd-500">
                             Tanggal : 30 September 2019
@@ -53,7 +55,7 @@
                             Tanggal : 1 Oktober 2019
                         </p>
                         <p class="boldd-500">
-                            ZA 400 Ton
+                            ZA 200 Ton
                         </p>
                         <div class="border-pembatas"></div>
                     </div>

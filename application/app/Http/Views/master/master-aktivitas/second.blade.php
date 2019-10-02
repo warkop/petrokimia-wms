@@ -105,55 +105,6 @@
                             </div>
                         </div>
                     </div>
-
-
-                    <div class="kel mb2">
-                        <div class="row">
-                            <div class="col-4 col-form-label">
-                                <label class="kt-checkbox kt-checkbox--brand">
-                                    <input type="checkbox"> Terplas stok
-                                    <span></span>
-                                </label>
-                            </div>
-                            <div class="col-6">
-                                <select class="form-control kt-selectpicker">
-                                    <option>Pilih jenis</option>
-                                    <option>Mengurangi</option>
-                                    <option>Menambah</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-4 col-form-label">
-                                <label class="kt-checkbox kt-checkbox--brand">
-                                    <input type="checkbox"> Terplas dipakai
-                                    <span></span>
-                                </label>
-                            </div>
-                            <div class="col-6">
-                                <select class="form-control kt-selectpicker">
-                                    <option>Pilih jenis</option>
-                                    <option>Mengurangi</option>
-                                    <option>Menambah</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-4 col-form-label">
-                                <label class="kt-checkbox kt-checkbox--brand">
-                                    <input type="checkbox"> Terplas kosong
-                                    <span></span>
-                                </label>
-                            </div>
-                            <div class="col-6">
-                                <select class="form-control kt-selectpicker">
-                                    <option>Pilih jenis</option>
-                                    <option>Mengurangi</option>
-                                    <option>Menambah</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="kel">
@@ -204,7 +155,7 @@
                         <div class="row form-group mb-0 mb2">
                             <div class="col-12 offset-col-2">
                                 <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                    <input type="checkbox"> Penerimaan
+                                    <input type="checkbox"> Pengiriman Gudang Internal
                                     <span></span>
                                 </label>
                             </div>
@@ -222,7 +173,15 @@
                         <div class="row form-group mb-0 mb2">
                             <div class="col-12 offset-col-2">
                                 <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                    <input type="checkbox"> Butuh SDM
+                                    <input type="checkbox"> Butuh TKBM
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row form-group mb-0 mb2">
+                            <div class="col-12 offset-col-2">
+                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <input type="checkbox"> Butuh Tanda Tangan
                                     <span></span>
                                 </label>
                             </div>
