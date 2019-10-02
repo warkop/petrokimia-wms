@@ -256,13 +256,13 @@
                                 </a>
                             </div>
                             <div class="col-4">
-                                <label class="boldd">Foto Kiri</label>
+                                <label class="boldd">Foto Bawah</label>
                                 <a class="fancybox" rel="ligthbox" href="{{asset('assets/metronic/assets/media/products/product3.jpg')}}">
                                     <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product3.jpg')}}" alt="" srcset="">
                                 </a>
                             </div>
                             <div class="col-4">
-                                <label class="boldd">Foto Kanan</label>
+                                <label class="boldd">Foto Depan</label>
                                 <a class="fancybox" rel="ligthbox" href="{{asset('assets/metronic/assets/media/products/product3.jpg')}}">
                                     <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product3.jpg')}}" alt="" srcset="">
                                 </a>
@@ -270,19 +270,19 @@
                         </div>
                         <div class="row mb2">
                             <div class="col-4">
-                                <label class="boldd">Foto Bawah</label>
+                                <label class="boldd">Foto Belakang</label>
                                 <a class="fancybox" rel="ligthbox" href="{{asset('assets/metronic/assets/media/products/product4.jpg')}}">
                                     <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product4.jpg')}}" alt="" srcset="">
                                 </a>
                             </div>
                             <div class="col-4">
-                                <label class="boldd">Foto Kosong</label>
+                                <label class="boldd">Foto Kanan</label>
                                 <a class="fancybox" rel="ligthbox" href="{{asset('assets/metronic/assets/media/products/product5.jpg')}}">
                                     <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product5.jpg')}}" alt="" srcset="">
                                 </a>
                             </div>
                             <div class="col-4">
-                                <label class="boldd">Foto Muat</label>
+                                <label class="boldd">Foto Kiri</label>
                                 <a class="fancybox" rel="ligthbox" href="{{asset('assets/metronic/assets/media/products/product6.jpg')}}">
                                     <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product6.jpg')}}" alt="" srcset="">
                                 </a>

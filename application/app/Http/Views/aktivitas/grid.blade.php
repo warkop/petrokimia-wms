@@ -53,15 +53,15 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Detail Aktivitas</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Aktivitas</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>
             <form action="">
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-20 pointer hov-none">
-                            <div class="card bg-primary text-white text-center p-3">
+                        <div class="col-20 pointer hov-none" onclick="window.location='{{url('aktivitas/tambah')}}';">
+                            <div class="card bg-success text-white text-center p-3">
                                 <blockquote class="blockquote mb-0">
                                     <p>Aktivitas Pindah Area</p>
                                     <h1 style="font-size:50px">A</h1>
@@ -73,53 +73,53 @@
                                 </blockquote>
                             </div>
                         </div>
-                        <div class="col-20 pointer hov-none">
-                            <div class="card bg-primary text-white text-center p-3">
+                        <div class="col-20 pointer hov-none" onclick="window.location='{{url('aktivitas/tambah')}}';">
+                            <div class="card bg-success text-white text-center p-3">
                                 <blockquote class="blockquote mb-0">
-                                    <p>Aktivitas Pindah Area</p>
-                                    <h1 style="font-size:50px">A</h1>
+                                    <p>Aktivitas Produksi</p>
+                                    <h1 style="font-size:50px">P</h1>
                                     <footer class="blockquote-footer text-white">
                                         <small>
-                                            Tambah data terkait aktivitas area
+                                            Tambah data terkait aktivitas produksi
                                         </small>
                                     </footer>
                                 </blockquote>
                             </div>
                         </div>
-                        <div class="col-20 pointer hov-none">
-                            <div class="card bg-primary text-white text-center p-3">
+                        <div class="col-20 pointer hov-none" onclick="window.location='{{url('aktivitas/tambah')}}';">
+                            <div class="card bg-success text-white text-center p-3">
                                 <blockquote class="blockquote mb-0">
-                                    <p>Aktivitas Pindah Area</p>
-                                    <h1 style="font-size:50px">A</h1>
+                                    <p>Aktivitas Kirim ke GP</p>
+                                    <h1 style="font-size:50px">K</h1>
                                     <footer class="blockquote-footer text-white">
                                         <small>
-                                            Tambah data terkait aktivitas area
+                                            Tambah data terkait aktivitas kirim ke GP
                                         </small>
                                     </footer>
                                 </blockquote>
                             </div>
                         </div>
-                        <div class="col-20 pointer hov-none">
-                            <div class="card bg-primary text-white text-center p-3">
+                        <div class="col-20 pointer hov-none" onclick="window.location='{{url('aktivitas/tambah')}}';" >
+                            <div class="card bg-success text-white text-center p-3">
                                 <blockquote class="blockquote mb-0">
-                                    <p>Aktivitas Pindah Area</p>
-                                    <h1 style="font-size:50px">A</h1>
+                                    <p>Aktivitas Kirim ke Yayasan</p>
+                                    <h1 style="font-size:50px">K</h1>
                                     <footer class="blockquote-footer text-white">
                                         <small>
-                                            Tambah data terkait aktivitas area
+                                            Tambah data terkait aktivitas Yayasan
                                         </small>
                                     </footer>
                                 </blockquote>
                             </div>
                         </div>
-                        <div class="col-20 pointer hov-none">
-                            <div class="card bg-primary text-white text-center p-3">
+                        <div class="col-20 pointer hov-none" onclick="window.location='{{url('aktivitas/tambah')}}';">
+                            <div class="card bg-success text-white text-center p-3">
                                 <blockquote class="blockquote mb-0">
-                                    <p>Aktivitas Pindah Area</p>
-                                    <h1 style="font-size:50px">A</h1>
+                                    <p>Aktivitas Terima Produk</p>
+                                    <h1 style="font-size:50px">T</h1>
                                     <footer class="blockquote-footer text-white">
                                         <small>
-                                            Tambah data terkait aktivitas area
+                                            Tambah data terkait aktivitas terima produk
                                         </small>
                                     </footer>
                                 </blockquote>
@@ -128,8 +128,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-success">Simpan data</button>
+                    <button type="button" class="btn btn-clean" data-dismiss="modal">Tutup</button>
                 </div>
             </form>
         </div>
@@ -143,12 +142,4 @@
 
 
 <script src="{{asset('assets/extends/js/page/aktivitas.js')}}" type="text/javascript"></script>
-
-
-
-
-
-
-
-
 @stop

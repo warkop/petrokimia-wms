@@ -107,4 +107,7 @@ Route::get('/aktivitas', function () {
 Route::get('/aktivitas/detail', function () {
     return view('aktivitas.detail');
 });
+Route::get('/aktivitas/tambah', function () {
+    return view('aktivitas.add');
+});
 

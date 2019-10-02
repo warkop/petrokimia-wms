@@ -5,7 +5,7 @@
 @section('content')
 
 <link rel="stylesheet" href="{{asset('assets/extends/css/map.css')}}">
-<script src="//maps.google.com/maps/api/js?key=AIzaSyBTGnKT7dt597vo9QgeQ7BFhvSRP4eiMSM" type="text/javascript"></script>
+<script src="//maps.google.com/maps/api/js?key=AIzaSyBDHDV2ksjKZ8xtSOZEOBe4_DQM87VrXgI" type="text/javascript" defer></script>
 <script src="{{aset_tema()}}vendors/custom/gmaps/gmaps.js" type="text/javascript"></script>
 <script src="{{aset_tema()}}app/custom/general/components/maps/google-maps.js" type="text/javascript"></script>
 <!-- begin:: Content -->
