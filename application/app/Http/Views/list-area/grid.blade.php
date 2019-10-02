@@ -7,44 +7,45 @@
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
-	<div class="kt-portlet">
-		<div class="kt-portlet__head">
-			<div class="kt-portlet__head-title">
+    <div class="kt-portlet">
+        <div class="kt-portlet__head">
+            <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
                     {{-- <i class="la la-group"></i> &nbsp; --}}
                     List Area
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah data area yang terdapat pada <span class="text-ungu kt-font-bolder">Gudang A.</span>
+                    Berikut ini adalah data area yang terdapat pada <span class="text-ungu kt-font-bolder">Gudang
+                        A.</span>
                 </p>
             </div>
-			<div class="kt-portlet__head-toolbar">
-				<div class="kt-portlet__head-group pt-4">
-					<a href="#" class="btn btn-success btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
-				</div>
-			</div>
-		</div>
-		<div class="kt-portlet__body">
-			<table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
-				<thead>
-					<tr>
-						<th>No</th>
+            <div class="kt-portlet__head-toolbar">
+                <div class="kt-portlet__head-group pt-4">
+                    <a href="#" class="btn btn-success btn-elevate btn-elevate-air" data-toggle="modal"
+                        data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
+                </div>
+            </div>
+        </div>
+        <div class="kt-portlet__body">
+            <table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
+                <thead>
+                    <tr>
+                        <th>No</th>
                         <th>Nama area</th>
                         <th>Kapasitas</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-			</table>					
-		</div>
-	</div>
-	<!--End::Dashboard 6-->
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <!--End::Dashboard 6-->
 </div>
 <!-- end:: Content -->
 
 
 <!--begin::Modal-->
-<div class="modal fade" id="kt_modal_1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="kt_modal_1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -64,6 +65,23 @@
                                 <label>Kapasitas Ton</label>
                                 <input type="text" class="form-control" placeholder="Masukkan kapasitas ton">
                             </div>
+                            <div class="form-group">
+                                <label>Jenis</label>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                            <input type="checkbox"> Indoor 
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-3">
+                                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                            <input type="checkbox"> Outdoor
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -80,7 +98,7 @@
 
 <script src="{{asset('assets/extends/js/page/list-area.js')}}" type="text/javascript"></script>
 <script>
-$('#kt_select2_1').select2({
+    $('#kt_select2_1').select2({
     placeholder: "Select a state"
 });
 document.title = 'List Area';

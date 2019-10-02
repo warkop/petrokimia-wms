@@ -44,13 +44,6 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Admin Gudang</label>
-                        <select class="form-control m-select2" id="kt_select2_3" name="param" multiple="multiple">
-                            <option value="AK" selected>Sasmianto</option>
-                            <option value="HI">Rahayu</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
                         <label>Admin Loket</label>
                         <select class="form-control m-select2" id="kt_select2_4" name="param" multiple="multiple">
                             <option>Suryani</option>

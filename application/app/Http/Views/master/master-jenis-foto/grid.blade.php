@@ -103,6 +103,61 @@
 </div>
 <!--end::Modal-->
 
+<!--begin::Modal-->
+<div class="modal fade" id="kt_modal_2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Detail Foto Truck</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form action="">
+                <div class="modal-body">
+                    <div class="kt-scroll" data-scroll="true" data-height="400">
+                        <div class="row mb2">
+                            <div class="col-4">
+                                <label class="boldd">Foto Atas</label>
+                                <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product1.jpg')}}" alt="" srcset="">
+                            </div>
+                            <div class="col-4">
+                                <label class="boldd">Foto Kiri</label>
+                                <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product2.jpg')}}" alt="" srcset="">
+                            </div>
+                            <div class="col-4">
+                                <label class="boldd">Foto Kanan</label>
+                                <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product3.jpg')}}" alt="" srcset="">
+                            </div>
+                        </div>
+                        <div class="row mb2">
+                            <div class="col-4">
+                                <label class="boldd">Foto Bawah</label>
+                                <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product4.jpg')}}" alt="" srcset="">
+                            </div>
+                            <div class="col-4">
+                                <label class="boldd">Foto Kosong</label>
+                                <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product5.jpg')}}" alt="" srcset="">
+                            </div>
+                            <div class="col-4">
+                                <label class="boldd">Foto Muat</label>
+                                <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product6.jpg')}}" alt="" srcset="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-success">Simpan data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--end::Modal-->
+
+
+
 
 <script src="{{asset('assets/extends/js/page/master-jenis-foto.js')}}" type="text/javascript"></script>
 <script>

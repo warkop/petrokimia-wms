@@ -1,7 +1,7 @@
 "use strict";
 var KTDatatablesDataSourceHtml = function () {
     var dataJSONArray = JSON.parse(
-        '[[1,201001,"Pupuk", "10-12-2019", "15-12-2019"],[2,201002,"Palet", "10-12-2019", "15-12-2019"],[3,201003,"Terplas", "10-12-2019", "15-12-2019"]]');
+        '[[1,"12/09/2019", "Pengiriman Pupuk ZA-X001"]]');
     var initTable1 = function () {
         var table = $('#kt_table_1');
         // begin first table
@@ -11,14 +11,15 @@ var KTDatatablesDataSourceHtml = function () {
             columnDefs: [{
                 className: 'text-center',
                 targets: -1,
-                title: 'Masuk ke Aktivitas',
+                title: 'Actions',
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return `
-                        <a href="" data-toggle="modal" data-target="#kt_modal_1">
-                            <button type = "button" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
-                            <i class="flaticon-edit-1"></i> </button>
-                        </a>`;
+                        <a href="` + baseUrl + `aktivitas/detail">
+                            <button type = "button" class="btn btn-primary btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Detail Aktivitas">
+                            <i class="flaticon2-zig-zag-line-sign"></i> </button>
+                        </a>
+                        `;
                 },
             }],
             "drawCallback": function (settings) {
