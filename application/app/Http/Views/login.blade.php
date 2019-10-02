@@ -67,7 +67,7 @@
                                     <input type="password" class="form-control" id="password" placeholder="masukkan password" autocomplete="current-password">
                                 </div>
                                 <div class="button">
-                                    <a href="{{url('/dashboard')}}" class="btn btn-pills btn-block btn-brand-cta btn-lg float-right btn-shadow-login-invert">
+                                    <a href="{{url('/dashboard')}}" class="btn btn-pills btn-block btn-brand-cta btn-lg float-right btn-shadow-login-invert ladda-button">
                                         Sign In
                                     </a>
                                 </div>

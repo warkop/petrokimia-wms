@@ -18,8 +18,10 @@ License: You must have a valid license purchased only from themeforest(the above
 	<!-- begin::Head -->
 	<head>
 		<meta charset="utf-8" />
-		<title>@yield('title')</title>
-		<meta name="description" content="Updates and statistics">
+		<title>{{ (empty($title)? '' : $title.' | ').app_info(['name'])}}</title>
+		<meta name="csrf-token" content="{{ csrf_token() }}">
+		<meta name="keywords" content="{{app_info('title')}}" />
+	    <meta name="description" content="{{app_info('title')}}">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 		<!--begin::Fonts -->
@@ -46,7 +48,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
 	<!-- begin::Body -->
 	<body class="kt-header--fixed kt-header-mobile--fixed kt-subheader--fixed kt-subheader--enabled kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-page--loading">
-
+		<div class="se-pre-con" style="display: none;"></div>
 		<!-- begin:: Page -->
 
 		<!-- begin:: Header Mobile -->

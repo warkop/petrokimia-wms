@@ -1,18 +1,18 @@
 <?php
 function app_info($key=''){
 	$app_info = [
-		'title' => 'Aplikasi Pertamina Pertagas QRTG',
-		'description' => 'Aplikasi Pertamina Pertagas QRTG',
-		'name' => 'Aplikasi Pertamina Pertagas QRTG',
-		'shortname' => 'Pertagas QRTG',
+		'title' => 'Petrokimia Gresik WMS',
+		'description' => 'Warehouse Management System',
+		'name' => 'Petrokimia Gresik WMS',
+		'shortname' => 'Petrokimia Gresik WMS',
 		'client' => [
-			'shortname' => 'Pertagas',
-			'fullname' => 'Pertamina Pertagas',
-			'city' => 'Kota Surabaya',
-			'category' => 'Government'
+			'shortname' => 'PG',
+			'fullname' => 'Petrokimia Gresik',
+			'city' => 'Kabupaten Gresik',
+			'category' => 'BUMN'
 		],
-		'year' => '2018',
-		'copyright' => 'Pertamina Pertagas',
+		'year' => '2019',
+		'copyright' => 'Petrokimia Gresik',
 		'vendor' => [
 			'company' => 'Energeek The E-Government Solution',
 			'office' => 'Jl Baratajaya 3/16, Surabaya, Jawa Timur',

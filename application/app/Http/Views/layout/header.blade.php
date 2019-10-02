@@ -38,3 +38,7 @@
 		<link href="{{aset_tema()}}demo/default/skins/aside/dark.css" rel="stylesheet" type="text/css" />
 		
 		<link rel="shortcut icon" href="{{ aset_extends('img/logo/fav_wms_green@2x.png')}}" />
+		<link rel="stylesheet" href="{{aset_extends('plugin/ladda/dist/ladda-themeless.min.css')}}">
+		<script src="{{aset_extends('plugin/ladda/dist/spin.min.js')}}"></script>
+		<script src="{{aset_extends('plugin/ladda/dist/ladda.min.js')}}"></script>
+		<script src="{{ aset_extends('js/energeek.js') }}" type="text/javascript"></script>
