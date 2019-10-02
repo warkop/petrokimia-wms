@@ -13,9 +13,9 @@ class CreateTableJobDesk extends Migration
      */
     public function up()
     {
-        Schema::create('material', function (Blueprint $table) {
-            $table->increments('material_id');
-            $table->string('nama_material')->nullable();
+        Schema::create('job_desk', function (Blueprint $table) {
+            $table->increments('job_desk_id');
+            $table->string('job_desk')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->string('created_by')->nullable();

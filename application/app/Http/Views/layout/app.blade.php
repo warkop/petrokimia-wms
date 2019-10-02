@@ -275,7 +275,7 @@ License: You must have a valid license purchased only from themeforest(the above
 											</div>
 										</a> --}}
 										<div class="kt-notification__custom">
-											<a href="{{url('/')}}" class="btn btn-label-danger btn-sm btn-bold">Sign Out</a>
+											<a href="{{url('/logout')}}" class="btn btn-label-danger btn-sm btn-bold">Sign Out</a>
 										</div>
 									</div>
 

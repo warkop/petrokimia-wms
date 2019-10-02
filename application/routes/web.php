@@ -11,9 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return View::make('login');
-});
+Route::get('/', 'Auth\LoginController@index');
+Route::get('/login', 'Auth\LoginController@index')->name('login');
+Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+Route::post('/authenticate', 'Auth\LoginController@authenticate')->name('authenticate');
+
+Route::get('/home', 'DashboardController@index')->middleware(['eauth', 'revalidate'])->name('home');
 
 Route::get('/dashboard', function () {
     return View::make('dashboard.grid');
@@ -116,4 +119,3 @@ Route::get('/aktivitas/detail', function () {
 Route::get('/aktivitas/tambah', function () {
     return view('aktivitas.add');
 });
-
