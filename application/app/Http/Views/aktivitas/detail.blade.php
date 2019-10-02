@@ -121,6 +121,15 @@
             </div>
         </div>
     </div>
+    <div class="kt-portlet__foot">
+            <div class="kt-form__actions">
+                <div class="row">
+                    <div class="col-10">
+                        <button type="button" class="btn btn-success btn-lg">Approve</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
 <!--End::Dashboard 6-->
 </div>
