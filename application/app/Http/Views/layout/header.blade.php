@@ -22,6 +22,7 @@
 		<link href="{{aset_tema()}}vendors/custom/vendors/flaticon/flaticon.css" rel="stylesheet" type="text/css" />
 		<link href="{{aset_tema()}}vendors/custom/vendors/flaticon2/flaticon.css" rel="stylesheet" type="text/css" />
 		<link href="{{aset_tema()}}vendors/custom/vendors/fontawesome5/css/all.min.css" rel="stylesheet" type="text/css" />
+		<link href="{{aset_tema()}}vendors/general/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
 
 		<!--end:: Global Optional Vendors -->
 

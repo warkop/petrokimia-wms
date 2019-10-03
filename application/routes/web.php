@@ -44,44 +44,44 @@ Route::get('/master-grup', function () {
     return view('master.master-grup.grid');
 });
 
-Route::group(['prefix' => 'master-pekerjaan', 'middleware' => 'eauth'], function () {
+Route::group(['prefix' => 'master-pekerjaan', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'JobDeskController@index');
     Route::put('/save', 'JobDeskController@store');
     Route::post('/json', 'JobDeskController@json');
     Route::get('/show/{id}', 'JobDeskController@show');
-    Route::delete('/delete', 'JobDeskController@destroy');
+    Route::delete('/{id}', 'JobDeskController@destroy');
 });
 
-Route::group(['prefix' => 'master-shift-kerja', 'middleware' => 'eauth'], function () {
+Route::group(['prefix' => 'master-shift-kerja', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'ShiftKerjaController@index');
-    Route::put('/save', 'ShiftKerjaController@store');
-    Route::post('/json', 'ShiftKerjaController@json');
-    Route::get('/show/{id}', 'ShiftKerjaController@show');
-    Route::delete('/delete', 'ShiftKerjaController@destroy');
+    Route::put('/', 'ShiftKerjaController@store');
+    Route::post('/', 'ShiftKerjaController@json');
+    Route::get('/{id}', 'ShiftKerjaController@show');
+    Route::delete('/{id}', 'ShiftKerjaController@destroy');
 });
 
-Route::group(['prefix' => 'master-kerusakan-alat', 'middleware' => 'eauth'], function () {
+Route::group(['prefix' => 'master-kerusakan-alat', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'KerusakanAlatBeratController@index');
     Route::put('/save', 'KerusakanAlatBeratController@store');
     Route::post('/json', 'KerusakanAlatBeratController@json');
     Route::get('/show/{id}', 'KerusakanAlatBeratController@show');
-    Route::delete('/delete', 'KerusakanAlatBeratController@destroy');
+    Route::delete('/{id}', 'KerusakanAlatBeratController@destroy');
 });
 
-Route::group(['prefix' => 'master-jenis-foto', 'middleware' => 'eauth'], function (){
+Route::group(['prefix' => 'master-jenis-foto', 'middleware' => ['eauth', 'revalidate']], function (){
     Route::get('/', 'JenisFotoController@index');
     Route::put('/save', 'JenisFotoController@store');
     Route::post('/json', 'JenisFotoController@json');
     Route::get('/show/{id}', 'JenisFotoController@show');
-    Route::delete('/delete', 'JenisFotoController@destroy');
+    Route::delete('/{id}', 'JenisFotoController@destroy');
 });
 
-Route::group(['prefix' => 'master-user', 'middleware' => 'eauth'], function () {
+Route::group(['prefix' => 'master-user', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'UsersController@index');
     Route::put('/save', 'UsersController@store');
     Route::post('/json', 'UsersController@json');
     Route::get('/show/{id}', 'UsersController@show');
-    Route::delete('/delete', 'UsersController@destroy');
+    Route::delete('/{id}', 'UsersController@destroy');
 });
 
 Route::get('/master-material', function () {

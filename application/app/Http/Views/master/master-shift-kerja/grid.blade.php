@@ -57,6 +57,13 @@
             </div>
             <form  id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
                 <div class="modal-body">
+                    @if ($errors->count() > 0)
+                        <div id="error_message" class="alert alert-danger">
+                            @foreach ($errors->all() as $error)
+                                {{ $error }}<br>
+                            @endforeach
+                        </div>
+                    @endif
                     <input type="hidden" class="form-control" id="shift_kerja_id" name="shift_kerja_id">
                     <input type="hidden" name="action" id="action" value="add">
                     <div class="row">
@@ -67,7 +74,13 @@
                             </div>
                             <div class="form-group">
                                 <label>Jam Mulai</label>
-                                <input class="form-control input-enter bootstrap-timepicker" name="mulai_shift" id="kt_timepicker_2" readonly placeholder="Pilih jam" type="text" />
+                                <div class="input-group timepicker">
+                                    <input class="form-control input-enter" name="mulai_shift" id="kt_timepicker_2" readonly placeholder="Pilih jam" type="text" />
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-time"></i>
+                                    </span>
+                                    <p class="help-block text-danger"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -98,7 +111,8 @@
 
 
 
-
+{{-- <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" /> --}}
 
 <script src="{{asset('assets/extends/js/page/master-shift-kerja.js')}}" type="text/javascript"></script>
 <script>
@@ -111,10 +125,18 @@ $('#start_date, #end_date').datepicker({
 
 $("#kt_timepicker_2").timepicker({
     minuteStep: 1,
-    defaultTime: '',
+    defaultTime: 'current',
     showSeconds: false,
     showMeridian: false,
-    snapToStep: true
+    snapToStep: true,
+    icons: {
+        up: 'fa fa-angle-up',
+        down: 'fa fa-angle-down'
+    }
 });
+
+// $('#kt_timepicker_2').timepicker({
+//     uiLibrary: 'bootstrap4'
+// });
 </script>
 @endsection

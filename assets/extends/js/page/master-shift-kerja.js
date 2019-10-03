@@ -2,8 +2,8 @@
 
 let datatable,
     tableTarget = '#kt_table_1',
-    ajaxUrl = baseUrl + '/master-shift-kerja/',
-    ajaxSource = ajaxUrl + 'json',
+    ajaxUrl = baseUrl + 'master-shift-kerja',
+    ajaxSource = ajaxUrl,
     laddaButton;
 
 jQuery(document).ready(function () {
@@ -39,7 +39,7 @@ let load_table = function () {
         "serverSide": true,
         "ajax": {
             url: ajaxSource,
-            type: "POST",
+            method: "POST",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -133,7 +133,7 @@ function edit(shift_kerja_id = '') {
 
     $.ajax({
         type: "GET",
-        url: ajaxUrl + "show/" + shift_kerja_id,
+        url: ajaxUrl +"/"+ shift_kerja_id,
         beforeSend: function () {
             preventLeaving();
             $('.btn_close_modal').addClass('hide');
@@ -149,8 +149,13 @@ function edit(shift_kerja_id = '') {
             if (obj.status == "OK") {
                 $('#nama_shift').val(obj.data['nama_shift']);
                 $('#mulai_shift').val(obj.data['mulai_shift']);
-                $('#start_date').val(obj.data['start_date']);
-                $('#end_date').val(obj.data['end_date']);
+                if (obj.data['start_date'] != null) {
+                    $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
+                }
+
+                if (obj.data['end_date'] != null) {
+                    $('#end_date').val(helpDateFormat(obj.data['end_date'], 'si'));
+                }
             } else {
                 swal.fire('Pemberitahuan', obj.message, 'warning');
             }
@@ -196,7 +201,7 @@ function simpan() {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: ajaxUrl + "save",
+        url: ajaxUrl,
         data: data,
         beforeSend: function () {
             preventLeaving();

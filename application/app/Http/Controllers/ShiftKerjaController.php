@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\ShiftKerja;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ShiftKerjaController extends Controller
 {
@@ -61,9 +62,10 @@ class ShiftKerjaController extends Controller
 
     public function store(Request $req, ShiftKerja $models)
     {
+        $id = $req->input('shift_kerja_id');
         $rules = [
-            'nama_shift'        => 'required',
-            'mulai_shift'       => 'required',
+            'nama_shift'        => ['required', Rule::unique('shift_kerja', 'nama_shift')->ignore($id, 'shift_kerja_id')],
+            'mulai_shift'       => 'required|date_format:H:i',
             'start_date'        => 'nullable|date_format:d-m-Y',
             'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
         ];
@@ -80,7 +82,7 @@ class ShiftKerjaController extends Controller
             $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
             $this->responseData['error_log']    = $validator->errors();
         } else {
-            $id = $req->input('shift_kerja_id');
+           
 
             $mulai_shift    = date('H:i', strtotime($req->input('mulai_shift')));
             $start_date  = null;
