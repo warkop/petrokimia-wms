@@ -151,6 +151,19 @@ class ShiftKerjaController extends Controller
 
     public function destroy(ShiftKerja $shiftKerja)
     {
-        //
+        ShiftKerja::destroy($shiftKerja->shift_kerja_id);
+        $res = ShiftKerja::find($shiftKerja->shift_kerja_id);
+        if (!empty($res)) {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Data gagal dihapus';
+            $this->responseData = [];
+        } else {
+            $this->responseData = [];
+            $this->responseStatus = 'No Data Available';
+            $this->responseMessage = 'Data berhasil dihapus';
+        }
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 }
