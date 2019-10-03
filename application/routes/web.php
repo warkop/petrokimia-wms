@@ -60,6 +60,14 @@ Route::group(['prefix' => 'master-shift-kerja'], function () {
     Route::delete('/delete', 'ShiftKerjaController@destroy');
 });
 
+Route::group(['prefix' => 'master-kerusakan-alat'], function () {
+    Route::get('/', 'KerusakanAlatBeratController@index');
+    Route::put('/save', 'KerusakanAlatBeratController@store');
+    Route::post('/json', 'KerusakanAlatBeratController@json');
+    Route::get('/show/{id}', 'KerusakanAlatBeratController@show');
+    Route::delete('/delete', 'KerusakanAlatBeratController@destroy');
+});
+
 Route::group(['prefix' => 'master-jenis-foto'], function (){
     Route::get('/', 'JenisFotoController@index');
     Route::put('/save', 'JenisFotoController@store');
