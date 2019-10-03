@@ -23,7 +23,7 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-group pt-4">
                     <a href="#" class="btn btn-success btn-elevate btn-elevate-air" data-toggle="modal"
-                        data-target="#modal_form"><i class="la la-plus"></i> Tambah Data</a>
+                        data-target="#modal_form" onclick="tambah()"><i class="la la-plus"></i> Tambah Data</a>
                 </div>
             </div>
         </div>
@@ -71,7 +71,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Start Date</label>
-                                <input type="text" class="form-control input-enter" id="from_date" name="from_date" readonly placeholder="Select date">
+                                <input type="text" class="form-control input-enter" id="start_date" name="start_date" readonly placeholder="Select date">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -150,7 +150,7 @@
 
 <script src="{{asset('assets/extends/js/page/master-jenis-foto.js')}}" type="text/javascript"></script>
 <script>
-$('#from_date, #end_date').datepicker({
+$('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
     format:'dd-mm-yyyy',
