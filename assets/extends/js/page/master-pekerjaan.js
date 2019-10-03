@@ -105,7 +105,7 @@ let load_table = function () {
 
 function tambah() {
     reset_form();
-    $('#id_guna').val('');
+    $('#job_desk_id').val('');
     $('#action').val('add');
     $('#btn_save').html('Tambah Data');
     $('#modal_form .modal-title').html('Tambah Data Job Desk');

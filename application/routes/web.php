@@ -34,9 +34,6 @@ Route::get('/master-karu', function () {
 Route::get('/master-tenaga-kerja-nonorganik', function () {
     return view('master.master-tenaga-kerja-nonorganik.grid');
 });
-Route::get('/master-shift-kerja', function () {
-    return view('master.master-shift-kerja.grid');
-});
 Route::get('/master-alat-berat', function () {
     return view('master.master-alat-berat.grid');
 });
@@ -53,6 +50,14 @@ Route::group(['prefix' => 'master-pekerjaan'], function () {
     Route::post('/json', 'JobDeskController@json');
     Route::get('/show/{id}', 'JobDeskController@show');
     Route::delete('/delete', 'JobDeskController@destroy');
+});
+
+Route::group(['prefix' => 'master-shift-kerja'], function () {
+    Route::get('/', 'ShiftKerjaController@index');
+    Route::put('/save', 'ShiftKerjaController@store');
+    Route::post('/json', 'ShiftKerjaController@json');
+    Route::get('/show/{id}', 'ShiftKerjaController@show');
+    Route::delete('/delete', 'ShiftKerjaController@destroy');
 });
 
 Route::group(['prefix' => 'master-jenis-foto'], function (){

@@ -104,7 +104,7 @@ var load_table = function () {
 
 function tambah() {
     reset_form();
-    $('#id_guna').val('');
+    $('#jenis_foto_id').val('');
     $('#action').val('add');
     $('#btn_save').html('Tambah Data');
     $('#modal_form .modal-title').html('Tambah Data Jenis Foto');

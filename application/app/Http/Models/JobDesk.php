@@ -42,8 +42,8 @@ class JobDesk extends Model
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
                 $where->where(DB::raw('LOWER(job_desk)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . date('d-m-Y', strtotime($search)) . '%');
-                $where->orWhere(DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . date('d-m-Y', strtotime($search)) . '%');
+                $where->orWhere(DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
+                $where->orWhere(DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
             });
         }
 

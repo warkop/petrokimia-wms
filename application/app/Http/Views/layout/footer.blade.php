@@ -52,6 +52,7 @@
 		<!--begin::Page Vendors(used by this page) -->
 		<script src="{{aset_tema()}}vendors/custom/datatables/datatables.bundle.js" type="text/javascript"></script>
 		<script src="{{aset_tema()}}app/custom/general/components/extended/sweetalert2.js" type="text/javascript"></script>
+		<script src="{{aset_tema()}}vendors/general/bootstrap-timepicker/js/bootstrap-timepicker.min.js" type="text/javascript"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
 		<!--end::Page Vendors -->
 

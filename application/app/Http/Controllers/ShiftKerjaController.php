@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Models\JobDesk;
+use App\Http\Models\ShiftKerja;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class JobDeskController extends Controller
+class ShiftKerjaController extends Controller
 {
     private $responseCode = 403;
     private $responseStatus = '';
@@ -15,18 +15,12 @@ class JobDeskController extends Controller
 
     public function index()
     {
-        return view('master/master-pekerjaan/grid');
-    }
-
-    
-    public function create()
-    {
-        //
+        return view('master.master-shift-kerja.grid');
     }
 
     public function json(Request $req)
     {
-        $models = new JobDesk();
+        $models = new ShiftKerja();
 
         $numbcol = $req->get('order');
         $columns = $req->get('columns');
@@ -59,18 +53,24 @@ class JobDeskController extends Controller
 
         return response()->json($this->responseData, $this->responseCode);
     }
-    
-    public function store(Request $req, JobDesk $models)
+
+    public function create()
+    {
+        //
+    }
+
+    public function store(Request $req, ShiftKerja $models)
     {
         $rules = [
-            'job_desk'          => 'required',
+            'nama_shift'        => 'required',
+            'mulai_shift'       => 'required',
             'start_date'        => 'date_format:d-m-Y',
             'end_date'          => 'date_format:d-m-Y|after:start_date',
         ];
 
         $action = $req->input('action');
         if ($action == 'edit') {
-            $rules['job_desk_id'] = 'required';
+            $rules['shift_kerja_id'] = 'required';
         }
 
         $validator = Validator::make($req->all(), $rules);
@@ -80,21 +80,23 @@ class JobDeskController extends Controller
             $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
             $this->responseData['error_log']    = $validator->errors();
         } else {
-            $id = $req->input('job_desk_id');
+            $id = $req->input('shift_kerja_id');
 
-            $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
+            $mulai_shift    = date('H:i', strtotime($req->input('mulai_shift')));
+            $start_date     = date('Y-m-d', strtotime($req->input('start_date')));
+            $end_date       = date('Y-m-d', strtotime($req->input('end_date')));
 
             if (!empty($id)) {
-                $models = JobDesk::find($id);
+                $models = ShiftKerja::find($id);
                 $models->updated_by = session('userdata')['id_user'];
             } else {
                 $models->created_by = session('userdata')['id_user'];
             }
 
-            $models->job_desk  = strip_tags($req->input('job_desk'));
-            $models->start_date  = $start_date;
-            $models->end_date   = $end_date;
+            $models->nama_shift     = strip_tags($req->input('nama_shift'));
+            $models->mulai_shift    = $mulai_shift;
+            $models->start_date     = $start_date;
+            $models->end_date       = $end_date;
 
             $models->save();
 
@@ -105,8 +107,8 @@ class JobDeskController extends Controller
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
     }
-    
-    public function show($id, JobDesk $models, Request $request)
+
+    public function show($id, ShiftKerja $models, Request $request)
     {
         if (!$request->ajax()) {
             return $this->accessForbidden();
@@ -128,17 +130,17 @@ class JobDeskController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit(ShiftKerja $shiftKerja)
     {
         //
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, ShiftKerja $shiftKerja)
     {
         //
     }
 
-    public function destroy($id)
+    public function destroy(ShiftKerja $shiftKerja)
     {
         //
     }
