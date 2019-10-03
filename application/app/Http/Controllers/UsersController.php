@@ -66,21 +66,11 @@ class UsersController extends Controller
     {
         $role = $req->input('role_id');
         $id   = $req->input('user_id');
-        if (!empty($id)) {
-            
-            $models = Users::find($id);
-            // $username_rule = 'unique:users,username,'.$models->user_id;
-            $username_rule = Rule::unique('users', 'username')->ignore($id, 'user_id');
-            $models->updated_by = session('userdata')['id_user'];
-        } else {
-            $username_rule = 'unique:users,username';
-            $models->created_by = session('userdata')['id_user'];
-        }
 
         $rules = [
             'username'      => [
                 'required',
-                $username_rule
+                Rule::unique('users', 'username')->ignore($id, 'user_id')
             ],
             'email'         => 'email',
             'role_id'       => [
@@ -108,6 +98,13 @@ class UsersController extends Controller
             $username   = $req->input('username');
             $email      = $req->input('email');
             $password   = $req->input('password');
+
+            if (!empty($id)) {
+                $models = Users::find($id);
+                $models->updated_by = session('userdata')['id_user'];
+            } else {
+                $models->created_by = session('userdata')['id_user'];
+            }
 
             $start_date  = null;
             if ($req->input('start_date') != '') {

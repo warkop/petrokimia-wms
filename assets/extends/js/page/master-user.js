@@ -152,8 +152,14 @@ function edit(user_id = '') {
             if (obj.status == "OK") {
                 $('#username').val(obj.data['username']);
                 $('#email').val(obj.data['email']);
-                $('#start_date').val(obj.data['start_date']);
-                $('#end_date').val(obj.data['end_date']);
+                $("#radio"+obj.data['role_id']).prop("checked",true);
+                if (obj.data['start_date'] != null) {
+                    $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
+                }
+
+                if (obj.data['end_date'] != null) {
+                    $('#end_date').val(helpDateFormat(obj.data['end_date'], 'si'));
+                }
             } else {
                 swal.fire('Pemberitahuan', obj.message, 'warning');
             }

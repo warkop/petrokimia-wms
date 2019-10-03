@@ -24,9 +24,12 @@ class Users extends Authenticatable
         'password', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'
     ];
 
-    protected $dateFormat = 'd-m-Y';
+    // protected $dateFormat = 'U';
+    protected $casts = [
+        'start_date' => 'date',
+    ];
 
-    protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at', 'deleted_at'];
+    protected $dates = ['start_date', 'end_date'];
 
     public function getAuthPassword()
     {
