@@ -44,7 +44,7 @@ Route::get('/master-grup', function () {
     return view('master.master-grup.grid');
 });
 
-Route::group(['prefix' => 'master-pekerjaan'], function () {
+Route::group(['prefix' => 'master-pekerjaan', 'middleware' => 'eauth'], function () {
     Route::get('/', 'JobDeskController@index');
     Route::put('/save', 'JobDeskController@store');
     Route::post('/json', 'JobDeskController@json');
@@ -52,7 +52,7 @@ Route::group(['prefix' => 'master-pekerjaan'], function () {
     Route::delete('/delete', 'JobDeskController@destroy');
 });
 
-Route::group(['prefix' => 'master-shift-kerja'], function () {
+Route::group(['prefix' => 'master-shift-kerja', 'middleware' => 'eauth'], function () {
     Route::get('/', 'ShiftKerjaController@index');
     Route::put('/save', 'ShiftKerjaController@store');
     Route::post('/json', 'ShiftKerjaController@json');
@@ -60,7 +60,7 @@ Route::group(['prefix' => 'master-shift-kerja'], function () {
     Route::delete('/delete', 'ShiftKerjaController@destroy');
 });
 
-Route::group(['prefix' => 'master-kerusakan-alat'], function () {
+Route::group(['prefix' => 'master-kerusakan-alat', 'middleware' => 'eauth'], function () {
     Route::get('/', 'KerusakanAlatBeratController@index');
     Route::put('/save', 'KerusakanAlatBeratController@store');
     Route::post('/json', 'KerusakanAlatBeratController@json');
@@ -68,7 +68,7 @@ Route::group(['prefix' => 'master-kerusakan-alat'], function () {
     Route::delete('/delete', 'KerusakanAlatBeratController@destroy');
 });
 
-Route::group(['prefix' => 'master-jenis-foto'], function (){
+Route::group(['prefix' => 'master-jenis-foto', 'middleware' => 'eauth'], function (){
     Route::get('/', 'JenisFotoController@index');
     Route::put('/save', 'JenisFotoController@store');
     Route::post('/json', 'JenisFotoController@json');
@@ -76,9 +76,14 @@ Route::group(['prefix' => 'master-jenis-foto'], function (){
     Route::delete('/delete', 'JenisFotoController@destroy');
 });
 
-Route::get('/master-user', function () {
-    return view('master.master-user.grid');
+Route::group(['prefix' => 'master-user', 'middleware' => 'eauth'], function () {
+    Route::get('/', 'UsersController@index');
+    Route::put('/save', 'UsersController@store');
+    Route::post('/json', 'UsersController@json');
+    Route::get('/show/{id}', 'UsersController@show');
+    Route::delete('/delete', 'UsersController@destroy');
 });
+
 Route::get('/master-material', function () {
     return view('master.master-material.grid');
 });

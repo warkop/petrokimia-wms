@@ -64,8 +64,8 @@ class JobDeskController extends Controller
     {
         $rules = [
             'job_desk'          => 'required',
-            'start_date'        => 'date_format:d-m-Y',
-            'end_date'          => 'date_format:d-m-Y|after:start_date',
+            'start_date'        => 'nullable|date_format:d-m-Y',
+            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
         $action = $req->input('action');
@@ -82,8 +82,15 @@ class JobDeskController extends Controller
         } else {
             $id = $req->input('job_desk_id');
 
-            $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
+            $start_date  = null;
+            if ($req->input('start_date') != '') {
+                $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
+            }
+
+            $end_date   = null;
+            if ($req->input('end_date') != '') {
+                $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
+            }
 
             if (!empty($id)) {
                 $models = JobDesk::find($id);

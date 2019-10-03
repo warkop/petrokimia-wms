@@ -64,8 +64,8 @@ class JenisFotoController extends Controller
     {
         $rules = [
             'nama_jenis_foto'   => 'required',
-            'start_date'        => 'date_format:d-m-Y',
-            'end_date'          => 'date_format:d-m-Y|after:start_date',
+            'start_date'        => 'nullable|date_format:d-m-Y',
+            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
         $action = $req->input('action');
@@ -82,8 +82,15 @@ class JenisFotoController extends Controller
         } else {
             $jenis_foto_id = $req->input('jenis_foto_id');
 
-            $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
+            $start_date  = null;
+            if ($req->input('start_date') != '') {
+                $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
+            }
+
+            $end_date   = null;
+            if ($req->input('end_date') != '') {
+                $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
+            }
 
             if (!empty($jenis_foto_id)) {
                 $models = JenisFoto::find($jenis_foto_id);

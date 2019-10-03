@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Models\ShiftKerja;
+use App\Http\Models\Users;
+use App\Http\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
-class ShiftKerjaController extends Controller
+class UsersController extends Controller
 {
     private $responseCode = 403;
     private $responseStatus = '';
@@ -15,12 +17,18 @@ class ShiftKerjaController extends Controller
 
     public function index()
     {
-        return view('master.master-shift-kerja.grid');
+        $data['role'] = Role::all();
+        return view('master.master-user.grid', $data);
+    }
+
+    public function create()
+    {
+        //
     }
 
     public function json(Request $req)
     {
-        $models = new ShiftKerja();
+        $models = new Users();
 
         $numbcol = $req->get('order');
         $columns = $req->get('columns');
@@ -54,23 +62,40 @@ class ShiftKerjaController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function create()
+    public function store(Request $req, Users $models)
     {
-        //
-    }
+        $role = $req->input('role_id');
+        $id   = $req->input('user_id');
+        if (!empty($id)) {
+            
+            $models = Users::find($id);
+            // $username_rule = 'unique:users,username,'.$models->user_id;
+            $username_rule = Rule::unique('users', 'username')->ignore($id, 'user_id');
+            $models->updated_by = session('userdata')['id_user'];
+        } else {
+            $username_rule = 'unique:users,username';
+            $models->created_by = session('userdata')['id_user'];
+        }
 
-    public function store(Request $req, ShiftKerja $models)
-    {
         $rules = [
-            'nama_shift'        => 'required',
-            'mulai_shift'       => 'required',
-            'start_date'        => 'nullable|date_format:d-m-Y',
-            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
+            'username'      => [
+                'required',
+                $username_rule
+            ],
+            'email'         => 'email',
+            'role_id'       => [
+                'required',
+                Rule::exists('role')->where(function ($query) use ($role) {
+                    $query->where('role_id',  $role);
+                })
+            ],
+            'start_date'    => 'nullable|date_format:d-m-Y',
+            'end_date'      => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
         $action = $req->input('action');
         if ($action == 'edit') {
-            $rules['shift_kerja_id'] = 'required';
+            $rules['user_id'] = 'required';
         }
 
         $validator = Validator::make($req->all(), $rules);
@@ -80,9 +105,10 @@ class ShiftKerjaController extends Controller
             $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
             $this->responseData['error_log']    = $validator->errors();
         } else {
-            $id = $req->input('shift_kerja_id');
+            $username   = $req->input('username');
+            $email      = $req->input('email');
+            $password   = $req->input('password');
 
-            $mulai_shift    = date('H:i', strtotime($req->input('mulai_shift')));
             $start_date  = null;
             if ($req->input('start_date') != '') {
                 $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
@@ -93,15 +119,12 @@ class ShiftKerjaController extends Controller
                 $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
             }
 
-            if (!empty($id)) {
-                $models = ShiftKerja::find($id);
-                $models->updated_by = session('userdata')['id_user'];
-            } else {
-                $models->created_by = session('userdata')['id_user'];
-            }
+            
 
-            $models->nama_shift     = strip_tags($req->input('nama_shift'));
-            $models->mulai_shift    = $mulai_shift;
+            $models->role_id        = strip_tags($role);
+            $models->username       = strip_tags($username);
+            $models->email          = strip_tags($email);
+            $models->password       = strip_tags(bcrypt($password));
             $models->start_date     = $start_date;
             $models->end_date       = $end_date;
 
@@ -115,7 +138,7 @@ class ShiftKerjaController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
-    public function show($id, ShiftKerja $models, Request $request)
+    public function show($id, Users $models, Request $request)
     {
         if (!$request->ajax()) {
             return $this->accessForbidden();
@@ -137,17 +160,17 @@ class ShiftKerjaController extends Controller
         }
     }
 
-    public function edit(ShiftKerja $shiftKerja)
+    public function edit(Users $users)
     {
         //
     }
 
-    public function update(Request $request, ShiftKerja $shiftKerja)
+    public function update(Request $request, Users $users)
     {
         //
     }
 
-    public function destroy(ShiftKerja $shiftKerja)
+    public function destroy(Users $users)
     {
         //
     }
