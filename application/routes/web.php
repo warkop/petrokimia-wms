@@ -44,6 +44,14 @@ Route::get('/master-grup', function () {
     return view('master.master-grup.grid');
 });
 
+Route::group(['prefix' => 'master-tenaga-kerja-nonorganik', 'middleware' => ['eauth', 'revalidate']], function () {
+    Route::get('/', 'JobDeskController@index');
+    Route::put('/save', 'JobDeskController@store');
+    Route::post('/json', 'JobDeskController@json');
+    Route::get('/show/{id}', 'JobDeskController@show');
+    Route::delete('/{id}', 'JobDeskController@destroy');
+});
+
 Route::group(['prefix' => 'master-pekerjaan', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'JobDeskController@index');
     Route::put('/save', 'JobDeskController@store');
