@@ -67,7 +67,7 @@
                                 <label>Nomor Hp</label>
                                 <input type="text" class="form-control" placeholder="Masukkan nomor hp">
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label>Job Desk</label>
                                 <select class="form-control m-select2" id="kt_select2_1" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
                                     <option value="">Pilih pekerjaan</option>
@@ -75,7 +75,7 @@
                                     <option value="HI">Checker</option>
                                     <option value="CA">Loket</option>
                                 </select>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="row">

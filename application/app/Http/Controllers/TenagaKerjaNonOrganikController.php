@@ -14,7 +14,7 @@ class TenagaKerjaNonOrganikController extends Controller
     private $responseStatus = '';
     private $responseMessage = '';
     private $responseData = [];
-    
+
     public function index()
     {
         $data['job_desk'] = JobDesk::all();
@@ -69,7 +69,7 @@ class TenagaKerjaNonOrganikController extends Controller
 
     public function store(Request $req, TenagaKerjaNonOrganik $models)
     {
-        $id = $req->input('tenaga_kerja_non_organik');
+        $id = $req->input('tenaga_kerja_non_organik_id');
         $rules = [
             'nama_tenaga_kerja' => ['required'],
             'start_date'        => 'nullable|date_format:d-m-Y',
@@ -78,7 +78,7 @@ class TenagaKerjaNonOrganikController extends Controller
 
         $action = $req->input('action');
         if ($action == 'edit') {
-            $rules['tenaga_kerja_non_organik'] = 'required';
+            $rules['tenaga_kerja_non_organik_id'] = 'required';
         }
 
         $validator = Validator::make($req->all(), $rules);
