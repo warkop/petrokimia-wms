@@ -154,7 +154,7 @@
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="col-lg-12 ml-lg-auto">
-                        <a href="#" class="btn btn-success btn-elevate btn-elevate-air""><i class="la la-save"></i> Simpan Data</a>
+                        <a href="#" class="btn btn-wms btn-elevate btn-elevate-air""><i class="la la-save"></i> Simpan Data</a>
                     </div>
                 </div>
             </div>

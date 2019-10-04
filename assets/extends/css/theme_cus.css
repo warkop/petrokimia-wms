@@ -59,15 +59,18 @@ input[type=radio]:checked+label {
 
 /* Navigation menu */
 .kt-aside {
-    background-color: #00AE4D !important;
+    /* background-color: #00AE4D !important; */
+    background-color:#FED700 !important;
 }
 
 .kt-aside-menu {
-    background-color: #00AE4D !important;
+    /* background-color: #00AE4D !important; */
+    background-color:#FED700 !important;
 }
 
 .kt-aside-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--active>.kt-menu__link {
-    background-color: #077e5b !important;
+    /* background-color: #077e5b !important; */
+    background-color: rgba(0, 0, 0, .7) !important;
 }
 
 
@@ -92,11 +95,13 @@ input[type=radio]:checked+label {
 }
 
 .kt-menu__link:hover {
-    background-color: #077e5b !important;
+    /* background-color: #077e5b !important; */
+    background-color: rgba(0, 0, 0, .7) !important;
 }
 
 .kt-aside-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--open>.kt-menu__link {
-    background-color: #077e5b !important;
+    /* background-color: #077e5b !important; */
+    background-color: rgba(0, 0, 0, .7) !important;
 }
 
 .kt-aside-menu .kt-menu__nav>.kt-menu__item .kt-menu__submenu .kt-menu__item>.kt-menu__link .kt-menu__link-text {
@@ -124,4 +129,36 @@ input[type=radio]:checked+label {
 
 .kt-portlet.kt-portlet--border-bottom-green {
     border-bottom: 3px solid #00ae4d;
+}
+
+
+/* replaced */
+
+.btn-wms {
+    color: #403A38;
+    background-color: #FED700;
+    border-color: #FED700;
+    font-weight: 600 !important;
+}
+
+.btn-wms:hover {
+    color: #403A38;
+    background-color: #fddd26 !important;
+    border-color: #fddd26 !important;
+    font-weight: 600 !important;
+}
+
+.btn.btn-wms.btn-elevate {
+    -webkit-box-shadow: 0px 4px 16px 0px rgba(187, 184, 10, 0.15);
+    box-shadow: 0px 4px 16px 0px rgba(187, 184, 10, 0.15);
+}
+
+.btn.btn-wms {
+    -webkit-transition: all 0.3s ease 0s;
+    transition: all 0.3s ease 0s;
+}
+
+.show > .btn.btn-wms.btn-elevate, .btn.btn-wms.btn-elevate:focus, .btn.btn-wms.btn-elevate.active, .btn.btn-wms.btn-elevate:active, .btn.btn-wms.btn-elevate:hover {
+    -webkit-box-shadow: 0px 9px 16px 0px rgba(200, 198, 29, .3) !important;
+    box-shadow: 0px 9px 16px 0px rgba(200, 198, 29, 0.3) !important;
 }

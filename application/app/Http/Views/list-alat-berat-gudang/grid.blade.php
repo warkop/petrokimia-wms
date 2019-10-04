@@ -22,7 +22,7 @@
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-group pt-4">
-                    <button id="btntambahAdjst" class="btn btn-success btn-elevate btn-elevate-air"><i
+                    <button id="btntambahAdjst" class="btn btn-wms btn-elevate btn-elevate-air"><i
                             class="la la-plus"></i> Tambah Data</button>
                 </div>
             </div>
@@ -109,7 +109,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-success">Simpan data</button>
+                    <button type="button" class="btn btn-wms">Simpan data</button>
                 </div>
             </form>
         </div>
