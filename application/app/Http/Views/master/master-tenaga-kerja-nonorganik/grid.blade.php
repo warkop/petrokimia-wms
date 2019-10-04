@@ -22,7 +22,7 @@
 			<div class="kt-portlet__head-toolbar">
 				<div class="kt-portlet__head-group pt-4">
                         <a href="#" class="btn btn-orens btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_2"><i class="la la-plus"></i> Set Anggaran</a>
-					<a href="#" class="btn btn-wms btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
+					<a href="#" class="btn btn-wms btn-elevate btn-elevate-air" data-toggle="modal" onclick="tambah()"><i class="la la-plus"></i> Tambah Data</a>
 				</div>
 			</div>
 		</div>
@@ -48,7 +48,7 @@
 
 
 <!--begin::Modal-->
-<div class="modal fade" id="kt_modal_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade btn_close_modal" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -57,37 +57,41 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>
-            <form action="">
+            <form  id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
                 <div class="modal-body">
+                    <input type="hidden" class="form-control" id="tenaga_kerja_non_organik_id" name="tenaga_kerja_non_organik_id">
+                    <input type="hidden" name="action" id="action" value="add">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Nama Tenaga Kerja</label>
-                                <input type="text" class="form-control" placeholder="Masukkan nama tenaga kerja">
+                                <input type="text" class="form-control input-enter" id="nama_tenaga_kerja" name="nama_tenaga_kerja" placeholder="Masukkan nama tenaga kerja">
                             </div>
                             <div class="form-group">
                                 <label>Nomor Hp</label>
-                                <input type="text" class="form-control" placeholder="Ex. 0895340952989">
+                                <input type="text" class="form-control input-enter" id="nomor_hp" name="nomor_hp" placeholder="Ex. 0895340952989">
                             </div>
                             <div class="form-group">
                                 <label>Job Desk</label>
-                                <select class="form-control m-select2" id="kt_select2_1" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
+                                <select class="form-control m-select2" id="job_desk_id" name="job_desk_id" aria-placeholder="Pilih kategori" style="width: 100%;">
                                     <option value="">Pilih pekerjaan</option>
-                                    <option value="AK">Admin</option>
-                                    <option value="HI">Checker</option>
-                                    <option value="CA">Loket</option>
+                                    @foreach ($job_desk as $item)
+                                        <option value="{{$item->job_desk_id}}">{{$item->job_desk}}</option>
+                                    @endforeach
+                                    {{-- <option value="HI">Checker</option>
+                                    <option value="CA">Loket</option> --}}
                                 </select>
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label>Nama Karu</label>
                                 <select class="form-control m-select2" id="kt_select2_2" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
                                     <option value="">Pilih karu</option>
                                     <option value="AK">Irwan</option>
                                 </select>
-                            </div>
+                            </div> --}}
                             <div class="form-group">
                                 <label>Nomor BPJS</label>
-                                <input type="text" class="form-control" placeholder="Masukkan Nomor BPJS">
+                                <input type="text" class="form-control input-enter" id="nomor_bpjs" name="nomor_bpjs" placeholder="Masukkan Nomor BPJS">
                             </div>
                         </div>
                     </div>
@@ -95,20 +99,20 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Start Date</label>
-                                <input type="text" class="form-control" id="start_date" readonly placeholder="Select date">
+                                <input type="text" class="form-control input-enter" id="start_date" name="start_date" readonly placeholder="Select date">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>End Date</label>
-                                <input type="text" class="form-control" id="end_date" readonly placeholder="Select date">
+                                <input type="text" class="form-control input-enter" id="end_date" name="end_date" readonly placeholder="Select date">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-wms">Simpan data</button>
+                    <button type="button" class="btn btn-wms ladda-button" data-style="zoom-in"  id="btn_save">Simpan data</button>
                 </div>
             </form>
         </div>
@@ -153,7 +157,7 @@
 
 <script src="{{asset('assets/extends/js/page/master-tenaga-kerja.js')}}" type="text/javascript"></script>
 <script>
-$('#kt_select2_1').select2({
+$('#job_desk_id').select2({
     placeholder: "Select Job Desk"
 });
 $('#start_date, #end_date').datepicker({

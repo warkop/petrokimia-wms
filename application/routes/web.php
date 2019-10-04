@@ -31,9 +31,9 @@ Route::get('/master-aktivitas/tambah', function () {
 Route::get('/master-karu', function () {
     return view('master.master-karu.grid');
 });
-Route::get('/master-tenaga-kerja-nonorganik', function () {
-    return view('master.master-tenaga-kerja-nonorganik.grid');
-});
+// Route::get('/master-tenaga-kerja-nonorganik', function () {
+//     return view('master.master-tenaga-kerja-nonorganik.grid');
+// });
 // Route::get('/master-alat-berat', function () {
 //     return view('master.master-alat-berat.grid');
 // });
@@ -45,11 +45,11 @@ Route::get('/master-grup', function () {
 });
 
 Route::group(['prefix' => 'master-tenaga-kerja-nonorganik', 'middleware' => ['eauth', 'revalidate']], function () {
-    Route::get('/', 'JobDeskController@index');
-    Route::put('/save', 'JobDeskController@store');
-    Route::post('/json', 'JobDeskController@json');
-    Route::get('/show/{id}', 'JobDeskController@show');
-    Route::delete('/{id}', 'JobDeskController@destroy');
+    Route::get('/', 'TenagaKerjaNonOrganikController@index');
+    Route::put('/', 'TenagaKerjaNonOrganikController@store');
+    Route::post('/', 'TenagaKerjaNonOrganikController@json');
+    Route::get('/{id}', 'TenagaKerjaNonOrganikController@show');
+    Route::delete('/{id}', 'TenagaKerjaNonOrganikController@destroy');
 });
 
 Route::group(['prefix' => 'master-pekerjaan', 'middleware' => ['eauth', 'revalidate']], function () {
