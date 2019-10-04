@@ -60,12 +60,12 @@ input[type=radio]:checked+label {
 /* Navigation menu */
 .kt-aside {
     /* background-color: #00AE4D !important; */
-    background-color:#FED700 !important;
+    background-color:#efaf0c !important;
 }
 
 .kt-aside-menu {
     /* background-color: #00AE4D !important; */
-    background-color:#FED700 !important;
+    background-color:#efaf0c !important;
 }
 
 .kt-aside-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--active>.kt-menu__link {
