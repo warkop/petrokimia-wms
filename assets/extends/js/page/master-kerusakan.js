@@ -11,7 +11,7 @@ jQuery(document).ready(function () {
 
     if (typeof datatable !== 'undefined') {
         datatable.on('draw.dt', function () {
-            $('[data-toggle=tooltip]').tooltip();
+            $('[data-toggle=kt-tooltip]').tooltip();
         });
     }
 
@@ -85,7 +85,7 @@ var load_table = function () {
                 render: function (data, type, full, meta) {
                     return `
                     <a href="" data-toggle="modal" data-target="#kt_modal_1">
-                        <button type = "button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
+                        <button type = "button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Ubah Data">
                         <i class="flaticon-edit-1"></i> </button>
                     </a>`;
                 },

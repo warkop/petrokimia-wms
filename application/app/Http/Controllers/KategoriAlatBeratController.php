@@ -2,23 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Models\Users;
-use App\Http\Models\Role;
+use App\Http\Models\KategoriAlatBerat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class UsersController extends Controller
+class KategoriAlatBeratController extends Controller
 {
     private $responseCode = 403;
     private $responseStatus = '';
     private $responseMessage = '';
     private $responseData = [];
-
+    
     public function index()
     {
-        $data['role'] = Role::all();
-        return view('master.master-user.grid', $data);
+        return view('master.master-alat-berat.grid');
     }
 
     public function create()
@@ -28,7 +26,7 @@ class UsersController extends Controller
 
     public function json(Request $req)
     {
-        $models = new Users();
+        $models = new KategoriAlatBerat();
 
         $numbcol = $req->get('order');
         $columns = $req->get('columns');
@@ -62,30 +60,18 @@ class UsersController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, Users $models)
+    public function store(Request $req, KategoriAlatBerat $models)
     {
-        $role = $req->input('role_id');
-        $id   = $req->input('user_id');
-
+        $id = $req->input('kategori_alat_berat_id');
         $rules = [
-            'username'      => [
-                'required',
-                Rule::unique('users', 'username')->ignore($id, 'user_id')
-            ],
-            'email'         => 'email',
-            'role_id'       => [
-                'required',
-                Rule::exists('role')->where(function ($query) use ($role) {
-                    $query->where('role_id',  $role);
-                })
-            ],
-            'start_date'    => 'nullable|date_format:d-m-Y',
-            'end_date'      => 'nullable|date_format:d-m-Y|after:start_date',
+            'nama_kategori_alat_berat'    => ['required', Rule::unique('kategori_alat_berat', 'nama_kategori_alat_berat')->ignore($id, 'kategori_alat_berat_id')],
+            'start_date'                  => 'nullable|date_format:d-m-Y',
+            'end_date'                    => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
         $action = $req->input('action');
         if ($action == 'edit') {
-            $rules['user_id'] = 'required';
+            $rules['kategori_alat_berat_id'] = 'required';
         }
 
         $validator = Validator::make($req->all(), $rules);
@@ -95,16 +81,7 @@ class UsersController extends Controller
             $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
             $this->responseData['error_log']    = $validator->errors();
         } else {
-            $username   = $req->input('username');
-            $email      = $req->input('email');
-            $password   = $req->input('password');
-
-            if (!empty($id)) {
-                $models = Users::find($id);
-                $models->updated_by = session('userdata')['id_user'];
-            } else {
-                $models->created_by = session('userdata')['id_user'];
-            }
+            
 
             $start_date  = null;
             if ($req->input('start_date') != '') {
@@ -116,12 +93,15 @@ class UsersController extends Controller
                 $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
             }
 
-            
+            if (!empty($id)) {
+                $models = KategoriAlatBerat::find($id);
+                $models->updated_by = session('userdata')['id_user'];
+            } else {
+                $models->created_by = session('userdata')['id_user'];
+            }
 
-            $models->role_id        = strip_tags($role);
-            $models->username       = strip_tags($username);
-            $models->email          = strip_tags($email);
-            $models->password       = strip_tags(bcrypt($password));
+            $models->nama_kategori_alat_berat = strip_tags($req->input('nama_kategori_alat_berat'));
+            $models->anggaran_alat_berat = strip_tags($req->input('anggaran_alat_berat'));
             $models->start_date     = $start_date;
             $models->end_date       = $end_date;
 
@@ -135,7 +115,13 @@ class UsersController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
-    public function show($id, Users $models, Request $request)
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\KategoriAlatBerat  $kategoriAlatBerat
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id, KategoriAlatBerat $models, Request $request)
     {
         if (!$request->ajax()) {
             return $this->accessForbidden();
@@ -148,7 +134,6 @@ class UsersController extends Controller
                 $this->responseData = $res;
             } else {
                 $this->responseData = [];
-                $this->responseCode = 500;
                 $this->responseStatus = 'No Data Available';
                 $this->responseMessage = 'Data tidak tersedia';
             }
@@ -158,41 +143,50 @@ class UsersController extends Controller
         }
     }
 
-    public function edit(Users $users)
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\KategoriAlatBerat  $kategoriAlatBerat
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(KategoriAlatBerat $kategoriAlatBerat)
     {
         //
     }
 
-    public function update(Request $request, Users $users)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\KategoriAlatBerat  $kategoriAlatBerat
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, KategoriAlatBerat $kategoriAlatBerat)
     {
         //
     }
 
-    public function changePassword($id_user)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\KategoriAlatBerat  $kategoriAlatBerat
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(KategoriAlatBerat $models)
     {
-        $res = Users::find($id_user);
-        $res->password = bcrypt('petrokimia123');
-
-        $saved = $res->save();
-
-        if (!$saved) {
-            $this->responseData = [];
+        KategoriAlatBerat::destroy($models->shift_kerja_id);
+        $res = KategoriAlatBerat::find($models->shift_kerja_id);
+        if (!empty($res)) {
             $this->responseCode = 500;
-            $this->responseStatus = 'No Data Available';
-            $this->responseMessage = 'Data tidak tersedia';
+            $this->responseMessage = 'Data gagal dihapus';
+            $this->responseData = [];
         } else {
-            $this->responseCode = 200;
-            $this->responseMessage = 'Password berhasil direset';
-            $this->responseData = $res;
+            $this->responseData = [];
+            $this->responseStatus = 'No Data Available';
+            $this->responseMessage = 'Data berhasil dihapus';
         }
-
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
-    }
-
-    public function destroy(Users $users)
-    {
-        //
     }
 }

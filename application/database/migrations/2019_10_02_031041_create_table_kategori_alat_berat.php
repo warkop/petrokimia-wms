@@ -15,10 +15,10 @@ class CreateTableKategoriAlatBerat extends Migration
     {
         Schema::create('kategori_alat_berat', function (Blueprint $table) {
             $table->increments('kategori_alat_berat_id');
-            $table->string('nama_kategori_alat_berat');
-            $table->integer('anggaran_alat_berat');
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->string('nama_kategori_alat_berat')->nullable();
+            $table->float('anggaran_alat_berat')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->string('created_by')->nullable();
             $table->string('updated_by')->nullable();
             $table->string('deleted_by')->nullable();

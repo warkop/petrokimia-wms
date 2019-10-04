@@ -34,9 +34,9 @@ Route::get('/master-karu', function () {
 Route::get('/master-tenaga-kerja-nonorganik', function () {
     return view('master.master-tenaga-kerja-nonorganik.grid');
 });
-Route::get('/master-alat-berat', function () {
-    return view('master.master-alat-berat.grid');
-});
+// Route::get('/master-alat-berat', function () {
+//     return view('master.master-alat-berat.grid');
+// });
 Route::get('/master-kerusakan-alat', function () {
     return view('master.master-kerusakan-alat.grid');
 });
@@ -68,6 +68,22 @@ Route::group(['prefix' => 'master-kerusakan-alat', 'middleware' => ['eauth', 're
     Route::delete('/{id}', 'KerusakanAlatBeratController@destroy');
 });
 
+Route::group(['prefix' => 'master-kategori-alat-berat', 'middleware' => ['eauth', 'revalidate']], function () {
+    Route::get('/', 'KategoriAlatBeratController@index');
+    Route::put('/', 'KategoriAlatBeratController@store');
+    Route::post('/', 'KategoriAlatBeratController@json');
+    Route::get('/{id}', 'KategoriAlatBeratController@show');
+    Route::delete('/{id}', 'KategoriAlatBeratController@destroy');
+});
+
+Route::group(['prefix' => 'list-alat-berat', 'middleware' => ['eauth', 'revalidate']], function () {
+    Route::get('/{id}', 'ListAlatBeratController@index');
+    Route::put('/{id}', 'ListAlatBeratController@store');
+    Route::post('/{id}', 'ListAlatBeratController@json');
+    Route::get('/{id}/{id_list}', 'ListAlatBeratController@show');
+    Route::delete('/{id}/{id_list}', 'ListAlatBeratController@destroy');
+});
+
 Route::group(['prefix' => 'master-jenis-foto', 'middleware' => ['eauth', 'revalidate']], function (){
     Route::get('/', 'JenisFotoController@index');
     Route::put('/save', 'JenisFotoController@store');
@@ -78,9 +94,10 @@ Route::group(['prefix' => 'master-jenis-foto', 'middleware' => ['eauth', 'revali
 
 Route::group(['prefix' => 'master-user', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'UsersController@index');
-    Route::put('/save', 'UsersController@store');
-    Route::post('/json', 'UsersController@json');
-    Route::get('/show/{id}', 'UsersController@show');
+    Route::put('/', 'UsersController@store');
+    Route::post('/', 'UsersController@json');
+    Route::get('/{id}', 'UsersController@show');
+    Route::patch('/{id}', 'UsersController@changePassword');
     Route::delete('/{id}', 'UsersController@destroy');
 });
 

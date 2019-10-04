@@ -2,8 +2,8 @@
 
 let datatable,
     tableTarget = '#kt_table_1',
-    ajaxUrl = baseUrl + '/master-user/',
-    ajaxSource = ajaxUrl + 'json',
+    ajaxUrl = baseUrl + 'master-user',
+    ajaxSource = ajaxUrl,
     laddaButton;
 
 jQuery(document).ready(function () {
@@ -11,7 +11,7 @@ jQuery(document).ready(function () {
 
     if (typeof datatable !== 'undefined') {
         datatable.on('draw.dt', function () {
-            $('[data-toggle=tooltip]').tooltip();
+            $('[data-toggle=kt-tooltip]').tooltip();
         });
     }
 
@@ -88,11 +88,15 @@ let load_table = function () {
             {
                 "aTargets": [6],
                 "mData": "id",
+                "aaSorting":false,
                 render: function (data, type, full, meta) {
                     return `
                     <a href="" data-toggle="modal" data-target="#kt_modal_1">
-                        <button type = "button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
+                        <button type = "button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Ubah Data">
                         <i class="flaticon-edit-1"></i> </button>
+                    </a> <a href="" data-toggle="modal" data-target="#kt_modal_1">
+                        <button type = "button" onclick="gantiPassword(${full.id})" class="btn btn-info btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Reset Password">
+                        <i class="flaticon2-refresh"></i> </button>
                     </a>`;
                 },
             }
@@ -136,7 +140,7 @@ function edit(user_id = '') {
 
     $.ajax({
         type: "GET",
-        url: ajaxUrl + "show/" + user_id,
+        url: ajaxUrl + "/" + user_id,
         beforeSend: function () {
             preventLeaving();
             $('.btn_close_modal').addClass('hide');
@@ -198,6 +202,76 @@ function edit(user_id = '') {
     });
 }
 
+function gantiPassword(user_id) {
+    swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Password akan direset menjadi petrokimia123!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak'
+    }).then((result) => {
+        if (result.value) {
+            // Swal.fire(
+            //     'Deleted!',
+            //     'Your file has been deleted.',
+            //     'success'
+            // )
+            $.ajax({
+                type: "PATCH",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: ajaxSource + "/" + user_id,
+                success: response => {
+                    $('.se-pre-con').hide();
+
+                    let obj = response;
+                    console.log(obj)
+                    if (obj.status == "OK") {
+                        swal.fire('Ok', obj.message, 'success');
+                    } else {
+                        swal.fire('Pemberitahuan', obj.message, 'warning');
+                    }
+                },
+                error: (response, oo, pp) => {
+                    let head = 'Maaf',
+                        message = 'Terjadi kesalahan koneksi',
+                        type = 'error';
+                    laddaButton.stop();
+                    window.onbeforeunload = false;
+                    $('.btn_close_modal').removeClass('hide');
+                    $('.se-pre-con').hide();
+
+                    if (response['status'] == 401 || response['status'] == 419) {
+                        location.reload();
+                    } else {
+                        if (response['status'] != 404 && response['status'] != 500) {
+                            let obj = JSON.parse(response['responseText']);
+
+                            if (!$.isEmptyObject(obj.message)) {
+                                if (obj.code > 400) {
+                                    head = 'Maaf';
+                                    message = obj.message;
+                                    type = 'error';
+                                } else {
+                                    head = 'Pemberitahuan';
+                                    message = obj.message;
+                                    type = 'warning';
+                                }
+                            }
+                        }
+
+                        swal.fire(head, message, type);
+                    }
+                }
+            });
+        }
+    })
+}
+
 function simpan() {
     let data = $("#form1").serializeArray();
     $.ajax({
@@ -205,7 +279,7 @@ function simpan() {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: ajaxUrl + "save",
+        url: ajaxUrl,
         data: data,
         beforeSend: function () {
             preventLeaving();
