@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -25,8 +27,8 @@ class LoginController extends Controller
      *
      * @var string
      */
+    private $title = 'Login';
     protected $redirectTo = '/home';
-
     /**
      * Create a new controller instance.
      *
@@ -35,5 +37,56 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function index(Request $request)
+    {
+        if(Auth::check()){
+            return redirect('home');
+        }else{
+            $data['title'] = $this->title;
+            $data['source'] = ($request->get('source'))? $request->get('source') : '';
+            return view('login', $data);
+        }
+    }
+
+    public function authenticate(Request $request)
+    {
+        if(Auth::check()){
+            return $request->expectsJson() ? response()->json(helpResponse(200, [], 'Anda sudah login')) : redirect()->intended('home');
+        }else{
+            $credentials    = $request->only('username', 'password');
+            $username       = $request->input('username');
+            $password       = $request->input('password');
+
+            $data = ['username' => $username, 'password' => $password];           
+            if (Auth::attempt($data)) {
+                $user = Auth::user();
+                $session['userdata'] = $data;
+                $session['userdata']['id_user'] = $user->user_id;
+                $session['userdata']['username'] = $user->username;
+                $session['userdata']['fullname'] = $user->name;
+                $session['userdata']['email'] = $user->email;
+                $session['userdata']['role_id'] = $user->role_id;
+                session($session);
+
+                return $request->expectsJson() ? response()->json(helpResponse(200, ['user' => $user], 'Selamat Anda berhasil login'), 200) : redirect()->intended('home');
+            }else{
+                $alerts[] = array('warning', 'Username atau Password Anda salah', 'Pemberitahuan');
+                $request->session()->flash('alerts', $alerts);
+                return $request->expectsJson() ? response()->json(helpResponse(401, [], 'Username atau Password Anda salah'), 401) : redirect()->intended('login');
+            }
+
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        if(Auth::check()){
+            Auth::logout();
+            $request->session()->invalidate();
+        }
+
+        return redirect('/');
     }
 }

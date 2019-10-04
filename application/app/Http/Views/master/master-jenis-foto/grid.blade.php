@@ -23,7 +23,7 @@
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-group pt-4">
                     <a href="#" class="btn btn-wms btn-elevate btn-elevate-air" data-toggle="modal"
-                        data-target="#modal_form"><i class="la la-plus"></i> Tambah Data</a>
+                        data-target="#modal_form" onclick="tambah()"><i class="la la-plus"></i> Tambah Data</a>
                 </div>
             </div>
         </div>
@@ -71,7 +71,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Start Date</label>
-                                <input type="text" class="form-control input-enter" id="from_date" name="from_date" readonly placeholder="Select date">
+                                <input type="text" class="form-control input-enter" id="start_date" name="start_date" readonly placeholder="Select date">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -92,65 +92,9 @@
 </div>
 <!--end::Modal-->
 
-<!--begin::Modal-->
-{{-- <div class="modal fade" id="kt_modal_2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Detail Foto Truck</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <form action="">
-                <div class="modal-body">
-                    <div class="kt-scroll" data-scroll="true" data-height="400">
-                        <div class="row mb2">
-                            <div class="col-4">
-                                <label class="boldd">Foto Atas</label>
-                                <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product1.jpg')}}" alt="" srcset="">
-                            </div>
-                            <div class="col-4">
-                                <label class="boldd">Foto Kiri</label>
-                                <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product2.jpg')}}" alt="" srcset="">
-                            </div>
-                            <div class="col-4">
-                                <label class="boldd">Foto Kanan</label>
-                                <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product3.jpg')}}" alt="" srcset="">
-                            </div>
-                        </div>
-                        <div class="row mb2">
-                            <div class="col-4">
-                                <label class="boldd">Foto Bawah</label>
-                                <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product4.jpg')}}" alt="" srcset="">
-                            </div>
-                            <div class="col-4">
-                                <label class="boldd">Foto Kosong</label>
-                                <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product5.jpg')}}" alt="" srcset="">
-                            </div>
-                            <div class="col-4">
-                                <label class="boldd">Foto Muat</label>
-                                <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product6.jpg')}}" alt="" srcset="">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-wms">Simpan data</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div> --}}
-<!--end::Modal-->
-
-
-
-
 <script src="{{asset('assets/extends/js/page/master-jenis-foto.js')}}" type="text/javascript"></script>
 <script>
-$('#from_date, #end_date').datepicker({
+$('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
     format:'dd-mm-yyyy',

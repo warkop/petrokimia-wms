@@ -136,7 +136,7 @@ License: You must have a valid license purchased only from themeforest(the above
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-pekerjaan')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Job Desk</span></a></li>
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-shift-kerja')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Shift Kerja</span></a></li>
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-kerusakan-alat')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kerusakan Alat Berat</span></a></li>
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-alat-berat')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kategori Alat Berat</span></a></li>
+											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-kategori-alat-berat')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kategori Alat Berat</span></a></li>
 											{{-- <li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-grup')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Grup</span></a></li> --}}
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-jenis-foto')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Jenis Foto</span></a></li>
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-user')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">User</span></a></li>
@@ -236,7 +236,7 @@ License: You must have a valid license purchased only from themeforest(the above
 								<div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px,0px">
 									<div class="kt-header__topbar-user">
 										<span class="kt-header__topbar-welcome kt-hidden-mobile">Hi,</span>
-										<span class="kt-header__topbar-username kt-hidden-mobile">Administrator</span>
+										<span class="kt-header__topbar-username kt-hidden-mobile">{{session('userdata')['username']}}</span>
 										<img class="kt-hidden" alt="Pic" src="{{aset_tema()}}media/users/300_25.jpg" />
 
 										<!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
@@ -275,7 +275,7 @@ License: You must have a valid license purchased only from themeforest(the above
 											</div>
 										</a> --}}
 										<div class="kt-notification__custom">
-											<a href="{{url('/')}}" class="btn btn-label-danger btn-sm btn-bold">Sign Out</a>
+											<a href="{{url('/logout')}}" class="btn btn-label-danger btn-sm btn-bold">Sign Out</a>
 										</div>
 									</div>
 

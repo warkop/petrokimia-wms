@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use DB;
 
-class JenisFoto extends Model
+class ShiftKerja extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'jenis_foto';
-    protected $primaryKey = 'jenis_foto_id';
+    protected $table = 'shift_kerja';
+    protected $primaryKey = 'shift_kerja_id';
 
     protected $guarded = [
-        'jenis_foto_id',
+        'shift_kerja_id',
     ];
 
     protected $hidden = [
@@ -27,21 +27,20 @@ class JenisFoto extends Model
         'deleted_by',
     ];
 
-    protected $dateFormat = 'd-m-Y';
 
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at', 'deleted_at'];
 
     public $timestamps  = false;
 
-    public function jsonGrid($start=0, $length=10, $search = '', $count = false, $sort='asc', $field='jenis_foto_id', $condition)
+    public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'shift_kerja_id', $condition)
     {
-        $result = DB::table('jenis_foto')
-            ->select('jenis_foto_id AS id', 'nama_jenis_foto AS nama', DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\') AS end_date'))
+        $result = DB::table('shift_kerja')
+            ->select('shift_kerja_id AS id', 'nama_shift AS nama', DB::raw('TO_CHAR(mulai_shift, \'HH24:MI\') AS mulai'), DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\') AS end_date'))
             ->whereNull('deleted_at');
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
-                $where->where(DB::raw('LOWER(nama_jenis_foto)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->where(DB::raw('LOWER(nama_shift)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
                 $where->orWhere(DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
             });

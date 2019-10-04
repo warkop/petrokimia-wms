@@ -21,7 +21,7 @@
             </div>
 			<div class="kt-portlet__head-toolbar">
 				<div class="kt-portlet__head-group pt-4">
-					<a href="#" class="btn btn-wms btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
+					<a href="#" class="btn btn-wms btn-elevate btn-elevate-air" onclick="tambah()" data-toggle="modal"><i class="la la-plus"></i> Tambah Data</a>
 				</div>
 			</div>
 		</div>
@@ -46,7 +46,7 @@
 
 
 <!--begin::Modal-->
-<div class="modal fade" id="kt_modal_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade btn_close_modal" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -55,17 +55,32 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>
-            <form action="">
+            <form  id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
                 <div class="modal-body">
+                    @if ($errors->count() > 0)
+                        <div id="error_message" class="alert alert-danger">
+                            @foreach ($errors->all() as $error)
+                                {{ $error }}<br>
+                            @endforeach
+                        </div>
+                    @endif
+                    <input type="hidden" class="form-control" id="shift_kerja_id" name="shift_kerja_id">
+                    <input type="hidden" name="action" id="action" value="add">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Nama Shift</label>
-                                <input type="text" class="form-control" placeholder="Masukkan nama shift">
+                                <input type="text" class="form-control input-enter" name="nama_shift" id="nama_shift" placeholder="Masukkan nama shift">
                             </div>
                             <div class="form-group">
                                 <label>Jam Mulai</label>
-                                <input type="text" class="form-control" placeholder="Ex. 08:00:00">
+                                <div class="input-group timepicker">
+                                    <input class="form-control input-enter" name="mulai_shift" id="kt_timepicker_2" readonly placeholder="Pilih jam" type="text" />
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-time"></i>
+                                    </span>
+                                    <p class="help-block text-danger"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -73,20 +88,20 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Start Date</label>
-                                <input type="text" class="form-control" id="start_date" readonly placeholder="Select date">
+                                <input type="text" class="form-control input-enter" name="start_date" id="start_date" readonly placeholder="Pilih Tanggal">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>End Date</label>
-                                <input type="text" class="form-control" id="end_date" readonly placeholder="Select date">
+                                <input type="text" class="form-control input-enter" name="end_date" id="end_date" readonly placeholder="Pilih Tanggal">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-wms">Simpan data</button>
+                    <button type="button" class="btn btn-wms ladda-button" data-style="zoom-in"  id="btn_save">Simpan data</button>
                 </div>
             </form>
         </div>
@@ -96,14 +111,32 @@
 
 
 
-
+{{-- <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" /> --}}
 
 <script src="{{asset('assets/extends/js/page/master-shift-kerja.js')}}" type="text/javascript"></script>
 <script>
 $('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
+    format:'dd-mm-yyyy',
     orientation: "bottom left"
 });
+
+$("#kt_timepicker_2").timepicker({
+    minuteStep: 1,
+    defaultTime: 'current',
+    showSeconds: false,
+    showMeridian: false,
+    snapToStep: true,
+    icons: {
+        up: 'fa fa-angle-up',
+        down: 'fa fa-angle-down'
+    }
+});
+
+// $('#kt_timepicker_2').timepicker({
+//     uiLibrary: 'bootstrap4'
+// });
 </script>
 @endsection

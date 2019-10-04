@@ -13,7 +13,9 @@
     <meta name="author" content="{{app_info(['vendor', 'company'])}}">
 	<link rel="shortcut icon" href="{{ aset_extends('img/logo/fav_wms_green@2x.png')}}" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <script>
+        var baseUrl = "{{url('/')}}/";
+    </script>
 
     <link rel="stylesheet" href="{{aset_extends()}}login/css/bootstrap.css">
     <link rel="stylesheet" href="{{aset_extends()}}login/css/bootstrap.min.css">
@@ -57,24 +59,24 @@
                                 Aplikasi manajemen kinerja gudang dan bagian Manajemen Kualitas 
                                 pemuatan produk pupuk/non pupuk
                             </p>
-                            <form class="center">
+                            <form class="kt-form center" action="" id="form1" method="post" onsubmit="return false">
+                                <input type="hidden" name="last_url" id="last_url" value="{{$source}}">
                                 <div class="username form-group">
                                     <label for="">Username</label>
-                                    <input type="text" class="form-control" id="username" placeholder="masukkan username" autocomplete="username">
+                                    <input type="text" class="form-control input-login" id="username" name="username" placeholder="masukkan username" autocomplete="username">
                                 </div>
                                 <div class="password form-group">
                                     <label for="">Password</label>
-                                    <input type="password" class="form-control" id="password" placeholder="masukkan password" autocomplete="current-password">
+                                    <input type="password" class="form-control input-login" id="password" name="password" placeholder="masukkan password" autocomplete="current-password">
                                 </div>
                                 <div class="button">
-                                    <a href="{{url('/dashboard')}}" class="btn btn-pills btn-block btn-brand-cta btn-lg float-right btn-shadow-login-invert ladda-button">
+                                    <button type="button" class="btn btn-pills btn-block btn-brand-cta btn-lg float-right btn-shadow-login-invert ladda-button" data-style="zoom-in" id="btn_login">
                                         Sign In
-                                    </a>
+                                    </button>
                                 </div>
                             </form>
                         </div>
                         <div>
-                            <!-- <img class="foot-illus" src="{{ aset_extends()}}img/illustration/foot-illus.png" alt="" srcset="">             -->
                         </div>
                     </div>
                     <div class="footer-bottom">
@@ -167,7 +169,7 @@
                 success : function(response){
 
                     if(response.code == 200){
-                        // laddaLogin.stop();
+                        laddaLogin.stop();
                         // swal.fire("Hello","Selamat Datang "+response.data.fullname,"success");
                         var last_url = $('#last_url').val();
 

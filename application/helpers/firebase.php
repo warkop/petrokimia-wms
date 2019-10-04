@@ -41,7 +41,7 @@ function send_firebase($token, $message, $single = TRUE)
 
 	$result = curl_exec($ch);
 	if($result === FALSE){
-		die('Curl failde: '. curl_error($ch));
+		die('Curl failed: '. curl_error($ch));
 	}
 
 	curl_close($ch);

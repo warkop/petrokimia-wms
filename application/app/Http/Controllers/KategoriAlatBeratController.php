@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Models\JenisFoto;
+use App\Http\Models\KategoriAlatBerat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
-class JenisFotoController extends Controller
+class KategoriAlatBeratController extends Controller
 {
     private $responseCode = 403;
     private $responseStatus = '';
     private $responseMessage = '';
     private $responseData = [];
-
+    
     public function index()
     {
-        return view('master/master-jenis-foto/grid');
+        return view('master.master-alat-berat.grid');
     }
 
     public function create()
@@ -25,8 +26,7 @@ class JenisFotoController extends Controller
 
     public function json(Request $req)
     {
-        
-        $models = new JenisFoto();
+        $models = new KategoriAlatBerat();
 
         $numbcol = $req->get('order');
         $columns = $req->get('columns');
@@ -60,17 +60,18 @@ class JenisFotoController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, JenisFoto $models)
+    public function store(Request $req, KategoriAlatBerat $models)
     {
+        $id = $req->input('kategori_alat_berat_id');
         $rules = [
-            'nama_jenis_foto'   => 'required',
-            'start_date'        => 'nullable|date_format:d-m-Y',
-            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
+            'nama_kategori_alat_berat'    => ['required', Rule::unique('kategori_alat_berat', 'nama_kategori_alat_berat')->ignore($id, 'kategori_alat_berat_id')],
+            'start_date'                  => 'nullable|date_format:d-m-Y',
+            'end_date'                    => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
         $action = $req->input('action');
         if ($action == 'edit') {
-            $rules['jenis_foto_id'] = 'required';
+            $rules['kategori_alat_berat_id'] = 'required';
         }
 
         $validator = Validator::make($req->all(), $rules);
@@ -80,7 +81,7 @@ class JenisFotoController extends Controller
             $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
             $this->responseData['error_log']    = $validator->errors();
         } else {
-            $jenis_foto_id = $req->input('jenis_foto_id');
+            
 
             $start_date  = null;
             if ($req->input('start_date') != '') {
@@ -92,16 +93,17 @@ class JenisFotoController extends Controller
                 $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
             }
 
-            if (!empty($jenis_foto_id)) {
-                $models = JenisFoto::find($jenis_foto_id);
+            if (!empty($id)) {
+                $models = KategoriAlatBerat::find($id);
                 $models->updated_by = session('userdata')['id_user'];
             } else {
                 $models->created_by = session('userdata')['id_user'];
             }
 
-            $models->nama_jenis_foto  = strip_tags($req->input('nama_jenis_foto'));
-            $models->start_date  = $start_date;
-            $models->end_date   = $end_date;
+            $models->nama_kategori_alat_berat = strip_tags($req->input('nama_kategori_alat_berat'));
+            $models->anggaran_alat_berat = strip_tags($req->input('anggaran_alat_berat'));
+            $models->start_date     = $start_date;
+            $models->end_date       = $end_date;
 
             $models->save();
 
@@ -113,7 +115,13 @@ class JenisFotoController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
-    public function show($id, JenisFoto $models, Request $request)
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\KategoriAlatBerat  $kategoriAlatBerat
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id, KategoriAlatBerat $models, Request $request)
     {
         if (!$request->ajax()) {
             return $this->accessForbidden();
@@ -135,18 +143,50 @@ class JenisFotoController extends Controller
         }
     }
 
-    public function edit(JenisFoto $jenisFoto)
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\KategoriAlatBerat  $kategoriAlatBerat
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(KategoriAlatBerat $kategoriAlatBerat)
     {
         //
     }
 
-    public function update(Request $request, JenisFoto $jenisFoto)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\KategoriAlatBerat  $kategoriAlatBerat
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, KategoriAlatBerat $kategoriAlatBerat)
     {
         //
     }
 
-    public function destroy(JenisFoto $jenisFoto)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\KategoriAlatBerat  $kategoriAlatBerat
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(KategoriAlatBerat $models)
     {
-        //
+        KategoriAlatBerat::destroy($models->shift_kerja_id);
+        $res = KategoriAlatBerat::find($models->shift_kerja_id);
+        if (!empty($res)) {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Data gagal dihapus';
+            $this->responseData = [];
+        } else {
+            $this->responseData = [];
+            $this->responseStatus = 'No Data Available';
+            $this->responseMessage = 'Data berhasil dihapus';
+        }
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 }

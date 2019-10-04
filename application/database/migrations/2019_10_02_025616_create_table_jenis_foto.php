@@ -16,7 +16,7 @@ class CreateTableJenisFoto extends Migration
         Schema::create('jenis_foto', function (Blueprint $table) {
             $table->increments('jenis_foto_id');
             $table->string('nama_jenis_foto')->nullable();
-            $table->date('from_date')->nullable();
+            $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->string('created_by')->nullable();
             $table->string('updated_by')->nullable();

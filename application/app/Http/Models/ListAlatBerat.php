@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use DB;
 
-class JenisFoto extends Model
+class ListAlatBerat extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'jenis_foto';
-    protected $primaryKey = 'jenis_foto_id';
+    protected $table = 'list_alat_berat';
+    protected $primaryKey = 'list_alat_berat_id';
 
     protected $guarded = [
-        'jenis_foto_id',
+        'list_alat_berat_id',
     ];
 
     protected $hidden = [
@@ -33,17 +33,17 @@ class JenisFoto extends Model
 
     public $timestamps  = false;
 
-    public function jsonGrid($start=0, $length=10, $search = '', $count = false, $sort='asc', $field='jenis_foto_id', $condition)
+    public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'alat_berat_id', $condition, $id_kategori)
     {
-        $result = DB::table('jenis_foto')
-            ->select('jenis_foto_id AS id', 'nama_jenis_foto AS nama', DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\') AS end_date'))
-            ->whereNull('deleted_at');
+        $result = DB::table('list_alat_berat')
+            ->select('list_alat_berat_id AS id', 'nomor_lambung', 'nomor_polisi', 'status')
+            ->whereNull('deleted_at')
+            ->where('kategori_alat_berat_id', $id_kategori);
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
-                $where->where(DB::raw('LOWER(nama_jenis_foto)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
-                $where->orWhere(DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
+                $where->where(DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw('LOWER(nomor_polisi)'), 'ILIKE', '%' . strtolower($search) . '%');
             });
         }
 

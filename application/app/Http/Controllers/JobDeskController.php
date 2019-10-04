@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Models\JenisFoto;
+use App\Http\Models\JobDesk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class JenisFotoController extends Controller
+class JobDeskController extends Controller
 {
     private $responseCode = 403;
     private $responseStatus = '';
@@ -15,9 +15,10 @@ class JenisFotoController extends Controller
 
     public function index()
     {
-        return view('master/master-jenis-foto/grid');
+        return view('master/master-pekerjaan/grid');
     }
 
+    
     public function create()
     {
         //
@@ -25,8 +26,7 @@ class JenisFotoController extends Controller
 
     public function json(Request $req)
     {
-        
-        $models = new JenisFoto();
+        $models = new JobDesk();
 
         $numbcol = $req->get('order');
         $columns = $req->get('columns');
@@ -59,18 +59,18 @@ class JenisFotoController extends Controller
 
         return response()->json($this->responseData, $this->responseCode);
     }
-
-    public function store(Request $req, JenisFoto $models)
+    
+    public function store(Request $req, JobDesk $models)
     {
         $rules = [
-            'nama_jenis_foto'   => 'required',
+            'job_desk'          => 'required',
             'start_date'        => 'nullable|date_format:d-m-Y',
             'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
         $action = $req->input('action');
         if ($action == 'edit') {
-            $rules['jenis_foto_id'] = 'required';
+            $rules['job_desk_id'] = 'required';
         }
 
         $validator = Validator::make($req->all(), $rules);
@@ -80,7 +80,7 @@ class JenisFotoController extends Controller
             $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
             $this->responseData['error_log']    = $validator->errors();
         } else {
-            $jenis_foto_id = $req->input('jenis_foto_id');
+            $id = $req->input('job_desk_id');
 
             $start_date  = null;
             if ($req->input('start_date') != '') {
@@ -92,14 +92,14 @@ class JenisFotoController extends Controller
                 $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
             }
 
-            if (!empty($jenis_foto_id)) {
-                $models = JenisFoto::find($jenis_foto_id);
+            if (!empty($id)) {
+                $models = JobDesk::find($id);
                 $models->updated_by = session('userdata')['id_user'];
             } else {
                 $models->created_by = session('userdata')['id_user'];
             }
 
-            $models->nama_jenis_foto  = strip_tags($req->input('nama_jenis_foto'));
+            $models->job_desk  = strip_tags($req->input('job_desk'));
             $models->start_date  = $start_date;
             $models->end_date   = $end_date;
 
@@ -112,8 +112,8 @@ class JenisFotoController extends Controller
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
     }
-
-    public function show($id, JenisFoto $models, Request $request)
+    
+    public function show($id, JobDesk $models, Request $request)
     {
         if (!$request->ajax()) {
             return $this->accessForbidden();
@@ -135,17 +135,17 @@ class JenisFotoController extends Controller
         }
     }
 
-    public function edit(JenisFoto $jenisFoto)
+    public function edit($id)
     {
         //
     }
 
-    public function update(Request $request, JenisFoto $jenisFoto)
+    public function update(Request $request, $id)
     {
         //
     }
 
-    public function destroy(JenisFoto $jenisFoto)
+    public function destroy($id)
     {
         //
     }
