@@ -21,11 +21,7 @@
             </div>
 			<div class="kt-portlet__head-toolbar">
 				<div class="kt-portlet__head-group pt-4">
-<<<<<<< HEAD
-					<a href="#" class="btn btn-wms btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
-=======
-					<a href="#" class="btn btn-success btn-elevate btn-elevate-air" onclick="tambah()" data-toggle="modal"><i class="la la-plus"></i> Tambah Data</a>
->>>>>>> 51af6befd732930893f249778b91c7e4d41f443c
+					<a href="#" class="btn btn-wms btn-elevate btn-elevate-air" onclick="tambah()" data-toggle="modal"><i class="la la-plus"></i> Tambah Data</a>
 				</div>
 			</div>
 		</div>
