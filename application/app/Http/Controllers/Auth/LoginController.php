@@ -28,7 +28,7 @@ class LoginController extends Controller
      * @var string
      */
     private $title = 'Login';
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
     /**
      * Create a new controller instance.
      *
@@ -55,19 +55,18 @@ class LoginController extends Controller
         if(Auth::check()){
             return $request->expectsJson() ? response()->json(helpResponse(200, [], 'Anda sudah login')) : redirect()->intended('home');
         }else{
-            $credentials    = $request->only('username', 'password');
             $username       = $request->input('username');
             $password       = $request->input('password');
 
             $data = ['username' => $username, 'password' => $password];           
             if (Auth::attempt($data)) {
                 $user = Auth::user();
-                $session['userdata'] = $data;
-                $session['userdata']['id_user'] = $user->user_id;
-                $session['userdata']['username'] = $user->username;
-                $session['userdata']['fullname'] = $user->name;
-                $session['userdata']['email'] = $user->email;
-                $session['userdata']['role_id'] = $user->role_id;
+                $session['userdata']                = $data;
+                $session['userdata']['id_user']     = $user->id;
+                $session['userdata']['username']    = $user->username;
+                $session['userdata']['fullname']    = $user->name;
+                $session['userdata']['email']       = $user->email;
+                $session['userdata']['role_id']     = $user->role_id;
                 session($session);
 
                 return $request->expectsJson() ? response()->json(helpResponse(200, ['user' => $user], 'Selamat Anda berhasil login'), 200) : redirect()->intended('home');
@@ -76,7 +75,6 @@ class LoginController extends Controller
                 $request->session()->flash('alerts', $alerts);
                 return $request->expectsJson() ? response()->json(helpResponse(401, [], 'Username atau Password Anda salah'), 401) : redirect()->intended('login');
             }
-
         }
     }
 
