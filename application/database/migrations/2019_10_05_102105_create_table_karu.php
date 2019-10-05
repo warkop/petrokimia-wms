@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableJobDesk extends Migration
+class CreateTableKaru extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateTableJobDesk extends Migration
      */
     public function up()
     {
-        Schema::create('job_desk', function (Blueprint $table) {
+        Schema::create('karu', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nama')->nullable();
+            $table->string('no_hp')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->integer('created_by')->nullable();
@@ -31,6 +32,8 @@ class CreateTableJobDesk extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('job_desk');
+        Schema::create('karu', function (Blueprint $table) {
+            //
+        });
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableKerusakanAlatBerat extends Migration
+class CreateTableAlatBeratKerusakan extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,14 @@ class CreateTableKerusakanAlatBerat extends Migration
      */
     public function up()
     {
-        Schema::create('kerusakan_alat_berat', function (Blueprint $table) {
-            $table->increments('kerusakan_alat_berat_id');
-            $table->string('nama_kerusakan')->nullable();
+        Schema::create('alat_berat_kerusakan', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('nama')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->string('created_by')->nullable();
-            $table->string('updated_by')->nullable();
-            $table->string('deleted_by')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -33,6 +31,6 @@ class CreateTableKerusakanAlatBerat extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kerusakan_alat_berat');
+        Schema::dropIfExists('alat_berat_kerusakan');
     }
 }

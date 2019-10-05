@@ -13,16 +13,14 @@ class CreateTableJenisFoto extends Migration
      */
     public function up()
     {
-        Schema::create('jenis_foto', function (Blueprint $table) {
-            $table->increments('jenis_foto_id');
-            $table->string('nama_jenis_foto')->nullable();
+        Schema::create('foto_jenis', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('nama')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->string('created_by')->nullable();
-            $table->string('updated_by')->nullable();
-            $table->string('deleted_by')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -33,6 +31,6 @@ class CreateTableJenisFoto extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jenis_foto');
+        Schema::dropIfExists('foto_jenis');
     }
 }

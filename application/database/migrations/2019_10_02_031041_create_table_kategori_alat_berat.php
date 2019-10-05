@@ -13,17 +13,15 @@ class CreateTableKategoriAlatBerat extends Migration
      */
     public function up()
     {
-        Schema::create('kategori_alat_berat', function (Blueprint $table) {
-            $table->increments('kategori_alat_berat_id');
-            $table->string('nama_kategori_alat_berat')->nullable();
-            $table->float('anggaran_alat_berat')->nullable();
+        Schema::create('alat_berat_kat', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('nama')->nullable();
+            $table->float('anggaran')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->string('created_by')->nullable();
-            $table->string('updated_by')->nullable();
-            $table->string('deleted_by')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -34,6 +32,6 @@ class CreateTableKategoriAlatBerat extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kategori_alat_berat');
+        Schema::dropIfExists('alat_berat_kat');
     }
 }

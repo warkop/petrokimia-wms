@@ -14,16 +14,15 @@ class CreateTableShiftKerja extends Migration
     public function up()
     {
         Schema::create('shift_kerja', function (Blueprint $table) {
-            $table->increments('shift_kerja_id');
-            $table->string('nama_shift')->nullable();
-            $table->time('mulai_shift')->nullable();
+            $table->increments('id');
+            $table->string('nama')->nullable();
+            $table->time('mulai')->nullable();
+            $table->time('akhir')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->string('created_by')->nullable();
-            $table->string('updated_by')->nullable();
-            $table->string('deleted_by')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

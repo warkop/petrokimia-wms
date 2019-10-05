@@ -13,17 +13,15 @@ class CreateTableListAlatBerat extends Migration
      */
     public function up()
     {
-        Schema::create('list_alat_berat', function (Blueprint $table) {
-            $table->increments('list_alat_berat_id');
-            $table->integer('kategori_alat_berat_id')->nullable();
+        Schema::create('alat_berat', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('id_kategori')->nullable();
             $table->string('nomor_lambung')->nullable();
             $table->string('nomor_polisi')->nullable();
             $table->string('status', 1)->default(1);
-            $table->string('created_by')->nullable();
-            $table->string('updated_by')->nullable();
-            $table->string('deleted_by')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -34,6 +32,6 @@ class CreateTableListAlatBerat extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('list_alat_berat');
+        Schema::dropIfExists('alat_berat');
     }
 }
