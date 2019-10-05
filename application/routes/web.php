@@ -45,6 +45,15 @@ Route::group(['prefix' => 'master-karu', 'middleware' => ['eauth', 'revalidate']
     Route::get('/{id}', 'KaruController@show');
     Route::delete('/{id}', 'KaruController@destroy');
 });
+
+Route::group(['prefix' => 'master-material', 'middleware' => ['eauth', 'revalidate']], function () {
+    Route::get('/', 'MaterialController@index');
+    Route::put('/', 'MaterialController@store');
+    Route::post('/', 'MaterialController@json');
+    Route::get('/{id}', 'MaterialController@show');
+    Route::delete('/{id}', 'MaterialController@destroy');
+});
+
 Route::group(['prefix' => 'master-tenaga-kerja-nonorganik', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'TenagaKerjaNonOrganikController@index');
     Route::put('/', 'TenagaKerjaNonOrganikController@store');
@@ -110,9 +119,9 @@ Route::group(['prefix' => 'master-user', 'middleware' => ['eauth', 'revalidate']
     Route::delete('/{id}', 'UsersController@destroy');
 });
 
-Route::get('/master-material', function () {
-    return view('master.master-material.grid');
-});
+// Route::get('/master-material', function () {
+//     return view('master.master-material.grid');
+// });
 Route::get('/layout', function () {
     return view('menu-layout.grid');
 });
