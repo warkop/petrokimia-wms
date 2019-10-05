@@ -2,8 +2,8 @@
 
 let datatable,
     tableTarget = '#kt_table_1',
-    ajaxUrl = baseUrl + '/master-jenis-foto/',
-    ajaxSource = ajaxUrl + 'json',
+    ajaxUrl = baseUrl + 'master-jenis-foto',
+    ajaxSource = ajaxUrl,
     laddaButton;
 
 jQuery(document).ready(function () {
@@ -104,7 +104,7 @@ var load_table = function () {
 
 function tambah() {
     reset_form();
-    $('#jenis_foto_id').val('');
+    $('#id').val('');
     $('#action').val('add');
     $('#btn_save').html('Tambah Data');
     $('#modal_form .modal-title').html('Tambah Data Jenis Foto');
@@ -115,9 +115,9 @@ function tambah() {
     }, 'show');
 }
 
-function edit(jenis_foto_id = '') {
+function edit(id = '') {
     reset_form();
-    $('#jenis_foto_id').val(jenis_foto_id);
+    $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
     $('#modal_form .modal-title').html('Edit Data Jenis Foto');
@@ -129,7 +129,7 @@ function edit(jenis_foto_id = '') {
 
     $.ajax({
         type: "GET",
-        url: ajaxUrl + "show/" + jenis_foto_id,
+        url: ajaxUrl + "/" + id,
         beforeSend: function () {
             preventLeaving();
             $('.btn_close_modal').addClass('hide');
@@ -143,9 +143,14 @@ function edit(jenis_foto_id = '') {
             var obj = response;
 
             if (obj.status == "OK") {
-                $('#nama_jenis_foto').val(obj.data['nama_jenis_foto']);
-                $('#start_date').val(obj.data['start_date']);
-                $('#end_date').val(obj.data['end_date']);
+                $('#nama').val(obj.data['nama']);
+                if (obj.data['start_date'] != null) {
+                    $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
+                }
+
+                if (obj.data['end_date'] != null) {
+                    $('#end_date').val(helpDateFormat(obj.data['end_date'], 'si'));
+                }
             } else {
                 swal.fire('Pemberitahuan', obj.message, 'warning');
             }
@@ -192,7 +197,7 @@ function simpan() {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: ajaxUrl + "save",
+        url: ajaxUrl,
         data: data,
         beforeSend: function () {
             preventLeaving();
@@ -251,10 +256,10 @@ function simpan() {
 }
 
 function reset_form(method = '') {
-    $('#jenis_foto_id').val('');
-    $('#jenis_foto_id').change();
-    $('#nama_jenis_foto').val('');
-    $('#nama_jenis_foto').change();
+    $('#id').val('');
+    $('#id').change();
+    $('#nama').val('');
+    $('#nama').change();
     $('#start_date').val('');
     $('#start_date').change();
     $('#end_date').val('');

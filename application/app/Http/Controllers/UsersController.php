@@ -65,19 +65,19 @@ class UsersController extends Controller
     public function store(Request $req, Users $models)
     {
         $role = $req->input('role_id');
-        $id   = $req->input('user_id');
+        $id   = $req->input('id');
 
         $rules = [
             'username'      => [
                 'required',
-                Rule::unique('users', 'username')->ignore($id, 'user_id')
+                Rule::unique('users', 'username')->ignore($id, 'id')
             ],
             'email'         => 'email',
             'role_id'       => [
                 'required',
-                Rule::exists('role')->where(function ($query) use ($role) {
-                    $query->where('role_id',  $role);
-                })
+                // Rule::exists('role')->where(function ($query) use ($role) {
+                //     $query->where('id',  $role);
+                // })
             ],
             'start_date'    => 'nullable|date_format:d-m-Y',
             'end_date'      => 'nullable|date_format:d-m-Y|after:start_date',
@@ -85,7 +85,7 @@ class UsersController extends Controller
 
         $action = $req->input('action');
         if ($action == 'edit') {
-            $rules['user_id'] = 'required';
+            $rules['id'] = 'required';
         }
 
         $validator = Validator::make($req->all(), $rules);

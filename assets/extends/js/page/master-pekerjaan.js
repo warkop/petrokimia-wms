@@ -2,8 +2,8 @@
 
 let datatable,
     tableTarget = '#kt_table_1',
-    ajaxUrl = baseUrl + '/master-pekerjaan/',
-    ajaxSource = ajaxUrl + 'json',
+    ajaxUrl = baseUrl + 'master-pekerjaan',
+    ajaxSource = ajaxUrl,
     laddaButton;
 
 jQuery(document).ready(function () {
@@ -105,7 +105,7 @@ let load_table = function () {
 
 function tambah() {
     reset_form();
-    $('#job_desk_id').val('');
+    $('#id').val('');
     $('#action').val('add');
     $('#btn_save').html('Tambah Data');
     $('#modal_form .modal-title').html('Tambah Data Job Desk');
@@ -116,9 +116,9 @@ function tambah() {
     }, 'show');
 }
 
-function edit(job_desk_id = '') {
+function edit(id = '') {
     reset_form();
-    $('#job_desk_id').val(job_desk_id);
+    $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
     $('#modal_form .modal-title').html('Edit Data Job Desk');
@@ -130,7 +130,7 @@ function edit(job_desk_id = '') {
 
     $.ajax({
         type: "GET",
-        url: ajaxUrl + "show/" + job_desk_id,
+        url: ajaxUrl + "/" + id,
         beforeSend: function () {
             preventLeaving();
             $('.btn_close_modal').addClass('hide');
@@ -144,9 +144,14 @@ function edit(job_desk_id = '') {
             let obj = response;
 
             if (obj.status == "OK") {
-                $('#job_desk').val(obj.data['job_desk']);
-                $('#start_date').val(obj.data['start_date']);
-                $('#end_date').val(obj.data['end_date']);
+                $('#nama').val(obj.data['nama']);
+                if (obj.data['start_date'] != null) {
+                    $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
+                }
+
+                if (obj.data['end_date'] != null) {
+                    $('#end_date').val(helpDateFormat(obj.data['end_date'], 'si'));
+                }
             } else {
                 swal.fire('Pemberitahuan', obj.message, 'warning');
             }
@@ -192,7 +197,7 @@ function simpan() {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: ajaxUrl + "save",
+        url: ajaxUrl,
         data: data,
         beforeSend: function () {
             preventLeaving();
@@ -251,10 +256,10 @@ function simpan() {
 }
 
 function reset_form(method = '') {
-    $('#job_desk_id').val('');
-    $('#job_desk_id').change();
-    $('#job_desk').val('');
-    $('#job_desk').change();
+    $('#id').val('');
+    $('#id').change();
+    $('#nama').val('');
+    $('#nama').change();
     $('#start_date').val('');
     $('#start_date').change();
     $('#end_date').val('');

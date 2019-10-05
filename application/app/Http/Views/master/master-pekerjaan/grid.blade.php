@@ -56,13 +56,13 @@
             </div>
             <form  id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
                 <div class="modal-body">
-                    <input type="hidden" class="form-control" id="job_desk_id" name="job_desk_id">
+                    <input type="hidden" class="form-control" id="id" name="id">
                     <input type="hidden" name="action" id="action" value="add">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Job Desk</label>
-                                <input type="text" class="form-control input-enter" name="job_desk" id="job_desk" placeholder="Masukkan Job Desk">
+                                <input type="text" class="form-control input-enter" name="nama" id="nama" placeholder="Masukkan Job Desk">
                             </div>
                         </div>
                     </div>

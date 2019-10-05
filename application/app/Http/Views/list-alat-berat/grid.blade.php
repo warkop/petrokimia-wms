@@ -59,7 +59,7 @@
             </div>
             <form id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
                 <div class="modal-body">
-                    <input type="hidden" class="form-control" id="list_alat_berat_id" name="list_alat_berat_id">
+                    <input type="hidden" class="form-control" id="id" name="id">
                     <input type="hidden" name="action" id="action" value="add">
                     <div class="row">
                         <div class="col-md-12">

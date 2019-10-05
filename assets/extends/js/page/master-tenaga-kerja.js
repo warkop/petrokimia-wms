@@ -28,6 +28,19 @@ jQuery(document).ready(function () {
             $("#btn_save").click();
         }
     });
+
+    // $('#nomor_hp').autoNumeric('init', {
+    //     minimumValue: '0',
+    //     maximumValue: '999999999',
+    //     decimalPlaces: 0,
+    //     digitGroupSeparator: '',
+    // });
+
+    // $('#nomor_bpjs').autoNumeric('init', {
+    //     aSep: '.',
+    //     aDec: ',',
+    //     aSign: ''
+    // });
 });
 
 let load_table = function () {
@@ -111,7 +124,7 @@ let load_table = function () {
 
 function tambah() {
     reset_form();
-    $('#tenaga_kerja_non_organik_id').val('');
+    $('#id').val('');
     $('#action').val('add');
     $('#btn_save').html('Tambah Data');
     $('#modal_form .modal-title').html('Tambah Data Tenaga Kerja Non Organik');
@@ -122,9 +135,9 @@ function tambah() {
     }, 'show');
 }
 
-function edit(tenaga_kerja_non_organik_id = '') {
+function edit(id = '') {
     reset_form();
-    $('#tenaga_kerja_non_organik_id').val(tenaga_kerja_non_organik_id);
+    $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
     $('#modal_form .modal-title').html('Edit Data Tenaga Kerja Non Organik');
@@ -136,7 +149,7 @@ function edit(tenaga_kerja_non_organik_id = '') {
 
     $.ajax({
         type: "GET",
-        url: ajaxUrl + "/" + tenaga_kerja_non_organik_id,
+        url: ajaxUrl + "/" + id,
         beforeSend: function () {
             preventLeaving();
             $('.btn_close_modal').addClass('hide');
@@ -150,7 +163,7 @@ function edit(tenaga_kerja_non_organik_id = '') {
             let obj = response;
 
             if (obj.status == "OK") {
-                $('#nama_tenaga_kerja').val(obj.data['nama_tenaga_kerja']);
+                $('#nama').val(obj.data['nama']);
                 $('#nomor_hp').val(obj.data['nomor_hp']);
                 $('#nomor_bpjs').val(obj.data['nomor_bpjs']);
                 $("#job_desk_id").val(obj.data['job_desk_id']).change();
@@ -265,12 +278,14 @@ function simpan() {
 }
 
 function reset_form(method = '') {
-    $('#tenaga_kerja_non_organik_id').val('');
-    $('#tenaga_kerja_non_organik_id').change();
-    $('#nama_tenaga_kerja').val('');
-    $('#nama_tenaga_kerja').change();
+    $('#id').val('');
+    $('#id').change();
+    $('#nama').val('');
+    $('#nama').change();
     $('#nomor_hp').val('');
     $('#nomor_hp').change();
+    $('#job_desk_id').val('');
+    $('#job_desk_id').change();
     $('#nomor_bpjs').val('');
     $('#nomor_bpjs').change();
     $('#start_date').val('');

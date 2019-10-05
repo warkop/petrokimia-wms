@@ -3,19 +3,16 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 use DB;
 
 class TenagaKerjaNonOrganik extends Model
 {
-    use SoftDeletes;
-
     protected $table = 'tenaga_kerja_non_organik';
-    protected $primaryKey = 'tenaga_kerja_non_organik_id';
+    protected $primaryKey = 'id';
 
     protected $guarded = [
-        'tenaga_kerja_non_organik_id',
+        'id',
     ];
 
     protected $hidden = [
@@ -23,25 +20,22 @@ class TenagaKerjaNonOrganik extends Model
         'created_by',
         'updated_at',
         'updated_by',
-        'deleted_at',
-        'deleted_by',
     ];
 
-    protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at', 'deleted_at'];
+    protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at',];
 
     public $timestamps  = false;
 
-    public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'tenaga_kerja_non_organik_id', $condition)
+    public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('tenaga_kerja_non_organik as tkno')
-            ->select('tenaga_kerja_non_organik_id AS id', 'job_desk.job_desk AS pekerjaan','nama_tenaga_kerja AS nama', 'nomor_hp AS no_hp', DB::raw('TO_CHAR(tkno.start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(tkno.end_date, \'dd-mm-yyyy\') AS end_date'))
-            ->leftJoin('job_desk', 'job_desk.job_desk_id', '=', 'tkno.job_desk_id')
-            ->whereNull('tkno.deleted_at');
+            ->select('tkno.id AS id', 'jd.nama AS pekerjaan','tkno.nama AS nama', 'nomor_hp AS no_hp', DB::raw('TO_CHAR(tkno.start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(tkno.end_date, \'dd-mm-yyyy\') AS end_date'))
+            ->leftJoin('job_desk as jd', 'jd.id', '=', 'tkno.job_desk_id');
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
-                $where->where(DB::raw('LOWER(nama_tenaga_kerja)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(DB::raw('LOWER(job_desk)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->where(DB::raw('LOWER(tkno.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw('LOWER(jd.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere('nomor_hp', 'ILIKE', '%' . $search . '%');
                 $where->orWhere(DB::raw('TO_CHAR(tkno.start_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
                 $where->orWhere(DB::raw('TO_CHAR(tkno.end_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');

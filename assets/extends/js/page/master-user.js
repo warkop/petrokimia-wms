@@ -115,7 +115,7 @@ let load_table = function () {
 
 function tambah() {
     reset_form();
-    $('#user_id').val('');
+    $('#id').val('');
     $('#action').val('add');
     $('#btn_save').html('Tambah Data');
     $('#modal_form .modal-title').html('Tambah Data Shift Kerja');
@@ -126,9 +126,9 @@ function tambah() {
     }, 'show');
 }
 
-function edit(user_id = '') {
+function edit(id = '') {
     reset_form();
-    $('#user_id').val(user_id);
+    $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
     $('#modal_form .modal-title').html('Edit Data Shift Kerja');
@@ -140,7 +140,7 @@ function edit(user_id = '') {
 
     $.ajax({
         type: "GET",
-        url: ajaxUrl + "/" + user_id,
+        url: ajaxUrl + "/" + id,
         beforeSend: function () {
             preventLeaving();
             $('.btn_close_modal').addClass('hide');
@@ -202,7 +202,7 @@ function edit(user_id = '') {
     });
 }
 
-function gantiPassword(user_id) {
+function gantiPassword(id) {
     swal.fire({
         title: 'Apakah Anda yakin?',
         text: "Password akan direset menjadi petrokimia123!",
@@ -224,7 +224,7 @@ function gantiPassword(user_id) {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: ajaxSource + "/" + user_id,
+                url: ajaxSource + "/" + id,
                 success: response => {
                     $('.se-pre-con').hide();
 
@@ -338,8 +338,8 @@ function simpan() {
 }
 
 function reset_form(method = '') {
-    $('#user_id').val('');
-    $('#user_id').change();
+    $('#id').val('');
+    $('#id').change();
     $('#username').val('');
     $('#username').change();
     $('#email').val('');

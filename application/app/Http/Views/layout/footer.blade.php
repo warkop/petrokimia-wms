@@ -57,6 +57,7 @@
 		<!--end::Page Vendors -->
 
 		<!--begin::Page Scripts(used by this page) -->
+		<script src="{{ aset_extends('plugin/autoNumeric.js') }}" type="text/javascript"></script>
 		<!--end::Page Scripts -->
 		
 		<!--begin::Global App Bundle(used by all pages) -->

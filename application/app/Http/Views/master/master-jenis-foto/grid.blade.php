@@ -57,13 +57,13 @@
             </div>
             <form  id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
                 <div class="modal-body">
-                    <input type="hidden" class="form-control" id="jenis_foto_id" name="jenis_foto_id">
+                    <input type="hidden" class="form-control" id="id" name="id">
                     <input type="hidden" name="action" id="action" value="add">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Nama Jenis</label>
-                                <input type="text" class="form-control input-enter" name="nama_jenis_foto" id="nama_jenis_foto" placeholder="Masukkan nama jenis foto">
+                                <input type="text" class="form-control input-enter" name="nama" id="nama" placeholder="Masukkan nama jenis foto">
                             </div>
                         </div>
                     </div>

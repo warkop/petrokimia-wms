@@ -2,7 +2,7 @@
 
 let datatable,
     tableTarget = '#kt_table_1',
-    ajaxUrl = baseUrl + '/list-alat-berat/' + id_kategori,
+    ajaxUrl = baseUrl + 'list-alat-berat/' + id_kategori,
     ajaxSource = ajaxUrl,
     laddaButton;
 
@@ -118,7 +118,7 @@ var load_table = function () {
 
 function tambah() {
     reset_form();
-    $('#list_alat_berat_id').val('');
+    $('#id').val('');
     $('#action').val('add');
     $('#btn_save').html('Tambah Data');
     $('#modal_form .modal-title').html('Tambah Data List Alat Berat');
@@ -129,9 +129,9 @@ function tambah() {
     }, 'show');
 }
 
-function edit(list_alat_berat_id = '') {
+function edit(id = '') {
     reset_form();
-    $('#list_alat_berat_id').val(list_alat_berat_id);
+    $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
     $('#modal_form .modal-title').html('Edit Data List Alat Berat');
@@ -143,7 +143,7 @@ function edit(list_alat_berat_id = '') {
 
     $.ajax({
         type: "GET",
-        url: ajaxUrl + "/" + list_alat_berat_id,
+        url: ajaxUrl + "/" + id,
         beforeSend: function () {
             preventLeaving();
             $('.btn_close_modal').addClass('hide');
@@ -264,8 +264,8 @@ function simpan() {
 }
 
 function reset_form(method = '') {
-    $('#list_alat_berat_id').val('');
-    $('#list_alat_berat_id').change();
+    $('#id').val('');
+    $('#id').change();
     $('#nomor_lambung').val('');
     $('#nomor_lambung').change();
     $('#nomor_polisi').val('');

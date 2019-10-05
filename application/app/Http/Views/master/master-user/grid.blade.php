@@ -55,7 +55,7 @@
             </div>
             <form  id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
                 <div class="modal-body">
-                    <input type="hidden" class="form-control" id="user_id" name="user_id">
+                    <input type="hidden" class="form-control" id="id" name="id">
                     <input type="hidden" name="action" id="action" value="add">
                     <div class="row">
                         <div class="col-md-12">
@@ -78,8 +78,8 @@
                                 <label>Pilih Hak Akses</label><br>
                                 @foreach ($role as $key)
                                 <span class="mr-2">
-                                    <input type="radio" id="radio{{$key->role_id}}" name="role_id" value="{{$key->role_id}}">
-                                    <label for="radio{{$key->role_id}}">{{$key->role_name}}</label>
+                                    <input type="radio" id="radio{{$key->id}}" name="role_id" value="{{$key->id}}">
+                                    <label for="radio{{$key->id}}">{{$key->nama}}</label>
                                 </span>
                                 @endforeach
                             </div>

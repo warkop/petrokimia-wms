@@ -63,14 +63,14 @@ class JobDeskController extends Controller
     public function store(Request $req, JobDesk $models)
     {
         $rules = [
-            'job_desk'          => 'required',
+            'nama'              => 'required',
             'start_date'        => 'nullable|date_format:d-m-Y',
             'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
         $action = $req->input('action');
         if ($action == 'edit') {
-            $rules['job_desk_id'] = 'required';
+            $rules['id'] = 'required';
         }
 
         $validator = Validator::make($req->all(), $rules);
@@ -80,7 +80,7 @@ class JobDeskController extends Controller
             $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
             $this->responseData['error_log']    = $validator->errors();
         } else {
-            $id = $req->input('job_desk_id');
+            $id = $req->input('id');
 
             $start_date  = null;
             if ($req->input('start_date') != '') {
@@ -99,7 +99,7 @@ class JobDeskController extends Controller
                 $models->created_by = session('userdata')['id_user'];
             }
 
-            $models->job_desk  = strip_tags($req->input('job_desk'));
+            $models->nama  = strip_tags($req->input('nama'));
             $models->start_date  = $start_date;
             $models->end_date   = $end_date;
 

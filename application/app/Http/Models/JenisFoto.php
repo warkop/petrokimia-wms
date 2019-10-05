@@ -3,19 +3,16 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 use DB;
 
 class JenisFoto extends Model
 {
-    use SoftDeletes;
-
-    protected $table = 'jenis_foto';
-    protected $primaryKey = 'jenis_foto_id';
+    protected $table = 'foto_jenis';
+    protected $primaryKey = 'id';
 
     protected $guarded = [
-        'jenis_foto_id',
+        'id',
     ];
 
     protected $hidden = [
@@ -23,25 +20,22 @@ class JenisFoto extends Model
         'created_by',
         'updated_at',
         'updated_by',
-        'deleted_at',
-        'deleted_by',
     ];
 
     protected $dateFormat = 'd-m-Y';
 
-    protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at', 'deleted_at'];
+    protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
     public $timestamps  = false;
 
-    public function jsonGrid($start=0, $length=10, $search = '', $count = false, $sort='asc', $field='jenis_foto_id', $condition)
+    public function jsonGrid($start=0, $length=10, $search = '', $count = false, $sort='asc', $field='id', $condition)
     {
-        $result = DB::table('jenis_foto')
-            ->select('jenis_foto_id AS id', 'nama_jenis_foto AS nama', DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\') AS end_date'))
-            ->whereNull('deleted_at');
+        $result = DB::table('foto_jenis')
+            ->select('id AS id', 'nama AS nama', DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\') AS end_date'));
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
-                $where->where(DB::raw('LOWER(nama_jenis_foto)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
                 $where->orWhere(DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
             });

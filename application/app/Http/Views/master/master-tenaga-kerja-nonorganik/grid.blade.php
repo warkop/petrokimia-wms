@@ -59,13 +59,13 @@
             </div>
             <form  id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
                 <div class="modal-body">
-                    <input type="hidden" class="form-control" id="tenaga_kerja_non_organik_id" name="tenaga_kerja_non_organik_id">
+                    <input type="hidden" class="form-control" id="id" name="id">
                     <input type="hidden" name="action" id="action" value="add">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Nama Tenaga Kerja</label>
-                                <input type="text" class="form-control input-enter" id="nama_tenaga_kerja" name="nama_tenaga_kerja" placeholder="Masukkan nama tenaga kerja">
+                                <input type="text" class="form-control input-enter" id="nama" name="nama" placeholder="Masukkan nama tenaga kerja">
                             </div>
                             <div class="form-group">
                                 <label>Nomor Hp</label>
@@ -76,7 +76,7 @@
                                 <select class="form-control m-select2" id="job_desk_id" name="job_desk_id" aria-placeholder="Pilih kategori" style="width: 100%;">
                                     <option value="">Pilih pekerjaan</option>
                                     @foreach ($job_desk as $item)
-                                        <option value="{{$item->job_desk_id}}">{{$item->job_desk}}</option>
+                                        <option value="{{$item->id}}">{{$item->nama}}</option>
                                     @endforeach
                                     {{-- <option value="HI">Checker</option>
                                     <option value="CA">Loket</option> --}}

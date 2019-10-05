@@ -63,14 +63,14 @@ class JenisFotoController extends Controller
     public function store(Request $req, JenisFoto $models)
     {
         $rules = [
-            'nama_jenis_foto'   => 'required',
+            'nama'              => 'required',
             'start_date'        => 'nullable|date_format:d-m-Y',
             'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
         $action = $req->input('action');
         if ($action == 'edit') {
-            $rules['jenis_foto_id'] = 'required';
+            $rules['id'] = 'required';
         }
 
         $validator = Validator::make($req->all(), $rules);
@@ -80,7 +80,7 @@ class JenisFotoController extends Controller
             $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
             $this->responseData['error_log']    = $validator->errors();
         } else {
-            $jenis_foto_id = $req->input('jenis_foto_id');
+            $id = $req->input('id');
 
             $start_date  = null;
             if ($req->input('start_date') != '') {
@@ -92,14 +92,14 @@ class JenisFotoController extends Controller
                 $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
             }
 
-            if (!empty($jenis_foto_id)) {
-                $models = JenisFoto::find($jenis_foto_id);
+            if (!empty($id)) {
+                $models = JenisFoto::find($id);
                 $models->updated_by = session('userdata')['id_user'];
             } else {
                 $models->created_by = session('userdata')['id_user'];
             }
 
-            $models->nama_jenis_foto  = strip_tags($req->input('nama_jenis_foto'));
+            $models->nama  = strip_tags($req->input('nama'));
             $models->start_date  = $start_date;
             $models->end_date   = $end_date;
 

@@ -110,7 +110,7 @@ let load_table = function () {
 
 function tambah() {
     reset_form();
-    $('#kategori_alat_berat_id').val('');
+    $('#id').val('');
     $('#action').val('add');
     $('#btn_save').html('Tambah Data');
     $('#modal_form .modal-title').html('Tambah Data Kategori Alat Berat');
@@ -121,9 +121,9 @@ function tambah() {
     }, 'show');
 }
 
-function edit(kategori_alat_berat_id = '') {
+function edit(id = '') {
     reset_form();
-    $('#kategori_alat_berat_id').val(kategori_alat_berat_id);
+    $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
     $('#modal_form .modal-title').html('Edit Data Kategori Alat Berat');
@@ -135,7 +135,7 @@ function edit(kategori_alat_berat_id = '') {
 
     $.ajax({
         type: "GET",
-        url: ajaxUrl + "/" + kategori_alat_berat_id,
+        url: ajaxUrl + "/" + id,
         beforeSend: function () {
             preventLeaving();
             $('.btn_close_modal').addClass('hide');
@@ -149,8 +149,8 @@ function edit(kategori_alat_berat_id = '') {
             let obj = response;
 
             if (obj.status == "OK") {
-                $('#nama_kategori_alat_berat').val(obj.data['nama_kategori_alat_berat']);
-                $('#anggaran_alat_berat').val(obj.data['anggaran_alat_berat']);
+                $('#nama').val(obj.data['nama']);
+                $('#anggaran').val(obj.data['anggaran']);
                 if (obj.data['start_date'] != null) {
                     $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
                 }
@@ -262,12 +262,12 @@ function simpan() {
 }
 
 function reset_form(method = '') {
-    $('#kategori_alat_berat_id').val('');
-    $('#kategori_alat_berat_id').change();
-    $('#nama_shift').val('');
-    $('#nama_shift').change();
-    $('#mulai_shift').val('');
-    $('#mulai_shift').change();
+    $('#id').val('');
+    $('#id').change();
+    $('#nama').val('');
+    $('#nama').change();
+    $('#anggaran').val('');
+    $('#anggaran').change();
     $('#start_date').val('');
     $('#start_date').change();
     $('#end_date').val('');

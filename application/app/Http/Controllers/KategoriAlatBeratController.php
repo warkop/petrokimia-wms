@@ -62,16 +62,16 @@ class KategoriAlatBeratController extends Controller
 
     public function store(Request $req, KategoriAlatBerat $models)
     {
-        $id = $req->input('kategori_alat_berat_id');
+        $id = $req->input('id');
         $rules = [
-            'nama_kategori_alat_berat'    => ['required', Rule::unique('kategori_alat_berat', 'nama_kategori_alat_berat')->ignore($id, 'kategori_alat_berat_id')],
+            'nama'    => ['required', Rule::unique('alat_berat_kat', 'nama')->ignore($id, 'id')],
             'start_date'                  => 'nullable|date_format:d-m-Y',
             'end_date'                    => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
         $action = $req->input('action');
         if ($action == 'edit') {
-            $rules['kategori_alat_berat_id'] = 'required';
+            $rules['id'] = 'required';
         }
 
         $validator = Validator::make($req->all(), $rules);
@@ -100,8 +100,8 @@ class KategoriAlatBeratController extends Controller
                 $models->created_by = session('userdata')['id_user'];
             }
 
-            $models->nama_kategori_alat_berat = strip_tags($req->input('nama_kategori_alat_berat'));
-            $models->anggaran_alat_berat = strip_tags($req->input('anggaran_alat_berat'));
+            $models->nama = strip_tags($req->input('nama'));
+            $models->anggaran = strip_tags($req->input('anggaran'));
             $models->start_date     = $start_date;
             $models->end_date       = $end_date;
 

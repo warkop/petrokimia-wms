@@ -31,12 +31,6 @@ Route::get('/master-aktivitas/tambah', function () {
 Route::get('/master-karu', function () {
     return view('master.master-karu.grid');
 });
-// Route::get('/master-tenaga-kerja-nonorganik', function () {
-//     return view('master.master-tenaga-kerja-nonorganik.grid');
-// });
-// Route::get('/master-alat-berat', function () {
-//     return view('master.master-alat-berat.grid');
-// });
 Route::get('/master-kerusakan-alat', function () {
     return view('master.master-kerusakan-alat.grid');
 });
@@ -54,9 +48,9 @@ Route::group(['prefix' => 'master-tenaga-kerja-nonorganik', 'middleware' => ['ea
 
 Route::group(['prefix' => 'master-pekerjaan', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'JobDeskController@index');
-    Route::put('/save', 'JobDeskController@store');
-    Route::post('/json', 'JobDeskController@json');
-    Route::get('/show/{id}', 'JobDeskController@show');
+    Route::put('/', 'JobDeskController@store');
+    Route::post('/', 'JobDeskController@json');
+    Route::get('/{id}', 'JobDeskController@show');
     Route::delete('/{id}', 'JobDeskController@destroy');
 });
 
@@ -94,9 +88,9 @@ Route::group(['prefix' => 'list-alat-berat', 'middleware' => ['eauth', 'revalida
 
 Route::group(['prefix' => 'master-jenis-foto', 'middleware' => ['eauth', 'revalidate']], function (){
     Route::get('/', 'JenisFotoController@index');
-    Route::put('/save', 'JenisFotoController@store');
-    Route::post('/json', 'JenisFotoController@json');
-    Route::get('/show/{id}', 'JenisFotoController@show');
+    Route::put('/', 'JenisFotoController@store');
+    Route::post('/', 'JenisFotoController@json');
+    Route::get('/{id}', 'JenisFotoController@show');
     Route::delete('/{id}', 'JenisFotoController@destroy');
 });
 

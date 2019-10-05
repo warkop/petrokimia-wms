@@ -43,3 +43,4 @@
 		<script src="{{aset_extends('plugin/ladda/dist/spin.min.js')}}"></script>
 		<script src="{{aset_extends('plugin/ladda/dist/ladda.min.js')}}"></script>
 		<script src="{{ aset_extends('js/energeek.js') }}" type="text/javascript"></script>
+		

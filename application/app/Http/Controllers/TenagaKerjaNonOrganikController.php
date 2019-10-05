@@ -69,16 +69,16 @@ class TenagaKerjaNonOrganikController extends Controller
 
     public function store(Request $req, TenagaKerjaNonOrganik $models)
     {
-        $id = $req->input('tenaga_kerja_non_organik_id');
+        $id = $req->input('id');
         $rules = [
-            'nama_tenaga_kerja' => ['required'],
+            'nama'              => ['required'],
             'start_date'        => 'nullable|date_format:d-m-Y',
             'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
         $action = $req->input('action');
         if ($action == 'edit') {
-            $rules['tenaga_kerja_non_organik_id'] = 'required';
+            $rules['id'] = 'required';
         }
 
         $validator = Validator::make($req->all(), $rules);
@@ -89,7 +89,7 @@ class TenagaKerjaNonOrganikController extends Controller
             $this->responseData['error_log']    = $validator->errors();
         } else {
             $job_desk_id = $req->input('job_desk_id');
-            $nama_tenaga_kerja = $req->input('nama_tenaga_kerja');
+            $nama = $req->input('nama');
             $nomor_hp = $req->input('nomor_hp');
             $nomor_bpjs = $req->input('nomor_bpjs');
 
@@ -110,7 +110,7 @@ class TenagaKerjaNonOrganikController extends Controller
                 $models->created_by = session('userdata')['id_user'];
             }
 
-            $models->nama_tenaga_kerja      = strip_tags($nama_tenaga_kerja);
+            $models->nama                   = strip_tags($nama);
             $models->job_desk_id            = $job_desk_id;
             $models->nomor_hp               = $nomor_hp;
             $models->nomor_bpjs             = $nomor_bpjs;

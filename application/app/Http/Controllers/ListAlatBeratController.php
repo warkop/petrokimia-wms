@@ -15,9 +15,9 @@ class ListAlatBeratController extends Controller
     private $responseMessage = '';
     private $responseData = [];
 
-    public function index($kategori_alat_berat_id)
+    public function index($id_kategori)
     {
-        $data['id_kategori'] = $kategori_alat_berat_id;
+        $data['id_kategori'] = $id_kategori;
         return view('list-alat-berat.grid', $data);
     }
 
@@ -64,15 +64,15 @@ class ListAlatBeratController extends Controller
 
     public function store(Request $req, ListAlatBerat $models, $id_kategori)
     {
-        $id = $req->input('list_alat_berat_id');
+        $id = $req->input('id');
         $rules = [
-            'nomor_lambung'    => ['required', Rule::unique('list_alat_berat', 'nomor_lambung')->ignore($id, 'list_alat_berat_id')],
+            'nomor_lambung'    => ['required', Rule::unique('alat_berat', 'nomor_lambung')->ignore($id, 'id')],
             // 'nomor_polisi'     => 'required',
         ];
 
         $action = $req->input('action');
         if ($action == 'edit') {
-            $rules['list_alat_berat_id'] = 'required';
+            $rules['id'] = 'required';
         }
 
         $validator = Validator::make($req->all(), $rules);
@@ -91,7 +91,7 @@ class ListAlatBeratController extends Controller
 
             $models->nomor_lambung = strip_tags($req->input('nomor_lambung'));
             $models->nomor_polisi = strip_tags($req->input('nomor_polisi'));
-            $models->kategori_alat_berat_id = $id_kategori;
+            $models->id_kategori = $id_kategori;
 
             $models->save();
 
