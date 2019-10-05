@@ -108,7 +108,7 @@ let load_table = function () {
 
 function tambah() {
     reset_form();
-    $('#shift_kerja_id').val('');
+    $('#id').val('');
     $('#action').val('add');
     $('#btn_save').html('Tambah Data');
     $('#modal_form .modal-title').html('Tambah Data Shift Kerja');
@@ -119,9 +119,9 @@ function tambah() {
     }, 'show');
 }
 
-function edit(shift_kerja_id = '') {
+function edit(id = '') {
     reset_form();
-    $('#shift_kerja_id').val(shift_kerja_id);
+    $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
     $('#modal_form .modal-title').html('Edit Data Shift Kerja');
@@ -133,7 +133,7 @@ function edit(shift_kerja_id = '') {
 
     $.ajax({
         type: "GET",
-        url: ajaxUrl +"/"+ shift_kerja_id,
+        url: ajaxUrl +"/"+ id,
         beforeSend: function () {
             preventLeaving();
             $('.btn_close_modal').addClass('hide');
@@ -147,7 +147,7 @@ function edit(shift_kerja_id = '') {
             let obj = response;
 
             if (obj.status == "OK") {
-                $('#nama_shift').val(obj.data['nama_shift']);
+                $('#nama').val(obj.data['nama']);
                 $('#mulai_shift').val(obj.data['mulai_shift']);
                 if (obj.data['start_date'] != null) {
                     $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
@@ -260,10 +260,10 @@ function simpan() {
 }
 
 function reset_form(method = '') {
-    $('#shift_kerja_id').val('');
-    $('#shift_kerja_id').change();
-    $('#nama_shift').val('');
-    $('#nama_shift').change();
+    $('#id').val('');
+    $('#id').change();
+    $('#nama').val('');
+    $('#nama').change();
     $('#mulai_shift').val('');
     $('#mulai_shift').change();
     $('#start_date').val('');
