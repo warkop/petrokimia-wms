@@ -2,8 +2,8 @@
 
 let datatable,
     tableTarget = '#kt_table_1',
-    ajaxUrl = baseUrl + '/master-kerusakan-alat/',
-    ajaxSource = ajaxUrl + 'json',
+    ajaxUrl = baseUrl + 'master-kerusakan-alat',
+    ajaxSource = ajaxUrl,
     laddaButton;
 
 jQuery(document).ready(function () {
@@ -105,7 +105,7 @@ var load_table = function () {
 
 function tambah() {
     reset_form();
-    $('#kerusakan_alat_berat_id').val('');
+    $('#id').val('');
     $('#action').val('add');
     $('#btn_save').html('Tambah Data');
     $('#modal_form .modal-title').html('Tambah Data Jenis Foto');
@@ -116,9 +116,9 @@ function tambah() {
     }, 'show');
 }
 
-function edit(kerusakan_alat_berat_id = '') {
+function edit(id = '') {
     reset_form();
-    $('#kerusakan_alat_berat_id').val(kerusakan_alat_berat_id);
+    $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
     $('#modal_form .modal-title').html('Edit Data Jenis Foto');
@@ -130,7 +130,7 @@ function edit(kerusakan_alat_berat_id = '') {
 
     $.ajax({
         type: "GET",
-        url: ajaxUrl + "show/" + kerusakan_alat_berat_id,
+        url: ajaxUrl + "/" + id,
         beforeSend: function () {
             preventLeaving();
             $('.btn_close_modal').addClass('hide');
@@ -144,9 +144,14 @@ function edit(kerusakan_alat_berat_id = '') {
             var obj = response;
 
             if (obj.status == "OK") {
-                $('#nama_kerusakan').val(obj.data['nama_kerusakan']);
-                $('#start_date').val(obj.data['start_date']);
-                $('#end_date').val(obj.data['end_date']);
+                $('#nama').val(obj.data['nama']);
+                if (obj.data['start_date'] != null) {
+                    $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
+                }
+
+                if (obj.data['end_date'] != null) {
+                    $('#end_date').val(helpDateFormat(obj.data['end_date'], 'si'));
+                }
             } else {
                 swal.fire('Pemberitahuan', obj.message, 'warning');
             }
@@ -193,7 +198,7 @@ function simpan() {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: ajaxUrl + "save",
+        url: ajaxUrl,
         data: data,
         beforeSend: function () {
             preventLeaving();
@@ -252,10 +257,10 @@ function simpan() {
 }
 
 function reset_form(method = '') {
-    $('#kerusakan_alat_berat_id').val('');
-    $('#kerusakan_alat_berat_id').change();
-    $('#nama_kerusakan').val('');
-    $('#nama_kerusakan').change();
+    $('#id').val('');
+    $('#id').change();
+    $('#nama').val('');
+    $('#nama').change();
     $('#start_date').val('');
     $('#start_date').change();
     $('#end_date').val('');

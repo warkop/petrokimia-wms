@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Models\KerusakanAlatBerat;
+use App\Http\Models\AlatBeratKerusakan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class KerusakanAlatBeratController extends Controller
+class AlatBeratKerusakanController extends Controller
 {
     private $responseCode = 403;
     private $responseStatus = '';
@@ -25,7 +25,7 @@ class KerusakanAlatBeratController extends Controller
 
     public function json(Request $req)
     {
-        $models = new KerusakanAlatBerat();
+        $models = new AlatBeratKerusakan();
 
         $numbcol = $req->get('order');
         $columns = $req->get('columns');
@@ -59,17 +59,17 @@ class KerusakanAlatBeratController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, KerusakanAlatBerat $models)
+    public function store(Request $req, AlatBeratKerusakan $models)
     {
         $rules = [
-            'nama_kerusakan'    => 'required',
+            'nama'              => 'required',
             'start_date'        => 'nullable|date_format:d-m-Y',
             'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
         $action = $req->input('action');
         if ($action == 'edit') {
-            $rules['kerusakan_alat_berat_id'] = 'required';
+            $rules['id'] = 'required';
         }
 
         $validator = Validator::make($req->all(), $rules);
@@ -79,7 +79,7 @@ class KerusakanAlatBeratController extends Controller
             $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
             $this->responseData['error_log']    = $validator->errors();
         } else {
-            $id = $req->input('kerusakan_alat_berat_id');
+            $id = $req->input('id');
 
             $start_date  = null;
             if ($req->input('start_date') != '') {
@@ -92,15 +92,15 @@ class KerusakanAlatBeratController extends Controller
             }
 
             if (!empty($id)) {
-                $models = KerusakanAlatBerat::find($id);
+                $models = AlatBeratKerusakan::find($id);
                 $models->updated_by = session('userdata')['id_user'];
             } else {
                 $models->created_by = session('userdata')['id_user'];
             }
 
-            $models->nama_kerusakan = strip_tags($req->input('nama_kerusakan'));
-            $models->start_date     = $start_date;
-            $models->end_date       = $end_date;
+            $models->nama       = strip_tags($req->input('nama'));
+            $models->start_date = $start_date;
+            $models->end_date   = $end_date;
 
             $models->save();
 
@@ -112,7 +112,7 @@ class KerusakanAlatBeratController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
-    public function show($id, KerusakanAlatBerat $models, Request $request)
+    public function show($id, AlatBeratKerusakan $models, Request $request)
     {
         if (!$request->ajax()) {
             return $this->accessForbidden();
@@ -134,17 +134,7 @@ class KerusakanAlatBeratController extends Controller
         }
     }
 
-    public function edit(KerusakanAlat $kerusakanAlatBerat)
-    {
-        //
-    }
-
-    public function update(Request $request, KerusakanAlatBerat $kerusakanAlatBerat)
-    {
-        //
-    }
-
-    public function destroy(KerusakanAlatBerat $kerusakanAlatBerat)
+    public function destroy(AlatBeratKerusakan $kerusakanAlatBerat)
     {
         //
     }

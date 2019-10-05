@@ -56,13 +56,13 @@
             </div>
             <form  id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
                 <div class="modal-body">
-                    <input type="hidden" class="form-control" id="kerusakan_alat_berat_id" name="kerusakan_alat_berat_id">
+                    <input type="hidden" class="form-control" id="id" name="id">
                     <input type="hidden" name="action" id="action" value="add">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Nama kerusakan</label>
-                                <input type="text" class="form-control input-enter" id="nama_kerusakan" name="nama_kerusakan" placeholder="Masukkan nama kerusakan">
+                                <input type="text" class="form-control input-enter" id="nama" name="nama" placeholder="Masukkan nama kerusakan">
                             </div>
                         </div>
                     </div>
@@ -101,6 +101,7 @@ $('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
     format:'dd-mm-yyyy',
+    clearBtn: true,
     orientation: "bottom left"
 });
 </script>

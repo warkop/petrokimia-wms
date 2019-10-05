@@ -16,7 +16,7 @@ Route::get('/login', 'Auth\LoginController@index')->name('login');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('/authenticate', 'Auth\LoginController@authenticate')->name('authenticate');
 
-Route::get('/home', 'DashboardController@index')->middleware(['eauth', 'revalidate'])->name('home');
+Route::get('/', 'DashboardController@index')->middleware(['eauth', 'revalidate'])->name('/');
 
 Route::get('/dashboard', function () {
     return View::make('dashboard.grid');
@@ -69,11 +69,11 @@ Route::group(['prefix' => 'master-shift-kerja', 'middleware' => ['eauth', 'reval
 });
 
 Route::group(['prefix' => 'master-kerusakan-alat', 'middleware' => ['eauth', 'revalidate']], function () {
-    Route::get('/', 'KerusakanAlatBeratController@index');
-    Route::put('/save', 'KerusakanAlatBeratController@store');
-    Route::post('/json', 'KerusakanAlatBeratController@json');
-    Route::get('/show/{id}', 'KerusakanAlatBeratController@show');
-    Route::delete('/{id}', 'KerusakanAlatBeratController@destroy');
+    Route::get('/', 'AlatBeratKerusakanController@index');
+    Route::put('/', 'AlatBeratKerusakanController@store');
+    Route::post('/', 'AlatBeratKerusakanController@json');
+    Route::get('/{id}', 'AlatBeratKerusakanController@show');
+    Route::delete('/{id}', 'AlatBeratKerusakanController@destroy');
 });
 
 Route::group(['prefix' => 'master-kategori-alat-berat', 'middleware' => ['eauth', 'revalidate']], function () {
