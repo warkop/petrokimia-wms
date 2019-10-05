@@ -163,6 +163,7 @@ $('#job_desk_id').select2({
 $('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
+    format:'dd-mm-yyyy',
     orientation: "top left"
 });
 </script>

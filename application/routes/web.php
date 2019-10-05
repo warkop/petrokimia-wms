@@ -38,6 +38,13 @@ Route::get('/master-grup', function () {
     return view('master.master-grup.grid');
 });
 
+Route::group(['prefix' => 'master-karu', 'middleware' => ['eauth', 'revalidate']], function () {
+    Route::get('/', 'KaruController@index');
+    Route::put('/', 'KaruController@store');
+    Route::post('/', 'KaruController@json');
+    Route::get('/{id}', 'KaruController@show');
+    Route::delete('/{id}', 'KaruController@destroy');
+});
 Route::group(['prefix' => 'master-tenaga-kerja-nonorganik', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'TenagaKerjaNonOrganikController@index');
     Route::put('/', 'TenagaKerjaNonOrganikController@store');
