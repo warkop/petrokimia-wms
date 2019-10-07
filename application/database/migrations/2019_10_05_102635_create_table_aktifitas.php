@@ -13,7 +13,7 @@ class CreateTableAktifitas extends Migration
      */
     public function up()
     {
-        Schema::create('aktifitas', function (Blueprint $table) {
+        Schema::create('aktivitas', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nama')->nullable();
             $table->integer('produk_stok')->nullable();
@@ -45,6 +45,6 @@ class CreateTableAktifitas extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('aktifitas');
+        Schema::dropIfExists('aktivitas');
     }
 }

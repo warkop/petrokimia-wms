@@ -22,20 +22,17 @@ Route::get('/dashboard', function () {
     return View::make('dashboard.grid');
 });
 
-Route::get('/master-aktivitas', function () {
-    return view('master.master-aktivitas.grid');
-});
-Route::get('/master-aktivitas/tambah', function () {
-    return view('master.master-aktivitas.second');
-});
-Route::get('/master-karu', function () {
-    return view('master.master-karu.grid');
-});
-Route::get('/master-kerusakan-alat', function () {
-    return view('master.master-kerusakan-alat.grid');
-});
 Route::get('/master-grup', function () {
     return view('master.master-grup.grid');
+});
+
+Route::group(['prefix' => 'master-aktivitas', 'middleware' => ['eauth', 'revalidate']], function () {
+    Route::get('/', 'AktivitasController@index');
+    Route::get('/tambah', 'AktivitasController@create');
+    Route::put('/', 'AktivitasController@store');
+    Route::post('/', 'AktivitasController@json');
+    Route::get('/{id}', 'AktivitasController@show');
+    Route::delete('/{id}', 'AktivitasController@destroy');
 });
 
 Route::group(['prefix' => 'master-karu', 'middleware' => ['eauth', 'revalidate']], function () {
