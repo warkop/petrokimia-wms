@@ -59,8 +59,9 @@ class AktivitasController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, Aktivitas $models)
+    public function store(Request $req)
     {
+        $models = new Aktivitas;
         $rules = [
             'nama'              => 'required',
             'start_date'        => 'nullable|date_format:d-m-Y',
@@ -79,7 +80,17 @@ class AktivitasController extends Controller
             $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
             $this->responseData['error_log']    = $validator->errors();
         } else {
-            $id = $req->input('id');
+            $id                         = $req->input('id');
+            $nama                       = strip_tags($req->input('nama'));
+            $upload_foto                = $req->input('upload_foto');
+            $connect_sistro             = $req->input('connect_sistro');
+            $pengiriman                 = $req->input('pengiriman');
+            $fifo                       = $req->input('fifo');
+            $pengaruh_tgl_produksi      = $req->input('pengaruh_tgl_produksi');
+            $internal_gudang            = $req->input('internal_gudang');
+            $butuh_alat_berat           = $req->input('butuh_alat_berat');
+            $butuh_tkbm                 = $req->input('butuh_tkbm');
+            $tanda_tangan               = $req->input('tanda_tangan');
 
             $start_date  = null;
             if ($req->input('start_date') != '') {
@@ -98,9 +109,18 @@ class AktivitasController extends Controller
                 $models->created_by = session('userdata')['id_user'];
             }
 
-            $models->nama       = strip_tags($req->input('nama'));
-            $models->start_date = $start_date;
-            $models->end_date   = $end_date;
+            $models->nama                       = $nama;
+            $models->upload_foto                = $upload_foto;
+            $models->connect_sistro             = $connect_sistro;
+            $models->pengiriman                 = $pengiriman;
+            $models->fifo                       = $fifo;
+            $models->pengaruh_tgl_produksi      = $pengaruh_tgl_produksi;
+            $models->internal_gudang            = $internal_gudang;
+            $models->butuh_alat_berat           = $butuh_alat_berat;
+            $models->butuh_tkbm                 = $butuh_tkbm;
+            $models->tanda_tangan               = $tanda_tangan;
+            $models->start_date                 = $start_date;
+            $models->end_date                   = $end_date;
 
             $models->save();
 
