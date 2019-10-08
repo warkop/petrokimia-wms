@@ -17,7 +17,9 @@ class ListAlatBeratController extends Controller
 
     public function index($id_kategori)
     {
+        $kategori = KategoriAlatBerat::find($id_kategori);
         $data['id_kategori'] = $id_kategori;
+        $data['nama_kategori'] = $kategori->nama;
         return view('list-alat-berat.grid', $data);
     }
 
@@ -66,8 +68,8 @@ class ListAlatBeratController extends Controller
     {
         $id = $req->input('id');
         $rules = [
-            'nomor_lambung'    => ['required', Rule::unique('alat_berat', 'nomor_lambung')->ignore($id, 'id')],
-            // 'nomor_polisi'     => 'required',
+            'nomor_lambung'    => ['required', Rule::unique('alat_berat', 'nomor_lambung')->ignore($id)],
+            'nomor_polisi'     => ['required', Rule::unique('alat_berat', 'nomor_polisi')->ignore($id)],
         ];
 
         $action = $req->input('action');
@@ -104,7 +106,7 @@ class ListAlatBeratController extends Controller
     }
 
   
-    public function show($id, ListAlatBerat $models, Request $request)
+    public function show($id_kategori, $id,ListAlatBerat $models, Request $request)
     {
         if (!$request->ajax()) {
             return $this->accessForbidden();

@@ -81,7 +81,7 @@
                                 <label>Kategori Material</label>
                                 <select class="form-control input-enter m-select2" id="kategori" name="kategori"
                                     aria-placeholder="Pilih kategori" style="width: 100%;">
-                                    <option value="">Pilih pekerjaan</option>
+                                    <option value="">Pilih Material</option>
                                     <option value="1">Pupuk</option>
                                     <option value="2">Terplas</option>
                                     <option value="3">Pallet</option>

@@ -81,7 +81,10 @@ class KategoriAlatBeratController extends Controller
             $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
             $this->responseData['error_log']    = $validator->errors();
         } else {
-            
+            $tampung_anggaran = ($req->input('anggaran') ? $req->input('anggaran') : 0);
+            $tampung_anggaran = str_replace('.', '', $tampung_anggaran);
+            $tampung_anggaran = str_replace(',', '.', $tampung_anggaran);
+            $anggaran = $tampung_anggaran;
 
             $start_date  = null;
             if ($req->input('start_date') != '') {
@@ -100,8 +103,8 @@ class KategoriAlatBeratController extends Controller
                 $models->created_by = session('userdata')['id_user'];
             }
 
-            $models->nama = strip_tags($req->input('nama'));
-            $models->anggaran = strip_tags($req->input('anggaran'));
+            $models->nama           = strip_tags($req->input('nama'));
+            $models->anggaran       = $anggaran;
             $models->start_date     = $start_date;
             $models->end_date       = $end_date;
 

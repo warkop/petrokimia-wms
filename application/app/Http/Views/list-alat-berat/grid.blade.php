@@ -12,10 +12,10 @@
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
                     {{-- <i class="la la-group"></i> &nbsp; --}}
-                    Kategori: Forklift
+                    Kategori: {{$nama_kategori}}
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah data alat berat Forklift yang terdapat pada <span class="text-ungu kt-font-bolder">Gudang
+                    Berikut ini adalah data alat berat {{$nama_kategori}} yang terdapat pada <span class="text-ungu kt-font-bolder">Gudang
                         A.</span>
                 </p>
             </div>

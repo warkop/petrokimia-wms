@@ -96,11 +96,12 @@ var load_table = function () {
                 "aTargets": [4],
                 "mData": "id",
                 render: function (data, type, full, meta) {
+                    console.log(full.id);
                     return `
-                    <a href="" data-toggle="modal" data-target="#kt_modal_1">
+                    
                         <button type = "button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Ubah Data">
                         <i class="flaticon-edit-1"></i> </button>
-                    </a>`;
+                    `;
                 },
             }
         ],
@@ -140,7 +141,7 @@ function edit(id = '') {
         backdrop: 'static',
         keyboard: false
     }, 'show');
-
+    console.log(id)
     $.ajax({
         type: "GET",
         url: ajaxUrl + "/" + id,

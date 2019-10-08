@@ -28,6 +28,12 @@ jQuery(document).ready(function () {
             $("#btn_save").click();
         }
     });
+
+    $('#anggaran').autoNumeric('init', {
+        aSep: '.',
+        aDec: ',',
+        aSign: ''
+    });
 });
 
 let load_table = function () {
@@ -81,6 +87,13 @@ let load_table = function () {
 
                     return counter;
                 }
+            },
+            {
+                "aTargets": [2],
+                "mData": "id",
+                render: function (data, type, full, meta) {
+                    return helpCurrency(full.anggaran);
+                },
             },
             {
                 "aTargets": [5],
@@ -150,7 +163,7 @@ function edit(id = '') {
 
             if (obj.status == "OK") {
                 $('#nama').val(obj.data['nama']);
-                $('#anggaran').val(obj.data['anggaran']);
+                $('#anggaran').val(helpCurrency(obj.data['anggaran']));
                 if (obj.data['start_date'] != null) {
                     $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
                 }
