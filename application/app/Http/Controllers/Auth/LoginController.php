@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Models\Role;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -67,6 +68,10 @@ class LoginController extends Controller
                 $session['userdata']['fullname']    = $user->name;
                 $session['userdata']['email']       = $user->email;
                 $session['userdata']['role_id']     = $user->role_id;
+
+                $role = Role::find($user->role_id);
+                $session['userdata']['role_name'] = $role->nama;
+
                 session($session);
 
                 return $request->expectsJson() ? response()->json(helpResponse(200, ['user' => $user], 'Selamat Anda berhasil login'), 200) : redirect()->intended('home');

@@ -240,7 +240,7 @@ License: You must have a valid license purchased only from themeforest(the above
 										<img class="kt-hidden" alt="Pic" src="{{aset_tema()}}media/users/300_25.jpg" />
 
 										<!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
-										<span class="kt-badge kt-badge--username kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold">S</span>
+										<span class="kt-badge kt-badge--username kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold">{{strtoupper(mb_substr(session('userdata')['username'], 0, 1))}}</span>
 									</div>
 								</div>
 								<div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl">
@@ -250,10 +250,11 @@ License: You must have a valid license purchased only from themeforest(the above
 										<div class="kt-user-card__avatar">
 											<img class="kt-hidden" alt="Pic" src="{{aset_tema()}}media/users/300_25.jpg" />
 											<!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
-											<span class="kt-badge kt-badge--lg kt-badge--rounded kt-badge--bold kt-font-success">S</span>
+											<span class="kt-badge kt-badge--lg kt-badge--rounded kt-badge--bold kt-font-success">{{strtoupper(mb_substr(session('userdata')['username'], 0, 1))}}</span>
 										</div>
 										<div class="kt-user-card__name">
-											Administrator
+											{{session('userdata')['username']}}<br>
+											{{session('userdata')['role_name']}}
 										</div>
 									</div>
 
