@@ -39,7 +39,7 @@
         <div class="login">
             <div class="row">
                 <div class="col-lg-5 left">
-                    <img class="logo" src="{{ aset_extends('img/logo/Logo_petro.png')}}" alt="" srcset="">            
+                    <img class="logo" src="{{ aset_extends('img/logo/logo_petro.png')}}" alt="" srcset="">            
                     <img class="full" src="{{ aset_extends('img/illustration/login-wms.png')}}" alt="" srcset="">            
                 </div>
                 
