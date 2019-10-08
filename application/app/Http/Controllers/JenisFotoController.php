@@ -102,6 +102,8 @@ class JenisFotoController extends Controller
             $models->nama  = strip_tags($req->input('nama'));
             $models->start_date  = $start_date;
             $models->end_date   = $end_date;
+            // dump($start_date);
+            // dump($end_date);
 
             $models->save();
 

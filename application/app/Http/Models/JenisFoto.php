@@ -22,8 +22,6 @@ class JenisFoto extends Model
         'updated_by',
     ];
 
-    protected $dateFormat = 'd-m-Y';
-
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
     public $timestamps  = false;
