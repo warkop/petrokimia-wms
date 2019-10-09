@@ -58,9 +58,6 @@ let load_table = function () {
                 "mData": "nama"
             },
             {
-                "mData": "anggaran"
-            },
-            {
                 "mData": "start_date"
             },
             {
@@ -89,23 +86,13 @@ let load_table = function () {
                 }
             },
             {
-                "aTargets": [2],
-                "mData": "id",
-                render: function (data, type, full, meta) {
-                    return helpCurrency(full.anggaran);
-                },
-            },
-            {
-                "aTargets": [5],
+                "aTargets": [4],
                 "mData": "id",
                 render: function (data, type, full, meta) {
                     return `
-                    <a href="" data-toggle="modal" data-target="#kt_modal_1">
-                        <button type = "button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Ubah Data">
+                    <a href="${ajaxSource+'/edit/'+full.id}" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Ubah Data">
                         <i class="flaticon-edit-1"></i> </button>
-                    </a> <a href="${baseUrl+'list-alat-berat/'+full.id}" class="btn btn-primary btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="List Alat Berat">
-                        <i class="flaticon-truck"></i>
-                    </a>`;
+                    </a> `;
                 },
             }
         ],
@@ -135,7 +122,7 @@ function tambah() {
 }
 
 function edit(id = '') {
-    reset_form();
+    // reset_form();
     $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
@@ -164,15 +151,60 @@ function edit(id = '') {
             if (obj.status == "OK") {
                 $('#nama').val(obj.data['nama']);
                 if (obj.data['produk_stok'] != null) {
+                    $("#produk_stok").attr('disabled', false);
+                    $("#produk_stok").selectpicker('refresh');
                     $('#selector_produk_stok').prop('checked', true);
                     $('#produk_stok').val(obj.data['produk_stok']).change();
                 }
-                $('#pallet_stok').val(obj.data['pallet_stok']).change();
-                $('#pallet_dipakai').val(obj.data['pallet_dipakai']).change();
-                $('#pallet_kosong').val(obj.data['pallet_kosong']).change();
+                if (obj.data['pallet_stok'] != null) {
+                    $("#pallet_stok").attr('disabled', false);
+                    $("#pallet_stok").selectpicker('refresh');
+                    $('#selector_pallet_stok').prop('checked', true);
+                    $('#pallet_stok').val(obj.data['pallet_stok']).change();
+                }
+                if (obj.data['pallet_dipakai'] != null) {
+                    $("#pallet_dipakai").attr('disabled', false);
+                    $("#pallet_dipakai").selectpicker('refresh');
+                    $('#selector_pallet_dipakai').prop('checked', true);
+                    $('#pallet_dipakai').val(obj.data['pallet_dipakai']).change();
+                }
+                if (obj.data['pallet_kosong'] != null) {
+                    $("#pallet_kosong").attr('disabled', false);
+                    $("#pallet_kosong").selectpicker('refresh');
+                    $('#selector_pallet_kosong').prop('checked', true);
+                    $('#pallet_kosong').val(obj.data['pallet_kosong']).change();
+                }
 
                 if (obj.data['upload_foto'] != null) {
                     $('#upload_foto').prop('checked', true);
+                }
+                if (obj.data['connect_sistro'] != null) {
+                    $('#connect_sistro').prop('checked', true);
+                }
+                if (obj.data['pengiriman'] != null) {
+                    $('#pengiriman').prop('checked', true);
+                }
+                if (obj.data['fifo'] != null) {
+                    $('#fifo').prop('checked', true);
+                }
+                if (obj.data['pengaruh_tgl_produksi'] != null) {
+                    $('#pengaruh_tgl_produksi').prop('checked', true);
+                }
+                
+                if (obj.data['internal_gudang'] != null) {
+                    $('#internal_gudang').prop('checked', true);
+                }
+                
+                if (obj.data['butuh_alat_berat'] != null) {
+                    $('#butuh_alat_berat').prop('checked', true);
+                }
+                
+                if (obj.data['butuh_tkbm'] != null) {
+                    $('#butuh_tkbm').prop('checked', true);
+                }
+                
+                if (obj.data['tanda_tangan'] != null) {
+                    $('#tanda_tangan').prop('checked', true);
                 }
                 
                 if (obj.data['start_date'] != null) {
@@ -221,6 +253,7 @@ function edit(id = '') {
 }
 
 function simpan() {
+    $("#btn_save").prop("disabled", true);
     let data = $("#form1").serializeArray();
     $.ajax({
         type: "PUT",
@@ -243,15 +276,18 @@ function simpan() {
             let obj = response;
 
             if (obj.status == "OK") {
-                datatable.api().ajax.reload();
-                swal.fire('Ok', obj.message, 'success');
-                $('#modal_form').modal('hide');
+                swal.fire('Ok', obj.message, 'success').then(()=>{
+                    window.location = ajaxSource;
+                }).catch(()=>{
+
+                });
             } else {
                 swal.fire('Pemberitahuan', obj.message, 'warning');
             }
 
         },
         error: function (response) {
+            $("#btn_save").prop("disabled", false);
             let head = 'Maaf',
                 message = 'Terjadi kesalahan koneksi',
                 type = 'error';
@@ -290,8 +326,6 @@ function reset_form(method = '') {
     $('#id').change();
     $('#nama').val('');
     $('#nama').change();
-    $('#anggaran').val('');
-    $('#anggaran').change();
     $('#start_date').val('');
     $('#start_date').change();
     $('#end_date').val('');

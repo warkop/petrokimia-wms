@@ -82,6 +82,10 @@ class AktivitasController extends Controller
         } else {
             $id                         = $req->input('id');
             $nama                       = strip_tags($req->input('nama'));
+            $produk_stok                = $req->input('produk_stok');
+            $pallet_stok                = $req->input('pallet_stok');
+            $pallet_dipakai             = $req->input('pallet_dipakai');
+            $pallet_kosong              = $req->input('pallet_kosong');
             $upload_foto                = $req->input('upload_foto');
             $connect_sistro             = $req->input('connect_sistro');
             $pengiriman                 = $req->input('pengiriman');
@@ -110,6 +114,10 @@ class AktivitasController extends Controller
             }
 
             $models->nama                       = $nama;
+            $models->produk_stok                = $produk_stok;
+            $models->pallet_stok                = $pallet_stok;
+            $models->pallet_dipakai             = $pallet_dipakai;
+            $models->pallet_kosong              = $pallet_kosong;
             $models->upload_foto                = $upload_foto;
             $models->connect_sistro             = $connect_sistro;
             $models->pengiriman                 = $pengiriman;
@@ -154,29 +162,17 @@ class AktivitasController extends Controller
         }
     }
 
-    public function edit(Aktivitas $aktivitas)
+    public function edit($id)
     {
-        //
+        $data['id'] = $id;
+        return view('master.master-aktivitas.second', $data);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Http\Models\Aktivitas  $aktivitas
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Aktivitas $aktivitas)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Http\Models\Aktivitas  $aktivitas
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Aktivitas $aktivitas)
     {
         //

@@ -5,9 +5,9 @@
 @section('content')
 
 <!-- begin:: Content -->
-<form id="form1" class="kt-form" action="" method="post">
-    {{-- @csrf
-    @method('PUT') --}}
+<form id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
+    <input type="hidden" class="form-control" id="id" name="id">
+    <input type="hidden" name="action" id="action" value="add">
     <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
         <!--Begin::Dashboard 6-->
         <div class="kt-portlet">
@@ -33,7 +33,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>Nama Aktivitas</label>
-                            <input type="text" class="form-control" name="aktivitas" id="aktivitas" placeholder="Masukkan nama aktivitas">
+                            <input type="text" class="form-control" name="nama" id="nama" placeholder="Masukkan nama aktivitas">
                         </div>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="upload_foto" id="upload_foto"> Upload Foto
+                                        <input type="checkbox" name="upload_foto" id="upload_foto" value="1"> Upload Foto
                                         <span></span>
                                     </label>
                                 </div>
@@ -121,7 +121,7 @@
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="connect_sistro" id="connect_sistro"> Connect Sistro
+                                        <input type="checkbox" name="connect_sistro" id="connect_sistro" value="1"> Connect Sistro
                                         <span></span>
                                     </label>
                                 </div>
@@ -129,7 +129,7 @@
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="pengiriman" id="pengiriman"> Pengiriman
+                                        <input type="checkbox" name="pengiriman" id="pengiriman" value="1"> Pengiriman
                                         <span></span>
                                     </label>
                                 </div>
@@ -137,7 +137,7 @@
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="butuh_approval" id="butuh_approval"> Butuh Approval
+                                        <input type="checkbox" name="butuh_approval" id="butuh_approval" value="1"> Butuh Approval
                                         <span></span>
                                     </label>
                                 </div>
@@ -147,7 +147,7 @@
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="fifo" id="fifo"> Fifo
+                                        <input type="checkbox" name="fifo" id="fifo" value="1"> Fifo
                                         <span></span>
                                     </label>
                                 </div>
@@ -155,7 +155,7 @@
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="tdk_pngruh_tgl_prdksi" id="tdk_pngruh_tgl_prdksi"> Tidak pengaruh tgl produksi
+                                        <input type="checkbox" name="pengaruh_tgl_produksi" id="pengaruh_tgl_produksi" value="1"> Tidak pengaruh tgl produksi
                                         <span></span>
                                     </label>
                                 </div>
@@ -163,7 +163,7 @@
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="pengiriman_gudang_internal" id="pengiriman_gudang_internal"> Pengiriman Gudang Internal
+                                        <input type="checkbox" name="internal_gudang" id="internal_gudang" value="1"> Pengiriman Gudang Internal
                                         <span></span>
                                     </label>
                                 </div>
@@ -173,7 +173,7 @@
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="butuh_alat_berat" id="butuh_alat_berat"> Butuh alat berat
+                                        <input type="checkbox" name="butuh_alat_berat" id="butuh_alat_berat" value="1"> Butuh alat berat
                                         <span></span>
                                     </label>
                                 </div>
@@ -181,7 +181,7 @@
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="butuh_tkbm" id="butuh_tkbm"> Butuh TKBM
+                                        <input type="checkbox" name="butuh_tkbm" id="butuh_tkbm" value="1"> Butuh TKBM
                                         <span></span>
                                     </label>
                                 </div>
@@ -189,7 +189,7 @@
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="butuh_tanda_tangan" id="butuh_tanda_tangan"> Butuh Tanda Tangan
+                                        <input type="checkbox" name="tanda_tangan" id="tanda_tangan" value="1"> Butuh Tanda Tangan
                                         <span></span>
                                     </label>
                                 </div>
@@ -243,6 +243,11 @@
 
         $("#pallet_kosong").attr('disabled',true);
         $("#pallet_kosong").selectpicker('refresh');
+
+        @if (!empty($id)) {
+            edit({{$id}});
+        }
+        @endif
     });
     $('.kt-selectpicker').selectpicker();
     $('#start_date, #end_date').datepicker({

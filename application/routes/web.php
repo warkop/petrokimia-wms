@@ -29,6 +29,7 @@ Route::get('/master-grup', function () {
 Route::group(['prefix' => 'master-aktivitas', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'AktivitasController@index');
     Route::get('/tambah', 'AktivitasController@create');
+    Route::get('/edit/{id}', 'AktivitasController@edit');
     Route::put('/', 'AktivitasController@store');
     Route::post('/', 'AktivitasController@json');
     Route::get('/{id}', 'AktivitasController@show');
