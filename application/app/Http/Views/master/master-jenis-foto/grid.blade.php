@@ -3,7 +3,9 @@
 @section('title', 'Master Jenis Foto')
 
 @section('content')
-
+<script>
+    document.getElementById('master-jenisFoto-nav').classList.add('kt-menu__item--active');
+</script>
 
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">

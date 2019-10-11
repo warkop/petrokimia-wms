@@ -4,8 +4,10 @@
 
 @section('content')
 
-@section('content')
-
+<script>
+    document.getElementById('master-aktivitas-nav').classList.add('kt-menu__item--active');
+</script>
+    
 
 
 <!-- begin:: Content Head -->

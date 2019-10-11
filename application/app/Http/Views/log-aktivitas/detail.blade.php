@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Detail Aktivitas')
+@section('title', 'Detail Log Aktivitas')
 
 @section('content')
 
@@ -15,15 +15,15 @@
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
                     {{-- <i class="la la-group"></i> &nbsp; --}}
-                    Detail Aktivitas
+                    Detail Log Aktivitas
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah detail aktivitas <span class="text-ungu kt-font-bolder">Aplikasi WMS
+                    Berikut ini adalah detail Log Aktivitas <span class="text-ungu kt-font-bolder">Aplikasi WMS
                         Petrokimia.</span>
                 </p>
             </div>
             <div class="kt-portlet__head-toolbar">
-                <a href="{{url('aktivitas')}}" class="pointer"><span class="pull-right color-dodolo"><i class="la la-arrow-left"></i>kembali</span></a>
+                <a href="{{url('penerimaan-gp')}}" class="pointer"><span class="pull-right color-dodolo"><i class="la la-arrow-left"></i>kembali</span></a>
         </div>
     </div>
     <div class="kt-portlet__body">
@@ -93,7 +93,7 @@
                     </div>
                 </div>
                 <div class="row listterplas mt2">
-                    <label class="boldd mb1">List Terplas</label>
+                    <label class="boldd mb1">List Palet</label>
                     <div class="kt-widget4 col-12 kel">
                         <div class="kt-widget4__item border-bottom-dash">
                             <div class="kt-widget4__info">
@@ -121,15 +121,6 @@
             </div>
         </div>
     </div>
-    <div class="kt-portlet__foot">
-            <div class="kt-form__actions">
-                <div class="row">
-                    <div class="col-10">
-                        <button type="button" class="btn btn-wms btn-lg">Approve</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 </div>
 <!--End::Dashboard 6-->
 </div>
@@ -250,7 +241,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Foto Aktivitas</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Foto Log Aktivitas</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>

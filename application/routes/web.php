@@ -166,12 +166,41 @@ Route::get('/add-rencana-harian', function () {
 Route::get('/realisasi', function () {
     return view('rencana-harian.realisasi');
 });
-Route::get('/aktivitas', function () {
+Route::get('/log-aktivitas', function () {
     return view('aktivitas.grid');
 });
-Route::get('/aktivitas/detail', function () {
+Route::get('/log-aktivitas/detail', function () {
     return view('aktivitas.detail');
 });
-Route::get('/aktivitas/tambah', function () {
-    return view('aktivitas.add');
+Route::get('/log-aktivitas/tambah', function () {
+    return view('log-aktivitas.add');
 });
+
+
+
+Route::get('/log-aktivitas', function () {
+    return view('log-aktivitas.grid');
+});
+Route::get('/log-aktivitas/detail', function () {
+    return view('log-aktivitas.detail');
+});
+
+
+
+Route::get('/penerimaan-gp', function () {
+    return view('penerimaan-gp.grid');
+});
+Route::get('/penerimaan-gp/detail', function () {
+    return view('penerimaan-gp.detail');
+});
+
+
+
+Route::get('/master-pemetaan-sloc', function () {
+    return view('master.master-pemetaan-sloc.grid');
+});
+
+Route::get('/main', function () {
+    return view('layout.main');
+});
+

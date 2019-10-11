@@ -3,6 +3,10 @@
 @section('title', 'Master User')
 
 @section('content')
+<script>
+    document.getElementById('master-user-nav').classList.add('kt-menu__item--active');
+</script>
+
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->

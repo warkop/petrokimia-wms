@@ -4,7 +4,9 @@
 
 @section('content')
 
-
+<script>
+    document.getElementById('pGP-nav').classList.add('kt-menu__item--active');
+</script>
 
 
 <!-- begin:: Content -->
@@ -15,19 +17,19 @@
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
                     {{-- <i class="la la-group"></i> &nbsp; --}}
-                    Data Aktivitas
+                    Penerimaan Gp
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah data aktivitas <span class="text-ungu kt-font-bolder">Aplikasi WMS
+                    Berikut ini adalah Penerimaan Gp <span class="text-ungu kt-font-bolder">Aplikasi WMS
                         Petrokimia.</span>
                 </p>
             </div>
-            <div class="kt-portlet__head-toolbar">
+            {{-- <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-group pt-4">
                     <a href="#" class="btn btn-wms btn-elevate btn-elevate-air" data-toggle="modal"
                         data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Aktivitas</a>
                 </div>
-            </div>
+            </div> --}}
         </div>
         <div class="kt-portlet__body">
             <table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
@@ -141,5 +143,5 @@
 
 
 
-<script src="{{asset('assets/extends/js/page/aktivitas.js')}}" type="text/javascript"></script>
+<script src="{{asset('assets/extends/js/page/penerimaan-gp.js')}}" type="text/javascript"></script>
 @stop

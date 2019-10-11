@@ -3,6 +3,9 @@
 @section('title', 'Layout')
 
 @section('content')
+<script>
+    document.getElementById('layout-nav').classList.add('kt-menu__item--active');
+</script>
 
 <link rel="stylesheet" href="{{asset('assets/extends/css/map.css')}}">
 <script src="//maps.google.com/maps/api/js?key=AIzaSyBDHDV2ksjKZ8xtSOZEOBe4_DQM87VrXgI" type="text/javascript" defer>

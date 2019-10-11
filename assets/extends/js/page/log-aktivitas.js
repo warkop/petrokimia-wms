@@ -1,7 +1,7 @@
 "use strict";
 var KTDatatablesDataSourceHtml = function () {
     var dataJSONArray = JSON.parse(
-        '[[1,"12/09/2019", "Pengiriman Pupuk ZA-X001"]]');
+        '[[1,"12/09/2019", "Pengiriman Pupuk ZA-X001", "Gudang Petrokimia 1", "Shift 1"]]');
     var initTable1 = function () {
         var table = $('#kt_table_1');
         // begin first table
@@ -15,8 +15,8 @@ var KTDatatablesDataSourceHtml = function () {
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return `
-                        <a href="` + baseUrl + `aktivitas/detail">
-                            <button type = "button" class="btn btn-primary btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Detail Aktivitas">
+                        <a href="` + baseUrl + `log-aktivitas/detail">
+                            <button type = "button" class="btn btn-primary btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Detail Log Aktivitas">
                             <i class="flaticon2-zig-zag-line-sign"></i> </button>
                         </a>
                         `;
