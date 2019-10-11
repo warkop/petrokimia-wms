@@ -206,6 +206,10 @@ function edit(id = '') {
                 if (obj.data['tanda_tangan'] != null) {
                     $('#tanda_tangan').prop('checked', true);
                 }
+
+                if (obj.data['butuh_approval'] != null) {
+                    $('#butuh_approval').prop('checked', true);
+                }
                 
                 if (obj.data['start_date'] != null) {
                     $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
