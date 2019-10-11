@@ -95,6 +95,7 @@ class AktivitasController extends Controller
             $butuh_alat_berat           = $req->input('butuh_alat_berat');
             $butuh_tkbm                 = $req->input('butuh_tkbm');
             $tanda_tangan               = $req->input('tanda_tangan');
+            $butuh_approval             = $req->input('butuh_approval');
 
             $start_date  = null;
             if ($req->input('start_date') != '') {
@@ -127,6 +128,7 @@ class AktivitasController extends Controller
             $models->butuh_alat_berat           = $butuh_alat_berat;
             $models->butuh_tkbm                 = $butuh_tkbm;
             $models->tanda_tangan               = $tanda_tangan;
+            $models->butuh_approval             = $butuh_approval;
             $models->start_date                 = $start_date;
             $models->end_date                   = $end_date;
 
