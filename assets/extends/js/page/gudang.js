@@ -117,7 +117,7 @@ var load_table = function () {
                             <a class="dropdown-item" href="` + baseUrl + `list-area"><i class="flaticon-symbol"></i> List area</a>
                             <a class="dropdown-item" href="` + baseUrl + `list-pallet"><i class="flaticon-layers"></i> List pallet</a>
                             <a class="dropdown-item" href="` + baseUrl + `gudang/list-alat-berat"><i class="flaticon-truck"></i> List alat berat</a>
-                            <a class="dropdown-item" href="" data-toggle="modal" data-target="#kt_modal_1"><i class="flaticon-edit-1"></i> Edit data</a>
+                            <button class="dropdown-item" onclick="edit(${full.id})" data-toggle="modal" data-target="#kt_modal_1"><i class="flaticon-edit-1"></i> Edit data</button>
                         </div>`;
                 },
             }
@@ -196,7 +196,9 @@ function edit(id = '') {
 
             if (obj.status == "OK") {
                 $('#nama').val(obj.data['nama']);
-                $('#no_hp').val(obj.data['no_hp']);
+                $('#id_sloc').val(obj.data['id_sloc']);
+                $('#id_plant').val(obj.data['id_plant']);
+                $('#id_karu').val(obj.data['id_karu']).change();
                 if (obj.data['start_date'] != null) {
                     $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
                 }

@@ -151,9 +151,26 @@ class GudangController extends Controller
      * @param  \App\Http\Models\Gudang  $gudang
      * @return \Illuminate\Http\Response
      */
-    public function show(Gudang $gudang)
+    public function show($id, Gudang $models, Request $request)
     {
-        //
+        if (!$request->ajax()) {
+            return $this->accessForbidden();
+        } else {
+            $res = $models::find($id);
+
+            if (!empty($res)) {
+                $this->responseCode = 200;
+                $this->responseMessage = 'Data tersedia.';
+                $this->responseData = $res;
+            } else {
+                $this->responseData = [];
+                $this->responseStatus = 'No Data Available';
+                $this->responseMessage = 'Data tidak tersedia';
+            }
+
+            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+            return response()->json($response, $this->responseCode);
+        }
     }
 
     /**
