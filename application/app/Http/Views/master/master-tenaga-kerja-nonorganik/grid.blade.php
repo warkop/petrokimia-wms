@@ -3,6 +3,9 @@
 @section('title', 'Master Tenaga Kerja Non Organik')
 
 @section('content')
+<script>
+    document.getElementById('master-tenagaNO-nav').classList.add('kt-menu__item--active');
+</script>
 
 
 <!-- begin:: Content -->

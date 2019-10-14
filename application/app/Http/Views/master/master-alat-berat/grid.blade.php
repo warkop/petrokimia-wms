@@ -4,6 +4,10 @@
 
 @section('content')
 
+<script>
+    document.getElementById('master-K-A-B-nav').classList.add('kt-menu__item--active');
+</script>
+
 <!-- begin:: Content Head -->
 {{-- <div class="kt-subheader   kt-grid__item" id="kt_subheader">
     <div class="kt-subheader__main">
