@@ -117,15 +117,24 @@ Route::group(['prefix' => 'master-user', 'middleware' => ['eauth', 'revalidate']
     Route::delete('/{id}', 'UsersController@destroy');
 });
 
+Route::group(['prefix' => 'gudang', 'middleware' => ['eauth', 'revalidate']], function () {
+    Route::get('/', 'GudangController@index');
+    Route::get('/load_pallet', 'GudangController@loadPallet');
+    Route::put('/', 'GudangController@store');
+    Route::post('/', 'GudangController@json');
+    Route::get('/{id}', 'GudangController@show');
+    Route::delete('/{id}', 'GudangController@destroy');
+});
+
 // Route::get('/master-material', function () {
 //     return view('master.master-material.grid');
 // });
 Route::get('/layout', function () {
     return view('menu-layout.grid');
 });
-Route::get('/gudang', function () {
-    return view('gudang.grid');
-});
+// Route::get('/gudang', function () {
+//     return view('gudang.grid');
+// });
 Route::get('/sub-gudang', function () {
     return view('sub-gudang.grid');
 });
