@@ -122,9 +122,20 @@ Route::group(['prefix' => 'gudang', 'middleware' => ['eauth', 'revalidate']], fu
     Route::get('/load_pallet', 'GudangController@loadPallet');
     Route::put('/', 'GudangController@store');
     Route::post('/', 'GudangController@json');
+    Route::get('/load-material/{id_gudang}', 'GudangController@loadMaterial');
     Route::get('/{id}', 'GudangController@show');
     Route::delete('/{id}', 'GudangController@destroy');
 });
+
+Route::group(['prefix' => 'area', 'middleware' => ['eauth', 'revalidate']], function () {
+    Route::get('/{id}', 'AreaController@index');
+    Route::put('/{id}', 'AreaController@store');
+    Route::post('/{id}', 'AreaController@json');
+    Route::get('/{id}/{id_area}', 'AreaController@show');
+    Route::delete('/{id}/{id_area}', 'AreaController@destroy');
+});
+
+
 
 // Route::get('/master-material', function () {
 //     return view('master.master-material.grid');

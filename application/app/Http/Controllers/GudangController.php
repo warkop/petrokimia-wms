@@ -66,8 +66,8 @@ class GudangController extends Controller
             'id_sloc'           => 'numeric',
             'id_plant'          => 'numeric',
             'tipe_gudang'       => 'required|numeric|digits_between:1,2',
-            // 'start_date'        => 'nullable|date_format:d-m-Y',
-            // 'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
+            'start_date'        => 'nullable|date_format:d-m-Y',
+            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
         $action = $req->input('action');
@@ -88,15 +88,15 @@ class GudangController extends Controller
             // $id_plant = $req->input('id_plant');
             // $tipe_gudang = $req->input('tipe_gudang');
 
-            // $start_date  = null;
-            // if ($req->input('start_date') != '') {
-            //     $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            // }
+            $start_date  = null;
+            if ($req->input('start_date') != '') {
+                $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
+            }
 
-            // $end_date   = null;
-            // if ($req->input('end_date') != '') {
-            //     $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
-            // }
+            $end_date   = null;
+            if ($req->input('end_date') != '') {
+                $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
+            }
 
             if (!empty($id)) {
                 $models = Gudang::find($id);
@@ -110,8 +110,8 @@ class GudangController extends Controller
             $models->id_sloc        = strip_tags($req->input('id_sloc'));
             $models->id_plant       = strip_tags($req->input('id_plant'));
             $models->tipe_gudang    = strip_tags($req->input('tipe_gudang'));
-            // $models->start_date     = $start_date;
-            // $models->end_date       = $end_date;
+            $models->start_date     = $start_date;
+            $models->end_date       = $end_date;
 
             $saved = $models->save();
             if (!$saved) {
@@ -122,20 +122,31 @@ class GudangController extends Controller
             } else {
                 $material = $req->input('material');
                 $stok_min = $req->input('stok_min');
-                // var_dump($models->id);
                 for ($i = 0; $i < count($material); $i++) {
                     $resource = StokMaterial::where('id_gudang', $models->id)->where('id_material', $material[$i])->first();
+
+                    
                     if (!empty($resource)) {
-                        $resource->stok_min = $stok_min[$i];
+                        StokMaterial::where('id_gudang', $models->id)
+                            ->where('id_material', $material[$i])
+                            ->update(['stok_min' => $stok_min[$i]]);
+                        // $resource->stok_min = $stok_min[$i];
+                        // $resource->save();
+                        // print_r($resource->stok_min);
                     } else {
                         $stok_material = new StokMaterial();
 
                         $stok_material->id_gudang = $models->id;
                         $stok_material->id_material = $material[$i];
                         $stok_material->stok_min = $stok_min[$i];
+                        $stok_material->save();
+                        // echo 'assegfdh';
                     }
-                    $stok_material->save();
                 }
+
+                // $stok_material = new StokMaterial();
+                // print_r($stok_material);
+
                 $this->responseCode = 200;
                 $this->responseMessage = 'Data berhasil disimpan';
             }
@@ -145,12 +156,16 @@ class GudangController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Http\Models\Gudang  $gudang
-     * @return \Illuminate\Http\Response
-     */
+    public function loadMaterial($id_gudang)
+    {
+        $models = StokMaterial::where('id_gudang', $id_gudang)->get();
+        $this->responseCode = 200;
+        $this->responseData = $models;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
     public function show($id, Gudang $models, Request $request)
     {
         if (!$request->ajax()) {
@@ -173,35 +188,16 @@ class GudangController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Http\Models\Gudang  $gudang
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Gudang $gudang)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Http\Models\Gudang  $gudang
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Gudang $gudang)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Http\Models\Gudang  $gudang
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Gudang $gudang)
     {
         //

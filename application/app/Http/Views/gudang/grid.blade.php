@@ -66,6 +66,8 @@
             </div>
             <form id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
                 <div class="modal-body">
+                    <input type="hidden" class="form-control" id="id" name="id">
+                    <input type="hidden" name="action" id="action" value="add">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -98,35 +100,35 @@
                             </div>
 
                             <label class="boldd-500">Jumlah Minimal Palet</label>
-                            {{-- <div class="kel mb2"> --}}
-                                @foreach ($material as $item)
-                                    <div class="form-group row">
-                                        <div class="col-4">
-                                            <label class="col-form-label">{{$item->nama}}</label>
-                                        </div>
-                                        <div class="col-8">
-                                            <input type="hidden" class="form-control material" name="material[]" value="{{$item->id}}">
-                                            <input type="text" class="form-control material" name="stok_min[]" placeholder="Masukkan minimal {{$item->nama}}">
-                                        </div>
-                                    </div>
-                                @endforeach
-                                {{-- <div class="form-group row">
-                                    <div class="col-4">
-                                        <label class="col-form-label">Kayu Besar</label>
-                                    </div>
-                                    <div class="col-8">
-                                        <input type="text" class="form-control" placeholder="Masukkan kayu besar">
-                                    </div>
-                                </div>
+                            @php $i=0 @endphp
+                            @foreach ($material as $item)
                                 <div class="form-group row">
                                     <div class="col-4">
-                                        <label class="col-form-label">Kayu Kecil</label>
+                                        <label class="col-form-label">{{$item->nama}}</label>
                                     </div>
                                     <div class="col-8">
-                                        <input type="text" class="form-control" placeholder="Masukkan kayu kecil">
+                                        <input type="hidden" class="form-control" id="id-material-{{$item->id}}" name="material[]" value="{{$item->id}}">
+                                        <input type="text" class="form-control material" id="stok-min-{{$item->id}}" name="stok_min[]" placeholder="Masukkan minimal {{$item->nama}}">
                                     </div>
-                                </div> --}}
-                            {{-- </div> --}}
+                                </div>
+                                @php $i++ @endphp
+                            @endforeach
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Start Date</label>
+                                        <input type="text" class="form-control input-enter" id="start_date" name="start_date" readonly
+                                            placeholder="Select date">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>End Date</label>
+                                        <input type="text" class="form-control input-enter" id="end_date" name="end_date" readonly
+                                            placeholder="Select date">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -270,8 +272,14 @@
 
 <script src="{{asset('assets/extends/js/page/gudang.js')}}" type="text/javascript"></script>
 <script>
-    $('#id_karu').select2({
+$('#id_karu').select2({
     placeholder: "Pilih Kepala Regu"
+});
+$('#start_date, #end_date').datepicker({
+    rtl: KTUtil.isRTL(),
+    todayHighlight: true,
+    format:'dd-mm-yyyy',
+    orientation: "bottom left"
 });
 </script>
 @endsection

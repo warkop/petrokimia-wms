@@ -171,8 +171,8 @@ function edit(id = '') {
     $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
-    $('#modal_form .modal-title').html('Edit Data Kepala Regu');
-    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk mengubah data master Kepala Regu sesuai kebutuhan.');
+    $('#modal_form .modal-title').html('Edit Data Gudang');
+    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk mengubah data Gudang sesuai kebutuhan.');
     $('#modal_form').modal({
         backdrop: 'static',
         keyboard: false
@@ -197,7 +197,8 @@ function edit(id = '') {
                 $('#nama').val(obj.data['nama']);
                 $('#id_sloc').val(obj.data['id_sloc']);
                 $('#id_plant').val(obj.data['id_plant']);
-                $('#id_karu').val(obj.data['id_karu']).change();
+                $('#tipe_gudang').val(obj.data['tipe_gudang']).change();
+                $('#id_karu').val(obj.data['id_karu']).trigger('change.select2');
                 if (obj.data['start_date'] != null) {
                     $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
                 }
@@ -205,6 +206,66 @@ function edit(id = '') {
                 if (obj.data['end_date'] != null) {
                     $('#end_date').val(helpDateFormat(obj.data['end_date'], 'si'));
                 }
+            } else {
+                swal.fire('Pemberitahuan', obj.message, 'warning');
+            }
+
+        },
+        error: function (response) {
+            let head = 'Maaf',
+                message = 'Terjadi kesalahan koneksi',
+                type = 'error';
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            if (response['status'] == 401 || response['status'] == 419) {
+                location.reload();
+            } else {
+                if (response['status'] != 404 && response['status'] != 500) {
+                    let obj = JSON.parse(response['responseText']);
+
+                    if (!$.isEmptyObject(obj.message)) {
+                        if (obj.code > 400) {
+                            head = 'Maaf';
+                            message = obj.message;
+                            type = 'error';
+                        } else {
+                            head = 'Pemberitahuan';
+                            message = obj.message;
+                            type = 'warning';
+                        }
+                    }
+                }
+
+                swal.fire(head, message, type);
+            }
+        }
+    });
+
+    $.ajax({
+        type: "GET",
+        url: ajaxUrl + "/load-material/" + id,
+        beforeSend: function () {
+            preventLeaving();
+            $('.btn_close_modal').addClass('hide');
+            $('.se-pre-con').show();
+        },
+        success: function (response) {
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            let obj = response;
+
+            if (obj.status == "OK") {
+                const panjang = obj.data.length;
+                for (let i=0; i<panjang; i++) {
+                    // $('#id-material-'+obj.data[i]['id_material']).val(obj.data[i]['id_material']);
+                    $('#stok-min-'+obj.data[i]['id_material']).val(obj.data[i]['stok_min']);
+                    console.log(obj.data[i]['stok_min'])
+                }
+                // $('#id_plant').val(obj.data['id_plant']);
             } else {
                 swal.fire('Pemberitahuan', obj.message, 'warning');
             }
@@ -313,8 +374,16 @@ function reset_form(method = '') {
     $('#id').change();
     $('#nama').val('');
     $('#nama').change();
-    $('#no_hp').val('');
-    $('#no_hp').change();
+    $('#id_sloc').val('');
+    $('#id_sloc').change();
+    $('#id_plant').val('');
+    $('#id_plant').change();
+    $('#tipe_gudang').val('');
+    $('#tipe_gudang').change();
+    $('#id_karu').val('');
+    $('#id_karu').change();
+    $('.material').val('');
+    $('.material').change();
     $('#start_date').val('');
     $('#start_date').change();
     $('#end_date').val('');
