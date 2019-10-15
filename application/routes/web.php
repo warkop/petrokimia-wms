@@ -127,7 +127,7 @@ Route::group(['prefix' => 'gudang', 'middleware' => ['eauth', 'revalidate']], fu
     Route::delete('/{id}', 'GudangController@destroy');
 });
 
-Route::group(['prefix' => 'area', 'middleware' => ['eauth', 'revalidate']], function () {
+Route::group(['prefix' => 'list-area', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/{id}', 'AreaController@index');
     Route::put('/{id}', 'AreaController@store');
     Route::post('/{id}', 'AreaController@json');

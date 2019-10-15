@@ -114,7 +114,7 @@ var load_table = function () {
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item" href="` + baseUrl + `stok-adjustment"><i class="flaticon-cogwheel-1"></i> Stok adjustment</a> 
-                            <a class="dropdown-item" href="` + baseUrl + `list-area"><i class="flaticon-symbol"></i> List area</a>
+                            <a class="dropdown-item" href="${baseUrl+'list-area/'+full.id}"><i class="flaticon-symbol"></i> List area</a>
                             <a class="dropdown-item" href="` + baseUrl + `list-pallet"><i class="flaticon-layers"></i> List pallet</a>
                             <button class="dropdown-item" onclick="edit(${full.id})" data-toggle="modal" data-target="#kt_modal_1"><i class="flaticon-edit-1"></i> Edit data</button>
                         </div>`;
