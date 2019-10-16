@@ -87,7 +87,7 @@ const load_table = function () {
                             <button type="button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
                             <i class="flaticon-edit-1"></i> </button>
                         
-                        <button type = "button" onclick="showme()" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i class="flaticon-delete"></i> </button>`;
+                        <button type = "button" onclick="hapus(${full.id})" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i class="flaticon-delete"></i> </button>`;
                 },
             }
         ],
@@ -106,7 +106,7 @@ const load_table = function () {
     });
 };
 
-function showme() {
+function hapus(id) {
     swal.fire({
         title: 'Are you sure?',
         text: "Data yang sudah dihapus tidak bisa dibatalkan.",
@@ -115,11 +115,29 @@ function showme() {
         confirmButtonText: 'Ya, hapus data!'
     }).then(function (result) {
         if (result.value) {
-            swal.fire(
-                'Berhasil!',
-                'Data berhasil dihapus.',
-                'success'
-            )
+            $.ajax({
+                url: ajaxSource+"/"+id,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: "delete",
+                success:res=>{
+                    datatable.api().ajax.reload();
+                    swal.fire(
+                        'Berhasil!',
+                        'Data berhasil dihapus.',
+                        'success'
+                    );
+                },
+                error:(err, oo, pp)=>{
+                    console.log(err);
+                    swal.fire(
+                        'Berhasil!',
+                        'Data berhasil dihapus.',
+                        'success'
+                    );
+                }
+            });
         }
     });
 }

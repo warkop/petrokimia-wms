@@ -28,7 +28,8 @@ class Area extends Model
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table($this->table)
-            ->select('id AS id', 'nama AS nama', 'kapasitas', 'tipe');
+            ->select('id AS id', 'nama AS nama', 'kapasitas', 'tipe')
+            ->whereNull('end_date');
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {

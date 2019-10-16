@@ -64,6 +64,7 @@
                             <div class="form-group">
                                 <label>Kapasitas Ton</label>
                                 <input type="text" class="form-control" onkeypress="return isNumberKey(this,event)"  name="kapasitas" id="kapasitas" placeholder="Masukkan kapasitas ton">
+                                <span class="kt-font-warning">NB: </span><span class="kt-font-danger kt-font-bold">Pemisah koma menggunakan tanda titik. </span><span class="kt-font-primary kt-font-bold">Contoh: 3.14</span>
                             </div>
                             <div class="form-group">
                                 <label>Jenis</label>

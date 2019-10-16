@@ -157,8 +157,25 @@ class AreaController extends Controller
      * @param  \App\Http\Models\Area  $area
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Area $area)
+    public function destroy($id_gudang,$id)
     {
-        //
+        // Area::destroy($area->id);
+        $area = Area::find($id);
+        $area->end_date = date('Y-m-d');
+        $area->save();
+        $res = Area::where('id', $area->id)->where('end_date', null)->first();
+        if (!empty($res)) {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Data gagal dihapus';
+            $this->responseData = [];
+        } else {
+            $this->responseData = [];
+            $this->responseCode = 200;
+            $this->responseStatus = 'No Data Available';
+            $this->responseMessage = 'Data berhasil dihapus';
+        }
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 }
