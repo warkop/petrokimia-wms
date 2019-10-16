@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Models\Role;
 use Illuminate\Database\Seeder;
 
 class RoleTableSeeder extends Seeder
@@ -11,39 +12,46 @@ class RoleTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('role')->insert([
-            'id'            => 1,
-            'nama'          => 'Administrator',
-            'start_date'    => date('Y-m-d', strtotime("01-01-2019")),
-            'created_at'    => date('Y-m-d H:i:s'),
-        ]);
+        $data = [
+            [
+                'id'            => 1,
+                'nama'          => 'Administrator',
+                'start_date' => date('Y-m-d'),
+                'created_at' => date('Y-m-d'),
+            ],
+            [
+                'id'            => 2,
+                'nama'          => 'Departemen',
+                'start_date' => date('Y-m-d'),
+                'created_at' => date('Y-m-d'),
+            ],
+            [
+                'id'            => 3,
+                'nama'          => 'Checker',
+                'start_date' => date('Y-m-d'),
+                'created_at' => date('Y-m-d'),
+            ],
+            [
+                'id'            => 4,
+                'nama'          => 'Loket',
+                'start_date' => date('Y-m-d'),
+                'created_at' => date('Y-m-d'),
+            ],
+            [
+                'id'            => 5,
+                'nama'          => 'Karu',
+                'start_date' => date('Y-m-d'),
+                'created_at' => date('Y-m-d'),
+            ]
+        ];
 
-        DB::table('role')->insert([
-            'id'            => 2,
-            'nama'          => 'Departemen',
-            'start_date'    => date('Y-m-d', strtotime("01-01-2019")),
-            'created_at'    => date('Y-m-d H:i:s'),
-        ]);
-
-        DB::table('role')->insert([
-            'id'            => 3,
-            'nama'          => 'Checker',
-            'start_date'    => date('Y-m-d', strtotime("01-01-2019")),
-            'created_at'    => date('Y-m-d H:i:s'),
-        ]);
-
-        DB::table('role')->insert([
-            'id'            => 4,
-            'nama'          => 'Loket',
-            'start_date'    => date('Y-m-d', strtotime("01-01-2019")),
-            'created_at'    => date('Y-m-d H:i:s'),
-        ]);
-
-        DB::table('role')->insert([
-            'id'            => 5,
-            'nama'          => 'Karu',
-            'start_date'    => date('Y-m-d', strtotime("01-01-2019")),
-            'created_at'    => date('Y-m-d H:i:s'),
-        ]);
+        foreach ($data as $key) {
+            Role::firstOrCreate([
+                'id' => $key['id'],
+                'nama' => $key['nama'],
+                'start_date' => date('Y-m-d'),
+                'created_at' => date('Y-m-d'),
+            ]);
+        }
     }
 }

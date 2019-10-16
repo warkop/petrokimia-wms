@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Models\JobDesk;
 use Illuminate\Database\Seeder;
 
 class JobDeskSeeder extends Seeder
@@ -11,29 +12,30 @@ class JobDeskSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('job_desk')->insert([
-            'id'            => 1,
-            'nama'          => 'Housekeeper',
-            'start_date'    => date('Y-m-d H:i:s'),
-            'created_at'    => date('Y-m-d H:i:s'),
-        ]);
-        DB::table('job_desk')->insert([
-            'id'            => 2,
-            'nama'          => 'Checker',
-            'start_date'    => date('Y-m-d H:i:s'),
-            'created_at'    => date('Y-m-d H:i:s'),
-        ]);
-        DB::table('job_desk')->insert([
-            'id'            => 3,
-            'nama'          => 'Operator',
-            'start_date'    => date('Y-m-d H:i:s'),
-            'created_at'    => date('Y-m-d H:i:s'),
-        ]);
-        DB::table('job_desk')->insert([
-            'id'            => 4,
-            'nama'          => 'Admin Loket',
-            'start_date'    => date('Y-m-d H:i:s'),
-            'created_at'    => date('Y-m-d H:i:s'),
-        ]);
+        $data = [
+            [
+                'id'            => 1,
+                'nama'          => 'Housekeeper',
+            ],
+            [
+                'id'            => 2,
+                'nama'          => 'Checker',
+            ],
+            [
+                'id'            => 3,
+                'nama'          => 'Operator',
+            ],
+            [
+                'id'            => 4,
+                'nama'          => 'Admin Loket',
+            ]
+        ];
+
+        foreach ($data as $key) {
+            JobDesk::firstOrCreate([
+                'id' => $key['id'],
+                'nama' => $key['nama'],
+            ]);
+        }
     }
 }
