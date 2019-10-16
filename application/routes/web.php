@@ -135,7 +135,15 @@ Route::group(['prefix' => 'list-area', 'middleware' => ['eauth', 'revalidate']],
     Route::delete('/{id}/{id_area}', 'AreaController@destroy');
 });
 
-
+Route::group(['prefix' => 'rencana-harian', 'middleware' => ['eauth', 'revalidate']], function () {
+    Route::get('/', 'RencanaHarianController@index');
+    Route::get('/tambah', 'RencanaHarianController@create');
+    Route::get('/edit/{id}', 'RencanaHarianController@edit');
+    Route::put('/', 'RencanaHarianController@store');
+    Route::post('/', 'RencanaHarianController@json');
+    Route::get('/{id}', 'RencanaHarianController@show');
+    Route::delete('/{id}', 'RencanaHarianController@destroy');
+});
 
 // Route::get('/master-material', function () {
 //     return view('master.master-material.grid');

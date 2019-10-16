@@ -8,13 +8,13 @@
 
 
 <!-- begin:: Content -->
+<form id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
     <div class="kt-portlet">
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
-                    {{-- <i class="la la-group"></i> &nbsp; --}}
                     Tambah Data Rencana Harian
                 </h4>
                 <p class="sub">
@@ -33,47 +33,48 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Tanggal</label>
-                        <input type="text" class="form-control" placeholder="Masukkan nama gudang" disabled value="12/09/2019">
+                        <input type="text" class="form-control" placeholder="Masukkan nama gudang" disabled value="{{date('d/m/Y')}}">
                     </div>
                     <div class="form-group">
                         <label>Shift Kerja</label>
-                        <select class="form-control kt-selectpicker" id="exampleSelect1">
-                            <option>Shift 1</option>
-                            <option>Shift 2</option>
-                            <option>Shift 3</option>
+                        <select class="form-control kt-selectpicker" id="exampleSelect1" name="shift">
+                            @foreach ($shift_kerja as $item)
+                                <option value="{{$item->id}}">{{$item->nama}}</option>    
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Admin Loket</label>
-                        <select class="form-control m-select2" id="kt_select2_4" name="param" multiple="multiple">
-                            <option>Suryani</option>
-                            <option>Joko</option>
-                            <option>Ninda</option>
+                        <select class="form-control m-select2" id="kt_select2_4" name="admin_loket" multiple="multiple">
+                            @foreach ($admin_loket as $item)
+                                <option value="{{$item->id}}">{{$item->name}}</option>    
+                            @endforeach
                         </select>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Operator Alat Berat</label>
-                        <select class="form-control m-select2" id="kt_select2_5" name="param" multiple="multiple">
-                            <option>Surya</option>
-                            <option>Pak Dwi</option>
+                        <select class="form-control m-select2" id="kt_select2_5" name="op_alat_berat" multiple="multiple">
+                            @foreach ($op_alat_berat as $item)
+                                <option value="{{$item->id}}">{{$item->name}}</option>    
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Alat Berat</label>
-                        <select class="form-control m-select2" id="kt_select2_6" name="param" multiple="multiple">
-                            <option value="001">001</option>
-                            <option value="002">002</option>
-                            <option value="003">003</option>
-                            <option value="004">004</option>
+                        <select class="form-control m-select2" id="kt_select2_6" name="alat_berat" multiple="multiple">
+                            @foreach ($alat_berat as $item)
+                                <option value="{{$item->id}}">{{$item->nama}}</option>    
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Checker</label>
-                        <select class="form-control m-select2" id="kt_select2_7" name="param" multiple="multiple">
-                            <option value="AK">Rahmi</option>
-                            <option value="HI">Ganjar</option>
+                        <select class="form-control m-select2" id="kt_select2_7" name="checker" multiple="multiple">
+                            @foreach ($checker as $item)
+                                <option value="{{$item->id}}">{{$item->name}}</option>    
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -163,13 +164,14 @@
     </div>
     <!--End::Dashboard 6-->
 </div>
+</form>
 <!-- end:: Content -->
 
 
 
 
 
-<script src="{{asset('assets/extends/js/page/master-aktivitas.js')}}" type="text/javascript"></script>
+<script src="{{asset('assets/extends/js/page/rencana-harian.js')}}" type="text/javascript"></script>
 <script>
 $('.kt-selectpicker').selectpicker();
 $('#kt_select2_3').select2({
