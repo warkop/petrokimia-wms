@@ -94,12 +94,12 @@
                                                 <span class="kt-nav__link-text">Tenaga Kerja Non Organik</span>
                                             </a>
                                         </li>
-                                        <li class="kt-nav__item">
+                                        {{-- <li class="kt-nav__item">
                                             <a href="{{('master-pekerjaan')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-suitcase"></i>
                                                 <span class="kt-nav__link-text">Job Desk</span>
                                             </a>
-                                        </li>
+                                        </li> --}}
                                         <li class="kt-nav__item">
                                             <a href="{{('master-pemetaan-sloc')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-building"></i>
