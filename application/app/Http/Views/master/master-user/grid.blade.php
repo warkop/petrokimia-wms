@@ -31,6 +31,7 @@
 				<thead>
 					<tr>
 						<th>No</th>
+                        <th>Nama</th>
                         <th>E-mail</th>
                         <th>Username</th>
                         <th>Hak Akses</th>
@@ -64,6 +65,10 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
+                                <label>Nama</label>
+                                <input type="text" class="form-control input-enter" name="nama" id="nama" placeholder="Masukkan nama">
+                            </div>
+                            <div class="form-group">
                                 <label>Email</label>
                                 <input type="email" class="form-control input-enter" name="email" id="email" placeholder="Masukkan email">
                             </div>
@@ -82,10 +87,16 @@
                                 <label>Pilih Hak Akses</label><br>
                                 @foreach ($role as $key)
                                 <span class="mr-2">
-                                    <input type="radio" id="radio{{$key->id}}" name="role_id" value="{{$key->id}}">
+                                    <input type="radio" id="radio{{$key->id}}" name="role_id" onchange="loadPegawai()" value="{{$key->id}}">
                                     <label for="radio{{$key->id}}">{{$key->nama}}</label>
                                 </span>
                                 @endforeach
+                            </div>
+                            <div class="form-group" id="pilih_pegawai">
+                                <label>Pilih Pegawai</label><br>
+                                <select class="form-control kt-selectpicker" id="pilih" name="pilih">
+
+                                </select>
                             </div>
                         </div>
                     </div>

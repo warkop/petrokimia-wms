@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Models\Karu;
 use App\Http\Models\Users;
 use App\Http\Models\Role;
+use App\Http\Models\TenagaKerjaNonOrganik;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -95,9 +97,11 @@ class UsersController extends Controller
             $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
             $this->responseData['error_log']    = $validator->errors();
         } else {
+            $nama   = $req->input('nama');
             $username   = $req->input('username');
             $email      = $req->input('email');
             $password   = $req->input('password');
+            $pilih   = $req->input('pilih');
 
             if (!empty($id)) {
                 $models = Users::find($id);
@@ -116,9 +120,14 @@ class UsersController extends Controller
                 $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
             }
 
-            
+            if ($role == 5) {
+                $models->id_karu    = strip_tags($pilih);    
+            } else {
+                $models->id_tkbm    = strip_tags($pilih);    
+            }
 
             $models->role_id        = strip_tags($role);
+            $models->name           = strip_tags($nama);
             $models->username       = strip_tags($username);
             $models->email          = strip_tags($email);
             $models->password       = strip_tags(bcrypt($password));
@@ -130,6 +139,23 @@ class UsersController extends Controller
             $this->responseCode = 200;
             $this->responseMessage = 'Data berhasil disimpan';
         }
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
+    public function loadPegawai($kategori)
+    {
+        $peg = '';
+        
+        if ($kategori == 5) {
+            $peg = Karu::all();
+        } else {
+            $peg = TenagaKerjaNonOrganik::all();
+        }
+
+        $this->responseCode     = 200;
+        $this->responseData     = $peg;
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);

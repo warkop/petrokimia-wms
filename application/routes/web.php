@@ -110,6 +110,7 @@ Route::group(['prefix' => 'master-jenis-foto', 'middleware' => ['eauth', 'revali
 
 Route::group(['prefix' => 'master-user', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'UsersController@index');
+    Route::get('/load-pegawai/{id_kategori}', 'UsersController@loadPegawai');
     Route::put('/', 'UsersController@store');
     Route::post('/', 'UsersController@json');
     Route::get('/{id}', 'UsersController@show');
@@ -117,7 +118,7 @@ Route::group(['prefix' => 'master-user', 'middleware' => ['eauth', 'revalidate']
     Route::delete('/{id}', 'UsersController@destroy');
 });
 
-Route::group(['prefix' => 'gudang', 'middleware' => ['eauth', 'revalidate']], function () {
+Route::group(['prefix' => 'gudang', 'middleware' => ['eauth:5', 'revalidate']], function () {
     Route::get('/', 'GudangController@index');
     Route::get('/load_pallet', 'GudangController@loadPallet');
     Route::put('/', 'GudangController@store');

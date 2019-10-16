@@ -49,6 +49,9 @@ let load_table = function () {
                 "mData": "id"
             },
             {
+                "mData": "name"
+            },
+            {
                 "mData": "email"
             },
             {
@@ -86,7 +89,7 @@ let load_table = function () {
                 }
             },
             {
-                "aTargets": [6],
+                "aTargets": [7],
                 "mData": "id",
                 "aaSorting":false,
                 render: function (data, type, full, meta) {
@@ -154,9 +157,23 @@ function edit(id = '') {
             let obj = response;
 
             if (obj.status == "OK") {
+                loadPegawai(obj.data['role_id']);
+                $('#nama').val(obj.data['name']);
                 $('#username').val(obj.data['username']);
                 $('#email').val(obj.data['email']);
                 $("#radio"+obj.data['role_id']).prop("checked",true);
+                
+                if (obj.data['role_id'] == 5) {
+                    setTimeout(() => {
+                        $("#pilih").val(obj.data['id_karu']).trigger('change.select2');
+                    }, 1000);
+                } else {
+                    // console.log(obj.data['id_tkbm']);
+                    setTimeout(() => {
+                        $("#pilih").val(obj.data['id_tkbm']).trigger('change.select2');
+                    }, 1000);
+                }
+
                 if (obj.data['start_date'] != null) {
                     $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
                 }
@@ -173,6 +190,57 @@ function edit(id = '') {
             let head = 'Maaf',
                 message = 'Terjadi kesalahan koneksi',
                 type = 'error';
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            if (response['status'] == 401 || response['status'] == 419) {
+                location.reload();
+            } else {
+                if (response['status'] != 404 && response['status'] != 500) {
+                    let obj = JSON.parse(response['responseText']);
+
+                    if (!$.isEmptyObject(obj.message)) {
+                        if (obj.code > 400) {
+                            head = 'Maaf';
+                            message = obj.message;
+                            type = 'error';
+                        } else {
+                            head = 'Pemberitahuan';
+                            message = obj.message;
+                            type = 'warning';
+                        }
+                    }
+                }
+
+                swal.fire(head, message, type);
+            }
+        }
+    });
+}
+
+function loadPegawai(role='') {
+    if (role == '') {
+        role = $('input[name=role_id]:checked').val();
+    }
+    $.ajax({
+        url: ajaxSource+'/load-pegawai/'+role,
+        type: "get",
+        success:res=>{
+            const obj = res.data;
+            let element = '<option value="">Pilih Pegawai</option>';
+            const panjang = obj.length;
+            for (let i=0; i<panjang; i++) {
+                element += `<option value="${obj[i].id}">${obj[i].nama}</option>`;
+            }
+
+            $("#pilih").html(element);
+        },
+        error:(err, oo, pp)=>{
+            let head = 'Maaf',
+                message = 'Terjadi kesalahan koneksi',
+                type = 'error';
+            laddaButton.stop();
             window.onbeforeunload = false;
             $('.btn_close_modal').removeClass('hide');
             $('.se-pre-con').hide();
@@ -340,6 +408,8 @@ function simpan() {
 function reset_form(method = '') {
     $('#id').val('');
     $('#id').change();
+    $('#nama').val('');
+    $('#nama').change();
     $('#username').val('');
     $('#username').change();
     $('#email').val('');

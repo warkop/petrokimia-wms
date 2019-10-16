@@ -51,7 +51,7 @@ class Users extends Authenticatable
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('users as u')
-            ->select('u.id AS id', 'email', 'r.nama AS role_name', 'username AS nama', DB::raw('TO_CHAR(u.start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(u.end_date, \'dd-mm-yyyy\') AS end_date'))
+            ->select('u.id AS id', 'email', 'id_karu', 'id_tkbm', 'r.nama AS role_name', 'name','username AS nama', DB::raw('TO_CHAR(u.start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(u.end_date, \'dd-mm-yyyy\') AS end_date'))
             ->leftJoin('role as r', 'u.role_id', '=', 'r.id');
 
         if (!empty($search)) {
