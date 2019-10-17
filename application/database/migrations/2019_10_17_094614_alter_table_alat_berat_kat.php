@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterTableAlatBerat extends Migration
+class AlterTableAlatBeratKat extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class AlterTableAlatBerat extends Migration
      */
     public function up()
     {
-        Schema::table('alat_berat', function (Blueprint $table) {
+        Schema::table('alat_berat_kat', function (Blueprint $table) {
             $table->integer('forklift')->nullable();
         });
     }
@@ -25,7 +25,7 @@ class AlterTableAlatBerat extends Migration
      */
     public function down()
     {
-        Schema::table('alat_berat', function (Blueprint $table) {
+        Schema::table('alat_berat_kat', function (Blueprint $table) {
             $table->dropColumn('forklift');
         });
     }
