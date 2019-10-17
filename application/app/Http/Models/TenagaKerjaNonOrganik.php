@@ -3,7 +3,7 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\Scopes\EndDateScope;
 use DB;
 
 class TenagaKerjaNonOrganik extends Model
@@ -25,6 +25,13 @@ class TenagaKerjaNonOrganik extends Model
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at',];
 
     public $timestamps  = false;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new EndDateScope);
+    }
 
     public function jobDesk()
     {
