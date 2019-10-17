@@ -22,7 +22,7 @@ class EnergeekAuthMiddleware
             if(!empty($idRole)){
                 $roles = (strpos($idRole, '&') !== false)? explode('&', $idRole) : array($idRole);
 
-                if(in_array($session->usr_role, $roles)){
+                if(in_array($session->role_id, $roles)){
                     return $next($request);
                 }
 
