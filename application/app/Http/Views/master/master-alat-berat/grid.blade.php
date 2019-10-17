@@ -153,6 +153,14 @@
                                 <label>Anggaran Alat Berat</label>
                                 <input type="text" class="form-control input-enter" name="anggaran" id="anggaran" placeholder="Masukkan anggaran alat">
                             </div>
+                            <div class="form-group">
+                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <input type="checkbox" value="1" name="forklift" id="forklift">Forklift
+                                    <span></span>
+                                </label>
+                                
+                                {{-- <input type="text" class="form-control input-enter" name="anggaran" id="anggaran" placeholder="Masukkan anggaran alat"> --}}
+                            </div>
                         </div>
                     </div>
                     <div class="row">

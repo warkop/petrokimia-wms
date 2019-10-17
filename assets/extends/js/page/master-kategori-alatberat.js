@@ -164,6 +164,9 @@ function edit(id = '') {
             if (obj.status == "OK") {
                 $('#nama').val(obj.data['nama']);
                 $('#anggaran').val(helpCurrency(obj.data['anggaran']));
+                if (obj.data['forklift'] == 1) {
+                    $('#forklift').prop('checked', true);
+                }
                 if (obj.data['start_date'] != null) {
                     $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
                 }
@@ -281,6 +284,7 @@ function reset_form(method = '') {
     $('#nama').change();
     $('#anggaran').val('');
     $('#anggaran').change();
+    $('#forklift').prop('checked', false);
     $('#start_date').val('');
     $('#start_date').change();
     $('#end_date').val('');

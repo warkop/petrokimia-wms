@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\KategoriAlatBerat;
+use App\Http\Requests\KategoriAlatBeratRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -81,49 +82,54 @@ class KategoriAlatBeratController extends Controller
             $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
             $this->responseData['error_log']    = $validator->errors();
         } else {
-            $tampung_anggaran = ($req->input('anggaran') ? $req->input('anggaran') : 0);
-            $tampung_anggaran = str_replace('.', '', $tampung_anggaran);
-            $tampung_anggaran = str_replace(',', '.', $tampung_anggaran);
-            $anggaran = $tampung_anggaran;
-
-            $start_date  = null;
-            if ($req->input('start_date') != '') {
-                $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            }
-
-            $end_date   = null;
-            if ($req->input('end_date') != '') {
-                $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
-            }
-
-            if (!empty($id)) {
-                $models = KategoriAlatBerat::find($id);
-                $models->updated_by = session('userdata')['id_user'];
+            $temp_model = KategoriAlatBerat::whereNotNull('forklift')->first();
+            if (empty($temp_model) || ($temp_model->id == $id && !empty($temp_model))) {
+                $tampung_anggaran = ($req->input('anggaran') ? $req->input('anggaran') : 0);
+                $tampung_anggaran = str_replace('.', '', $tampung_anggaran);
+                $tampung_anggaran = str_replace(',', '.', $tampung_anggaran);
+                $anggaran = $tampung_anggaran;
+    
+                $forklift = $req->input('forklift');
+    
+                $start_date  = null;
+                if ($req->input('start_date') != '') {
+                    $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
+                }
+    
+                $end_date   = null;
+                if ($req->input('end_date') != '') {
+                    $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
+                }
+    
+                if (!empty($id)) {
+                    $models = KategoriAlatBerat::find($id);
+                    $models->updated_by = session('userdata')['id_user'];
+                } else {
+                    $models->created_by = session('userdata')['id_user'];
+                }
+    
+                $models->nama           = strip_tags($req->input('nama'));
+                $models->anggaran       = $anggaran;
+                $models->forklift       = $forklift;
+                $models->start_date     = $start_date;
+                $models->end_date       = $end_date;
+    
+                $models->save();
+    
+                $this->responseCode = 200;
+                $this->responseMessage = 'Data berhasil disimpan';
             } else {
-                $models->created_by = session('userdata')['id_user'];
+                $this->responseCode                 = 400;
+                $this->responseStatus               = 'Missing Param';
+                $this->responseMessage              = 'Kategori forklift sudah ada pada data lain!';
             }
 
-            $models->nama           = strip_tags($req->input('nama'));
-            $models->anggaran       = $anggaran;
-            $models->start_date     = $start_date;
-            $models->end_date       = $end_date;
-
-            $models->save();
-
-            $this->responseCode = 200;
-            $this->responseMessage = 'Data berhasil disimpan';
         }
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\KategoriAlatBerat  $kategoriAlatBerat
-     * @return \Illuminate\Http\Response
-     */
     public function show($id, KategoriAlatBerat $models, Request $request)
     {
         if (!$request->ajax()) {
