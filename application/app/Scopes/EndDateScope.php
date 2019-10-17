@@ -17,6 +17,6 @@ class EndDateScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('end_date', null);
+        $builder->where('end_date', null)->orWhere('end_date', '>', date('Y-m-d'));
     }
 }
