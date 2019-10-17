@@ -93,11 +93,11 @@ Route::group(['prefix' => 'master-kategori-alat-berat', 'middleware' => ['eauth'
 });
 
 Route::group(['prefix' => 'list-alat-berat', 'middleware' => ['eauth', 'revalidate']], function () {
-    Route::get('/{id}', 'ListAlatBeratController@index');
-    Route::put('/{id}', 'ListAlatBeratController@store');
-    Route::post('/{id}', 'ListAlatBeratController@json');
-    Route::get('/{id}/{id_list}', 'ListAlatBeratController@show');
-    Route::delete('/{id}/{id_list}', 'ListAlatBeratController@destroy');
+    Route::get('/{id}', 'AlatBeratController@index');
+    Route::put('/{id}', 'AlatBeratController@store');
+    Route::post('/{id}', 'AlatBeratController@json');
+    Route::get('/{id}/{id_list}', 'AlatBeratController@show');
+    Route::delete('/{id}/{id_list}', 'AlatBeratController@destroy');
 });
 
 Route::group(['prefix' => 'master-jenis-foto', 'middleware' => ['eauth', 'revalidate']], function (){
