@@ -33,11 +33,11 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Tanggal</label>
-                        <input type="text" class="form-control" placeholder="Masukkan nama gudang" disabled value="{{date('d/m/Y')}}">
+                        <input type="text" class="form-control" disabled value="{{$tanggal ?? date('d/m/Y')}}">
                     </div>
                     <div class="form-group">
                         <label>Shift Kerja</label>
-                        <select class="form-control kt-selectpicker" id="exampleSelect1" name="shift">
+                        <select class="form-control kt-selectpicker" id="id_shift" name="id_shift">
                             @foreach ($shift_kerja as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>    
                             @endforeach
@@ -45,9 +45,9 @@
                     </div>
                     <div class="form-group">
                         <label>Admin Loket</label>
-                        <select class="form-control m-select2" id="kt_select2_4" name="admin_loket" multiple="multiple">
+                        <select class="form-control m-select2" id="admin_loket" name="admin_loket[]" multiple="multiple">
                             @foreach ($admin_loket as $item)
-                                <option value="{{$item->id}}">{{$item->name}}</option>    
+                                <option value="{{$item->id}}">{{$item->nama}}</option>    
                             @endforeach
                         </select>
                     </div>
@@ -55,25 +55,25 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Operator Alat Berat</label>
-                        <select class="form-control m-select2" id="kt_select2_5" name="op_alat_berat" multiple="multiple">
+                        <select class="form-control m-select2" id="kt_select2_5" name="op_alat_berat[]" multiple="multiple">
                             @foreach ($op_alat_berat as $item)
-                                <option value="{{$item->id}}">{{$item->name}}</option>    
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Alat Berat</label>
-                        <select class="form-control m-select2" id="kt_select2_6" name="alat_berat" multiple="multiple">
-                            @foreach ($alat_berat as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>    
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
+                        <label>Alat Berat</label>
+                        <select class="form-control m-select2" id="kt_select2_6" name="alat_berat[]" multiple="multiple">
+                            @foreach ($alat_berat as $item)
+                                <option value="{{$item->id}}">{{$item->nomor_lambung}}</option>    
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>Checker</label>
-                        <select class="form-control m-select2" id="kt_select2_7" name="checker" multiple="multiple">
+                        <select class="form-control m-select2" id="kt_select2_7" name="checker[]" multiple="multiple">
                             @foreach ($checker as $item)
-                                <option value="{{$item->id}}">{{$item->name}}</option>    
+                                <option value="{{$item->id}}">{{$item->nama}}</option>    
                             @endforeach
                         </select>
                     </div>
@@ -81,15 +81,15 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <table class="table">
+                    <table class="table" id="table_housekeeper">
                         <thead>
-                            <th width="10%">No</th>
+                            {{-- <th width="10%">No</th> --}}
                             <th width="30%">Nama Housekepper</th>
                             <th>Area Kerja</th>
-                            <th width="10%"><button class="btn btn-success btn-sm btn-block"><i class="fa fa-plus"></i> Tambah</button></th>
+                            <th width="10%"><button type="button" class="btn btn-success btn-sm btn-block" onclick="tambahHouseKeeper()"><i class="fa fa-plus"></i> Tambah</button></th>
                         </thead>
                         <tbody>
-                            <tr>
+                            {{-- <tr>
                                 <td>1</td>
                                 <td>
                                     <select class="form-control m-select2 kt_select2_housekeeping" style="width: 100% !important" name="param" multiple="multiple" >
@@ -107,8 +107,8 @@
                                 <td>
                                     <button class="btn btn-danger btn-sm btn-block"><i class="fa fa-trash"></i> Remove</button>
                                 </td>
-                            </tr>
-                            <tr>
+                            </tr> --}}
+                            {{-- <tr>
                                 <td>2</td>
                                 <td>
                                     <select class="form-control m-select2 kt_select2_housekeeping" style="width: 100% !important" name="param" multiple="multiple">
@@ -145,7 +145,7 @@
                                 <td>
                                     <button class="btn btn-danger btn-sm btn-block"><i class="fa fa-trash"></i> Remove</button>
                                 </td>
-                            </tr>
+                            </tr> --}}
                         </tbody>
                     </table>
                 </div>
@@ -155,7 +155,7 @@
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="col-lg-12 ml-lg-auto">
-                        <a href="#" class="btn btn-wms btn-elevate btn-elevate-air""><i class="la la-save"></i> Simpan Data</a>
+                        <button type="button" class="btn btn-wms btn-elevate btn-elevate-air ladda-button" data-style="zoom-in"  id="btn_save"><i class="la la-save"></i> Simpan Data</button>
                     </div>
                 </div>
             </div>
@@ -214,5 +214,10 @@ $('#start_date, #end_date').datepicker({
     todayHighlight: true,
     orientation: "top left"
 });
+
+@if (!empty($id)) {
+    edit({{$id}});
+}
+@endif
 </script>
 @endsection

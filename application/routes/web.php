@@ -139,10 +139,11 @@ Route::group(['prefix' => 'list-area', 'middleware' => ['eauth', 'revalidate']],
 Route::group(['prefix' => 'rencana-harian', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'RencanaHarianController@index');
     Route::get('/tambah', 'RencanaHarianController@create');
-    Route::get('/edit/{id}', 'RencanaHarianController@edit');
+    Route::get('/ubah/{id}', 'RencanaHarianController@edit');
     Route::put('/', 'RencanaHarianController@store');
     Route::post('/', 'RencanaHarianController@json');
     Route::get('/{id}', 'RencanaHarianController@show');
+    Route::get('/get_tkbm/{id}', 'RencanaHarianController@getTkbm');
     Route::delete('/{id}', 'RencanaHarianController@destroy');
 });
 

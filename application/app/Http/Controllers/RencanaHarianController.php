@@ -8,7 +8,8 @@ use App\Http\Models\RencanaTkbm;
 use App\Http\Models\RencanaAlatBerat;
 use App\Http\Models\RencanaAreaTkbm;
 use App\Http\Models\ShiftKerja;
-use App\Http\Models\Users;
+use App\Http\Models\TenagaKerjaNonOrganik;
+use App\Http\Requests\RencanaHarianRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -29,9 +30,9 @@ class RencanaHarianController extends Controller
     {
         $alat_berat = new AlatBerat;
         $data['alat_berat']     = $alat_berat->getWithRelation();
-        $data['op_alat_berat']  = Users::where('role_id', 2)->get();
-        $data['checker']        = Users::where('role_id', 3)->get();
-        $data['admin_loket']    = Users::where('role_id', 4)->get();
+        $data['checker']        = TenagaKerjaNonOrganik::where('job_desk_id', 2)->get();
+        $data['op_alat_berat']  = TenagaKerjaNonOrganik::where('job_desk_id', 3)->get();
+        $data['admin_loket']    = TenagaKerjaNonOrganik::where('job_desk_id', 4)->get();
         $data['shift_kerja']    = ShiftKerja::whereNull('end_date')->get(); 
         return view('rencana-harian.add', $data);
     }
@@ -72,81 +73,126 @@ class RencanaHarianController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req)
+    public function store(RencanaHarianRequest $req)
     {
-        $id = $req->input('id');
-        $id_shift = $req->input('id_shift');
-        $rules = [
-            'id_shift'          => [
-                'required',
-                Rule::exists('shift_kerja')->where(function ($query) use ($id_shift){
-                    $query->where('id', $id_shift);
-                }),
-            ],
-            'start_date'        => 'nullable|date_format:d-m-Y',
-            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
-        ];
-
-        $action = $req->input('action');
-        if ($action == 'edit') {
-            $rules['id'] = 'required';
-        }
-
-        $validator = Validator::make($req->all(), $rules);
-        if ($validator->fails()) {
-            $this->responseCode                 = 400;
-            $this->responseStatus               = 'Missing Param';
-            $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
-            $this->responseData['error_log']    = $validator->errors();
+        $req->validated();
+        
+        if (!empty($id)) {
+            $rencana_harian = RencanaHarian::find($req->input('id'));
+            $rencana_harian->updated_by = session('userdata')['id_user'];
         } else {
-            $job_desk_id = $req->input('job_desk_id');
-            $nama = $req->input('nama');
-            $nomor_hp = $req->input('nomor_hp');
-            $nomor_bpjs = $req->input('nomor_bpjs');
-
-            $start_date  = null;
-            if ($req->input('start_date') != '') {
-                $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            }
-
-            $end_date   = null;
-            if ($req->input('end_date') != '') {
-                $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
-            }
-
-            if (!empty($id)) {
-                $models = RencanaHarian::find($id);
-                $models->updated_by = session('userdata')['id_user'];
-            } else {
-                $models->created_by = session('userdata')['id_user'];
-            }
-
-            $models->tanggal                = date('Y-m-d');
-            $models->id_shift               = $job_desk_id;
-            $models->nomor_hp               = $nomor_hp;
-            $models->nomor_bpjs             = $nomor_bpjs;
-            $models->start_date             = $start_date;
-            $models->end_date               = $end_date;
-
-            $models->save();
-
-            $this->responseCode = 200;
-            $this->responseMessage = 'Data berhasil disimpan';
+            $rencana_harian = new RencanaHarian();
+            $rencana_harian->created_by = session('userdata')['id_user'];
         }
+
+        //rencana harian
+        $rencana_harian->tanggal                = date('Y-m-d');
+        $rencana_harian->id_shift               = $req->input('id_shift');
+        $rencana_harian->start_date             = date('Y-m-d');
+        $rencana_harian->created_at             = date('Y-m-d H:i:s');
+        $rencana_harian->save();
+
+        //rencana alat berat
+        $rencana_alat_berat = new RencanaAlatBerat();
+        $alat_berat = $req->input('alat_berat');
+        // echo count($alat_berat);
+        for ($i=0; $i<count($alat_berat); $i++) {
+            $arr = [
+                'id_rencana' => $rencana_harian->id,
+                'id_alat_berat' => $alat_berat[$i],
+            ];
+            \DB::table('rencana_alat_berat')->insert(
+                $arr
+            );
+            // $rencana_alat_berat->id_rencana = $rencana_harian->id;
+            // $rencana_alat_berat->id_alat_berat = $alat_berat[$i];
+            // $rencana_alat_berat->save();
+            // $rencana_alat_berat->create($arr);
+        }
+
+        //rencana tkbm
+        $rencana_tkbm = new RencanaTkbm();
+        $admin_loket = $req->input('admin_loket');
+        foreach ($admin_loket as $key => $value) {
+            $arr = [
+                'id_rencana' => $rencana_harian->id,
+                'id_tkbm' => $value
+            ];
+
+            \DB::table('rencana_tkbm')->insert(
+                $arr
+            );
+
+            // $rencana_tkbm->id_rencana = $rencana_harian->id;
+            // $rencana_tkbm->id_tkbm = $value;
+            // $rencana_tkbm->save();
+        }
+        
+        $op_alat_berat = $req->input('op_alat_berat');
+        foreach ($op_alat_berat as $key => $value) {
+            $arr = [
+                'id_rencana' => $rencana_harian->id,
+                'id_tkbm' => $value
+            ];
+
+            \DB::table('rencana_tkbm')->insert(
+                $arr
+            );
+            
+            // $rencana_tkbm->id_rencana = $rencana_harian->id;
+            // $rencana_tkbm->id_tkbm = $value;
+            // $rencana_tkbm->save();
+        }
+
+        $checker = $req->input('checker');
+        foreach ($checker as $key => $value) {
+            $arr = [
+                'id_rencana' => $rencana_harian->id,
+                'id_tkbm' => $value
+            ];
+
+            \DB::table('rencana_tkbm')->insert(
+                $arr
+            );
+            // $rencana_tkbm->id_rencana = $rencana_harian->id;
+            // $rencana_tkbm->id_tkbm = $value;
+            // $rencana_tkbm->save();
+        }
+
+        //rencana area tkbm
+        $rencana_area_tkbm = new RencanaAreaTkbm();
+        // $housekeeper = $req->input('housekeeper');
+        // foreach ($housekeeper as $key => $value) {
+        //     $rencana_area_tkbm->id_rencana = $rencana_harian->id;
+        //     $rencana_area_tkbm->id_tkbm = $value;
+        //     $rencana_area_tkbm->save();
+        // }
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data berhasil disimpan';
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Http\Models\RencanaHarian  $rencanaHarian
-     * @return \Illuminate\Http\Response
-     */
-    public function show(RencanaHarian $rencanaHarian)
+    public function show($id)
     {
-        //
+        $rencanaHarian = new RencanaHarian;
+        $res = $rencanaHarian::find($id);
+
+        if (!empty($res)) {
+            $this->responseCode = 200;
+            $this->responseMessage = 'Data tersedia.';
+            $this->responseData = $res;
+        } else {
+            $this->responseData = [];
+            $this->responseStatus = 'No Data Available';
+            $this->responseMessage = 'Data tidak tersedia';
+        }
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+        
     }
 
     /**
@@ -155,9 +201,23 @@ class RencanaHarianController extends Controller
      * @param  \App\Http\Models\RencanaHarian  $rencanaHarian
      * @return \Illuminate\Http\Response
      */
-    public function edit(RencanaHarian $rencanaHarian)
+    public function edit($id)
     {
-        //
+        $alat_berat = new AlatBerat;
+        $rencana_harian = RencanaHarian::find($id);
+        $data['id']             = $rencana_harian->id;
+        $data['tanggal']        = date('d/m/Y', strtotime($rencana_harian->tanggal));
+        $data['alat_berat']     = $alat_berat->getWithRelation();
+        $data['checker']        = TenagaKerjaNonOrganik::where('job_desk_id', 2)->get();
+        $data['op_alat_berat']  = TenagaKerjaNonOrganik::where('job_desk_id', 3)->get();
+        $data['admin_loket']    = TenagaKerjaNonOrganik::where('job_desk_id', 4)->get();
+        $data['shift_kerja']    = ShiftKerja::whereNull('end_date')->get();
+        return view('rencana-harian.add', $data);
+    }
+
+    public function getTkbm($id_rencana, $id_job_desk)
+    {
+        $res = RencanaHarian::where('id_rencana', $id_rencana);
     }
 
     /**

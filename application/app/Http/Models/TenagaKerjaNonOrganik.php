@@ -26,6 +26,11 @@ class TenagaKerjaNonOrganik extends Model
 
     public $timestamps  = false;
 
+    public function jobDesk()
+    {
+        return $this->hasOne('App\Http\Models\JobDesk');
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('tenaga_kerja_non_organik as tkno')

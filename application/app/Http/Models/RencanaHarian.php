@@ -28,14 +28,13 @@ class RencanaHarian extends Model
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('rencana_harian as rh')
-            ->select('rh.id', 'id_shift', DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\') AS tanggal'))
+            ->select('rh.id', 'id_shift', 'sk.nama', DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\') AS tanggal'))
             ->leftJoin('shift_kerja as sk', 'rh.id_shift', '=', 'sk.id');
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
-                $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
-                $where->orWhere(DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
+                $where->where(DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
+                $where->where('sk.nama', 'ILIKE', '%' . strtolower($search) . '%');
             });
         }
 
