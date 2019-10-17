@@ -26,7 +26,7 @@ class AlterTableMaterialTrans extends Migration
     public function down()
     {
         Schema::table('material_trans', function (Blueprint $table) {
-            //
+            $table->dropColumn('id_realisasi_material');
         });
     }
 }
