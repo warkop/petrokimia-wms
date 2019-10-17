@@ -264,8 +264,16 @@ function simpan() {
                             message = obj.message;
                             type = 'error';
                         } else {
+                            const panjang = obj.errors.nama.length;
+                            let error_message = '';
+                            for (let i=0; i<panjang; i++) {
+                                error_message += obj.errors.nama[i]+"<br>";
+                            }
+
+                            // error_message = $("#pesan_error").html();
+                            // console.log(error_message);
                             head = 'Pemberitahuan';
-                            message = obj.message;
+                            message = error_message;
                             type = 'warning';
                         }
                     }

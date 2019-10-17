@@ -189,7 +189,15 @@
 <!--end::Modal-->
 
 
-
+@if ($errors->any())
+    <div id="pesan_error" class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
 
 <script src="{{asset('assets/extends/js/page/master-kategori-alatberat.js')}}" type="text/javascript"></script>
