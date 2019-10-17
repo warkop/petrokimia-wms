@@ -31,6 +31,19 @@ class TenagaKerjaNonOrganik extends Model
         return $this->hasOne('App\Http\Models\JobDesk');
     }
 
+    public function scopeChecker($query)
+    {
+        return $query->where('job_desk_id', 2);
+    }
+    public function scopeOperatorAlatBerat($query)
+    {
+        return $query->where('job_desk_id', 3);
+    }
+    public function scopeAdminLoket($query)
+    {
+        return $query->where('job_desk_id', 4);
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('tenaga_kerja_non_organik as tkno')

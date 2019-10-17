@@ -32,9 +32,9 @@ class RencanaHarianController extends Controller
         $data['title'] = 'Tambah Rencana Harian';
         $alat_berat = new AlatBerat;
         $data['alat_berat']     = $alat_berat->getWithRelation();
-        $data['checker']        = TenagaKerjaNonOrganik::where('job_desk_id', 2)->get();
-        $data['op_alat_berat']  = TenagaKerjaNonOrganik::where('job_desk_id', 3)->get();
-        $data['admin_loket']    = TenagaKerjaNonOrganik::where('job_desk_id', 4)->get();
+        $data['checker']        = TenagaKerjaNonOrganik::checker()->get();
+        $data['op_alat_berat']  = TenagaKerjaNonOrganik::operatorAlatBerat()->get();
+        $data['admin_loket']    = TenagaKerjaNonOrganik::adminLoket()->get();
         $data['shift_kerja']    = ShiftKerja::whereNull('end_date')->get(); 
         return view('rencana-harian.add', $data);
     }
