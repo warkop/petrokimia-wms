@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\KategoriAlatBerat;
-use App\Http\Models\ListAlatBerat;
+use App\Http\Models\AlatBerat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class ListAlatBeratController extends Controller
+class AlatBeratController extends Controller
 {
     private $responseCode = 403;
     private $responseStatus = '';
@@ -30,7 +30,7 @@ class ListAlatBeratController extends Controller
 
     public function json(Request $req, $id_kategori)
     {
-        $models = new ListAlatBerat();
+        $models = new AlatBerat();
 
         $numbcol = $req->get('order');
         $columns = $req->get('columns');
@@ -64,7 +64,7 @@ class ListAlatBeratController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, ListAlatBerat $models, $id_kategori)
+    public function store(Request $req, AlatBerat $models, $id_kategori)
     {
         $id = $req->input('id');
         $rules = [
@@ -85,7 +85,7 @@ class ListAlatBeratController extends Controller
             $this->responseData['error_log']    = $validator->errors();
         } else {
             if (!empty($id)) {
-                $models = ListAlatBerat::find($id);
+                $models = AlatBerat::find($id);
                 $models->updated_by = session('userdata')['id_user'];
             } else {
                 $models->created_by = session('userdata')['id_user'];
@@ -106,7 +106,7 @@ class ListAlatBeratController extends Controller
     }
 
   
-    public function show($id_kategori, $id,ListAlatBerat $models, Request $request)
+    public function show($id_kategori, $id,AlatBerat $models, Request $request)
     {
         if (!$request->ajax()) {
             return $this->accessForbidden();
