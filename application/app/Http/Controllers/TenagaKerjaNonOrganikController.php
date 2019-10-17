@@ -17,6 +17,9 @@ class TenagaKerjaNonOrganikController extends Controller
 
     public function index()
     {
+        $data['title'] = 'Master Tenaga Kerja Non Organik';
+        $data['menu_active'] = 'master';
+        $data['sub_menu_active'] = 'tenaga kerja non organik';
         $data['job_desk'] = JobDesk::all();
         return view('master.master-tenaga-kerja-nonorganik.grid', $data);
     }

@@ -18,6 +18,9 @@ class GudangController extends Controller
 
     public function index()
     {
+        $data['title'] = 'Gudang';
+        // $data['menu_active'] = 'master';
+        // $data['sub_menu_active'] = 'jenis foto';
         $data['material'] = Material::where('kategori', 3)->get();
         $data['karu'] = Karu::all();
         return view('gudang.grid', $data);
@@ -124,7 +127,6 @@ class GudangController extends Controller
                 $stok_min = $req->input('stok_min');
                 for ($i = 0; $i < count($material); $i++) {
                     $resource = StokMaterial::where('id_gudang', $models->id)->where('id_material', $material[$i])->first();
-
                     
                     if (!empty($resource)) {
                         StokMaterial::where('id_gudang', $models->id)

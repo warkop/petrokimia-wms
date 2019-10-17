@@ -15,7 +15,10 @@ class KaruController extends Controller
 
     public function index()
     {
-        return view('master.master-karu.grid');
+        $data['title'] = 'Master Kepala Regu';
+        $data['menu_active'] = 'master';
+        $data['sub_menu_active'] = 'kepala regu';
+        return view('master.master-karu.grid', $data);
     }
 
     public function json(Request $req)

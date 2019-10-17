@@ -17,7 +17,10 @@ class KategoriAlatBeratController extends Controller
     
     public function index()
     {
-        return view('master.master-alat-berat.grid');
+        $data['title'] = 'Master Kategori Alat Berat';
+        $data['menu_active'] = 'master';
+        $data['sub_menu_active'] = 'kategori alat berat';
+        return view('master.master-alat-berat.grid', $data);
     }
 
     public function create()

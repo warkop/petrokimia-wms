@@ -16,6 +16,7 @@ class AreaController extends Controller
 
     public function index($id_gudang)
     {
+        $data['title'] = 'Area';
         $data['id_gudang'] = $id_gudang;
         $models = Gudang::find($id_gudang);
         $data['nama_gudang'] = $models->nama;

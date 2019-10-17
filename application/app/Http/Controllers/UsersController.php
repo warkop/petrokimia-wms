@@ -19,6 +19,9 @@ class UsersController extends Controller
 
     public function index()
     {
+        $data['title'] = 'Master Users';
+        $data['menu_active'] = 'master';
+        $data['sub_menu_active'] = 'users';
         $data['role'] = Role::all();
         return view('master.master-user.grid', $data);
     }

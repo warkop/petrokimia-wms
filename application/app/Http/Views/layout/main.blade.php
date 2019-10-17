@@ -124,12 +124,14 @@
                                                 <span class="kt-nav__link-text">Jenis Foto</span>
                                             </a>
                                         </li>
-                                        <li class="kt-nav__item">
-                                            <a href="{{('master-user')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-users"></i>
-                                                <span class="kt-nav__link-text">User</span>
-                                            </a>
-                                        </li>
+                                        @if (session('userdata')['role_id'] == 1)
+                                            <li class="kt-nav__item">
+                                                <a href="{{('master-user')}}" class="kt-nav__link">
+                                                    <i class="kt-nav__link-icon la la-users"></i>
+                                                    <span class="kt-nav__link-text">User</span>
+                                                </a>
+                                            </li>    
+                                        @endif
                                     </ul>
                                 </div>
                             </div>
@@ -145,12 +147,14 @@
                                                 <span class="kt-nav__link-text">Layout</span>
                                             </a>
                                         </li>
+                                        @if (session('userdata')['role_id'] == 5)
                                         <li class="kt-nav__item">
                                             <a href="{{('gudang')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-institution"></i>
                                                 <span class="kt-nav__link-text">Gudang</span>
                                             </a>
                                         </li>
+                                        @endif
                                         <li class="kt-nav__item">
                                             <a href="{{('rencana-harian')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la la-calendar"></i>

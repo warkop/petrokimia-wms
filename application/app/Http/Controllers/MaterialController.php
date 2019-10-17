@@ -15,7 +15,10 @@ class MaterialController extends Controller
 
     public function index()
     {
-        return view('master.master-material.grid');
+        $data['title'] = 'Master Material';
+        $data['menu_active'] = 'master';
+        $data['sub_menu_active'] = 'material';
+        return view('master.master-material.grid', $data);
     }
 
     public function json(Request $req)

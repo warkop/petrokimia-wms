@@ -15,7 +15,10 @@ class AlatBeratKerusakanController extends Controller
 
     public function index()
     {
-       return view('master.master-kerusakan-alat.grid');
+        $data['title'] = 'Master Kerusakan Alat Berat';
+        $data['menu_active'] = 'master';
+        $data['sub_menu_active'] = 'kerusakan alat berat';
+        return view('master.master-kerusakan-alat.grid', $data);
     }
 
     public function create()

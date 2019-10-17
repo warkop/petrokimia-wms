@@ -102,7 +102,6 @@ License: You must have a valid license purchased only from themeforest(the above
 							<!-- <button class="kt-aside__brand-aside-toggler kt-aside__brand-aside-toggler--left" id="kt_aside_toggler"><span></span></button> -->
 						</div>
 					</div>
-
 					<!-- end:: Aside -->
 
 					<!-- begin:: Aside Menu -->
@@ -112,8 +111,10 @@ License: You must have a valid license purchased only from themeforest(the above
 								<li id="dashboard-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/dashboard')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-area-chart"></span><span class="kt-menu__link-text">Dashboard</span></a></li>
 								<li id="layout-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/layout')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-map"></span><span class="kt-menu__link-text">Layout</span></a>
 								</li>
+								@if (session('userdata')['role_id'] == 5)
 								<li id="gudang-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/gudang')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-institution"></span><span class="kt-menu__link-text">Gudang</span></a>
 								</li>
+								@endif
 								{{-- <li class="kt-menu__item" aria-haspopup="true"><a href="{{url('/anggaran-alat-berat')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-file-text-o"></span><span class="kt-menu__link-text">Anggaran Alat Berat</span></a>
 								</li> --}}
 								{{-- <li class="kt-menu__item" aria-haspopup="true"><a href="{{url('/anggaran-sdm')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-money"></span><span class="kt-menu__link-text">Anggaran SDM</span></a> --}}
@@ -141,7 +142,9 @@ License: You must have a valid license purchased only from themeforest(the above
 											<li id="master-K-A-B-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-kategori-alat-berat')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kategori Alat Berat</span></a></li>
 											{{-- <li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-grup')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Grup</span></a></li> --}}
 											<li id="master-jenisFoto-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-jenis-foto')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Jenis Foto</span></a></li>
+											@if (session('userdata')['role_id'] == 1)
 											<li id="master-user-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-user')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">User</span></a></li>
+											@endif
 										</ul>
 									</div>
 								</li>

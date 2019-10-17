@@ -45,7 +45,7 @@
                     </div>
                     <div class="form-group">
                         <label>Admin Loket</label>
-                        <select class="form-control m-select2" id="admin_loket" name="admin_loket[]" multiple="multiple">
+                        <select class="form-control m-select2" id="kt_select2_4" name="admin_loket[]" multiple="multiple">
                             @foreach ($admin_loket as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>    
                             @endforeach

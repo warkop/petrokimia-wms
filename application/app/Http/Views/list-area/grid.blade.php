@@ -102,7 +102,6 @@
         placeholder: "Select a state"
     });
     const id_gudang = "{{ $id_gudang }}";
-    document.title = 'List Area';
 function isNumberKey(txt, evt) {
     const charCode = (evt.which) ? evt.which : evt.keyCode;
     if (charCode == 46) {

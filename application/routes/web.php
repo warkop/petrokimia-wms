@@ -187,9 +187,9 @@ Route::get('/anggaran-sdm', function () {
 
 
 
-Route::get('/rencana-harian', function () {
-    return view('rencana-harian.grid');
-});
+// Route::get('/rencana-harian', function () {
+//     return view('rencana-harian.grid');
+// });
 Route::get('/add-rencana-harian', function () {
     return view('rencana-harian.add');
 });

@@ -15,7 +15,10 @@ class JobDeskController extends Controller
 
     public function index()
     {
-        return view('master/master-pekerjaan/grid');
+        $data['title'] = 'Master Job Desk';
+        $data['menu_active'] = 'master';
+        $data['sub_menu_active'] = 'job desk';
+        return view('master/master-pekerjaan/grid', $data);
     }
 
     

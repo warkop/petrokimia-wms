@@ -23,11 +23,13 @@ class RencanaHarianController extends Controller
 
     public function index()
     {
-        return view('rencana-harian.grid');
+        $data['title'] = 'Rencana Harian';
+        return view('rencana-harian.grid', $data);
     }
 
     public function create()
     {
+        $data['title'] = 'Tambah Rencana Harian';
         $alat_berat = new AlatBerat;
         $data['alat_berat']     = $alat_berat->getWithRelation();
         $data['checker']        = TenagaKerjaNonOrganik::where('job_desk_id', 2)->get();
