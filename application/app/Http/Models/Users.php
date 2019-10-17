@@ -5,6 +5,7 @@ namespace App\Http\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
+use App\Scopes\EndDateScope;
 
 class Users extends Authenticatable
 {
@@ -28,6 +29,13 @@ class Users extends Authenticatable
     ];
 
     protected $dates = ['start_date', 'end_date'];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new EndDateScope);
+    }
 
     public function getAuthPassword()
     {
