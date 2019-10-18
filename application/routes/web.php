@@ -120,7 +120,7 @@ Route::group(['prefix' => 'master-user', 'middleware' => ['eauth', 'revalidate']
 
 Route::group(['prefix' => 'gudang', 'middleware' => ['eauth:5', 'revalidate']], function () {
     Route::get('/', 'GudangController@index');
-    Route::get('/load_pallet', 'GudangController@loadPallet');
+    Route::get('/load-pallet', 'GudangController@loadPallet');
     Route::put('/', 'GudangController@store');
     Route::post('/', 'GudangController@json');
     Route::get('/load-material/{id_gudang}', 'GudangController@loadMaterial');
@@ -138,12 +138,13 @@ Route::group(['prefix' => 'list-area', 'middleware' => ['eauth', 'revalidate']],
 
 Route::group(['prefix' => 'rencana-harian', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'RencanaHarianController@index');
+    Route::get('/get-area', 'RencanaHarianController@getArea');
     Route::get('/tambah', 'RencanaHarianController@create');
     Route::get('/ubah/{id}', 'RencanaHarianController@edit');
     Route::put('/', 'RencanaHarianController@store');
     Route::post('/', 'RencanaHarianController@json');
     Route::get('/{id}', 'RencanaHarianController@show');
-    Route::get('/get_tkbm/{id}', 'RencanaHarianController@getTkbm');
+    Route::get('/get-tkbm/{id}', 'RencanaHarianController@getTkbm');
     Route::delete('/{id}', 'RencanaHarianController@destroy');
 });
 

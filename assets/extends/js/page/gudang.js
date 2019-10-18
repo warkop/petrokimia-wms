@@ -151,7 +151,7 @@ function tambah() {
 
 function loadPallet() {
     $.ajax({
-        url: ajaxSource+"load_pallet",
+        url: ajaxSource+"load-pallet",
         dataType: 'json',
         contentType: 'application/json',
         success: res =>{

@@ -43,14 +43,21 @@ class TenagaKerjaNonOrganik extends Model
         return $this->hasOne('App\Http\Models\JobDesk');
     }
 
+    public function scopeHouseKeeper($query)
+    {
+        return $query->where('job_desk_id', 1);
+    }
+
     public function scopeChecker($query)
     {
         return $query->where('job_desk_id', 2);
     }
+
     public function scopeOperatorAlatBerat($query)
     {
         return $query->where('job_desk_id', 3);
     }
+    
     public function scopeAdminLoket($query)
     {
         return $query->where('job_desk_id', 4);
