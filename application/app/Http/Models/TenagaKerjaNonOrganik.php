@@ -26,11 +26,16 @@ class TenagaKerjaNonOrganik extends Model
 
     public $timestamps  = false;
 
-    protected static function boot()
-    {
-        parent::boot();
+    // protected static function boot()
+    // {
+    //     parent::boot();
 
-        static::addGlobalScope(new EndDateScope);
+    //     static::addGlobalScope(new EndDateScope);
+    // }
+
+    public function scopeEndDate()
+    {
+        return $this->where('end_date', null)->orWhere('end_date', '>', date('Y-m-d'));
     }
 
     public function jobDesk()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Karu;
+use App\Http\Requests\KaruRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
