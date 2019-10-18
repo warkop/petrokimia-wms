@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\AlatBerat;
-use App\Http\Models\RencanaHarian;
-use App\Http\Models\RencanaTkbm;
+use App\Http\Models\Area;
+use App\Http\Models\Gudang;
 use App\Http\Models\RencanaAlatBerat;
 use App\Http\Models\RencanaAreaTkbm;
+use App\Http\Models\RencanaHarian;
+use App\Http\Models\RencanaTkbm;
 use App\Http\Models\ShiftKerja;
 use App\Http\Models\TenagaKerjaNonOrganik;
+use App\Http\Models\Users;
 use App\Http\Requests\RencanaHarianRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class RencanaHarianController extends Controller
 {
@@ -210,25 +211,44 @@ class RencanaHarianController extends Controller
         $data['id']             = $rencana_harian->id;
         $data['tanggal']        = date('d/m/Y', strtotime($rencana_harian->tanggal));
         $data['alat_berat']     = $alat_berat->getWithRelation();
-        $data['checker']        = TenagaKerjaNonOrganik::where('job_desk_id', 2)->get();
-        $data['op_alat_berat']  = TenagaKerjaNonOrganik::where('job_desk_id', 3)->get();
-        $data['admin_loket']    = TenagaKerjaNonOrganik::where('job_desk_id', 4)->get();
-        $data['shift_kerja']    = ShiftKerja::whereNull('end_date')->get();
+        $data['checker']        = TenagaKerjaNonOrganik::checker()->get();
+        $data['op_alat_berat']  = TenagaKerjaNonOrganik::operatorAlatBerat()->get();
+        $data['admin_loket']    = TenagaKerjaNonOrganik::adminLoket()->get();
+        $data['shift_kerja']    = ShiftKerja::all();
         return view('rencana-harian.add', $data);
     }
 
-    public function getTkbm($id_rencana, $id_job_desk)
+    public function getTkbm($id_job_desk)
     {
-        $res = RencanaHarian::where('id_rencana', $id_rencana);
+        $res = TenagaKerjaNonOrganik::where('job_desk_id', $id_job_desk)->get();
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $res;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Http\Models\RencanaHarian  $rencanaHarian
-     * @return \Illuminate\Http\Response
-     */
+    public function getArea()
+    {
+        $id_user = session('userdata')['id_user'];
+        $users = Users::find($id_user);
+        $gudang = Gudang::where('id_karu', $users->id_karu)->get();
+        $res = new Area;
+        foreach ($gudang as $key) {
+            $res = $res->where('id_gudang', $key->id_gudang);
+        }
+        $res = $res->get();
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $res;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
     public function update(Request $request, RencanaHarian $rencanaHarian)
     {
         //

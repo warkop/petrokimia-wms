@@ -6,7 +6,7 @@ let datatable,
     laddaButton;
 
 $(document).ready(()=>{
-    load_table();
+    loadTable();
 
     if (typeof datatable !== 'undefined') {
         datatable.on('draw.dt', function () {
@@ -35,15 +35,11 @@ const tambahHouseKeeper = () => {
     let html = 
     `<tr id="baris-${rows}">
         <td>
-            <select class="form-control m-select2 kt_select2_housekeeping" name="housekeeper" style="width: 100% !important" name="param" multiple="multiple" >
-                <option value="AK">Suryati</option>
-                <option value="HI">Maya</option>
+            <select class="form-control m-select2 kt_select2_housekeeping" id="housekeeper-${rows}" name="housekeeper" style="width: 100% !important" >
             </select>
         </td>
         <td>
-            <select class="form-control m-select2 kt_select2_area_kerja" name="area" multiple="multiple">
-                <option>Area A</option>
-                <option>Area B</option>
+            <select class="form-control m-select2 kt_select2_area_kerja" id="area-${rows}" name="area" multiple="multiple">
             </select>
         </td>
         <td>
@@ -58,6 +54,9 @@ const tambahHouseKeeper = () => {
     $('.kt_select2_area_kerja').select2({
         placeholder: "Pilih Area Kerja",
     });
+
+    getTkbm(1, "#housekeeper-"+rows);
+    getArea("#area-"+rows);
 }
 
 const hapus = (id) => {
@@ -133,7 +132,7 @@ const simpan = () => {
     });
 }
 
-const load_table = function () {
+const loadTable = function () {
     datatable = $(tableTarget);
     // begin first table
     datatable.dataTable({
@@ -173,7 +172,7 @@ const load_table = function () {
                 "mRender": function (data, type, full, draw) {
                     let row = draw.row;
                     let start = draw.settings._iDisplayStart;
-                    let length = draw.settings._iDisplayLength;
+                    // let length = draw.settings._iDisplayLength;
 
                     let counter = (start + 1 + row);
 
@@ -208,14 +207,41 @@ const load_table = function () {
     });
 };
 
-function getTkbm(id) {
+function getTkbm(id, target) {
     $.ajax({
         type: "GET",
-        url: ajaxSource + '/get_tkbm/' + id,
+        url: ajaxSource + '/get-tkbm/' + id,
         success:res=>{
+            const obj = res.data;
 
+            let html = '';
+            obj.forEach((item, index)=>{
+                html += `<option value="${item.id}">${item.nama}</option>`;
+            });
+
+            $(target).html(html);
         },
         error:(err, oo, pp) =>{
+
+        }
+    });
+}
+
+function getArea(target) {
+    $.ajax({
+        type: "GET",
+        url: ajaxSource + '/get-area/',
+        success: res => {
+            const obj = res.data;
+
+            let html = '';
+            obj.forEach((item, index) => {
+                html += `<option value="${item.id}">${item.nama}</option>`;
+            });
+
+            $(target).html(html);
+        },
+        error: (err, oo, pp) => {
 
         }
     });
@@ -251,6 +277,7 @@ function edit(id = '') {
             if (obj.status == "OK") {
                 $("#id_shift").val(obj.data.id_shift).trigger('change.select2');
                 // $("#admin_loket").val(obj)
+                
             } else {
                 swal.fire('Pemberitahuan', obj.message, 'warning');
             }
