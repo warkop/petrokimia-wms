@@ -69,8 +69,8 @@ class KategoriAlatBeratController extends Controller
         $id = $req->input('id');
         $req->validated();
         
-        $temp_model = KategoriAlatBerat::whereNotNull('forklift')->first();
-        if (empty($temp_model) || ($temp_model->id == $id && !empty($temp_model))) {
+        // $temp_model = KategoriAlatBerat::whereNotNull('forklift')->first();
+        // if (empty($temp_model) || ($temp_model->id == $id && !empty($temp_model))) {
             $tampung_anggaran = ($req->input('anggaran') ? $req->input('anggaran') : 0);
             $tampung_anggaran = str_replace('.', '', $tampung_anggaran);
             $tampung_anggaran = str_replace(',', '.', $tampung_anggaran);
@@ -95,7 +95,7 @@ class KategoriAlatBeratController extends Controller
                 $models->created_by = session('userdata')['id_user'];
             }
 
-            $models->nama           = strip_tags($req->input('nama'));
+            $models->nama           = strtoupper($req->input('nama'));
             $models->anggaran       = $anggaran;
             $models->forklift       = $forklift;
             $models->start_date     = $start_date;
@@ -105,11 +105,11 @@ class KategoriAlatBeratController extends Controller
 
             $this->responseCode = 200;
             $this->responseMessage = 'Data berhasil disimpan';
-        } else {
-            $this->responseCode                 = 400;
-            $this->responseStatus               = 'Missing Param';
-            $this->responseMessage              = 'Kategori forklift sudah ada pada data lain!';
-        }
+        // } else {
+        //     $this->responseCode                 = 400;
+        //     $this->responseStatus               = 'Missing Param';
+        //     $this->responseMessage              = 'Kategori forklift sudah ada pada data lain!';
+        // }
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);

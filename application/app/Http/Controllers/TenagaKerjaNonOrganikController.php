@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\TenagaKerjaNonOrganik;
 use App\Http\Models\JobDesk;
+use App\Scopes\EndDateScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -135,7 +136,7 @@ class TenagaKerjaNonOrganikController extends Controller
         if (!$request->ajax()) {
             return $this->accessForbidden();
         } else {
-            $res = $models::find($id);
+            $res = $models::withoutGlobalScope(EndDateScope::class)->find($id);
 
             if (!empty($res)) {
                 $this->responseCode = 200;

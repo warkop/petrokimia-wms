@@ -24,6 +24,8 @@ class KategoriAlatBeratRequest extends FormRequest
      */
     public function rules()
     {
+        $this->sanitize();
+
         $action = \Request::instance()->action;
         if ($action == 'edit') {
             $rules['id'] = 'required';
@@ -34,6 +36,7 @@ class KategoriAlatBeratRequest extends FormRequest
                 'required',
                 Rule::unique('alat_berat_kat', 'nama')->ignore(\Request::instance()->id, 'id')
             ],
+            'forklift'     => Rule::unique('alat_berat_kat', 'forklift')->ignore(\Request::instance()->id, 'id'),
             'start_date'                  => 'nullable|date_format:d-m-Y',
             'end_date'                    => 'nullable|date_format:d-m-Y|after:start_date',
         ];
@@ -46,8 +49,24 @@ class KategoriAlatBeratRequest extends FormRequest
         return [
             'nama.required' => 'Nama Kategori Alat Berat harus diisi!',
             'nama.unique' => 'Nama Kategori Alat sudah ada!',
+            'forklift.unique' => 'Kategori forklift sudah ada pada data lain!',
             'start_date.date_format'  => 'Tanggal harus dengan format tanggal-bulan-tahun',
             'end_date.date_format'  => 'Tanggal harus dengan format tanggal-bulan-tahun',
         ];
+    }
+
+    public function sanitize()
+    {
+        $input = $this->all();
+
+        if (preg_match("#https?://#", $input['url']) === 0) {
+            $input['url'] = 'http://'.$input['url'];
+        }
+
+        $input['name'] = filter_var($input['name'], FILTER_SANITIZE_STRING);
+        $input['description'] = filter_var($input['description'], 
+        FILTER_SANITIZE_STRING);
+
+        $this->replace($input);
     }
 }

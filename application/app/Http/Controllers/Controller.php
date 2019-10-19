@@ -10,4 +10,9 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    protected $responseCode = 403;
+    protected $responseStatus = '';
+    protected $responseMessage = '';
+    protected $responseData = [];
 }

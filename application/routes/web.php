@@ -96,7 +96,7 @@ Route::group(['prefix' => 'list-alat-berat', 'middleware' => ['eauth', 'revalida
     Route::get('/{id}', 'AlatBeratController@index');
     Route::put('/{id}', 'AlatBeratController@store');
     Route::post('/{id}', 'AlatBeratController@json');
-    Route::get('/{id}/{id_list}', 'AlatBeratController@show');
+    Route::get('/{kategoriAlatBerat}/{alatBerat}', 'AlatBeratController@show');
     Route::delete('/{id}/{id_list}', 'AlatBeratController@destroy');
 });
 
@@ -165,15 +165,15 @@ Route::get('/layout', function () {
 Route::get('/sub-gudang', function () {
     return view('sub-gudang.grid');
 });
-Route::get('/master-alat-berat/list-alat-berat', function () {
-    return view('list-alat-berat.grid');
-});
+// Route::get('/master-alat-berat/list-alat-berat', function () {
+//     return view('list-alat-berat.grid');
+// });
 Route::get('/stok-adjustment', function () {
     return view('stok-adjusment.grid');
 });
-Route::get('/gudang/list-alat-berat', function () {
-    return view('list-alat-berat-gudang.grid');
-});
+// Route::get('/gudang/list-alat-berat', function () {
+//     return view('list-alat-berat-gudang.grid');
+// });
 
 Route::get('/list-tenaga-kerja-nonorganik', function () {
     return view('list-tenaga-kerja-nonorganik.grid');

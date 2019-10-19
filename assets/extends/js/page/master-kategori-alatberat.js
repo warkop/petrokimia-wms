@@ -234,53 +234,27 @@ function simpan() {
 
             let obj = response;
 
-            if (obj.status == "OK") {
-                datatable.api().ajax.reload();
-                swal.fire('Ok', obj.message, 'success');
-                $('#modal_form').modal('hide');
-            } else {
-                swal.fire('Pemberitahuan', obj.message, 'warning');
-            }
-
+            datatable.api().ajax.reload();
+            swal.fire('Ok', obj.message, 'success');
+            $('#modal_form').modal('hide');
         },
         error: function (response) {
-            let head = 'Maaf',
-                message = 'Terjadi kesalahan koneksi',
-                type = 'error';
+            const head = 'Pemberitahuan';
+            const type = 'warning';
+            const obj = response.responseJSON.errors;
             laddaButton.stop();
             window.onbeforeunload = false;
             $('.btn_close_modal').removeClass('hide');
             $('.se-pre-con').hide();
 
-            if (response['status'] == 401 || response['status'] == 419) {
-                location.reload();
-            } else {
-                if (response['status'] != 404 && response['status'] != 500) {
-                    let obj = JSON.parse(response['responseText']);
-
-                    if (!$.isEmptyObject(obj.message)) {
-                        if (obj.code > 400) {
-                            head = 'Maaf';
-                            message = obj.message;
-                            type = 'error';
-                        } else {
-                            const panjang = obj.errors.nama.length;
-                            let error_message = '';
-                            for (let i=0; i<panjang; i++) {
-                                error_message += obj.errors.nama[i]+"<br>";
-                            }
-
-                            // error_message = $("#pesan_error").html();
-                            // console.log(error_message);
-                            head = 'Pemberitahuan';
-                            message = error_message;
-                            type = 'warning';
-                        }
-                    }
-                }
-
-                swal.fire(head, message, type);
-            }
+            const temp = Object.values(obj);
+            let message = '';
+            temp.forEach(element => {
+                element.forEach(row => {
+                    message += row+"<br>"
+                });
+            });
+            swal.fire(head, message, type);
         }
     });
 }
