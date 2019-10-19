@@ -59,12 +59,12 @@ class KategoriAlatBeratRequest extends FormRequest
     {
         $input = $this->all();
 
-        if (preg_match("#https?://#", $input['url']) === 0) {
-            $input['url'] = 'http://'.$input['url'];
-        }
-
-        $input['name'] = filter_var($input['name'], FILTER_SANITIZE_STRING);
-        $input['description'] = filter_var($input['description'], 
+        $input['nama'] = filter_var($input['nama'], FILTER_SANITIZE_STRING);
+        $input['forklift'] = filter_var($input['forklift'], 
+        FILTER_SANITIZE_STRING);
+        $input['start_date'] = filter_var($input['start_date'], 
+        FILTER_SANITIZE_STRING);
+        $input['end_date'] = filter_var($input['end_date'], 
         FILTER_SANITIZE_STRING);
 
         $this->replace($input);

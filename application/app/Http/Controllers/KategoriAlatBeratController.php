@@ -90,7 +90,7 @@ class KategoriAlatBeratController extends Controller
                 $models->created_by = session('userdata')['id_user'];
             }
 
-            $models->nama           = strtoupper($req->input('nama'));
+            $models->nama           = $req->input('nama');
             $models->anggaran       = $anggaran;
             $models->forklift       = $forklift;
             $models->start_date     = $start_date;

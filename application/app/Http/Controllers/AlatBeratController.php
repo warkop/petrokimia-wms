@@ -81,8 +81,8 @@ class AlatBeratController extends Controller
                 $models->created_by = session('userdata')['id_user'];
             }
 
-            $models->nomor_lambung = strip_tags($req->input('nomor_lambung'));
-            $models->nomor_polisi = strip_tags($req->input('nomor_polisi'));
+            $models->nomor_lambung = strtoupper($req->input('nomor_lambung'));
+            $models->nomor_polisi = strtoupper($req->input('nomor_polisi'));
             $models->id_kategori = $id_kategori;
 
             $models->save();

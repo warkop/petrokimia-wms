@@ -15,8 +15,6 @@ class TenagaKerjaNonOrganikController extends Controller
     public function index()
     {
         $data['title'] = 'Master Tenaga Kerja Non Organik';
-        $data['menu_active'] = 'master';
-        $data['sub_menu_active'] = 'tenaga kerja non organik';
         $data['job_desk'] = JobDesk::all();
         return view('master.master-tenaga-kerja-nonorganik.grid', $data);
     }
@@ -57,58 +55,21 @@ class TenagaKerjaNonOrganikController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(TenagaKerjaNonOrganikRequest $req, TenagaKerjaNonOrganik $models)
+    public function store(TenagaKerjaNonOrganikRequest $req, TenagaKerjaNonOrganik $tenagaKerjaNonOrganik)
     {
-        $id = $req->input('id');
-        $rules = [
-            'nama'              => ['required'],
-            'start_date'        => 'nullable|date_format:d-m-Y',
-            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
-        ];
+        $req->validated();
 
-        $action = $req->input('action');
-        if ($action == 'edit') {
-            $rules['id'] = 'required';
-        }
+        $tenagaKerjaNonOrganik->nama                   = $req->input('nama');
+        $tenagaKerjaNonOrganik->job_desk_id            = $req->input('job_desk_id');
+        $tenagaKerjaNonOrganik->nomor_hp               = $req->input('nomor_hp');
+        $tenagaKerjaNonOrganik->nomor_bpjs             = $req->input('nomor_bpjs');
+        $tenagaKerjaNonOrganik->start_date             = $req->input('start_date');
+        $tenagaKerjaNonOrganik->end_date               = $req->input('end_date');
 
-        $validator = Validator::make($req->all(), $rules);
-        if ($validator->fails()) {
-            $this->responseCode                 = 400;
-            $this->responseStatus               = 'Missing Param';
-            $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
-            $this->responseData['error_log']    = $validator->errors();
-        } else {
-            $job_desk_id = $req->input('job_desk_id');
-            $nama = $req->input('nama');
-            $nomor_hp = $req->input('nomor_hp');
-            $nomor_bpjs = $req->input('nomor_bpjs');
+        $tenagaKerjaNonOrganik->save();
 
-            $start_date  = null;
-            if ($req->input('start_date') != '') {
-                $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            }
-
-            $end_date   = null;
-            if ($req->input('end_date') != '') {
-                $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
-            }
-
-            if (!empty($id)) {
-                $models = TenagaKerjaNonOrganik::find($id);
-            }
-
-            $models->nama                   = strip_tags($nama);
-            $models->job_desk_id            = $job_desk_id;
-            $models->nomor_hp               = $nomor_hp;
-            $models->nomor_bpjs             = $nomor_bpjs;
-            $models->start_date             = $start_date;
-            $models->end_date               = $end_date;
-
-            $models->save();
-
-            $this->responseCode = 200;
-            $this->responseMessage = 'Data berhasil disimpan';
-        }
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data berhasil disimpan';
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
@@ -136,35 +97,16 @@ class TenagaKerjaNonOrganikController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\TenagaKerjaNonOrganik  $tenagaKerjaNonOrganik
-     * @return \Illuminate\Http\Response
-     */
     public function edit(TenagaKerjaNonOrganik $tenagaKerjaNonOrganik)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\TenagaKerjaNonOrganik  $tenagaKerjaNonOrganik
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, TenagaKerjaNonOrganik $tenagaKerjaNonOrganik)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\TenagaKerjaNonOrganik  $tenagaKerjaNonOrganik
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(TenagaKerjaNonOrganik $tenagaKerjaNonOrganik)
     {
         //

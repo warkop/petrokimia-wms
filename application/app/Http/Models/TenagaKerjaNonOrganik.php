@@ -13,6 +13,10 @@ class TenagaKerjaNonOrganik extends Model
 
     protected $guarded = [
         'id',
+        'created_at',
+        'updated_at',
+        'created_by',
+        'updated_by',
     ];
 
     protected $hidden = [
@@ -24,18 +28,18 @@ class TenagaKerjaNonOrganik extends Model
 
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at',];
 
-    public $timestamps  = false;
+    public $timestamps  = true;
 
     protected static function boot()
     {
         parent::boot();
 
         static::updating(function($table)  {
-            $table->updated_by = \Auth::user()->id;
+            $table->updated_by = \Auth::id();
         });
 
         static::saving(function($table)  {
-            $table->created_by = \Auth::user()->id;
+            $table->created_by = \Auth::id();
         });
 
         static::addGlobalScope(new EndDateScope);
