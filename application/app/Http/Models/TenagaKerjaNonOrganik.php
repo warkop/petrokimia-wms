@@ -30,6 +30,14 @@ class TenagaKerjaNonOrganik extends Model
     {
         parent::boot();
 
+        static::updating(function($table)  {
+            $table->updated_by = \Auth::user()->id;
+        });
+
+        static::saving(function($table)  {
+            $table->created_by = \Auth::user()->id;
+        });
+
         static::addGlobalScope(new EndDateScope);
     }
 

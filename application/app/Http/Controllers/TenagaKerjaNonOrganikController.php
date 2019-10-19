@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\TenagaKerjaNonOrganik;
 use App\Http\Models\JobDesk;
+use App\Http\Requests\TenagaKerjaNonOrganikRequest;
 use App\Scopes\EndDateScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -18,16 +19,6 @@ class TenagaKerjaNonOrganikController extends Controller
         $data['sub_menu_active'] = 'tenaga kerja non organik';
         $data['job_desk'] = JobDesk::all();
         return view('master.master-tenaga-kerja-nonorganik.grid', $data);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     public function json(Request $req)
@@ -66,7 +57,7 @@ class TenagaKerjaNonOrganikController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, TenagaKerjaNonOrganik $models)
+    public function store(TenagaKerjaNonOrganikRequest $req, TenagaKerjaNonOrganik $models)
     {
         $id = $req->input('id');
         $rules = [
@@ -104,9 +95,6 @@ class TenagaKerjaNonOrganikController extends Controller
 
             if (!empty($id)) {
                 $models = TenagaKerjaNonOrganik::find($id);
-                $models->updated_by = session('userdata')['id_user'];
-            } else {
-                $models->created_by = session('userdata')['id_user'];
             }
 
             $models->nama                   = strip_tags($nama);
