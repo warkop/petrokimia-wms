@@ -375,7 +375,6 @@ function helpResponse($code, $data = NULL, $msg = '', $status = '')
 		default:
 			$s = 'Undefined';
 			$m = 'Undefined';
-		break;
 	}
 
 	$status = ($status != '') ? $status : $s;

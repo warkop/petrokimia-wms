@@ -34,8 +34,8 @@ class RencanaHarianController extends Controller
         $alat_berat = new AlatBerat;
         $data['alat_berat']     = $alat_berat->getWithRelation();
         $data['checker']        = TenagaKerjaNonOrganik::checker()->endDate()->get();
-        $data['op_alat_berat']  = TenagaKerjaNonOrganik::operatorAlatBerat()->get();
-        $data['admin_loket']    = TenagaKerjaNonOrganik::adminLoket()->get();
+        $data['op_alat_berat']  = TenagaKerjaNonOrganik::operatorAlatBerat()->endDate()->get();
+        $data['admin_loket']    = TenagaKerjaNonOrganik::adminLoket()->endDate()->get();
         $data['shift_kerja']    = ShiftKerja::whereNull('end_date')->get(); 
         return view('rencana-harian.add', $data);
     }
@@ -79,10 +79,14 @@ class RencanaHarianController extends Controller
     public function store(RencanaHarianRequest $req)
     {
         $req->validated();
-        
+        $id = $req->input('id');
         if (!empty($id)) {
             $rencana_harian = RencanaHarian::find($req->input('id'));
             $rencana_harian->updated_by = session('userdata')['id_user'];
+
+            RencanaAlatBerat::where('id_rencana', $rencana_harian->id)->forceDelete();
+            RencanaTkbm::where('id_rencana', $rencana_harian->id)->forceDelete();
+            RencanaAreaTkbm::where('id_rencana', $rencana_harian->id)->forceDelete();
         } else {
             $rencana_harian = new RencanaHarian();
             $rencana_harian->created_by = session('userdata')['id_user'];
@@ -96,9 +100,7 @@ class RencanaHarianController extends Controller
         $rencana_harian->save();
 
         //rencana alat berat
-        $rencana_alat_berat = new RencanaAlatBerat();
         $alat_berat = $req->input('alat_berat');
-        // echo count($alat_berat);
         for ($i=0; $i<count($alat_berat); $i++) {
             $arr = [
                 'id_rencana' => $rencana_harian->id,
@@ -107,14 +109,9 @@ class RencanaHarianController extends Controller
             \DB::table('rencana_alat_berat')->insert(
                 $arr
             );
-            // $rencana_alat_berat->id_rencana = $rencana_harian->id;
-            // $rencana_alat_berat->id_alat_berat = $alat_berat[$i];
-            // $rencana_alat_berat->save();
-            // $rencana_alat_berat->create($arr);
         }
 
         //rencana tkbm
-        $rencana_tkbm = new RencanaTkbm();
         $admin_loket = $req->input('admin_loket');
         foreach ($admin_loket as $key => $value) {
             $arr = [
@@ -125,10 +122,6 @@ class RencanaHarianController extends Controller
             \DB::table('rencana_tkbm')->insert(
                 $arr
             );
-
-            // $rencana_tkbm->id_rencana = $rencana_harian->id;
-            // $rencana_tkbm->id_tkbm = $value;
-            // $rencana_tkbm->save();
         }
         
         $op_alat_berat = $req->input('op_alat_berat');
@@ -141,10 +134,6 @@ class RencanaHarianController extends Controller
             \DB::table('rencana_tkbm')->insert(
                 $arr
             );
-            
-            // $rencana_tkbm->id_rencana = $rencana_harian->id;
-            // $rencana_tkbm->id_tkbm = $value;
-            // $rencana_tkbm->save();
         }
 
         $checker = $req->input('checker');
@@ -157,19 +146,26 @@ class RencanaHarianController extends Controller
             \DB::table('rencana_tkbm')->insert(
                 $arr
             );
-            // $rencana_tkbm->id_rencana = $rencana_harian->id;
-            // $rencana_tkbm->id_tkbm = $value;
-            // $rencana_tkbm->save();
         }
 
         //rencana area tkbm
-        $rencana_area_tkbm = new RencanaAreaTkbm();
-        // $housekeeper = $req->input('housekeeper');
-        // foreach ($housekeeper as $key => $value) {
-        //     $rencana_area_tkbm->id_rencana = $rencana_harian->id;
-        //     $rencana_area_tkbm->id_tkbm = $value;
-        //     $rencana_area_tkbm->save();
-        // }
+        $housekeeper = $req->input('housekeeper');
+        if (!empty($housekeeper)) {
+            foreach ($housekeeper as $key => $value) {
+                $area = $req->input('area')[$key];
+                foreach ($area as $row => $hey) {
+                    $arr = [
+                        'id_rencana' => $rencana_harian->id,
+                        'id_tkbm' => $value,
+                        'id_area' => $hey,
+                    ];
+    
+                    \DB::table('rencana_area_tkbm')->insert(
+                        $arr
+                    );
+                }
+            }
+        }
 
         $this->responseCode = 200;
         $this->responseMessage = 'Data berhasil disimpan';
@@ -178,20 +174,11 @@ class RencanaHarianController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
-    public function show($id)
+    public function show(RencanaHarian $rencana_harian)
     {
-        $rencanaHarian = new RencanaHarian;
-        $res = $rencanaHarian::find($id);
-
-        if (!empty($res)) {
-            $this->responseCode = 200;
-            $this->responseMessage = 'Data tersedia.';
-            $this->responseData = $res;
-        } else {
-            $this->responseData = [];
-            $this->responseStatus = 'No Data Available';
-            $this->responseMessage = 'Data tidak tersedia';
-        }
+        $rencana_harian;
+        $this->responseCode = 200;
+        $this->responseData = $rencana_harian;
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
@@ -204,10 +191,9 @@ class RencanaHarianController extends Controller
      * @param  \App\Http\Models\RencanaHarian  $rencanaHarian
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(RencanaHarian $rencana_harian)
     {
         $alat_berat = new AlatBerat;
-        $rencana_harian = RencanaHarian::find($id);
         $data['id']             = $rencana_harian->id;
         $data['tanggal']        = date('d/m/Y', strtotime($rencana_harian->tanggal));
         $data['alat_berat']     = $alat_berat->getWithRelation();
@@ -215,7 +201,58 @@ class RencanaHarianController extends Controller
         $data['op_alat_berat']  = TenagaKerjaNonOrganik::operatorAlatBerat()->get();
         $data['admin_loket']    = TenagaKerjaNonOrganik::adminLoket()->get();
         $data['shift_kerja']    = ShiftKerja::all();
+        $data['tkbm_rencana']    = RencanaAreaTkbm::select('id_rencana','id_tkbm')->where('id_rencana', $rencana_harian->id)->groupBy('id_tkbm', 'id_rencana')->get();
+        // $data['area_rencana']    = RencanaAreaTkbm::select('id_rencana','id_area')->where('id_rencana', $rencana_harian->id)->groupBy('id_tkbm', 'id_rencana')->get();
         return view('rencana-harian.add', $data);
+    }
+
+    public function getRencanaTkbm($id_job_desk, $id_rencana)
+    {
+        $resource = new RencanaTkbm();
+
+        $res = $resource->join('tenaga_kerja_non_organik as tkbm', 'tkbm.id', '=', 'id_tkbm')
+        ->where('id_rencana', $id_rencana)
+        ->where('job_desk_id', $id_job_desk)
+        ->get();
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $res;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
+    public function getRencanaAreaTkbm($id_rencana, $id_tkbm)
+    {
+        $resource = new RencanaAreaTkbm();
+
+        $res = $resource
+        ->where('id_rencana', $id_rencana)
+        ->where('id_tkbm', $id_tkbm)
+        ->get();
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $res;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
+    public function getRencanaAlatBerat($id_rencana)
+    {
+        $resource = new RencanaAlatBerat();
+
+        $res = $resource->where('id_rencana', $id_rencana)
+        ->get();
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $res;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 
     public function getTkbm($id_job_desk)
@@ -230,16 +267,25 @@ class RencanaHarianController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
+    public function getAlatBerat()
+    {
+        $alat_berat = new AlatBerat;
+        $res = $alat_berat->getWithRelation();
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $res;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
     public function getArea()
     {
         $id_user = session('userdata')['id_user'];
         $users = Users::find($id_user);
-        $gudang = Gudang::where('id_karu', $users->id_karu)->get();
-        $res = new Area;
-        foreach ($gudang as $key) {
-            $res = $res->where('id_gudang', $key->id_gudang);
-        }
-        $res = $res->get();
+        $gudang = Gudang::where('id_karu', $users->id_karu)->first();
+        $res = Area::where('id_gudang', $gudang->id)->get();
 
         $this->responseCode = 200;
         $this->responseMessage = 'Data tersedia.';

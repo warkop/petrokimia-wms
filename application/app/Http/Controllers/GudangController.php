@@ -86,10 +86,6 @@ class GudangController extends Controller
             $this->responseData['error_log']    = $validator->errors();
         } else {
             $id = $req->input('id');
-            // $nama = $req->input('nama');
-            // $id_sloc = $req->input('id_sloc');
-            // $id_plant = $req->input('id_plant');
-            // $tipe_gudang = $req->input('tipe_gudang');
 
             $start_date  = null;
             if ($req->input('start_date') != '') {
@@ -108,8 +104,13 @@ class GudangController extends Controller
                 $models->created_by = session('userdata')['id_user'];
             }
 
+            if (!empty($req->input('id_karu'))) {
+                $models->id_karu        = $req->input('id_karu');
+            } else {
+                $models->id_karu = null;
+            }
+
             $models->nama           = strip_tags($req->input('nama'));
-            $models->id_karu        = strip_tags($req->input('id_karu'));
             $models->id_sloc        = strip_tags($req->input('id_sloc'));
             $models->id_plant       = strip_tags($req->input('id_plant'));
             $models->tipe_gudang    = strip_tags($req->input('tipe_gudang'));

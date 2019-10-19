@@ -273,7 +273,8 @@
 <script src="{{asset('assets/extends/js/page/gudang.js')}}" type="text/javascript"></script>
 <script>
 $('#id_karu').select2({
-    placeholder: "Pilih Kepala Regu"
+    placeholder: "Pilih Kepala Regu",
+    allowClear: true
 });
 $('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),

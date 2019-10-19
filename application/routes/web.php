@@ -140,11 +140,16 @@ Route::group(['prefix' => 'rencana-harian', 'middleware' => ['eauth', 'revalidat
     Route::get('/', 'RencanaHarianController@index');
     Route::get('/get-area', 'RencanaHarianController@getArea');
     Route::get('/tambah', 'RencanaHarianController@create');
-    Route::get('/ubah/{id}', 'RencanaHarianController@edit');
+    Route::get('/ubah/{rencana_harian}', 'RencanaHarianController@edit');
     Route::put('/', 'RencanaHarianController@store');
+    Route::patch('/{rencana_harian}', 'RencanaHarianController@update');
     Route::post('/', 'RencanaHarianController@json');
-    Route::get('/{id}', 'RencanaHarianController@show');
+    Route::get('/get-alat-berat', 'RencanaHarianController@getAlatBerat');
+    Route::get('/{rencana_harian}', 'RencanaHarianController@show');
+    Route::get('/get-rencana-tkbm/{id_job_desk}/{id_rencana}/', 'RencanaHarianController@getRencanaTkbm');
     Route::get('/get-tkbm/{id}', 'RencanaHarianController@getTkbm');
+    Route::get('/get-rencana-alat-berat/{id_rencana}/', 'RencanaHarianController@getRencanaAlatBerat');
+    Route::get('/get-rencana-tkbm-area/{id_rencana}/{id_tkbm}', 'RencanaHarianController@getRencanaAreaTkbm');
     Route::delete('/{id}', 'RencanaHarianController@destroy');
 });
 

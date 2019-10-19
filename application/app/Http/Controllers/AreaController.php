@@ -64,6 +64,7 @@ class AreaController extends Controller
         $rules = [
             'nama'              => 'required',
             'kapasitas'         => 'numeric|between:0,9999.9999',
+            'tipe'              => 'required',
         ];
 
         $action = $req->input('action');

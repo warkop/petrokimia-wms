@@ -29,17 +29,17 @@ $(document).ready(()=>{
     });
 });
 
-const tambahHouseKeeper = () => {
+const tambahHouseKeeper = (id_rencana='', id_tkbm='') => {
     const tableId = "table_housekeeper";
     const rows = document.getElementById(tableId).getElementsByTagName("tr").length;
     let html = 
     `<tr id="baris-${rows}">
         <td>
-            <select class="form-control m-select2 kt_select2_housekeeping" id="housekeeper-${rows}" name="housekeeper" style="width: 100% !important" >
+            <select class="form-control m-select2 kt_select2_housekeeping" id="housekeeper-${rows}" name="housekeeper[${rows}]" style="width: 100% !important" >
             </select>
         </td>
         <td>
-            <select class="form-control m-select2 kt_select2_area_kerja" id="area-${rows}" name="area" multiple="multiple">
+            <select class="form-control m-select2 kt_select2_area_kerja" id="area-${rows}" name="area[${rows}][]" multiple="multiple">
             </select>
         </td>
         <td>
@@ -55,8 +55,10 @@ const tambahHouseKeeper = () => {
         placeholder: "Pilih Area Kerja",
     });
 
-    getTkbm(1, "#housekeeper-"+rows);
+    getTkbm(1, "#housekeeper-"+rows, id_rencana);
     getArea("#area-"+rows);
+
+    getRencanaTkbmArea(id_rencana, id_tkbm);
 }
 
 const hapus = (id) => {
@@ -207,21 +209,135 @@ const loadTable = function () {
     });
 };
 
-function getTkbm(id, target) {
+function name(params) {
+    // let $lokasi = $('.pilih_karcis');
+    // let chosen = false;
+
+    // id_target = $(target).attr('id').replace(jenis + '_karcis_<?= $key['ID_TIPE'] ?>_' + id2 + '_', '');
+    // for (var i = 0; i < $lokasi.length; i++) {
+    //     if ($(target).val() != "" && $(target).attr('id') != $($lokasi[i]).attr('id') && $(target).val() == $($lokasi[i]).val()) {
+    //         chosen = true;
+    //     }
+    // }
+
+    // if (chosen == true) {
+    //     $(target).val('');
+    //     $(target).select2("val", "");
+
+    //     swal('Pemberitahuan', 'Karcis sudah digunakan. Silahkan Pilih karcis lain!', 'error');
+    //     $("#" + jenis + "_total_karcis_<?= $key['ID_TIPE'] ?>_" + id2 + "_" + id_target).val("");
+    //     // reset();
+    // } else {
+    // }
+}
+
+function getRencanaTkbm(id_job_desk, id_rencana, target) {
+    
     $.ajax({
         type: "GET",
-        url: ajaxSource + '/get-tkbm/' + id,
+        url: ajaxSource + '/get-rencana-tkbm/' + id_job_desk + "/" + id_rencana,
+        success: res => {
+            const obj = res.data;
+
+            const panjang = obj.length;
+            let tampung = [];
+            for (let i=0; i<panjang; i++) {
+                tampung.push(obj[i].id_tkbm);
+            }
+            $(target).select2('val', [tampung]);
+        },
+        error: (err, oo, pp) => {
+
+        }
+    });
+}
+
+function getRencanaTkbmArea(id_rencana, id_tkbm, target) {
+    $.ajax({
+        type: "GET",
+        url: ajaxSource + '/get-rencana-tkbm-area/' + id_rencana + "/" + id_tkbm,
+        success: res => {
+            const obj = res.data;
+
+            const panjang = obj.length;
+            let tampung = [];
+            for (let i = 0; i < panjang; i++) {
+                tampung.push(obj[i].id_tkbm);
+            }
+            $(target).select2('val', [tampung]);
+        },
+        error: (err, oo, pp) => {
+
+        }
+    });
+}
+
+function getRencanaAlatBerat(id_rencana, target) {
+    $.ajax({
+        type: "GET",
+        url: ajaxSource + '/get-rencana-alat-berat/' + id_rencana,
+        success: res => {
+            const obj = res.data;
+            console.log(obj)
+            const panjang = obj.length;
+            let tampung = [];
+            for (let i = 0; i < panjang; i++) {
+                tampung.push(obj[i].id_alat_berat);
+            }
+            $(target).select2('val', [tampung]);
+        },
+        error: (err, oo, pp) => {
+
+        }
+    });
+}
+
+function getHouseKeeper() {
+    
+}
+
+function getTkbm(id_job_desk, target, id_rencana='', id_tkbm='') {
+    console.log(id_rencana);
+    $.ajax({
+        type: "GET",
+        url: ajaxSource + '/get-tkbm/' + id_job_desk,
         success:res=>{
             const obj = res.data;
 
-            let html = '';
+            let html = `<option value="">Pilih Pegawai</option>`;
             obj.forEach((item, index)=>{
                 html += `<option value="${item.id}">${item.nama}</option>`;
             });
 
             $(target).html(html);
+            
+            if (id_rencana != '') {
+                getRencanaTkbm(id_job_desk, id_rencana, target);
+                // getRencanaTkbmArea(id_rencana, id_tkbm);
+            }
         },
         error:(err, oo, pp) =>{
+
+        }
+    });
+}
+
+function getAlatBerat(id_rencana, target) {
+    $.ajax({
+        type: "GET",
+        url: ajaxSource + '/get-alat-berat',
+        success: res => {
+            const obj = res.data;
+
+            let html = ``;
+            obj.forEach((item, index) => {
+                html += `<option value="${item.id}">${item.nomor_polisi}</option>`;
+            });
+
+            $(target).html(html);
+            getRencanaAlatBerat(id_rencana, target);
+        },
+        error: (err, oo, pp) => {
 
         }
     });
@@ -247,17 +363,14 @@ function getArea(target) {
     });
 }
 
+
 function edit(id = '') {
     // reset_form();
-    $('#id').val(id);
+    // $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
-    $('#modal_form .modal-title').html('Edit Data Kategori Alat Berat');
-    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk mengubah data master Kategori Alat Berat sesuai kebutuhan.');
-    $('#modal_form').modal({
-        backdrop: 'static',
-        keyboard: false
-    }, 'show');
+
+    
 
     $.ajax({
         type: "GET",
@@ -275,9 +388,15 @@ function edit(id = '') {
             let obj = response;
             
             if (obj.status == "OK") {
-                $("#id_shift").val(obj.data.id_shift).trigger('change.select2');
-                // $("#admin_loket").val(obj)
+                $("#id").val(obj.data.id);
+                $("#id_shift").val(obj.data.id_shift).trigger('change');
+
+                getTkbm(4, "#admin_loket", obj.data.id);
+                getTkbm(3, "#op_alat_berat", obj.data.id);
+                getTkbm(2, "#checker", obj.data.id);
+                getAlatBerat(obj.data.id, "#alat_berat");
                 
+                // tambahHouseKeeper(obj.data.id);
             } else {
                 swal.fire('Pemberitahuan', obj.message, 'warning');
             }
@@ -314,6 +433,27 @@ function edit(id = '') {
             }
         }
     });
+}
+
+function reset_form(method = '') {
+    $('#id').val('');
+    $('#id').change();
+    $('#nama').val('');
+    $('#nama').change();
+    $('#id_sloc').val('');
+    $('#id_sloc').change();
+    $('#id_plant').val('');
+    $('#id_plant').change();
+    $('#tipe_gudang').val('');
+    $('#tipe_gudang').change();
+    $('#id_karu').val('');
+    $('#id_karu').change();
+    $('.material').val('');
+    $('.material').change();
+    $('#start_date').val('');
+    $('#start_date').change();
+    $('#end_date').val('');
+    $('#end_date').change();
 }
 
 var KTDatatablesDataSourceHtml = function () {
