@@ -17,11 +17,6 @@ use Illuminate\Http\Request;
 
 class RencanaHarianController extends Controller
 {
-    private $responseCode = 403;
-    private $responseStatus = '';
-    private $responseMessage = '';
-    private $responseData = [];
-
     public function index()
     {
         $data['title'] = 'Rencana Harian';

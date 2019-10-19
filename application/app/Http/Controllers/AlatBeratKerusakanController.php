@@ -8,11 +8,6 @@ use Illuminate\Support\Facades\Validator;
 
 class AlatBeratKerusakanController extends Controller
 {
-    private $responseCode = 403;
-    private $responseStatus = '';
-    private $responseMessage = '';
-    private $responseData = [];
-
     public function index()
     {
         $data['title'] = 'Master Kerusakan Alat Berat';

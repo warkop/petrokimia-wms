@@ -9,11 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 class KaruController extends Controller
 {
-    private $responseCode = 403;
-    private $responseStatus = '';
-    private $responseMessage = '';
-    private $responseData = [];
-
     public function index()
     {
         $data['title'] = 'Master Kepala Regu';

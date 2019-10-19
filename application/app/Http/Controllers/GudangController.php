@@ -11,11 +11,6 @@ use Illuminate\Support\Facades\Validator;
 
 class GudangController extends Controller
 {
-    private $responseCode = 403;
-    private $responseStatus = '';
-    private $responseMessage = '';
-    private $responseData = [];
-
     public function index()
     {
         $data['title'] = 'Gudang';

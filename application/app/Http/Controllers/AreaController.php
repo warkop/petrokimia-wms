@@ -9,11 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 class AreaController extends Controller
 {
-    private $responseCode = 403;
-    private $responseStatus = '';
-    private $responseMessage = '';
-    private $responseData = [];
-
     public function index($id_gudang)
     {
         $data['title'] = 'Area';

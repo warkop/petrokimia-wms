@@ -10,11 +10,6 @@ use Illuminate\Validation\Rule;
 
 class KategoriAlatBeratController extends Controller
 {
-    private $responseCode = 403;
-    private $responseStatus = '';
-    private $responseMessage = '';
-    private $responseData = [];
-    
     public function index()
     {
         $data['title'] = 'Master Kategori Alat Berat';

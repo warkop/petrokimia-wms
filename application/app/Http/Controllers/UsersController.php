@@ -12,11 +12,6 @@ use Illuminate\Validation\Rule;
 
 class UsersController extends Controller
 {
-    private $responseCode = 403;
-    private $responseStatus = '';
-    private $responseMessage = '';
-    private $responseData = [];
-
     public function index()
     {
         $data['title'] = 'Master Users';

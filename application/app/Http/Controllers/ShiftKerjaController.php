@@ -9,11 +9,6 @@ use Illuminate\Validation\Rule;
 
 class ShiftKerjaController extends Controller
 {
-    private $responseCode = 403;
-    private $responseStatus = '';
-    private $responseMessage = '';
-    private $responseData = [];
-
     public function index()
     {
         return view('master.master-shift-kerja.grid');
