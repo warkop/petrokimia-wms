@@ -25,11 +25,6 @@ class TenagaKerjaNonOrganikRequest extends FormRequest
     {
         $this->sanitize();
 
-        $action = \Request::instance()->action;
-        if ($action == 'edit') {
-            $rules['id'] = 'required';
-        }
-
         $rules = [
             'nama'              => ['required'],
             'start_date'        => 'nullable|date_format:d-m-Y',
@@ -66,7 +61,7 @@ class TenagaKerjaNonOrganikRequest extends FormRequest
         }
 
         if ($input['end_date'] != '') {
-            $end_date   = date('Y-m-d', strtotime($input['end_date']));
+            $input['end_date']   = date('Y-m-d', strtotime($input['end_date']));
         } else {
             $input['end_date'] = null;
         }
