@@ -176,7 +176,7 @@ const loadTable = function () {
                 "mData": "id",
                 render: function (data, type, full, meta) {
                     return `
-                        <a href="` + ajaxSource + `/realisasi">
+                        <a href="` + ajaxSource + `/realisasi/${full.id}">
                             <button type = "button" class="btn btn-primary btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Realisasi">
                             <i class="flaticon-interface-5"></i> </button>
                         </a>

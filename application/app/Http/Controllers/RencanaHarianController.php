@@ -292,9 +292,10 @@ class RencanaHarianController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
-    public function update(Request $request, RencanaHarian $rencanaHarian)
+    public function realisasi(RencanaHarian $rencanaHarian)
     {
-        //
+        $data['id_rencana_harian'] = $rencanaHarian->id();
+        return view('rencana-harian.realisasi', $data);
     }
 
     /**
