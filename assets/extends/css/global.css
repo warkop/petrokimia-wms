@@ -60,6 +60,15 @@
     padding: 2.25rem 1.5rem;
 }
 
+.kel-min {
+    background: rgba(248, 248, 248, .5);
+    padding: 1.25rem 1.5rem;
+}
+
+.uppercase {
+    text-transform: uppercase !important;
+}
+
 .success-color {
     background: #0ABB87 !important;
 }

@@ -38,7 +38,7 @@
     </div>
 </div>
 
-<div class="kt-content  kt-grid__item kt-grid__item--fluid" style="margin-bottom: -8vh">
+<div class="kt-content  kt-grid__item kt-grid__item--fluid" style="margin-bottom: -3vh">
     <div class="row">
         <div class="col-12">
             <div class="kt-portlet">
