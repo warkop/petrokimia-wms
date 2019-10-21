@@ -3,19 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Karu;
+use App\Http\Requests\KaruRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class KaruController extends Controller
 {
-    private $responseCode = 403;
-    private $responseStatus = '';
-    private $responseMessage = '';
-    private $responseData = [];
-
     public function index()
     {
-        return view('master.master-karu.grid');
+        $data['title'] = 'Master Kepala Regu';
+        $data['menu_active'] = 'master';
+        $data['sub_menu_active'] = 'kepala regu';
+        return view('master.master-karu.grid', $data);
     }
 
     public function json(Request $req)

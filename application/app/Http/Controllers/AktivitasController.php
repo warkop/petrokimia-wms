@@ -8,19 +8,16 @@ use Illuminate\Support\Facades\Validator;
 
 class AktivitasController extends Controller
 {
-    private $responseCode = 403;
-    private $responseStatus = '';
-    private $responseMessage = '';
-    private $responseData = [];
-
     public function index()
     {
-        return view('master.master-aktivitas.grid');
+        $data['title'] = 'Master Aktivitas';
+        return view('master.master-aktivitas.grid', $data);
     }
 
     public function create()
     {
-        return view('master.master-aktivitas.second');
+        $data['title'] = 'Master Tambah Aktivitas';
+        return view('master.master-aktivitas.second', $data);
     }
 
     public function json(Request $req)

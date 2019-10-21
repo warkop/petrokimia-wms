@@ -153,6 +153,14 @@
                                 <label>Anggaran Alat Berat</label>
                                 <input type="text" class="form-control input-enter" name="anggaran" id="anggaran" placeholder="Masukkan anggaran alat">
                             </div>
+                            <div class="form-group">
+                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <input type="checkbox" value="1" name="forklift" id="forklift">Forklift
+                                    <span></span>
+                                </label>
+                                
+                                {{-- <input type="text" class="form-control input-enter" name="anggaran" id="anggaran" placeholder="Masukkan anggaran alat"> --}}
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -181,7 +189,15 @@
 <!--end::Modal-->
 
 
-
+@if ($errors->any())
+    <div id="pesan_error" class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
 
 <script src="{{asset('assets/extends/js/page/master-kategori-alatberat.js')}}" type="text/javascript"></script>

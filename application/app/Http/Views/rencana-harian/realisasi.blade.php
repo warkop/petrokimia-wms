@@ -147,6 +147,39 @@
                                         <span></span>
                                     </label>
                                 </div>
+                                <div class="col-2 mb1">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox"> Area 7
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <div class="col-2 mb1">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox"> Area 5
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <div class="col-2 mb1">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox"> Area 6
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <div class="col-2 mb1">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox"> Area 7
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <div class="col-2 mb1">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox"> Area 5
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <div class="col-2 mb1 text-left">
+                                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#kt_modal_1"> Tambah Area</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -197,6 +230,9 @@
                                         <span></span>
                                     </label>
                                 </div>
+                                <div class="col-2 mb1 text-left">
+                                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#kt_modal_1"> Tambah Area</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -223,11 +259,59 @@
 
 
 
+<!--begin::Modal-->
+<div class="modal fade" id="kt_modal_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Area</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form action="">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="kt_select2_gudang" class="">Gudang</label>
+                            <select class="form-control m-select2" id="kt_select2_gudang" name="param" style="width: 100%">
+                                <option value=""></option>
+                                <option value="AK">Gudang A</option>
+                                <option value="HI">Gudang B</option>
+                                <option value="CA">Gudang C</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="">List Area</label>
+                            <select class="form-control m-select2" id="kt_select2_area" name="param" multiple="multiple" style="width:100%;">
+                                <option value="AK" selected>Area A</option>
+                                <option value="HI">Area B</option>
+                                <option value="CA">Area C</option>
+                                <option value="NV" selected>Area D</option>
+                                <option value="OR">Area E</option>
+                                <option value="WA">Area F</option>
+                            </select>
+                            <span class="form-text text-muted">* Anda dapat memilih lebih dari satu area.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-warning">Tambah Area </button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--end::Modal-->
+
 
 
 <script src="{{asset('assets/extends/js/page/master-aktivitas.js')}}" type="text/javascript"></script>
 <script>
-    $('.kt-selectpicker').selectpicker();
+$('.kt-selectpicker').selectpicker();
 $('#kt_select2_3').select2({
     placeholder: "Select admin gudang",
 });
@@ -246,6 +330,13 @@ $('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
     orientation: "top left"
+});
+
+$('#kt_select2_gudang').select2({
+    placeholder: "Select gudang",
+});
+$('#kt_select2_area').select2({
+    placeholder: "Select area",
 });
 </script>
 @endsection

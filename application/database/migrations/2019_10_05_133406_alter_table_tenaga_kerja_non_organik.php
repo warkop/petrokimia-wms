@@ -27,7 +27,8 @@ class AlterTableTenagaKerjaNonOrganik extends Migration
     public function down()
     {
         Schema::table('tenaga_kerja_non_organik', function (Blueprint $table) {
-            //
+            $table->dropColumn('start_date');
+            $table->dropColumn('end_date');
         });
     }
 }

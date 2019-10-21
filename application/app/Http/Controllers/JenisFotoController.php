@@ -8,14 +8,12 @@ use Illuminate\Support\Facades\Validator;
 
 class JenisFotoController extends Controller
 {
-    private $responseCode = 403;
-    private $responseStatus = '';
-    private $responseMessage = '';
-    private $responseData = [];
-
     public function index()
     {
-        return view('master/master-jenis-foto/grid');
+        $data['title'] = 'Master Jenis Foto';
+        $data['menu_active'] = 'master';
+        $data['sub_menu_active'] = 'jenis foto';
+        return view('master/master-jenis-foto/grid', $data);
     }
 
     public function create()

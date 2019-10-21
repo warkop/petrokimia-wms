@@ -8,8 +8,6 @@
     document.getElementById('rencanaHarian-nav').classList.add('kt-menu__item--active');
 </script>
 
-
-
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
@@ -26,7 +24,7 @@
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-group pt-4">
-                    <a href="{{url('/add-rencana-harian')}}" class="btn btn-wms btn-elevate btn-elevate-air"><i class="la la-plus"></i> Tambah Data</a>
+                    <a href="{{url('/rencana-harian/tambah')}}" class="btn btn-wms btn-elevate btn-elevate-air"><i class="la la-plus"></i> Tambah Data</a>
                 </div>
             </div>
         </div>

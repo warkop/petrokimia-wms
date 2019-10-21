@@ -55,6 +55,7 @@ Route::group(['prefix' => 'master-material', 'middleware' => ['eauth', 'revalida
 Route::group(['prefix' => 'master-tenaga-kerja-nonorganik', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'TenagaKerjaNonOrganikController@index');
     Route::put('/', 'TenagaKerjaNonOrganikController@store');
+    Route::patch('/{tenagaKerjaNonOrganik}', 'TenagaKerjaNonOrganikController@store');
     Route::post('/', 'TenagaKerjaNonOrganikController@json');
     Route::get('/{id}', 'TenagaKerjaNonOrganikController@show');
     Route::delete('/{id}', 'TenagaKerjaNonOrganikController@destroy');
@@ -93,11 +94,11 @@ Route::group(['prefix' => 'master-kategori-alat-berat', 'middleware' => ['eauth'
 });
 
 Route::group(['prefix' => 'list-alat-berat', 'middleware' => ['eauth', 'revalidate']], function () {
-    Route::get('/{id}', 'ListAlatBeratController@index');
-    Route::put('/{id}', 'ListAlatBeratController@store');
-    Route::post('/{id}', 'ListAlatBeratController@json');
-    Route::get('/{id}/{id_list}', 'ListAlatBeratController@show');
-    Route::delete('/{id}/{id_list}', 'ListAlatBeratController@destroy');
+    Route::get('/{id}', 'AlatBeratController@index');
+    Route::put('/{id}', 'AlatBeratController@store');
+    Route::post('/{id}', 'AlatBeratController@json');
+    Route::get('/{kategoriAlatBerat}/{alatBerat}', 'AlatBeratController@show');
+    Route::delete('/{id}/{id_list}', 'AlatBeratController@destroy');
 });
 
 Route::group(['prefix' => 'master-jenis-foto', 'middleware' => ['eauth', 'revalidate']], function (){
@@ -110,11 +111,47 @@ Route::group(['prefix' => 'master-jenis-foto', 'middleware' => ['eauth', 'revali
 
 Route::group(['prefix' => 'master-user', 'middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'UsersController@index');
+    Route::get('/load-pegawai/{id_kategori}', 'UsersController@loadPegawai');
     Route::put('/', 'UsersController@store');
     Route::post('/', 'UsersController@json');
     Route::get('/{id}', 'UsersController@show');
     Route::patch('/{id}', 'UsersController@changePassword');
     Route::delete('/{id}', 'UsersController@destroy');
+});
+
+Route::group(['prefix' => 'gudang', 'middleware' => ['eauth:5', 'revalidate']], function () {
+    Route::get('/', 'GudangController@index');
+    Route::get('/load-pallet', 'GudangController@loadPallet');
+    Route::put('/', 'GudangController@store');
+    Route::post('/', 'GudangController@json');
+    Route::get('/load-material/{id_gudang}', 'GudangController@loadMaterial');
+    Route::get('/{id}', 'GudangController@show');
+    Route::delete('/{id}', 'GudangController@destroy');
+});
+
+Route::group(['prefix' => 'list-area', 'middleware' => ['eauth', 'revalidate']], function () {
+    Route::get('/{id}', 'AreaController@index');
+    Route::put('/{id}', 'AreaController@store');
+    Route::post('/{id}', 'AreaController@json');
+    Route::get('/{id}/{id_area}', 'AreaController@show');
+    Route::delete('/{id}/{id_area}', 'AreaController@destroy');
+});
+
+Route::group(['prefix' => 'rencana-harian', 'middleware' => ['eauth', 'revalidate']], function () {
+    Route::get('/', 'RencanaHarianController@index');
+    Route::get('/get-area', 'RencanaHarianController@getArea');
+    Route::get('/tambah', 'RencanaHarianController@create');
+    Route::get('/ubah/{rencana_harian}', 'RencanaHarianController@edit');
+    Route::put('/', 'RencanaHarianController@store');
+    Route::patch('/{rencana_harian}', 'RencanaHarianController@update');
+    Route::post('/', 'RencanaHarianController@json');
+    Route::get('/get-alat-berat', 'RencanaHarianController@getAlatBerat');
+    Route::get('/{rencana_harian}', 'RencanaHarianController@show');
+    Route::get('/get-rencana-tkbm/{id_job_desk}/{id_rencana}/', 'RencanaHarianController@getRencanaTkbm');
+    Route::get('/get-tkbm/{id}', 'RencanaHarianController@getTkbm');
+    Route::get('/get-rencana-alat-berat/{id_rencana}/', 'RencanaHarianController@getRencanaAlatBerat');
+    Route::get('/get-rencana-tkbm-area/{id_rencana}/{id_tkbm}', 'RencanaHarianController@getRencanaAreaTkbm');
+    Route::delete('/{id}', 'RencanaHarianController@destroy');
 });
 
 // Route::get('/master-material', function () {
@@ -123,21 +160,21 @@ Route::group(['prefix' => 'master-user', 'middleware' => ['eauth', 'revalidate']
 Route::get('/layout', function () {
     return view('menu-layout.grid');
 });
-Route::get('/gudang', function () {
-    return view('gudang.grid');
-});
+// Route::get('/gudang', function () {
+//     return view('gudang.grid');
+// });
 Route::get('/sub-gudang', function () {
     return view('sub-gudang.grid');
 });
-Route::get('/master-alat-berat/list-alat-berat', function () {
-    return view('list-alat-berat.grid');
-});
+// Route::get('/master-alat-berat/list-alat-berat', function () {
+//     return view('list-alat-berat.grid');
+// });
 Route::get('/stok-adjustment', function () {
     return view('stok-adjusment.grid');
 });
-Route::get('/gudang/list-alat-berat', function () {
-    return view('list-alat-berat-gudang.grid');
-});
+// Route::get('/gudang/list-alat-berat', function () {
+//     return view('list-alat-berat-gudang.grid');
+// });
 
 Route::get('/list-tenaga-kerja-nonorganik', function () {
     return view('list-tenaga-kerja-nonorganik.grid');
@@ -155,11 +192,13 @@ Route::get('/anggaran-sdm', function () {
     return view('anggaran-sdm.grid');
 });
 
-
-
-Route::get('/rencana-harian', function () {
-    return view('rencana-harian.grid');
+Route::get('/debug-sentry', function () {
+    throw new Exception('My first Sentry error!');
 });
+
+// Route::get('/rencana-harian', function () {
+//     return view('rencana-harian.grid');
+// });
 Route::get('/add-rencana-harian', function () {
     return view('rencana-harian.add');
 });

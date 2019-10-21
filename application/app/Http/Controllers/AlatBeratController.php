@@ -3,18 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\KategoriAlatBerat;
-use App\Http\Models\ListAlatBerat;
+use App\Http\Models\AlatBerat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class ListAlatBeratController extends Controller
+class AlatBeratController extends Controller
 {
-    private $responseCode = 403;
-    private $responseStatus = '';
-    private $responseMessage = '';
-    private $responseData = [];
-
     public function index($id_kategori)
     {
         $kategori = KategoriAlatBerat::find($id_kategori);
@@ -23,14 +18,9 @@ class ListAlatBeratController extends Controller
         return view('list-alat-berat.grid', $data);
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function json(Request $req, $id_kategori)
     {
-        $models = new ListAlatBerat();
+        $models = new AlatBerat();
 
         $numbcol = $req->get('order');
         $columns = $req->get('columns');
@@ -64,7 +54,7 @@ class ListAlatBeratController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, ListAlatBerat $models, $id_kategori)
+    public function store(Request $req, AlatBerat $models, $id_kategori)
     {
         $id = $req->input('id');
         $rules = [
@@ -85,14 +75,14 @@ class ListAlatBeratController extends Controller
             $this->responseData['error_log']    = $validator->errors();
         } else {
             if (!empty($id)) {
-                $models = ListAlatBerat::find($id);
+                $models = AlatBerat::find($id);
                 $models->updated_by = session('userdata')['id_user'];
             } else {
                 $models->created_by = session('userdata')['id_user'];
             }
 
-            $models->nomor_lambung = strip_tags($req->input('nomor_lambung'));
-            $models->nomor_polisi = strip_tags($req->input('nomor_polisi'));
+            $models->nomor_lambung = strtoupper($req->input('nomor_lambung'));
+            $models->nomor_polisi = strtoupper($req->input('nomor_polisi'));
             $models->id_kategori = $id_kategori;
 
             $models->save();
@@ -106,26 +96,14 @@ class ListAlatBeratController extends Controller
     }
 
   
-    public function show($id_kategori, $id,ListAlatBerat $models, Request $request)
+    public function show(KategoriAlatBerat $kategoriAlatBerat, AlatBerat $alatBerat)
     {
-        if (!$request->ajax()) {
-            return $this->accessForbidden();
-        } else {
-            $res = $models::find($id);
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $alatBerat;
 
-            if (!empty($res)) {
-                $this->responseCode = 200;
-                $this->responseMessage = 'Data tersedia.';
-                $this->responseData = $res;
-            } else {
-                $this->responseData = [];
-                $this->responseStatus = 'No Data Available';
-                $this->responseMessage = 'Data tidak tersedia';
-            }
-
-            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
-            return response()->json($response, $this->responseCode);
-        }
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 
     public function edit(KategoriAlatBerat $kategoriAlatBerat)
@@ -138,12 +116,6 @@ class ListAlatBeratController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\KategoriAlatBerat  $kategoriAlatBerat
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(KategoriAlatBerat $models)
     {
         KategoriAlatBerat::destroy($models->shift_kerja_id);

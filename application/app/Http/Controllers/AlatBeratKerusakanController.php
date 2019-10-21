@@ -8,14 +8,12 @@ use Illuminate\Support\Facades\Validator;
 
 class AlatBeratKerusakanController extends Controller
 {
-    private $responseCode = 403;
-    private $responseStatus = '';
-    private $responseMessage = '';
-    private $responseData = [];
-
     public function index()
     {
-       return view('master.master-kerusakan-alat.grid');
+        $data['title'] = 'Master Kerusakan Alat Berat';
+        $data['menu_active'] = 'master';
+        $data['sub_menu_active'] = 'kerusakan alat berat';
+        return view('master.master-kerusakan-alat.grid', $data);
     }
 
     public function create()

@@ -3,19 +3,16 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\Scopes\EndDateScope;
 use DB;
 
 class ShiftKerja extends Model
 {
-    use SoftDeletes;
-
     protected $table = 'shift_kerja';
-    protected $primaryKey = 'shift_kerja_id';
+    protected $primaryKey = 'id';
 
     protected $guarded = [
-        'shift_kerja_id',
+        'id',
     ];
 
     protected $hidden = [
@@ -23,19 +20,24 @@ class ShiftKerja extends Model
         'created_by',
         'updated_at',
         'updated_by',
-        'deleted_at',
-        'deleted_by',
     ];
 
 
-    protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at', 'deleted_at'];
+    protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
     public $timestamps  = false;
 
-    public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'shift_kerja_id', $condition)
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new EndDateScope);
+    }
+
+    public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('shift_kerja')
-            ->select('shift_kerja_id AS id', 'nama_shift AS nama', DB::raw('TO_CHAR(mulai_shift, \'HH24:MI\') AS mulai'), DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\') AS end_date'))
+            ->select('id AS id', 'nama_shift AS nama', DB::raw('TO_CHAR(mulai_shift, \'HH24:MI\') AS mulai'), DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\') AS end_date'))
             ->whereNull('deleted_at');
 
         if (!empty($search)) {

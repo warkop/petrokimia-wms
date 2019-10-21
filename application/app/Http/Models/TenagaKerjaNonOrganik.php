@@ -3,7 +3,7 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\Scopes\EndDateScope;
 use DB;
 
 class TenagaKerjaNonOrganik extends Model
@@ -13,6 +13,10 @@ class TenagaKerjaNonOrganik extends Model
 
     protected $guarded = [
         'id',
+        'created_at',
+        'updated_at',
+        'created_by',
+        'updated_by',
     ];
 
     protected $hidden = [
@@ -24,7 +28,47 @@ class TenagaKerjaNonOrganik extends Model
 
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at',];
 
-    public $timestamps  = false;
+    public $timestamps  = true;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function($table)  {
+            $table->updated_by = \Auth::id();
+        });
+
+        static::saving(function($table)  {
+            $table->created_by = \Auth::id();
+        });
+
+        static::addGlobalScope(new EndDateScope);
+    }
+
+    public function jobDesk()
+    {
+        return $this->hasOne('App\Http\Models\JobDesk');
+    }
+
+    public function scopeHouseKeeper($query)
+    {
+        return $query->where('job_desk_id', 1);
+    }
+
+    public function scopeChecker($query)
+    {
+        return $query->where('job_desk_id', 2);
+    }
+
+    public function scopeOperatorAlatBerat($query)
+    {
+        return $query->where('job_desk_id', 3);
+    }
+    
+    public function scopeAdminLoket($query)
+    {
+        return $query->where('job_desk_id', 4);
+    }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {

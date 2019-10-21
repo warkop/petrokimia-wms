@@ -8,14 +8,12 @@ use Illuminate\Support\Facades\Validator;
 
 class MaterialController extends Controller
 {
-    private $responseCode = 403;
-    private $responseStatus = '';
-    private $responseMessage = '';
-    private $responseData = [];
-
     public function index()
     {
-        return view('master.master-material.grid');
+        $data['title'] = 'Master Material';
+        $data['menu_active'] = 'master';
+        $data['sub_menu_active'] = 'material';
+        return view('master.master-material.grid', $data);
     }
 
     public function json(Request $req)

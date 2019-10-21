@@ -5,6 +5,7 @@ namespace App\Http\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
+use App\Scopes\EndDateScope;
 
 class Users extends Authenticatable
 {
@@ -29,6 +30,13 @@ class Users extends Authenticatable
 
     protected $dates = ['start_date', 'end_date'];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new EndDateScope);
+    }
+
     public function getAuthPassword()
     {
         return $this->password;
@@ -51,7 +59,7 @@ class Users extends Authenticatable
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('users as u')
-            ->select('u.id AS id', 'email', 'r.nama AS role_name', 'username AS nama', DB::raw('TO_CHAR(u.start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(u.end_date, \'dd-mm-yyyy\') AS end_date'))
+            ->select('u.id AS id', 'email', 'id_karu', 'id_tkbm', 'r.nama AS role_name', 'name','username AS nama', DB::raw('TO_CHAR(u.start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(u.end_date, \'dd-mm-yyyy\') AS end_date'))
             ->leftJoin('role as r', 'u.role_id', '=', 'r.id');
 
         if (!empty($search)) {

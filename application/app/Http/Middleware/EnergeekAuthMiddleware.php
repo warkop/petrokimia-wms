@@ -22,13 +22,13 @@ class EnergeekAuthMiddleware
             if(!empty($idRole)){
                 $roles = (strpos($idRole, '&') !== false)? explode('&', $idRole) : array($idRole);
 
-                if(in_array($session->usr_role, $roles)){
+                if(in_array($session->role_id, $roles)){
                     return $next($request);
                 }
 
                 $alerts[] = array('error', 'Anda tidak dapat mengakses halaman ini, silahkan hubungi Administrator', 'Peringatan!');
                 session()->flash('alerts', $alerts);
-                return $request->expectsJson() ? response()->json(helpResponse(403, [], 'Anda tidak dapat mengakses halaman ini, silahkan hubungi Administrator'), 403) : redirect()->to(route('home'));
+                return $request->expectsJson() ? response()->json(helpResponse(403, [], 'Anda tidak dapat mengakses halaman ini, silahkan hubungi Administrator'), 403) : redirect()->to(route('/'));
             }else{
                 return $next($request);
             }

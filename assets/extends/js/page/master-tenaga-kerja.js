@@ -214,12 +214,17 @@ function edit(id = '') {
 
 function simpan() {
     let data = $("#form1").serializeArray();
+    let type = "PUT";
+    const id = $("#id").val();
+    if (id) {
+        type = "PATCH";
+    }
     $.ajax({
-        type: "PUT",
+        type: type,
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: ajaxUrl,
+        url: ajaxUrl + "/" + id,
         data: data,
         beforeSend: function () {
             preventLeaving();
@@ -244,35 +249,22 @@ function simpan() {
 
         },
         error: function (response) {
-            let head = 'Maaf',
-                message = 'Terjadi kesalahan koneksi',
-                type = 'error';
+            const head = 'Pemberitahuan';
+            const type = 'warning';
+            const obj = response.responseJSON.errors;
             laddaButton.stop();
             window.onbeforeunload = false;
             $('.btn_close_modal').removeClass('hide');
             $('.se-pre-con').hide();
 
-            if (response['status'] == 401 || response['status'] == 419) {
-                location.reload();
-            } else {
-                if (response['status'] != 404 && response['status'] != 500) {
-                    let obj = JSON.parse(response['responseText']);
-
-                    if (!$.isEmptyObject(obj.message)) {
-                        if (obj.code > 400) {
-                            head = 'Maaf';
-                            message = obj.message;
-                            type = 'error';
-                        } else {
-                            head = 'Pemberitahuan';
-                            message = obj.message;
-                            type = 'warning';
-                        }
-                    }
-                }
-
-                swal.fire(head, message, type);
-            }
+            const temp = Object.values(obj);
+            let message = '';
+            temp.forEach(element => {
+                element.forEach(row => {
+                    message += row+"<br>"
+                });
+            });
+            swal.fire(head, message, type);
         }
     });
 }
