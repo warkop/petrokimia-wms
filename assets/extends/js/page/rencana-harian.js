@@ -35,11 +35,11 @@ const tambahHouseKeeper = (id_rencana='', id_tkbm='') => {
     let html = 
     `<tr id="baris-${rows}">
         <td>
-            <select class="form-control m-select2 kt_select2_housekeeping" id="housekeeper-${rows}" name="housekeeper[${rows}]" style="width: 100% !important" >
+            <select class="form-control m-select2 kt_select2_housekeeping pilih_housekeeper" onchange="check(this)" id="housekeeper-${rows}" name="housekeeper[${rows}]" style="width: 100% !important" required >
             </select>
         </td>
         <td>
-            <select class="form-control m-select2 kt_select2_area_kerja" id="area-${rows}" name="area[${rows}][]" multiple="multiple">
+            <select class="form-control m-select2 kt_select2_area_kerja" id="area-${rows}" name="area[${rows}][]" multiple="multiple" required>
             </select>
         </td>
         <td>
@@ -55,10 +55,14 @@ const tambahHouseKeeper = (id_rencana='', id_tkbm='') => {
         placeholder: "Pilih Area Kerja",
     });
 
-    getTkbm(1, "#housekeeper-"+rows, id_rencana);
+    getTkbm(1, "#housekeeper-"+rows, id_rencana, id_tkbm);
     getArea("#area-"+rows);
 
-    getRencanaTkbmArea(id_rencana, id_tkbm);
+    if (id_rencana != '') {
+        setTimeout(() => {
+            getRencanaTkbmArea(id_rencana, id_tkbm, rows);
+        }, 2000);
+    }
 }
 
 const hapus = (id) => {
@@ -100,36 +104,22 @@ const simpan = () => {
 
         },
         error: function (response) {
-            $("#btn_save").prop("disabled", false);
-            let head = 'Maaf',
-                message = 'Terjadi kesalahan koneksi',
-                type = 'error';
+            const head = 'Pemberitahuan';
+            const type = 'warning';
+            const obj = response.responseJSON.errors;
             laddaButton.stop();
             window.onbeforeunload = false;
             $('.btn_close_modal').removeClass('hide');
             $('.se-pre-con').hide();
 
-            if (response['status'] == 401 || response['status'] == 419) {
-                location.reload();
-            } else {
-                if (response['status'] != 404 && response['status'] != 500) {
-                    let obj = JSON.parse(response['responseText']);
-
-                    if (!$.isEmptyObject(obj.message)) {
-                        if (obj.code > 400) {
-                            head = 'Maaf';
-                            message = obj.message;
-                            type = 'error';
-                        } else {
-                            head = 'Pemberitahuan';
-                            message = obj.message;
-                            type = 'warning';
-                        }
-                    }
-                }
-
-                swal.fire(head, message, type);
-            }
+            const temp = Object.values(obj);
+            let message = '';
+            temp.forEach(element => {
+                element.forEach(row => {
+                    message += row + "<br>"
+                });
+            });
+            swal.fire(head, message, type);
         }
     });
 }
@@ -209,26 +199,22 @@ const loadTable = function () {
     });
 };
 
-function name(params) {
-    // let $lokasi = $('.pilih_karcis');
-    // let chosen = false;
+function check(target) {
+    let $lokasi = $('.pilih_housekeeper');
+    let chosen = false;
 
-    // id_target = $(target).attr('id').replace(jenis + '_karcis_<?= $key['ID_TIPE'] ?>_' + id2 + '_', '');
-    // for (var i = 0; i < $lokasi.length; i++) {
-    //     if ($(target).val() != "" && $(target).attr('id') != $($lokasi[i]).attr('id') && $(target).val() == $($lokasi[i]).val()) {
-    //         chosen = true;
-    //     }
-    // }
+    const id_target = $(target).attr('id').replace('-', '');
+    for (var i = 0; i < $lokasi.length; i++) {
+        if ($(target).val() != "" && $(target).attr('id') != $($lokasi[i]).attr('id') && $(target).val() == $($lokasi[i]).val()) {
+            chosen = true;
+        }
+    }
 
-    // if (chosen == true) {
-    //     $(target).val('');
-    //     $(target).select2("val", "");
-
-    //     swal('Pemberitahuan', 'Karcis sudah digunakan. Silahkan Pilih karcis lain!', 'error');
-    //     $("#" + jenis + "_total_karcis_<?= $key['ID_TIPE'] ?>_" + id2 + "_" + id_target).val("");
-    //     // reset();
-    // } else {
-    // }
+    if (chosen == true) {
+        $(target).val('').trigger('change.select2');
+        swal.fire('Pemberitahuan', 'Housekeeper sudah dipilih. Silahkan Pilih housekeeper lain!', 'error');
+        $("#housekeeper-"+ id_target).val("");
+    }
 }
 
 function getRencanaTkbm(id_job_desk, id_rencana, target) {
@@ -252,24 +238,30 @@ function getRencanaTkbm(id_job_desk, id_rencana, target) {
     });
 }
 
-function getRencanaTkbmArea(id_rencana, id_tkbm, target) {
-    $.ajax({
-        type: "GET",
-        url: ajaxSource + '/get-rencana-tkbm-area/' + id_rencana + "/" + id_tkbm,
-        success: res => {
-            const obj = res.data;
-
-            const panjang = obj.length;
-            let tampung = [];
-            for (let i = 0; i < panjang; i++) {
-                tampung.push(obj[i].id_tkbm);
+function getRencanaTkbmArea(id_rencana, id_tkbm, count='') {
+    // setTimeout(() => {
+        // console.log(id_rencana);
+        // console.log(id_tkbm);
+        $.ajax({
+            type: "GET",
+            url: ajaxSource + '/get-rencana-tkbm-area/' + id_rencana + "/" + id_tkbm,
+            success: res => {
+                const obj = res.data;
+                const panjang = obj.length;
+                let tampung = [];
+                for (let i = 0; i < panjang; i++) {
+                    if (obj[i].id_tkbm == id_tkbm)
+                        tampung.push(obj[i].id_area);
+                }
+    
+                $("#housekeeper-" + count).val(id_tkbm).trigger('change.select2');
+                $("#area-"+count).select2('val', [tampung]);
+            },
+            error: (err, oo, pp) => {
+    
             }
-            $(target).select2('val', [tampung]);
-        },
-        error: (err, oo, pp) => {
-
-        }
-    });
+        });
+    // }, 2000);
 }
 
 function getRencanaAlatBerat(id_rencana, target) {
@@ -278,7 +270,6 @@ function getRencanaAlatBerat(id_rencana, target) {
         url: ajaxSource + '/get-rencana-alat-berat/' + id_rencana,
         success: res => {
             const obj = res.data;
-            console.log(obj)
             const panjang = obj.length;
             let tampung = [];
             for (let i = 0; i < panjang; i++) {
@@ -297,7 +288,6 @@ function getHouseKeeper() {
 }
 
 function getTkbm(id_job_desk, target, id_rencana='', id_tkbm='') {
-    console.log(id_rencana);
     $.ajax({
         type: "GET",
         url: ajaxSource + '/get-tkbm/' + id_job_desk,
@@ -311,9 +301,12 @@ function getTkbm(id_job_desk, target, id_rencana='', id_tkbm='') {
 
             $(target).html(html);
             
-            if (id_rencana != '') {
+            if (id_rencana != '' && id_job_desk != 1) {
                 getRencanaTkbm(id_job_desk, id_rencana, target);
-                // getRencanaTkbmArea(id_rencana, id_tkbm);
+                // setTimeout(() => {
+                //     console.log(id_tkbm);
+                //     getRencanaTkbmArea(id_rencana, id_tkbm);
+                // }, 1000);
             }
         },
         error:(err, oo, pp) =>{
@@ -363,14 +356,22 @@ function getArea(target) {
     });
 }
 
+function getSelectedTkbmArea() {
+    $.ajax({
+        url: ajaxSource + "",
+        success:res=>{
+
+        },
+        error:()=>{
+            
+        }
+    });
+}
+
 
 function edit(id = '') {
-    // reset_form();
-    // $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
-
-    
 
     $.ajax({
         type: "GET",

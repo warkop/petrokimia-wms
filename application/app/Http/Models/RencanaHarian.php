@@ -25,6 +25,21 @@ class RencanaHarian extends Model
 
     public $timestamps  = false;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($table) {
+            $table->updated_by = \Auth::id();
+        });
+
+        static::saving(function ($table) {
+            $table->created_by = \Auth::id();
+        });
+
+        // static::addGlobalScope(new EndDateScope);
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('rencana_harian as rh')

@@ -77,14 +77,12 @@ class RencanaHarianController extends Controller
         $id = $req->input('id');
         if (!empty($id)) {
             $rencana_harian = RencanaHarian::find($req->input('id'));
-            $rencana_harian->updated_by = session('userdata')['id_user'];
 
             RencanaAlatBerat::where('id_rencana', $rencana_harian->id)->forceDelete();
             RencanaTkbm::where('id_rencana', $rencana_harian->id)->forceDelete();
             RencanaAreaTkbm::where('id_rencana', $rencana_harian->id)->forceDelete();
         } else {
             $rencana_harian = new RencanaHarian();
-            $rencana_harian->created_by = session('userdata')['id_user'];
         }
 
         //rencana harian
@@ -147,17 +145,19 @@ class RencanaHarianController extends Controller
         $housekeeper = $req->input('housekeeper');
         if (!empty($housekeeper)) {
             foreach ($housekeeper as $key => $value) {
+                if (!empty($req->input('area')[$key])) {
                 $area = $req->input('area')[$key];
-                foreach ($area as $row => $hey) {
-                    $arr = [
-                        'id_rencana' => $rencana_harian->id,
-                        'id_tkbm' => $value,
-                        'id_area' => $hey,
-                    ];
-    
-                    \DB::table('rencana_area_tkbm')->insert(
-                        $arr
-                    );
+                    foreach ($area as $row => $hey) {
+                        $arr = [
+                            'id_rencana' => $rencana_harian->id,
+                            'id_tkbm' => $value,
+                            'id_area' => $hey,
+                        ];
+        
+                        \DB::table('rencana_area_tkbm')->insert(
+                            $arr
+                        );
+                    }
                 }
             }
         }
@@ -218,14 +218,17 @@ class RencanaHarianController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
-    public function getRencanaAreaTkbm($id_rencana, $id_tkbm)
+    public function getRencanaAreaTkbm($id_rencana, $id_tkbm='')
     {
         $resource = new RencanaAreaTkbm();
 
         $res = $resource
         ->where('id_rencana', $id_rencana)
-        ->where('id_tkbm', $id_tkbm)
         ->get();
+
+        if ($id_tkbm != '') {
+            $res->where('id_tkbm', $id_tkbm);
+        }
 
         $this->responseCode = 200;
         $this->responseMessage = 'Data tersedia.';
@@ -277,8 +280,7 @@ class RencanaHarianController extends Controller
 
     public function getArea()
     {
-        $id_user = session('userdata')['id_user'];
-        $users = Users::find($id_user);
+        $users = Users::find(\Auth::id());
         $gudang = Gudang::where('id_karu', $users->id_karu)->first();
         $res = Area::where('id_gudang', $gudang->id)->get();
 

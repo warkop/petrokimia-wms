@@ -217,12 +217,11 @@
         orientation: "top left"
     });
 
-    @if (!empty($id)) {
+    @if (!empty($id)) 
         edit({{$id}});
         @foreach ($tkbm_rencana as $item)
-            tambahHouseKeeper({{$item->id_rencana}});
+            tambahHouseKeeper({{$item->id_rencana}}, {{$item->id_tkbm}});
         @endforeach
-    }
     @endif
 </script>
 @endsection
