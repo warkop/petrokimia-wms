@@ -204,3 +204,31 @@ Route::get('/main', function () {
     return view('layout.main');
 });
 
+
+Route::get('/laporan-material', function () {
+    return view('report.material.grid');
+});
+Route::get('/laporan-stok', function () {
+    return view('report.stok.grid');
+});
+Route::get('/laporan-absen-karyawan', function () {
+    return view('report.karyawan.grid');
+});
+Route::get('/laporan-mutasi-pallet', function () {
+    return view('report.mutasi-pallet.grid');
+});
+Route::get('/laporan-mutasi-stok', function () {
+    return view('report.mutasi-stok.grid');
+});
+Route::get('/laporan-produk', function () {
+    return view('report.produk.grid');
+});
+Route::get('/laporan-realisasi', function () {
+    return view('report.realisasi.grid');
+});
+Route::get('/laporan-keluhan-alat-berat', function () {
+    return view('report.keluhan-alat-berat.grid');
+});
+Route::get('/laporan-keluhan-gp', function () {
+    return view('report.keluhan-gp.grid');
+});
