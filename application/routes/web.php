@@ -11,10 +11,10 @@
 |
 */
 
-Route::get('/', 'Auth\LoginController@index');
-Route::get('/login', 'Auth\LoginController@index')->name('login');
-Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
-Route::post('/authenticate', 'Auth\LoginController@authenticate')->name('authenticate');
+// Route::get('/', 'Auth\LoginController@index');
+// Route::get('/login', 'Auth\LoginController@index')->name('login');
+// Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+// Route::post('/authenticate', 'Auth\LoginController@authenticate')->name('authenticate');
 
 
 
