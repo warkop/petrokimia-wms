@@ -147,6 +147,9 @@
                                         <span></span>
                                     </label>
                                 </div>
+                                <div class="col-3">
+                                    <span id="upload_foto-label" onclick="showModalUploadFoto()" class="pull-right pointer kt-font-success kt-font-bold undelinehov" style="display:none">Lihat</span>
+                                </div>
                             </div>
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
@@ -230,6 +233,9 @@
                                         <input type="checkbox" name="butuh_alat_berat" id="butuh_alat_berat" value="1"> Butuh alat berat
                                         <span></span>
                                     </label>
+                                </div>
+                                <div class="col-3">
+                                    <span id="butuh_alat_berat-label" onclick="showModalAlatBerat()" class="pull-right pointer kt-font-success kt-font-bold undelinehov" style="display:none">Lihat</span>
                                 </div>
                             </div>
                             <div class="row form-group mb-0 mb2">
@@ -345,6 +351,74 @@
                             <input type="checkbox" name="bawah" id="bawah" value="1"> Tampak Bawah
                             <span></span>
                         </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-success">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--end::Modal-->
+
+<!--begin::Modal-->
+<div class="modal fade" id="modalAlatBerat" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Alat berat</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="pilih_semua" id="pilih_semua" value="1"> Pilih Semua
+                            <span></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="kel mt1" style="padding: .5rem !important">
+                            <div class="col-12 mb1">
+                                <small >pilih spesifik</small>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <input type="checkbox" name="Forklift" id="Forklift" value="1"> Forklift
+                                    <span></span>
+                                </label>
+                                <div id="ffForklift" class="form-group" style="display:none">
+                                    <small for="idAForklift">Masukkan Anggaran</small>
+                                    <input type="text" class="form-control" id="idAForklift" placeholder="Masukkan Anggaran">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <input type="checkbox" name="Bulldozer" id="Bulldozer" value="1"> Bulldozer
+                                    <span></span>
+                                </label>
+                                <div id="ffBulldozer" class="form-group" style="display:none">
+                                    <small for="idABulldozer">Masukkan Anggaran</small>
+                                    <input type="text" class="form-control" id="idABulldozer" placeholder="Masukkan Anggaran">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <input type="checkbox" name="Truk" id="Truk" value="1"> Truk
+                                    <span></span>
+                                </label>
+                                <div id="ffTruk" class="form-group" style="display:none">
+                                    <small for="idATruk">Masukkan Anggaran</small>
+                                    <input type="text" class="form-control" id="idATruk" placeholder="Masukkan Anggaran">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -490,6 +564,51 @@
     $('#upload_foto').on('change', function(e){
         if(e.target.checked){
             $('#modalFoto').modal();
+            $('#upload_foto-label').show('slow');
+        } else {
+            $('#upload_foto-label').hide();
+        }
+    });
+
+    function showModalUploadFoto(){
+        $('#modalFoto').modal();
+    }
+
+
+    $('#butuh_alat_berat').on('change', function(e){
+        if(e.target.checked){
+            $('#modalAlatBerat').modal();
+            $('#butuh_alat_berat-label').show('slow');
+        } else {
+            $('#butuh_alat_berat-label').hide();
+        }
+    });
+
+    function showModalAlatBerat(){
+        $('#modalAlatBerat').modal();
+    }
+
+    $('#Forklift').on('change', function(e){
+        if(e.target.checked){
+            $('#ffForklift').show('slow');
+        } else {
+            $('#ffForklift').hide('slow');
+        }
+    });
+
+    $('#Bulldozer').on('change', function(e){
+        if(e.target.checked){
+            $('#ffBulldozer').show('slow');
+        } else {
+            $('#ffBulldozer').hide('slow');
+        }
+    });
+
+    $('#Truk').on('change', function(e){
+        if(e.target.checked){
+            $('#ffTruk').show('slow');
+        } else {
+            $('#ffTruk').hide('slow');
         }
     });
 

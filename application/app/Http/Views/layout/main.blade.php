@@ -135,7 +135,7 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-6 mb2">
                                 <button type="button" class="btn btn-outline-success btn-icon-sm dropdown-toggle"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
                                         class="la la-laptop"></i> Main Menu</button>
@@ -171,6 +171,69 @@
                                             <a href="{{('log-aktivitas')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-line-chart"></i>
                                                 <span class="kt-nav__link-text">Log Aktivitas</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-6 mb2">
+                                <button type="button" class="btn btn-outline-success btn-icon-sm dropdown-toggle"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%"> <i
+                                        class="la la-file"></i> Report</button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <ul class="kt-nav">
+                                        <li class="kt-nav__item">
+                                            <a href="{{('laporan-material')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon la la-table"></i>
+                                                <span class="kt-nav__link-text">Material</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('laporan-stok')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon la la-th-large"></i>
+                                                <span class="kt-nav__link-text">Stok</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('laporan-absen-karyawan')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon la fa fa-fingerprint"></i>
+                                                <span class="kt-nav__link-text">Absen Karyawan</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('laporan-mutasi-pallet')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon fa fa-arrows-alt-h"></i>
+                                                <span class="kt-nav__link-text">Mutasi Pallet</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('laporan-mutasi-stok')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon fa fa-arrows-alt-v"></i>
+                                                <span class="kt-nav__link-text">Mutasi Stok</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('laporan-produk')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon fa fa-boxes"></i>
+                                                <span class="kt-nav__link-text">Produk</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('laporan-realisasi')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon fa fa-check-square"></i>
+                                                <span class="kt-nav__link-text">Realisasi</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('laporan-keluhan-alat-berat')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon fa fa-truck-moving"></i>
+                                                <span class="kt-nav__link-text">Keluhan Alat Berat</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('laporan-keluhan-gp')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon la la-file-archive-o"></i>
+                                                <span class="kt-nav__link-text">Keluhan GP</span>
                                             </a>
                                         </li>
                                     </ul>

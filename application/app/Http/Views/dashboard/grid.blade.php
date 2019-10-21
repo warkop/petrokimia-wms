@@ -85,7 +85,7 @@
                     </div>
                 </div>
                 <div class="kt-portlet__body">
-                    <canvas id="line-chart" width="800" height="310"></canvas>
+                    <canvas id="line-chart" width="800" height="510"></canvas>
                 </div>
             </div>
         </div>
@@ -199,24 +199,60 @@
     new Chart(document.getElementById("line-chart"), {
         type: 'line',
         data: {
-            labels: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"],
+            labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"],
             datasets: [{
-                data: [86, 100, 106, 20, 107, 24, 133],
-                label: "Shift 1, Alat Berat: Rp 1.000.000, SDM: Rp 800.000",
+                data: [86, 100, 106, 20, 107, 24, 133, 100, 90, 100, 120, 200, 180, 90, 250],
+                label: "Gudang 1, Alat Berat: Rp 1.000.000, SDM: Rp 800.000",
                 // label: "Shift 6",
                 borderColor: "#00AE4D",
                 fill: false
             }, {
-                data: [1, 150, 411, 202, 135, 309, 247],
-                label: "Shift 2, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+                data: [55, 77, 66, 88, 99, 118, 177, 144, 44, 22, 333, 11, 10, 12, 100],
+                label: "Gudang 2, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+                borderColor: "#B51C64",
+                fill: false
+            }, {
+                data: [96, 90, 196, 290, 307, 234, 233, 300, 190, 200, 320, 500, 780, 290, 250],
+                label: "Gudang 3, Alat Berat: Rp 3.000.000, SDM: Rp 1.800.000",
+                borderColor: "#8653B5",
+                fill: false
+            }, {
+                data: [86, 100, 106, 20, 107, 24, 133, 100, 90, 100, 120, 200, 180, 90, 250],
+                label: "Gudang 4, Alat Berat: Rp 700.000, SDM: Rp 300.000",
                 borderColor: "#FAAE32",
                 fill: false
             }, {
-                data: [68, 50, 78, 90, 203, 176, 408],
-                label: "Shift 3, Alat Berat: Rp 3.000.000, SDM: Rp 1.800.000",
-                borderColor: "#E14A3A",
+                data: [6, 140, 106, 200, 100, 3, 554, 87, 32, 223, 322, 123, 555, 13, 12],
+                label: "Gudang 5, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+                borderColor: "#B56D1C",
                 fill: false
-            }]
+            }, {
+                data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 19, 11, 12, 13, 14, 15],
+                label: "Gudang 6, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+                borderColor: "#79DB22",
+                fill: false
+            }, {
+                data: [2, 10, 20, 30, 40, 50, 60, 70, 80, 90, 120, 100, 110, 130, 150],
+                label: "Gudang 7, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+                borderColor: "#3873B5",
+                fill: false
+            }, {
+                data: [4, 33, 66, 88, 99, 10, 133, 177, 200, 21, 33, 66, 145, 120, 100],
+                label: "Gudang 8, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+                borderColor: "#27A5D7",
+                fill: false
+            }, {
+                data: [66, 77, 88, 99, 100, 111, 122, 133, 333, 122, 155, 177, 222, 111, 10],
+                label: "Gudang 9, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+                borderColor: "#DE232F",
+                fill: false
+            }, {
+                data: [56, 10, 06, 50, 17, 24, 33, 10, 9, 10, 12, 20, 18, 9, 250],
+                label: "Gudang 10, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+                borderColor: "#FAAE32",
+                fill: false
+            },
+        ]
         },
         options: {
             title: {
