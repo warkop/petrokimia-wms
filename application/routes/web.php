@@ -203,9 +203,6 @@ Route::get('/anggaran-sdm', function () {
     return view('anggaran-sdm.grid');
 });
 
-Route::get('/debug-sentry', function () {
-    throw new Exception('My first Sentry error!');
-});
 
 // Route::get('/rencana-harian', function () {
 //     return view('rencana-harian.grid');
