@@ -17,16 +17,16 @@ class SentryUserContext
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check() && app()->bound('sentry')) {
-            \Sentry\configureScope(function (Scope $scope): void {
-                $scope->setUser([
-                    'id'    => Auth::user()->id,
-                    'email' => Auth::user()->email,
-                    'name'  => Auth::user()->name,
-                    'username'  => Auth::user()->username,
-                ]);
-            });
-        }
+        // if (Auth::check() && app()->bound('sentry')) {
+        //     \Sentry\configureScope(function (Scope $scope): void {
+        //         $scope->setUser([
+        //             'id'    => Auth::user()->id,
+        //             'email' => Auth::user()->email,
+        //             'name'  => Auth::user()->name,
+        //             'username'  => Auth::user()->username,
+        //         ]);
+        //     });
+        // }
 
         return $next($request);
     }
