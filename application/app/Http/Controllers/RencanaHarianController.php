@@ -296,7 +296,7 @@ class RencanaHarianController extends Controller
 
     public function realisasi(RencanaHarian $rencanaHarian)
     {
-        RencanaAreaTkbm::where('id_rencana', $rencanaHarian->id)->get();
+        $data['tkbm_rencana']    = RencanaAreaTkbm::select('id_rencana', 'id_tkbm')->where('id_rencana', $rencanaHarian->id)->groupBy('id_tkbm', 'id_rencana')->get();
         $data['id_rencana_harian'] = $rencanaHarian->id;
         return view('rencana-harian.realisasi', $data);
     }
