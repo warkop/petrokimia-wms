@@ -53,58 +53,20 @@ class KaruController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, Karu $models)
+    public function store(KaruRequest $req, Karu $karu)
     {
-        $id = $req->input('id');
-        $rules = [
-            'nama'              => ['required'],
-            'no_hp'             => 'numeric',
-            'start_date'        => 'nullable|date_format:d-m-Y',
-            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
-        ];
+        $req->validated();
 
-        $action = $req->input('action');
-        if ($action == 'edit') {
-            $rules['id'] = 'required';
-        }
+        $karu->nama                   = $req->input('nama');
+        $karu->nik                    = $req->input('nik');
+        $karu->no_hp                  = $req->input('no_hp');
+        $karu->start_date             = $req->input('start_date');
+        $karu->end_date               = $req->input('end_date');
 
-        $validator = Validator::make($req->all(), $rules);
-        if ($validator->fails()) {
-            $this->responseCode                 = 400;
-            $this->responseStatus               = 'Missing Param';
-            $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
-            $this->responseData['error_log']    = $validator->errors();
-        } else {
-            $nama = $req->input('nama');
-            $no_hp = $req->input('no_hp');
+        $karu->save();
 
-            $start_date  = null;
-            if ($req->input('start_date') != '') {
-                $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            }
-
-            $end_date   = null;
-            if ($req->input('end_date') != '') {
-                $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
-            }
-
-            if (!empty($id)) {
-                $models = Karu::find($id);
-                $models->updated_by = session('userdata')['id_user'];
-            } else {
-                $models->created_by = session('userdata')['id_user'];
-            }
-
-            $models->nama                   = strip_tags($nama);
-            $models->no_hp                  = $no_hp;
-            $models->start_date             = $start_date;
-            $models->end_date               = $end_date;
-
-            $models->save();
-
-            $this->responseCode = 200;
-            $this->responseMessage = 'Data berhasil disimpan';
-        }
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data berhasil disimpan';
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);

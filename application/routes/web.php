@@ -41,6 +41,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     Route::group(['prefix' => 'master-karu', 'middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/', 'KaruController@index');
         Route::put('/', 'KaruController@store');
+        Route::patch('/{karu}', 'KaruController@store');
         Route::post('/', 'KaruController@json');
         Route::get('/{id}', 'KaruController@show');
         Route::delete('/{id}', 'KaruController@destroy');

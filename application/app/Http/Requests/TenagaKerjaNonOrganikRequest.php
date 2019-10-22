@@ -26,16 +26,21 @@ class TenagaKerjaNonOrganikRequest extends FormRequest
     {
         $this->sanitize();
 
+        $action = \Request::instance()->action;
+        if ($action == 'edit') {
+            $rules['id'] = 'required';
+        }
+
         $rules = [
             'nama'              => 'required',
             'nik'               => [
-                'required',
+                'nullable',
                 Rule::unique('tenaga_kerja_non_organik', 'nik')->ignore(\Request::instance()->id)
             ],
             'nomor_hp'          => 'nullable|numeric',
             'nomor_bpjs'        => 'nullable|numeric',
-            'start_date'        => 'nullable|date_format:d-m-Y',
-            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
+            'start_date'        => 'nullable',
+            'end_date'          => 'nullable|after:start_date',
         ];
 
         return $rules;
@@ -45,7 +50,6 @@ class TenagaKerjaNonOrganikRequest extends FormRequest
     {
         return [
             'nama.required' => 'Nama Pegawai wajib diisi!',
-            'nik.required' => 'NIK wajib diisi!',
             'nik.unique' => 'NIK tidak boleh sama dengan data yang lain!',
             'nomor_hp.numeric' => 'Nomor HP harus berupa angka!',
             'nomor_bpjs.numeric' => 'Nomor BPJS harus berupa angka!',

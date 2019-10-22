@@ -3,6 +3,7 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Scopes\EndDateScope;
 
 use DB;
 
@@ -26,10 +27,25 @@ class Karu extends Model
 
     public $timestamps  = false;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($table) {
+            $table->updated_by = \Auth::id();
+        });
+
+        static::saving(function ($table) {
+            $table->created_by = \Auth::id();
+        });
+
+        static::addGlobalScope(new EndDateScope);
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table($this->table)
-            ->select('id AS id', 'nama AS nama', 'no_hp', DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\') AS end_date'));
+            ->select('id AS id', 'nama AS nama', 'nik', 'no_hp', DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\') AS end_date'));
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {

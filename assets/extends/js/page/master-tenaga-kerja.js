@@ -278,6 +278,8 @@ function reset_form(method = '') {
     $('#id').change();
     $('#nama').val('');
     $('#nama').change();
+    $('#nik').val('');
+    $('#nik').change();
     $('#nomor_hp').val('');
     $('#nomor_hp').change();
     $('#job_desk_id').val('');
