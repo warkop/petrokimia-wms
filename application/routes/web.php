@@ -49,6 +49,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     Route::group(['prefix' => 'master-material', 'middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/', 'MaterialController@index');
         Route::put('/', 'MaterialController@store');
+        Route::patch('/{material}', 'MaterialController@store');
         Route::post('/', 'MaterialController@json');
         Route::get('/{id}', 'MaterialController@show');
         Route::delete('/{id}', 'MaterialController@destroy');
