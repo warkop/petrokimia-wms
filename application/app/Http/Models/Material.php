@@ -2,8 +2,8 @@
 
 namespace App\Http\Models;
 
+use App\Scopes\EndDateScope;
 use Illuminate\Database\Eloquent\Model;
-
 use DB;
 
 class Material extends Model
@@ -24,7 +24,22 @@ class Material extends Model
 
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
-    public $timestamps  = false;
+    public $timestamps  = true;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($table) {
+            $table->updated_by = \Auth::id();
+        });
+
+        static::saving(function ($table) {
+            $table->created_by = \Auth::id();
+        });
+
+        static::addGlobalScope(new EndDateScope);
+    }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {

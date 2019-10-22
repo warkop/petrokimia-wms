@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\AlatBerat;
 use App\Http\Models\Area;
 use App\Http\Models\Gudang;
+use App\Http\Models\Realisasi;
 use App\Http\Models\RencanaAlatBerat;
 use App\Http\Models\RencanaAreaTkbm;
 use App\Http\Models\RencanaHarian;
@@ -12,6 +13,7 @@ use App\Http\Models\RencanaTkbm;
 use App\Http\Models\ShiftKerja;
 use App\Http\Models\TenagaKerjaNonOrganik;
 use App\Http\Models\Users;
+use App\Http\Requests\RealisasiRequest;
 use App\Http\Requests\RencanaHarianRequest;
 use Illuminate\Http\Request;
 
@@ -294,16 +296,21 @@ class RencanaHarianController extends Controller
 
     public function realisasi(RencanaHarian $rencanaHarian)
     {
-        $data['id_rencana_harian'] = $rencanaHarian->id();
+        $data['tkbm_rencana']    = RencanaAreaTkbm::select('id_rencana', 'id_tkbm')->where('id_rencana', $rencanaHarian->id)->groupBy('id_tkbm', 'id_rencana')->get();
+        $data['id_rencana_harian'] = $rencanaHarian->id;
         return view('rencana-harian.realisasi', $data);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Http\Models\RencanaHarian  $rencanaHarian
-     * @return \Illuminate\Http\Response
-     */
+    public function storeRealisasi(RealisasiRequest $req, Realisasi $realisasi)
+    {
+        $req->validated();
+
+        $this->responseCode = 200;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
     public function destroy(RencanaHarian $rencanaHarian)
     {
         //

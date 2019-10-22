@@ -83,11 +83,11 @@
                             <div class="form-group">
                                 <label>Kategori Material</label>
                                 <select class="form-control input-enter m-select2" id="kategori" name="kategori"
-                                    aria-placeholder="Pilih kategori" style="width: 100%;">
+                                    aria-placeholder="Pilih kategori" style="width: 100%;" onchange="pilihKategori(this)">
                                     <option value="">Pilih Material</option>
-                                    <option value="1">Pupuk</option>
-                                    <option value="2">Terplas</option>
-                                    <option value="3">Pallet</option>
+                                    <option value="1">Produk</option>
+                                    <option value="2">Pallet</option>
+                                    <option value="3">Lain-lain</option>
                                 </select>
                             </div>
                         </div>

@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class KaruRequest extends FormRequest
+class MaterialRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,12 +32,13 @@ class KaruRequest extends FormRequest
         }
 
         $rules = [
-            'nama'              => 'required',
-            'no_hp'             => 'nullable|numeric',
-            'nik'               => [
-                'nullable',
-                Rule::unique('karu', 'nik')->ignore(\Request::instance()->id)
+            'id_material_sap'   => [
+                'integer', 
+                'required',
+                Rule::unique('material', 'id_material_sap')->ignore(\Request::instance()->id)
             ],
+            'nama'              => 'required',
+            'kategori'          => 'integer|between:1,3',
             'start_date'        => 'nullable',
             'end_date'          => 'nullable|after:start_date',
         ];
@@ -48,11 +49,13 @@ class KaruRequest extends FormRequest
     public function messages()
     {
         return [
-            'nama.required' => 'Nama Pegawai wajib diisi!',
-            'nik.unique' => 'NIK tidak boleh sama dengan data yang lain!',
-            'no_hp.numeric' => 'Nomor HP harus berupa angka!',
-            'start_date.date_format'  => 'Tanggal harus dengan format tanggal-bulan-tahun',
-            'end_date.date_format'  => 'Tanggal harus dengan format tanggal-bulan-tahun',
+            'id_material_sap.required' => 'ID Material SAP harus diisi!',
+            'id_material_sap.integer' => 'ID Material SAP harus berupa angka!',
+            'id_material_sap.unique' => 'ID Material SAP sudah ada pada data lain!',
+            'nama.unique' => 'Nama Material sudah ada!',
+            'kategori.integer' => 'Kategori yang dimasukkan tidak valid!',
+            'kategori.between' => 'Kategori yang dimasukkan tidak valid!',
+            'end_date.after'  => 'Tanggal harus lebih kecil dari start date!',
         ];
     }
 
@@ -61,9 +64,6 @@ class KaruRequest extends FormRequest
         $input = $this->all();
 
         $input['nama'] = filter_var($input['nama'], FILTER_SANITIZE_STRING);
-        $input['nik'] = filter_var($input['nik'], FILTER_SANITIZE_STRING);
-        $input['no_hp'] = filter_var($input['no_hp'], FILTER_SANITIZE_STRING);
-        $input['nik'] = filter_var($input['nik'], FILTER_SANITIZE_STRING);
         $input['start_date'] = filter_var(
             $input['start_date'],
             FILTER_SANITIZE_STRING

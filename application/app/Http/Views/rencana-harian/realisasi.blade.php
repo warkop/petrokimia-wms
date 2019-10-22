@@ -96,94 +96,102 @@
 
 
             <div class="kel">
-                <h4 class="mb2">House Keeping</h4>
+                <h4 class="mb2">Housekeeper</h4>
                 <div class="row">
-                    <div class="col-3">
-                        <label class="boldd-500">Pilih House Keeping</label>
-                        <select class="form-control m-select2 kt_select2_housekeeping" name="param"
-                            aria-placeholder="Pilih House Keeping" style="width: 100%;">
-                            <option value="Eman Pradipta">Eman Pradipta</option>
-                            <option value="Uli Wibowo">Uli Wibowo</option>
-                            <option value="Jayeng Januar">Jayeng Januar</option>
-                        </select>
-                    </div>
-                    <div class="col-9 col-form-label">
-                        <label class="boldd-500" style="transform: translateY(-.6rem);">Pilih Area Kerja</label>
-                        <div class="col-12">
-                            <div class="row form-group mb-0 mb2">
-                                <div class="col-2 mb1">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox"> Area 1
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="col-2 mb1">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox"> Area 2
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="col-2 mb1">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox"> Area 3
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="col-2 mb1">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox"> Area 4
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="col-2 mb1">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox"> Area 5
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="col-2 mb1">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox"> Area 6
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="col-2 mb1">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox"> Area 7
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="col-2 mb1">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox"> Area 5
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="col-2 mb1">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox"> Area 6
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="col-2 mb1">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox"> Area 7
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="col-2 mb1">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox"> Area 5
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="col-2 mb1 text-left">
-                                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#kt_modal_1"> Tambah Area</button>
+                    @php
+                        $no = 1;
+                    @endphp
+                    @foreach ($tkbm_rencana as $item)
+                        <div class="col-3">
+                            <label class="boldd-500">Pilih Housekeeper</label>
+                            <select class="form-control m-select2 kt_select2_housekeeping" id="housekeeper-{{$no}}" name="housekeeper"
+                                aria-placeholder="Pilih Housekeeper" style="width: 100%;">
+                                {{-- <option value="Eman Pradipta">Eman Pradipta</option>
+                                <option value="Uli Wibowo">Uli Wibowo</option>
+                                <option value="Jayeng Januar">Jayeng Januar</option> --}}
+                            </select>
+                        </div>
+                        <div class="col-9 col-form-label">
+                            <label class="boldd-500" style="transform: translateY(-.6rem);">Pilih Area Kerja</label>
+                            <div class="col-12">
+                                <div class="row form-group mb-0 mb2">
+                                    <div class="col-2 mb1">
+                                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                            <input type="checkbox"> Area 1
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-2 mb1">
+                                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                            <input type="checkbox"> Area 2
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-2 mb1">
+                                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                            <input type="checkbox"> Area 3
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-2 mb1">
+                                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                            <input type="checkbox"> Area 4
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-2 mb1">
+                                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                            <input type="checkbox"> Area 5
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-2 mb1">
+                                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                            <input type="checkbox"> Area 6
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-2 mb1">
+                                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                            <input type="checkbox"> Area 7
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-2 mb1">
+                                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                            <input type="checkbox"> Area 5
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-2 mb1">
+                                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                            <input type="checkbox"> Area 6
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-2 mb1">
+                                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                            <input type="checkbox"> Area 7
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-2 mb1">
+                                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                            <input type="checkbox"> Area 5
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-2 mb1 text-left">
+                                        <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#kt_modal_1"> Tambah Area</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-3">
+                        @php
+                            $no++;    
+                        @endphp
+                    @endforeach
+                    {{-- <div class="col-3">
                         <select class="form-control m-select2 kt_select2_housekeeping" name="param"
                             aria-placeholder="Pilih House Keeping" style="width: 100%;">
                             <option value="Aurora Pudjiastuti">Aurora Pudjiastuti</option>
@@ -235,7 +243,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 
@@ -309,7 +317,7 @@
 
 
 
-<script src="{{asset('assets/extends/js/page/master-aktivitas.js')}}" type="text/javascript"></script>
+<script src="{{asset('assets/extends/js/page/realisasi.js')}}" type="text/javascript"></script>
 <script>
 $('.kt-selectpicker').selectpicker();
 $('#kt_select2_3').select2({

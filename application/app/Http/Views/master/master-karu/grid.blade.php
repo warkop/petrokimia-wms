@@ -34,6 +34,7 @@
 					<tr>
 						<th>No</th>
                         <th>Nama</th>
+                        <th>NIK</th>
                         <th>No. Hp</th>
                         <th>Start Date</th>
                         <th>End Date</th>
@@ -69,18 +70,13 @@
                                 <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama karu">
                             </div>
                             <div class="form-group">
+                                <label>NIK</label>
+                                <input type="text" class="form-control input-enter" id="nik" name="nik" placeholder="Masukkan NIK" maxlength="20">
+                            </div>
+                            <div class="form-group">
                                 <label>Nomor Hp</label>
                                 <input type="text" class="form-control" id="no_hp" name="no_hp" placeholder="Masukkan nomor hp">
                             </div>
-                            {{-- <div class="form-group">
-                                <label>Job Desk</label>
-                                <select class="form-control m-select2" id="kt_select2_1" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
-                                    <option value="">Pilih pekerjaan</option>
-                                    <option value="AK">Admin</option>
-                                    <option value="HI">Checker</option>
-                                    <option value="CA">Loket</option>
-                                </select>
-                            </div> --}}
                         </div>
                     </div>
                     <div class="row">

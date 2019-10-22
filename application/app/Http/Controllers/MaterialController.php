@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Material;
+use App\Http\Requests\MaterialRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class MaterialController extends Controller
 {
@@ -52,65 +52,22 @@ class MaterialController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, Material $models)
+    public function store(MaterialRequest $req, Material $material)
     {
-        $id = $req->input('id');
-        $rules = [
-            'id_material_sap'   => 'integer',
-            'nama'              => 'required', 
-            'kategori'          => 'integer|between:1,3',
-            'start_date'        => 'nullable|date_format:d-m-Y',
-            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
-        ];
+        $req->validate();
 
-        $action = $req->input('action');
-        if ($action == 'edit') {
-            $rules['id'] = 'required';
-        }
+        $material->id_material_sap    = $req->input('id_material_sap');
+        $material->nama               = $req->input('nama');
+        $material->kategori           = $req->input('kategori');
+        $material->berat              = $req->input('berat');
+        $material->koefisien_pallet   = $req->input('koefisien_pallet');
+        $material->start_date         = $req->input('start_date');
+        $material->end_date           = $req->input('end_date');
 
-        $validator = Validator::make($req->all(), $rules);
-        if ($validator->fails()) {
-            $this->responseCode                 = 400;
-            $this->responseStatus               = 'Missing Param';
-            $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
-            $this->responseData['error_log']    = $validator->errors();
-        } else {
-            $id_material_sap    = $req->input('id_material_sap');
-            $nama               = $req->input('nama');
-            $kategori           = $req->input('kategori');
-            $berat              = $req->input('berat');
-            $koefisien_pallet   = $req->input('koefisien_pallet');
+        $material->save();
 
-            $start_date  = null;
-            if ($req->input('start_date') != '') {
-                $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            }
-
-            $end_date   = null;
-            if ($req->input('end_date') != '') {
-                $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
-            }
-
-            if (!empty($id)) {
-                $models = Material::find($id);
-                $models->updated_by = session('userdata')['id_user'];
-            } else {
-                $models->created_by = session('userdata')['id_user'];
-            }
-
-            $models->id_material_sap    = strip_tags($id_material_sap);
-            $models->nama               = strip_tags($nama);
-            $models->kategori           = strip_tags($kategori);
-            $models->berat              = strip_tags($berat);
-            $models->koefisien_pallet   = strip_tags($koefisien_pallet);
-            $models->start_date         = $start_date;
-            $models->end_date           = $end_date;
-
-            $models->save();
-
-            $this->responseCode = 200;
-            $this->responseMessage = 'Data berhasil disimpan';
-        }
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data berhasil disimpan';
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
