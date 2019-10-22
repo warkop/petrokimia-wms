@@ -96,12 +96,15 @@
 
 
             <div class="kel">
-                <h4 class="mb2">House Keeping</h4>
+                <h4 class="mb2">Housekeeper</h4>
                 <div class="row">
+                    {{-- @foreach ($collection as $item)
+                        
+                    @endforeach --}}
                     <div class="col-3">
-                        <label class="boldd-500">Pilih House Keeping</label>
-                        <select class="form-control m-select2 kt_select2_housekeeping" name="param"
-                            aria-placeholder="Pilih House Keeping" style="width: 100%;">
+                        <label class="boldd-500">Pilih Housekeeper</label>
+                        <select class="form-control m-select2 kt_select2_housekeeping" id="housekeeper" name="housekeeper"
+                            aria-placeholder="Pilih Housekeeper" style="width: 100%;">
                             <option value="Eman Pradipta">Eman Pradipta</option>
                             <option value="Uli Wibowo">Uli Wibowo</option>
                             <option value="Jayeng Januar">Jayeng Januar</option>
