@@ -60,6 +60,7 @@ class TenagaKerjaNonOrganikController extends Controller
         $req->validated();
 
         $tenagaKerjaNonOrganik->nama                   = $req->input('nama');
+        $tenagaKerjaNonOrganik->nik                    = $req->input('nik');
         $tenagaKerjaNonOrganik->job_desk_id            = $req->input('job_desk_id');
         $tenagaKerjaNonOrganik->nomor_hp               = $req->input('nomor_hp');
         $tenagaKerjaNonOrganik->nomor_bpjs             = $req->input('nomor_bpjs');

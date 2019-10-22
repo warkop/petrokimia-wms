@@ -28,6 +28,9 @@ jQuery(document).ready(function () {
             $("#btn_save").click();
         }
     });
+    protectNumber("#nik", 20);
+    protectNumber("#nomor_hp", 10);
+    protectNumber("#nomor_bpjs", 10);
 
     // $('#nomor_hp').autoNumeric('init', {
     //     minimumValue: '0',
@@ -164,6 +167,7 @@ function edit(id = '') {
 
             if (obj.status == "OK") {
                 $('#nama').val(obj.data['nama']);
+                $('#nik').val(obj.data['nik']);
                 $('#nomor_hp').val(obj.data['nomor_hp']);
                 $('#nomor_bpjs').val(obj.data['nomor_bpjs']);
                 $("#job_desk_id").val(obj.data['job_desk_id']).change();

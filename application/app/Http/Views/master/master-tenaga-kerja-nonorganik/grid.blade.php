@@ -70,6 +70,10 @@
                                 <input type="text" class="form-control input-enter" id="nama" name="nama" placeholder="Masukkan nama tenaga kerja">
                             </div>
                             <div class="form-group">
+                                <label>NIK</label>
+                                <input type="text" class="form-control input-enter" id="nik" name="nik" placeholder="Masukkan NIK" maxlength="20">
+                            </div>
+                            <div class="form-group">
                                 <label>Nomor Hp</label>
                                 <input type="text" class="form-control input-enter" id="nomor_hp" name="nomor_hp" placeholder="Ex. 0895340952989">
                             </div>
@@ -80,17 +84,8 @@
                                     @foreach ($job_desk as $item)
                                         <option value="{{$item->id}}">{{$item->nama}}</option>
                                     @endforeach
-                                    {{-- <option value="HI">Checker</option>
-                                    <option value="CA">Loket</option> --}}
                                 </select>
                             </div>
-                            {{-- <div class="form-group">
-                                <label>Nama Karu</label>
-                                <select class="form-control m-select2" id="kt_select2_2" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
-                                    <option value="">Pilih karu</option>
-                                    <option value="AK">Irwan</option>
-                                </select>
-                            </div> --}}
                             <div class="form-group">
                                 <label>Nomor BPJS</label>
                                 <input type="text" class="form-control input-enter" id="nomor_bpjs" name="nomor_bpjs" placeholder="Masukkan Nomor BPJS">

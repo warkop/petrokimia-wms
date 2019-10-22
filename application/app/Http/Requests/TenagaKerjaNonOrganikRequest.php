@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TenagaKerjaNonOrganikRequest extends FormRequest
 {
@@ -26,11 +27,16 @@ class TenagaKerjaNonOrganikRequest extends FormRequest
         $this->sanitize();
 
         $rules = [
-            'nama'              => ['required'],
+            'nama'              => 'required',
+            'nik'               => [
+                'required',
+                Rule::unique('tenaga_kerja_non_organik', 'nik')->ignore(\Request::instance()->id)
+            ],
+            'nomor_hp'          => 'nullable|numeric',
+            'nomor_bpjs'        => 'nullable|numeric',
             'start_date'        => 'nullable|date_format:d-m-Y',
             'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
         ];
-
 
         return $rules;
     }
@@ -38,7 +44,11 @@ class TenagaKerjaNonOrganikRequest extends FormRequest
     public function messages()
     {
         return [
-            'nama.required' => 'Nama Pegawai harus diisi!',
+            'nama.required' => 'Nama Pegawai wajib diisi!',
+            'nik.required' => 'NIK wajib diisi!',
+            'nik.unique' => 'NIK tidak boleh sama dengan data yang lain!',
+            'nomor_hp.numeric' => 'Nomor HP harus berupa angka!',
+            'nomor_bpjs.numeric' => 'Nomor BPJS harus berupa angka!',
             'start_date.date_format'  => 'Tanggal harus dengan format tanggal-bulan-tahun',
             'end_date.date_format'  => 'Tanggal harus dengan format tanggal-bulan-tahun',
         ];
@@ -49,6 +59,9 @@ class TenagaKerjaNonOrganikRequest extends FormRequest
         $input = $this->all();
 
         $input['nama'] = filter_var($input['nama'], FILTER_SANITIZE_STRING);
+        $input['nik'] = filter_var($input['nik'], FILTER_SANITIZE_STRING);
+        $input['nomor_hp'] = filter_var($input['nomor_hp'], FILTER_SANITIZE_STRING);
+        $input['nomor_bpjs'] = filter_var($input['nomor_bpjs'], FILTER_SANITIZE_STRING);
         $input['start_date'] = filter_var($input['start_date'], 
         FILTER_SANITIZE_STRING);
         $input['end_date'] = filter_var($input['end_date'], 
