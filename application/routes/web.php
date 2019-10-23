@@ -17,15 +17,15 @@ Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('/authenticate', 'Auth\LoginController@authenticate')->name('authenticate');
 
 
-Route::get('/dashboard', function () {
-    return View::make('dashboard.grid');
-});
 
 Route::get('/master-grup', function () {
     return view('master.master-grup.grid');
 });
 
 Route::group(['middleware' => ['eauth', 'revalidate']], function () {
+    Route::get('/dashboard', function () {
+        return View::make('dashboard.grid');
+    });
     Route::get('/', 'DashboardController@index')->name('/');
     
     Route::group(['prefix' => 'master-aktivitas', 'middleware' => ['eauth', 'revalidate']], function () {
@@ -33,6 +33,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/tambah', 'AktivitasController@create');
         Route::get('/edit/{id}', 'AktivitasController@edit');
         Route::put('/', 'AktivitasController@store');
+        Route::patch('/{aktivitas}', 'AktivitasController@store');
         Route::post('/', 'AktivitasController@json');
         Route::get('/{id}', 'AktivitasController@show');
         Route::delete('/{id}', 'AktivitasController@destroy');

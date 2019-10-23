@@ -148,78 +148,99 @@ function edit(id = '') {
 
             let obj = response;
 
-            if (obj.status == "OK") {
-                $('#nama').val(obj.data['nama']);
-                if (obj.data['produk_stok'] != null) {
-                    $("#produk_stok").attr('disabled', false);
-                    $("#produk_stok").selectpicker('refresh');
-                    $('#selector_produk_stok').prop('checked', true);
-                    $('#produk_stok').val(obj.data['produk_stok']).change();
-                }
-                if (obj.data['pallet_stok'] != null) {
-                    $("#pallet_stok").attr('disabled', false);
-                    $("#pallet_stok").selectpicker('refresh');
-                    $('#selector_pallet_stok').prop('checked', true);
-                    $('#pallet_stok').val(obj.data['pallet_stok']).change();
-                }
-                if (obj.data['pallet_dipakai'] != null) {
-                    $("#pallet_dipakai").attr('disabled', false);
-                    $("#pallet_dipakai").selectpicker('refresh');
-                    $('#selector_pallet_dipakai').prop('checked', true);
-                    $('#pallet_dipakai').val(obj.data['pallet_dipakai']).change();
-                }
-                if (obj.data['pallet_kosong'] != null) {
-                    $("#pallet_kosong").attr('disabled', false);
-                    $("#pallet_kosong").selectpicker('refresh');
-                    $('#selector_pallet_kosong').prop('checked', true);
-                    $('#pallet_kosong').val(obj.data['pallet_kosong']).change();
-                }
+            $('#nama').val(obj.data['nama']);
+            if (obj.data['produk_stok'] != null) {
+                $("#selector_produk_rusak").attr('disabled', true);
+                $("#produk_rusak").attr('disabled', true);
+                $("#produk_rusak").selectpicker('refresh');
 
-                if (obj.data['upload_foto'] != null) {
-                    $('#upload_foto').prop('checked', true);
-                }
-                if (obj.data['connect_sistro'] != null) {
-                    $('#connect_sistro').prop('checked', true);
-                }
-                if (obj.data['pengiriman'] != null) {
-                    $('#pengiriman').prop('checked', true);
-                }
-                if (obj.data['fifo'] != null) {
-                    $('#fifo').prop('checked', true);
-                }
-                if (obj.data['pengaruh_tgl_produksi'] != null) {
-                    $('#pengaruh_tgl_produksi').prop('checked', true);
-                }
-                
-                if (obj.data['internal_gudang'] != null) {
-                    $('#internal_gudang').prop('checked', true);
-                }
-                
-                if (obj.data['butuh_alat_berat'] != null) {
-                    $('#butuh_alat_berat').prop('checked', true);
-                }
-                
-                if (obj.data['butuh_tkbm'] != null) {
-                    $('#butuh_tkbm').prop('checked', true);
-                }
-                
-                if (obj.data['tanda_tangan'] != null) {
-                    $('#tanda_tangan').prop('checked', true);
-                }
+                $("#produk_stok").attr('disabled', false);
+                $("#produk_stok").selectpicker('refresh');
+                $('#selector_produk_stok').prop('checked', true);
+                $('#produk_stok').val(obj.data['produk_stok']).change();
+            }
 
-                if (obj.data['butuh_approval'] != null) {
-                    $('#butuh_approval').prop('checked', true);
-                }
-                
-                if (obj.data['start_date'] != null) {
-                    $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
-                }
+            if (obj.data['produk_rusak'] != null) {
+                $("#selector_produk_stok").attr('disabled', true);
+                $("#produk_stok").attr('disabled', true);
+                $("#produk_stok").selectpicker('refresh');
 
-                if (obj.data['end_date'] != null) {
-                    $('#end_date').val(helpDateFormat(obj.data['end_date'], 'si'));
-                }
-            } else {
-                swal.fire('Pemberitahuan', obj.message, 'warning');
+                $("#produk_rusak").attr('disabled', false);
+                $("#produk_rusak").selectpicker('refresh');
+                $('#selector_produk_rusak').prop('checked', true);
+                $('#produk_rusak').val(obj.data['produk_rusak']).change();
+            }
+
+            if (obj.data['pallet_stok'] != null) {
+                $("#pallet_stok").attr('disabled', false);
+                $("#pallet_stok").selectpicker('refresh');
+                $('#selector_pallet_stok').prop('checked', true);
+                $('#pallet_stok').val(obj.data['pallet_stok']).change();
+            }
+            if (obj.data['pallet_dipakai'] != null) {
+                $("#pallet_dipakai").attr('disabled', false);
+                $("#pallet_dipakai").selectpicker('refresh');
+                $('#selector_pallet_dipakai').prop('checked', true);
+                $('#pallet_dipakai').val(obj.data['pallet_dipakai']).change();
+            }
+            if (obj.data['pallet_kosong'] != null) {
+                $("#pallet_kosong").attr('disabled', false);
+                $("#pallet_kosong").selectpicker('refresh');
+                $('#selector_pallet_kosong').prop('checked', true);
+                $('#pallet_kosong').val(obj.data['pallet_kosong']).change();
+            }
+
+            if (obj.data['upload_foto'] != null) {
+                $('#upload_foto').prop('checked', true);
+            }
+            if (obj.data['connect_sistro'] != null) {
+                $('#connect_sistro').prop('checked', true);
+            }
+            if (obj.data['pengiriman'] != null) {
+                $('#pengiriman').prop('checked', true);
+            }
+            if (obj.data['fifo'] != null) {
+                $('#fifo').prop('checked', true);
+            }
+            if (obj.data['pengaruh_tgl_produksi'] != null) {
+                $('#pengaruh_tgl_produksi').prop('checked', true);
+            }
+            
+            if (obj.data['internal_gudang'] != null) {
+                $('#internal_gudang').prop('checked', true);
+            }
+            
+            if (obj.data['butuh_alat_berat'] != null) {
+                $('#butuh_alat_berat').prop('checked', true);
+            }
+            
+            if (obj.data['butuh_tkbm'] != null) {
+                $('#butuh_tkbm').prop('checked', true);
+            }
+            
+            if (obj.data['tanda_tangan'] != null) {
+                $('#tanda_tangan').prop('checked', true);
+            }
+
+            if (obj.data['butuh_approval'] != null) {
+                $('#butuh_approval').prop('checked', true);
+            }
+            if (obj.data['butuh_biaya'] != null) {
+                $('#butuh_biaya').prop('checked', true);
+            }
+            if (obj.data['kelayakan'] != null) {
+                $('#kelayakan').prop('checked', true);
+            }
+            if (obj.data['peminjaman'] != null) {
+                $('#peminjaman').prop('checked', true);
+            }
+            
+            if (obj.data['start_date'] != null) {
+                $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
+            }
+
+            if (obj.data['end_date'] != null) {
+                $('#end_date').val(helpDateFormat(obj.data['end_date'], 'si'));
             }
 
         },
@@ -259,12 +280,17 @@ function edit(id = '') {
 function simpan() {
     $("#btn_save").prop("disabled", true);
     let data = $("#form1").serializeArray();
+    let type = "PUT";
+    const id = $("#id").val();
+    if (id) {
+        type = "PATCH";
+    }
     $.ajax({
-        type: "PUT",
+        type: type,
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: ajaxUrl,
+        url: ajaxUrl + "/" +id,
         data: data,
         beforeSend: function () {
             preventLeaving();
@@ -307,14 +333,27 @@ function simpan() {
                     let obj = JSON.parse(response['responseText']);
 
                     if (!$.isEmptyObject(obj.message)) {
-                        if (obj.code > 400) {
+                        if (obj.code > 450) {
                             head = 'Maaf';
                             message = obj.message;
                             type = 'error';
                         } else {
                             head = 'Pemberitahuan';
-                            message = obj.message;
                             type = 'warning';
+
+                            obj = response.responseJSON.errors;
+                            laddaButton.stop();
+                            window.onbeforeunload = false;
+                            $('.btn_close_modal').removeClass('hide');
+                            $('.se-pre-con').hide();
+
+                            const temp = Object.values(obj);
+                            message = '';
+                            temp.forEach(element => {
+                                element.forEach(row => {
+                                    message += row + "<br>"
+                                });
+                            });
                         }
                     }
                 }

@@ -41,11 +41,9 @@ function getTkbm() {
                 html += `<option value="${item.id}">${item.nama}</option>`;
             });
 
-            console.log(html)
             for (let i=1; i<=panjang; i++) {
                 $("#housekeeper-" + i).html(html);
             }
-            console.log($("#housekeeper-" + i));
         },
         error:(err, oo, pp)=>{
 

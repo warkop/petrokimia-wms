@@ -55,6 +55,21 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-4 col-form-label">
+                                    <label class="kt-checkbox kt-checkbox--brand">
+                                        <input type="checkbox" id="selector_produk_rusak"> Produk rusak
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <div class="col-6">
+                                    <select class="form-control kt-selectpicker" name="produk_rusak" id="produk_rusak">
+                                        <option value="">Pilih jenis</option>
+                                        <option value="1">Mengurangi</option>
+                                        <option value="2">Menambah</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
 
 
@@ -104,6 +119,21 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-4 col-form-label">
+                                    <label class="kt-checkbox kt-checkbox--brand">
+                                        <input type="checkbox" id="selector_pallet_kosong"> Pallet rusak
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <div class="col-6">
+                                    <select class="form-control kt-selectpicker" name="pallet_rusak" id="pallet_rusak">
+                                        <option value="">Pilih jenis</option>
+                                        <option value="1">Mengurangi</option>
+                                        <option value="2">Menambah</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -129,7 +159,7 @@
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="pengiriman" id="pengiriman" value="1"> Pengiriman
+                                        <input type="checkbox" name="pengiriman" id="pengiriman" value="1"> Pengiriman GP
                                         <span></span>
                                     </label>
                                 </div>
@@ -138,6 +168,14 @@
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                         <input type="checkbox" name="butuh_approval" id="butuh_approval" value="1"> Butuh Approval
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row form-group mb-0 mb2">
+                                <div class="col-6 offset-col-2">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox" name="peminjaman" id="peminjaman" value="1"> Peminjaman
                                         <span></span>
                                     </label>
                                 </div>
@@ -168,6 +206,14 @@
                                     </label>
                                 </div>
                             </div>
+                            <div class="row form-group mb-0 mb2">
+                                <div class="col-12 offset-col-2">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox" name="kelayakan" id="kelayakan" value="1"> Kelayakan
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-4 col-lg-4">
                             <div class="row form-group mb-0 mb2">
@@ -194,6 +240,14 @@
                                     </label>
                                 </div>
                             </div>
+                            <div class="row form-group mb-0 mb2">
+                                <div class="col-12 offset-col-2">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox" name="butuh_biaya" id="butuh_biaya" value="1"> Butuh Biaya Alat Berat
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -201,7 +255,7 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label>Start Date</label>
-                            <input type="text" class="form-control" id="start_date" name="start_date" readonly placeholder="Select date">
+                            <input type="text" class="form-control" id="start_date" name="start_date" readonly placeholder="Select date" value="{{date('d-m-Y')}}">
                         </div>
                     </div>
                     <div class="col-lg-4">
@@ -229,11 +283,87 @@
     <!-- end:: Content -->
 </form>
 
+
+
+<!--begin::Modal-->
+<div class="modal fade" id="modalFoto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Upload Foto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="pilih_semua" id="pilih_semua" value="1"> Pilih Semua
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="depan" id="depan" value="1"> Tampak Depan
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="belakang" id="belakang" value="1"> Tampak Belakang
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="samping_kanan" id="samping_kanan" value="1"> Tampak Samping Kanan
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="samping_kiri" id="samping_kiri" value="1"> Tampak Samping Kiri
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="atas" id="atas" value="1"> Tampak Atas
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="bawah" id="bawah" value="1"> Tampak Bawah
+                            <span></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-success">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--end::Modal-->
+
 <script src="{{asset('assets/extends/js/page/master-aktivitas.js')}}" type="text/javascript"></script>
 <script>
     $(document).ready(()=>{
-        $("#produk_stok").attr('disabled',true);
-        $("#produk_stok").selectpicker('refresh');
+        if ($("#selector_produk_rusak").checked) {
+            $("#produk_stok").attr('disabled',true);
+            $("#produk_stok").selectpicker('refresh');
+            $("#selector_produk_stok").attr("disabled", true);
+        }
+        
+        if ($("#selector_produk_stok").checked) {
+            $("#produk_rusak").attr('disabled',true);
+            $("#produk_rusak").selectpicker('refresh');
+            $("#selector_produk_rusak").attr("disabled", true);
+        }
 
         $("#pallet_stok").attr('disabled',true);
         $("#pallet_stok").selectpicker('refresh');
@@ -244,13 +374,18 @@
         $("#pallet_kosong").attr('disabled',true);
         $("#pallet_kosong").selectpicker('refresh');
 
+        $("#pallet_rusak").attr('disabled',true);
+        $("#pallet_rusak").selectpicker('refresh');
+        
+        $("#butuh_approval").attr('disabled',true);
+
         @if (!empty($id)) {
             edit({{$id}});
         }
         @endif
     });
     $('.kt-selectpicker').selectpicker();
-    $('#start_date, #end_date').datepicker({
+    $('#end_date').datepicker({
         rtl: KTUtil.isRTL(),
         todayHighlight: true,
         format:'dd-mm-yyyy',
@@ -261,10 +396,25 @@
         if(this.checked) {
             $("#produk_stok").attr('disabled',false);
             $("#produk_stok").selectpicker('refresh');
+            $("#selector_produk_rusak").attr('disabled',true);
         } else {
             $("#produk_stok").val("").change();
             $("#produk_stok").attr('disabled',true);
             $("#produk_stok").selectpicker('refresh');
+            $("#selector_produk_rusak").attr('disabled',false);
+        }
+    });
+
+    $("#selector_produk_rusak").change(function() {
+        if(this.checked) {
+            $("#produk_rusak").attr('disabled',false);
+            $("#produk_rusak").selectpicker('refresh');
+            $("#selector_produk_stok").attr('disabled',true);
+        } else {
+            $("#produk_rusak").val("").change();
+            $("#produk_rusak").attr('disabled',true);
+            $("#produk_rusak").selectpicker('refresh');
+            $("#selector_produk_stok").attr('disabled',false);
         }
     });
 
@@ -298,6 +448,55 @@
             $("#pallet_kosong").val("").change();
             $("#pallet_kosong").attr('disabled',true);
             $("#pallet_kosong").selectpicker('refresh');
+        }
+    });
+
+    $("#selector_pallet_rusak").change(function() {
+        if(this.checked) {
+            $("#pallet_rusak").attr('disabled',false);
+            $("#pallet_rusak").selectpicker('refresh');
+        } else {
+            $("#pallet_rusak").val("").change();
+            $("#pallet_rusak").attr('disabled',true);
+            $("#pallet_rusak").selectpicker('refresh');
+        }
+    });
+
+    $('#upload_foto').on('change', function(e){
+        if(e.target.checked){
+            $('#modalFoto').modal();
+        }
+    });
+
+    $('#pengiriman').on('change', function(e){
+        if(e.target.checked){
+            $('#internal_gudang').attr('disabled',true);
+            $('#butuh_approval').attr('disabled',false);
+        } else {
+            $('#internal_gudang').attr('disabled', false);
+
+            if ($("#internal_gudang").checked || $("#pengiriman").checked) {
+                $("#butuh_approval").attr("disabled", false);
+            } else {
+                $("#butuh_approval").prop("checked", false);
+                $("#butuh_approval").attr("disabled", true);
+            }
+        }
+    });
+
+    $('#internal_gudang').on('change', function(e){
+        if(e.target.checked){
+            $('#pengiriman').attr('disabled',true);
+            $('#butuh_approval').attr('disabled',false);
+        } else {
+            $('#pengiriman').attr('disabled', false);
+
+            if ($("#internal_gudang").checked || $("#pengiriman").checked) {
+                $("#butuh_approval").attr("disabled", false);
+            } else {
+                $("#butuh_approval").prop("checked", false);
+                $("#butuh_approval").attr("disabled", true);
+            }
         }
     });
 </script>

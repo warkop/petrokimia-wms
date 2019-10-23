@@ -40,23 +40,25 @@
                             <th width="20%">Berkurang</th>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="text-center">1</td>
-                                <td>
-                                    <select class="form-control m-select2 kt_select2_housekeeping" name="param"
-                                        aria-placeholder="Pilih kategori" style="width: 100%;">
-                                        <option value="AK">Sapu Ijuk</option>
-                                        <option value="HI">Sekop</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" name="" placeholder="Jumlah bertambah">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" name="" placeholder="Jumlah berkurang">
-                                </td>
-                            </tr>
-                            <tr>
+                            @foreach ($material as $item)
+                                <tr>
+                                    <td class="text-center">1</td>
+                                    <td>
+                                        <select class="form-control m-select2 kt_select2_housekeeping" name="param"
+                                            aria-placeholder="Pilih kategori" style="width: 100%;">
+                                            <option value="AK">Sapu Ijuk</option>
+                                            <option value="HI">Sekop</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="" placeholder="Jumlah bertambah">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="" placeholder="Jumlah berkurang">
+                                    </td>
+                                </tr>
+                            @endforeach
+                            {{-- <tr>
                                 <td class="text-center">2</td>
                                 <td>
                                     <select class="form-control m-select2 kt_select2_housekeeping" name="param"
@@ -88,7 +90,7 @@
                                 <td>
                                     <input type="text" class="form-control" name="" placeholder="Jumlah berkurang">
                                 </td>
-                            </tr>
+                            </tr> --}}
                         </tbody>
                     </table>
                 </div>

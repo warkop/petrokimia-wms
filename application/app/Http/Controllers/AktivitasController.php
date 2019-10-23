@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Aktivitas;
+use App\Http\Requests\AktivitasRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class AktivitasController extends Controller
 {
@@ -56,84 +56,36 @@ class AktivitasController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req)
+    public function store(AktivitasRequest $req, Aktivitas $aktivitas)
     {
-        $models = new Aktivitas;
-        $rules = [
-            'nama'              => 'required',
-            'start_date'        => 'nullable|date_format:d-m-Y',
-            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
-        ];
+        $req->validated();
 
-        $action = $req->input('action');
-        if ($action == 'edit') {
-            $rules['id'] = 'required';
-        }
+        $aktivitas->nama                       = $req->input('nama');
+        $aktivitas->produk_stok                = $req->input('produk_stok');
+        $aktivitas->produk_rusak               = $req->input('produk_rusak');
+        $aktivitas->pallet_stok                = $req->input('pallet_stok');
+        $aktivitas->pallet_dipakai             = $req->input('pallet_dipakai');
+        $aktivitas->pallet_kosong              = $req->input('pallet_kosong');
+        $aktivitas->upload_foto                = $req->input('upload_foto');
+        $aktivitas->connect_sistro             = $req->input('connect_sistro');
+        $aktivitas->pengiriman                 = $req->input('pengiriman');
+        $aktivitas->fifo                       = $req->input('fifo');
+        $aktivitas->kelayakan                  = $req->input('kelayakan');
+        $aktivitas->butuh_biaya                = $req->input('butuh_biaya');
+        $aktivitas->peminjaman                 = $req->input('peminjaman');
+        $aktivitas->pengaruh_tgl_produksi      = $req->input('pengaruh_tgl_produksi');
+        $aktivitas->internal_gudang            = $req->input('internal_gudang');
+        $aktivitas->butuh_alat_berat           = $req->input('butuh_alat_berat');
+        $aktivitas->butuh_tkbm                 = $req->input('butuh_tkbm');
+        $aktivitas->tanda_tangan               = $req->input('tanda_tangan');
+        $aktivitas->butuh_approval             = $req->input('butuh_approval');
+        $aktivitas->start_date                 = $req->input('start_date');
+        $aktivitas->end_date                   = $req->input('end_date');
 
-        $validator = Validator::make($req->all(), $rules);
-        if ($validator->fails()) {
-            $this->responseCode                 = 400;
-            $this->responseStatus               = 'Missing Param';
-            $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
-            $this->responseData['error_log']    = $validator->errors();
-        } else {
-            $id                         = $req->input('id');
-            $nama                       = strip_tags($req->input('nama'));
-            $produk_stok                = $req->input('produk_stok');
-            $pallet_stok                = $req->input('pallet_stok');
-            $pallet_dipakai             = $req->input('pallet_dipakai');
-            $pallet_kosong              = $req->input('pallet_kosong');
-            $upload_foto                = $req->input('upload_foto');
-            $connect_sistro             = $req->input('connect_sistro');
-            $pengiriman                 = $req->input('pengiriman');
-            $fifo                       = $req->input('fifo');
-            $pengaruh_tgl_produksi      = $req->input('pengaruh_tgl_produksi');
-            $internal_gudang            = $req->input('internal_gudang');
-            $butuh_alat_berat           = $req->input('butuh_alat_berat');
-            $butuh_tkbm                 = $req->input('butuh_tkbm');
-            $tanda_tangan               = $req->input('tanda_tangan');
-            $butuh_approval             = $req->input('butuh_approval');
+        $aktivitas->save();
 
-            $start_date  = null;
-            if ($req->input('start_date') != '') {
-                $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            }
-
-            $end_date   = null;
-            if ($req->input('end_date') != '') {
-                $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
-            }
-
-            if (!empty($id)) {
-                $models = Aktivitas::find($id);
-                $models->updated_by = session('userdata')['id_user'];
-            } else {
-                $models->created_by = session('userdata')['id_user'];
-            }
-
-            $models->nama                       = $nama;
-            $models->produk_stok                = $produk_stok;
-            $models->pallet_stok                = $pallet_stok;
-            $models->pallet_dipakai             = $pallet_dipakai;
-            $models->pallet_kosong              = $pallet_kosong;
-            $models->upload_foto                = $upload_foto;
-            $models->connect_sistro             = $connect_sistro;
-            $models->pengiriman                 = $pengiriman;
-            $models->fifo                       = $fifo;
-            $models->pengaruh_tgl_produksi      = $pengaruh_tgl_produksi;
-            $models->internal_gudang            = $internal_gudang;
-            $models->butuh_alat_berat           = $butuh_alat_berat;
-            $models->butuh_tkbm                 = $butuh_tkbm;
-            $models->tanda_tangan               = $tanda_tangan;
-            $models->butuh_approval             = $butuh_approval;
-            $models->start_date                 = $start_date;
-            $models->end_date                   = $end_date;
-
-            $models->save();
-
-            $this->responseCode = 200;
-            $this->responseMessage = 'Data berhasil disimpan';
-        }
+        $this->responseCode     = 200;
+        $this->responseMessage  = 'Data berhasil disimpan';
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);

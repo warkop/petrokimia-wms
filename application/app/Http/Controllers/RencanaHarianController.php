@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\AlatBerat;
 use App\Http\Models\Area;
 use App\Http\Models\Gudang;
+use App\Http\Models\Material;
 use App\Http\Models\Realisasi;
 use App\Http\Models\RencanaAlatBerat;
 use App\Http\Models\RencanaAreaTkbm;
@@ -283,6 +284,7 @@ class RencanaHarianController extends Controller
     public function getArea()
     {
         $users = Users::find(\Auth::id());
+        dump($users);
         $gudang = Gudang::where('id_karu', $users->id_karu)->first();
         $res = Area::where('id_gudang', $gudang->id)->get();
 
@@ -297,6 +299,7 @@ class RencanaHarianController extends Controller
     public function realisasi(RencanaHarian $rencanaHarian)
     {
         $data['tkbm_rencana']    = RencanaAreaTkbm::select('id_rencana', 'id_tkbm')->where('id_rencana', $rencanaHarian->id)->groupBy('id_tkbm', 'id_rencana')->get();
+        $data['material']    = Material::where('kategori', 3)->get();
         $data['id_rencana_harian'] = $rencanaHarian->id;
         return view('rencana-harian.realisasi', $data);
     }
