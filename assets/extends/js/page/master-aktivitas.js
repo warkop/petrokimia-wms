@@ -259,12 +259,17 @@ function edit(id = '') {
 function simpan() {
     $("#btn_save").prop("disabled", true);
     let data = $("#form1").serializeArray();
+    let type = "PUT";
+    const id = $("#id").val();
+    if (id) {
+        type = "PATCH";
+    }
     $.ajax({
-        type: "PUT",
+        type: type,
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: ajaxUrl,
+        url: ajaxUrl + "/" +id,
         data: data,
         beforeSend: function () {
             preventLeaving();
