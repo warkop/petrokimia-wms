@@ -98,12 +98,12 @@ class AktivitasRequest extends FormRequest
         $input = $this->all();
 
         $input['nama']          = filter_var($input['nama'], FILTER_SANITIZE_STRING);
-        $input['produk_stok']   = filter_var($input['produk_stok'], FILTER_SANITIZE_STRING);
-        $input['produk_rusak']  = filter_var($input['produk_rusak'], FILTER_SANITIZE_STRING);
-        $input['pallet_stok']   = filter_var($input['pallet_stok'], FILTER_SANITIZE_STRING);
-        $input['pallet_dipakai']= filter_var($input['pallet_dipakai'], FILTER_SANITIZE_STRING);
-        $input['pallet_kosong'] = filter_var($input['pallet_kosong'], FILTER_SANITIZE_STRING);
-        $input['upload_foto']   = filter_var($input['upload_foto'], FILTER_SANITIZE_STRING);
+        // $input['produk_stok']   = filter_var($input['produk_stok'], FILTER_SANITIZE_STRING);
+        // $input['produk_rusak']  = filter_var($input['produk_rusak'], FILTER_SANITIZE_STRING);
+        // $input['pallet_stok']   = filter_var($input['pallet_stok'], FILTER_SANITIZE_STRING);
+        // $input['pallet_dipakai']= filter_var($input['pallet_dipakai'], FILTER_SANITIZE_STRING);
+        // $input['pallet_kosong'] = filter_var($input['pallet_kosong'], FILTER_SANITIZE_STRING);
+        // $input['upload_foto']   = filter_var($input['upload_foto'], FILTER_SANITIZE_STRING);
         
         $input['start_date'] = filter_var(
             $input['start_date'],
