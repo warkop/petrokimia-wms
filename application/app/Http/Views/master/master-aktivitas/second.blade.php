@@ -376,6 +376,8 @@
 
         $("#pallet_rusak").attr('disabled',true);
         $("#pallet_rusak").selectpicker('refresh');
+        
+        $("#butuh_approval").attr('disabled',true);
 
         @if (!empty($id)) {
             edit({{$id}});
@@ -460,7 +462,6 @@
         }
     });
 
-    // $('input[type="checkbox"]').on('change', function(e){
     $('#upload_foto').on('change', function(e){
         if(e.target.checked){
             $('#modalFoto').modal();
@@ -470,16 +471,32 @@
     $('#pengiriman').on('change', function(e){
         if(e.target.checked){
             $('#internal_gudang').attr('disabled',true);
+            $('#butuh_approval').attr('disabled',false);
         } else {
             $('#internal_gudang').attr('disabled', false);
+
+            if ($("#internal_gudang").checked || $("#pengiriman").checked) {
+                $("#butuh_approval").attr("disabled", false);
+            } else {
+                $("#butuh_approval").prop("checked", false);
+                $("#butuh_approval").attr("disabled", true);
+            }
         }
     });
 
     $('#internal_gudang').on('change', function(e){
         if(e.target.checked){
             $('#pengiriman').attr('disabled',true);
+            $('#butuh_approval').attr('disabled',false);
         } else {
             $('#pengiriman').attr('disabled', false);
+
+            if ($("#internal_gudang").checked || $("#pengiriman").checked) {
+                $("#butuh_approval").attr("disabled", false);
+            } else {
+                $("#butuh_approval").prop("checked", false);
+                $("#butuh_approval").attr("disabled", true);
+            }
         }
     });
 </script>

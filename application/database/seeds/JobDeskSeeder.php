@@ -15,19 +15,19 @@ class JobDeskSeeder extends Seeder
         $data = [
             [
                 'id'            => 1,
-                'nama'          => 'Housekeeper',
+                'nama'          => 'Admin Loket',
             ],
             [
                 'id'            => 2,
-                'nama'          => 'Checker',
-            ],
-            [
-                'id'            => 3,
                 'nama'          => 'Operator',
             ],
             [
+                'id'            => 3,
+                'nama'          => 'Checker',
+            ],
+            [
                 'id'            => 4,
-                'nama'          => 'Admin Loket',
+                'nama'          => 'Housekeeper',
             ]
         ];
 
