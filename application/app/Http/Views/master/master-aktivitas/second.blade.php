@@ -55,6 +55,21 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-4 col-form-label">
+                                    <label class="kt-checkbox kt-checkbox--brand">
+                                        <input type="checkbox" id="selector_produk_stok"> Produk rusak
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <div class="col-6">
+                                    <select class="form-control kt-selectpicker" name="produk_stok" id="produk_stok">
+                                        <option value="">Pilih jenis</option>
+                                        <option value="1">Mengurangi</option>
+                                        <option value="2">Menambah</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
 
 
@@ -98,6 +113,21 @@
                                 </div>
                                 <div class="col-6">
                                     <select class="form-control kt-selectpicker" name="pallet_kosong" id="pallet_kosong">
+                                        <option value="">Pilih jenis</option>
+                                        <option value="1">Mengurangi</option>
+                                        <option value="2">Menambah</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 col-form-label">
+                                    <label class="kt-checkbox kt-checkbox--brand">
+                                        <input type="checkbox" id="selector_pallet_kosong"> Pallet rusak
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <div class="col-6">
+                                    <select class="form-control kt-selectpicker" name="pallet_rusak" id="pallet_rusak">
                                         <option value="">Pilih jenis</option>
                                         <option value="1">Mengurangi</option>
                                         <option value="2">Menambah</option>
@@ -229,6 +259,73 @@
     <!-- end:: Content -->
 </form>
 
+
+
+<!--begin::Modal-->
+<div class="modal fade" id="modalFoto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Upload Foto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="pilih_semua" id="pilih_semua" value="1"> Pilih Semua
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="depan" id="depan" value="1"> Tampak Depan
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="belakang" id="belakang" value="1"> Tampak Belakang
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="samping_kanan" id="samping_kanan" value="1"> Tampak Samping Kanan
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="samping_kiri" id="samping_kiri" value="1"> Tampak Samping Kiri
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="atas" id="atas" value="1"> Tampak Atas
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="bawah" id="bawah" value="1"> Tampak Bawah
+                            <span></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-success">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--end::Modal-->
+
 <script src="{{asset('assets/extends/js/page/master-aktivitas.js')}}" type="text/javascript"></script>
 <script>
     $(document).ready(()=>{
@@ -298,6 +395,13 @@
             $("#pallet_kosong").val("").change();
             $("#pallet_kosong").attr('disabled',true);
             $("#pallet_kosong").selectpicker('refresh');
+        }
+    });
+
+    // $('input[type="checkbox"]').on('change', function(e){
+    $('#upload_foto').on('change', function(e){
+        if(e.target.checked){
+            $('#modalFoto').modal();
         }
     });
 </script>
