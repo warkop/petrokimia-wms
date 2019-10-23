@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Models\Aktivitas;
 use App\Http\Requests\AktivitasRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class AktivitasController extends Controller
 {
@@ -59,6 +58,8 @@ class AktivitasController extends Controller
 
     public function store(AktivitasRequest $req, Aktivitas $aktivitas)
     {
+        $req->validated();
+
         $aktivitas->nama                       = $req->input('nama');
         $aktivitas->produk_stok                = $req->input('produk_stok');
         $aktivitas->produk_rusak               = $req->input('produk_rusak');
@@ -83,8 +84,8 @@ class AktivitasController extends Controller
 
         $aktivitas->save();
 
-        $this->responseCode = 200;
-        $this->responseMessage = 'Data berhasil disimpan';
+        $this->responseCode     = 200;
+        $this->responseMessage  = 'Data berhasil disimpan';
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
