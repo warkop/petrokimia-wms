@@ -52,11 +52,15 @@ class AktivitasController extends Controller
     {
         try {
             $aktivitas = Aktivitas::findOrFail($id);
-            return new AktivitasResource($aktivitas);
+            return (new AktivitasResource($aktivitas))->additional([
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ], Response::HTTP_OK);
         } catch (ModelNotFoundException $ex) {
             return response()->json([
                 'message' => 'Data tidak ditemukan!',
-                'status_code' => Response::HTTP_BAD_REQUEST
+                'data' => null,
+                'code' => Response::HTTP_BAD_REQUEST
             ], Response::HTTP_BAD_REQUEST);
         }
     }
