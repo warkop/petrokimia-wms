@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Aktivitas;
 use App\Http\Resources\AktivitasResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 
 class AktivitasController extends Controller
@@ -17,7 +18,7 @@ class AktivitasController extends Controller
      */
     public function index()
     {
-        return new AktivitasResource(Aktivitas::paginate());
+        return new AktivitasResource(Aktivitas::paginate(10));
     }
 
     /**
@@ -49,14 +50,14 @@ class AktivitasController extends Controller
      */
     public function show($id)
     {
-        $aktivitas = Aktivitas::find($id);
-        if (!empty($aktivitas)) {
-            return (new AktivitasResource($aktivitas))->response()->setStatusCode(200);
-        } else {
+        try {
+            $aktivitas = Aktivitas::findOrFail($id);
+            return new AktivitasResource($aktivitas);
+        } catch (ModelNotFoundException $ex) {
             return response()->json([
-                'message' => 'Resource not found',
-                'status_code' => Response::HTTP_NOT_FOUND
-            ], Response::HTTP_NOT_FOUND);
+                'message' => 'Data tidak ditemukan!',
+                'status_code' => Response::HTTP_BAD_REQUEST
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
