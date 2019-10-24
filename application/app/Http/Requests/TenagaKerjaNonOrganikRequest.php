@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Models\TenagaKerjaNonOrganik;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -27,15 +28,17 @@ class TenagaKerjaNonOrganikRequest extends FormRequest
         $this->sanitize();
 
         $action = \Request::instance()->action;
+        $model = new TenagaKerjaNonOrganik;
         if ($action == 'edit') {
             $rules['id'] = 'required';
+            $model = TenagaKerjaNonOrganik::find(\Request::instance()->id);
         }
 
         $rules = [
             'nama'              => 'required',
             'nik'               => [
                 'nullable',
-                Rule::unique('tenaga_kerja_non_organik', 'nik')->ignore(\Request::instance()->id)
+                Rule::unique('tenaga_kerja_non_organik')->ignore($model->id)
             ],
             'nomor_hp'          => 'nullable|numeric',
             'nomor_bpjs'        => 'nullable|numeric',
