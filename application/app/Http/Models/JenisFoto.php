@@ -34,8 +34,9 @@ class JenisFoto extends Model
             $table->updated_by = \Auth::id();
         });
 
-        static::saving(function ($table) {
+        static::creating(function ($table) {
             $table->created_by = \Auth::id();
+            $table->created_at = date('Y-m-d H:i:s');
         });
 
         // static::addGlobalScope(new EndDateScope);
