@@ -67,7 +67,7 @@
                         <label>Alat Berat</label>
                         <select class="form-control m-select2" id="alat_berat" name="alat_berat[]" multiple="multiple">
                             @foreach ($alat_berat as $item)
-                                <option value="{{$item->id}}">{{$item->nomor_polisi}}</option>    
+                                <option value="{{$item->id}}">{{$item->nomor_lambung}}</option>    
                             @endforeach
                         </select>
                     </div>

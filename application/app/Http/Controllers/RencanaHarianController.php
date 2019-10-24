@@ -285,11 +285,16 @@ class RencanaHarianController extends Controller
     {
         $users = Users::find(\Auth::id());
         $gudang = Gudang::where('id_karu', $users->id_karu)->first();
-        $res = Area::where('id_gudang', $gudang->id)->get();
-
-        $this->responseCode = 200;
-        $this->responseMessage = 'Data tersedia.';
-        $this->responseData = $res;
+        if (!empty($gudang)) {
+            $res = Area::where('id_gudang', $gudang->id)->get();
+    
+            $this->responseCode = 200;
+            $this->responseMessage = 'Data tersedia';
+            $this->responseData = $res;
+        } else {
+            $this->responseCode = 403;
+            $this->responseMessage = 'Anda tidak memiliki gudang! Silahkan daftarkan gudang Anda pada menu Gudang!';
+        }
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);

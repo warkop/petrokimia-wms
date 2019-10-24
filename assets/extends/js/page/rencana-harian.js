@@ -33,7 +33,7 @@ const tambahHouseKeeper = (id_rencana='', id_tkbm='') => {
     const tableId = "table_housekeeper";
     const rows = document.getElementById(tableId).getElementsByTagName("tr").length;
     let html = 
-    `<tr id="baris-${rows}">
+    `<tr class="cap-baris" id="baris-${rows}">
         <td>
             <select class="form-control m-select2 kt_select2_housekeeping pilih_housekeeper" onchange="check(this)" id="housekeeper-${rows}" name="housekeeper[${rows}]" style="width: 100% !important" required >
             </select>
@@ -65,8 +65,12 @@ const tambahHouseKeeper = (id_rencana='', id_tkbm='') => {
     }
 }
 
-const hapus = (id) => {
-    $("#baris-"+id).remove();
+const hapus = (id='') => {
+    if (id != '') {
+        $("#baris-"+id).remove();
+    } else {
+        $(".cap-baris").remove();
+    }
 }
 
 const simpan = () => {
@@ -301,7 +305,7 @@ function getTkbm(id_job_desk, target, id_rencana='', id_tkbm='') {
 
             $(target).html(html);
             
-            if (id_rencana != '' && id_job_desk != 1) {
+            if (id_rencana != '' && id_job_desk != 4) {
                 getRencanaTkbm(id_job_desk, id_rencana, target);
                 // setTimeout(() => {
                 //     console.log(id_tkbm);
@@ -350,8 +354,28 @@ function getArea(target) {
 
             $(target).html(html);
         },
-        error: (err, oo, pp) => {
-
+        error: (response, oo, pp) => {
+            const head = 'Pemberitahuan';
+            const type = 'warning';
+            const obj = response.responseJSON.errors;
+            // laddaButton.stop();
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+            
+            let message = '';
+            if (obj != null) {
+                const temp = Object.values(obj);
+                temp.forEach(element => {
+                    element.forEach(row => {
+                        message += row + "<br>"
+                    });
+                });
+            } else {
+                message = response.responseJSON.message;
+                hapus();
+            }
+            swal.fire(head, message, type);
         }
     });
 }
