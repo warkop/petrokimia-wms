@@ -18,7 +18,7 @@ class AktivitasController extends Controller
      */
     public function index()
     {
-        return (new AktivitasResource(Aktivitas::paginate(10)))->additional([
+        return (new AktivitasResource(Aktivitas::paginate(10)->sortByDesc('created_at')))->additional([
             'message' => '',
             'code' => Response::HTTP_OK,
         ], Response::HTTP_OK);

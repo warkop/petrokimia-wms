@@ -25,6 +25,21 @@ class Aktivitas extends Model
 
     public $timestamps  = false;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($table) {
+            $table->updated_by = \Auth::id();
+            $table->updated_at = date('Y-m-d H:i:s');
+        });
+
+        static::creating(function ($table) {
+            $table->created_by = \Auth::id();
+            $table->created_at = date('Y-m-d H:i:s');
+        });
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('aktivitas')
