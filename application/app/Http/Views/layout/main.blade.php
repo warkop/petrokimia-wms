@@ -154,13 +154,13 @@
                                                 <span class="kt-nav__link-text">Gudang</span>
                                             </a>
                                         </li>
-                                        @endif
                                         <li class="kt-nav__item">
                                             <a href="{{('rencana-harian')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la la-calendar"></i>
                                                 <span class="kt-nav__link-text">Rencana Harian</span>
                                             </a>
                                         </li>
+                                        @endif
                                         <li class="kt-nav__item">
                                             <a href="{{('penerimaan-gp')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-columns"></i>

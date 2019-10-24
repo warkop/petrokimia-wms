@@ -49,7 +49,7 @@
 
 
 <!--begin::Modal-->
-<div class="modal fade btn_close_modal" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade btn_close_modal" id="modal_form" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -76,7 +76,7 @@
                                 <label>Username</label>
                                 <input type="text" class="form-control input-enter" name="username" id="username" placeholder="Masukkan username">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="tempat_password">
                                 <label>Password</label>
                                 <div class="input-group">
                                     <input type="password" class="form-control input-enter pwd" name="password" id="password" placeholder="Password" aria-describedby="basic-addon2">
@@ -94,7 +94,7 @@
                             </div>
                             <div class="form-group" id="pilih_pegawai">
                                 <label>Pilih Pegawai</label><br>
-                                <select class="form-control kt-selectpicker" id="pilih" name="pilih">
+                                <select class="form-control" id="pilih" name="pilih" style="width: 100%;">
 
                                 </select>
                             </div>
@@ -137,6 +137,11 @@ $('#start_date, #end_date').datepicker({
     format:'dd-mm-yyyy',
     orientation: "bottom left"
 });
+
+$('#pilih').select2({
+    placeholder: "Pilih Pegawai"
+});
+
 $(".reveal").on('click',function() {
     var $pwd = $(".pwd");
     var $text = $("#basic-addon2");

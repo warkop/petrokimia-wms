@@ -114,12 +114,12 @@ License: You must have a valid license purchased only from themeforest(the above
 								@if (session('userdata')['role_id'] == 5)
 								<li id="gudang-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/gudang')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-institution"></span><span class="kt-menu__link-text">Gudang</span></a>
 								</li>
-								@endif
 								{{-- <li class="kt-menu__item" aria-haspopup="true"><a href="{{url('/anggaran-alat-berat')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-file-text-o"></span><span class="kt-menu__link-text">Anggaran Alat Berat</span></a>
 								</li> --}}
 								{{-- <li class="kt-menu__item" aria-haspopup="true"><a href="{{url('/anggaran-sdm')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-money"></span><span class="kt-menu__link-text">Anggaran SDM</span></a> --}}
 								</li>
 								<li id="rencanaHarian-nav" class="kt-menu__item rencanaHarian-nav" aria-haspopup="true"><a href="{{url('/rencana-harian')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-calendar"></span><span class="kt-menu__link-text">Rencana Harian</span></a></li>
+								@endif
 								<li id="pGP-nav" class="kt-menu__item aktivitas-nav" aria-haspopup="true"><a href="{{url('/penerimaan-gp')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-columns"></span><span class="kt-menu__link-text">Penerimaan GP</span></a></li>
 								<li id="log-aktivitas-nav" class="kt-menu__item pGP-nav" aria-haspopup="true"><a href="{{url('/log-aktivitas')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-line-chart"></span><span class="kt-menu__link-text">Log Aktivitas</span></a></li>
 								<li class="kt-menu__section ">

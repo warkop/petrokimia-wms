@@ -120,6 +120,7 @@ function tambah() {
     reset_form();
     $('#id').val('');
     $('#action').val('add');
+    $("#tempat_password").show();
     $('#btn_save').html('Tambah Data');
     $('#modal_form .modal-title').html('Tambah Data Shift Kerja');
     $('#modal_form .modal-info').html('Isilah form dibawah ini untuk menambahkan data terkait master Shift Kerja.');
@@ -133,6 +134,7 @@ function edit(id = '') {
     reset_form();
     $('#id').val(id);
     $('#action').val('edit');
+    $("#tempat_password").hide();
     $('#btn_save').html('Simpan Data');
     $('#modal_form .modal-title').html('Edit Data Shift Kerja');
     $('#modal_form .modal-info').html('Isilah form dibawah ini untuk mengubah data master Shift Kerja sesuai kebutuhan.');
@@ -163,12 +165,12 @@ function edit(id = '') {
                 $('#email').val(obj.data['email']);
                 $("#radio"+obj.data['role_id']).prop("checked",true);
                 
+                console.log(obj.data['id_karu']);
                 if (obj.data['role_id'] == 5) {
                     setTimeout(() => {
                         $("#pilih").val(obj.data['id_karu']).trigger('change.select2');
                     }, 1000);
                 } else {
-                    // console.log(obj.data['id_tkbm']);
                     setTimeout(() => {
                         $("#pilih").val(obj.data['id_tkbm']).trigger('change.select2');
                     }, 1000);

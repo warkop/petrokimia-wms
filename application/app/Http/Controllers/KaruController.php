@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Karu;
 use App\Http\Requests\KaruRequest;
+use App\Scopes\EndDateScope;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class KaruController extends Controller
 {
@@ -83,7 +83,7 @@ class KaruController extends Controller
         if (!$request->ajax()) {
             return $this->accessForbidden();
         } else {
-            $res = $models::find($id);
+            $res = $models::withoutGlobalScope(EndDateScope::class)->find($id);
 
             if (!empty($res)) {
                 $this->responseCode = 200;

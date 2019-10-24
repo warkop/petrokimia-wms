@@ -39,7 +39,7 @@ class Karu extends Model
             $table->created_by = \Auth::id();
         });
 
-        static::addGlobalScope(new EndDateScope);
+        // static::addGlobalScope(new EndDateScope);
     }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
