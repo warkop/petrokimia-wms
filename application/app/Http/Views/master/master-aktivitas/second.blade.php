@@ -43,7 +43,7 @@
                             <div class="row">
                                 <div class="col-4 col-form-label">
                                     <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="checkbox" id="selector_produk_stok"> Produk
+                                        <input type="radio" name="selector" value="1" id="selector_produk_stok"> Produk
                                         <span></span>
                                     </label>
                                 </div>
@@ -58,7 +58,7 @@
                             <div class="row">
                                 <div class="col-4 col-form-label">
                                     <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="checkbox" id="selector_produk_rusak"> Produk rusak
+                                        <input type="radio" name="selector" value="2" id="selector_produk_rusak"> Produk rusak
                                         <span></span>
                                     </label>
                                 </div>
@@ -353,17 +353,17 @@
 <script src="{{asset('assets/extends/js/page/master-aktivitas.js')}}" type="text/javascript"></script>
 <script>
     $(document).ready(()=>{
-        if ($("#selector_produk_rusak").checked) {
+        // if ($("#selector_produk_rusak").checked) {
             $("#produk_stok").attr('disabled',true);
             $("#produk_stok").selectpicker('refresh');
-            $("#selector_produk_stok").attr("disabled", true);
-        }
+        //     $("#selector_produk_stok").attr("disabled", true);
+        // }
         
-        if ($("#selector_produk_stok").checked) {
+        // if ($("#selector_produk_stok").checked) {
             $("#produk_rusak").attr('disabled',true);
             $("#produk_rusak").selectpicker('refresh');
-            $("#selector_produk_rusak").attr("disabled", true);
-        }
+        //     $("#selector_produk_rusak").attr("disabled", true);
+        // }
 
         $("#pallet_stok").attr('disabled',true);
         $("#pallet_stok").selectpicker('refresh');
@@ -392,29 +392,45 @@
         orientation: "top left"
     });
 
-    $("#selector_produk_stok").change(function() {
-        if(this.checked) {
+    // $("#selector_produk_stok").change(function() {
+    //     if(this.checked) {
+    //         $("#produk_stok").attr('disabled',false);
+    //         $("#produk_stok").selectpicker('refresh');
+    //         $("#selector_produk_rusak").attr('disabled',true);
+    //     } else {
+    //         $("#produk_stok").val("").change();
+    //         $("#produk_stok").attr('disabled',true);
+    //         $("#produk_stok").selectpicker('refresh');
+    //         $("#selector_produk_rusak").attr('disabled',false);
+    //     }
+    // });
+
+    // $("#selector_produk_rusak").change(function() {
+    //     if(this.checked) {
+    //         $("#produk_rusak").attr('disabled',false);
+    //         $("#produk_rusak").selectpicker('refresh');
+    //         $("#selector_produk_stok").attr('disabled',true);
+    //     } else {
+    //         $("#produk_rusak").val("").change();
+    //         $("#produk_rusak").attr('disabled',true);
+    //         $("#produk_rusak").selectpicker('refresh');
+    //         $("#selector_produk_stok").attr('disabled',false);
+    //     }
+    // });
+
+    $('input[type=radio][name=selector]').change(function() {
+        if (this.value == 1) {
             $("#produk_stok").attr('disabled',false);
             $("#produk_stok").selectpicker('refresh');
-            $("#selector_produk_rusak").attr('disabled',true);
-        } else {
-            $("#produk_stok").val("").change();
-            $("#produk_stok").attr('disabled',true);
-            $("#produk_stok").selectpicker('refresh');
-            $("#selector_produk_rusak").attr('disabled',false);
-        }
-    });
-
-    $("#selector_produk_rusak").change(function() {
-        if(this.checked) {
-            $("#produk_rusak").attr('disabled',false);
-            $("#produk_rusak").selectpicker('refresh');
-            $("#selector_produk_stok").attr('disabled',true);
-        } else {
-            $("#produk_rusak").val("").change();
+            $("#produk_rusak").val("");
             $("#produk_rusak").attr('disabled',true);
             $("#produk_rusak").selectpicker('refresh');
-            $("#selector_produk_stok").attr('disabled',false);
+        } else if (this.value == 2) {
+            $("#produk_rusak").attr('disabled',false);
+            $("#produk_rusak").selectpicker('refresh');
+            $("#produk_stok").val("");
+            $("#produk_stok").attr('disabled',true);
+            $("#produk_stok").selectpicker('refresh');
         }
     });
 

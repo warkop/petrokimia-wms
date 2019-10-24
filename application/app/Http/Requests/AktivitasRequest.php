@@ -50,10 +50,11 @@ class AktivitasRequest extends FormRequest
             'butuh_tkbm'                => 'nullable|numeric',
             'tanda_tangan'              => 'nullable|numeric',
             'butuh_approval'            => 'nullable|numeric',
-            'start_date'                => 'nullable',
-            'end_date'                  => 'nullable|after:start_date',
+            'start_date'                => 'nullable|date_format:d-m-Y',
+            'end_date'                  => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
+        
 
         return $rules;
     }

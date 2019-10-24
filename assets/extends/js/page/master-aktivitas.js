@@ -150,7 +150,7 @@ function edit(id = '') {
 
             $('#nama').val(obj.data['nama']);
             if (obj.data['produk_stok'] != null) {
-                $("#selector_produk_rusak").attr('disabled', true);
+                // $("#selector_produk_rusak").attr('disabled', true);
                 $("#produk_rusak").attr('disabled', true);
                 $("#produk_rusak").selectpicker('refresh');
 
@@ -161,7 +161,7 @@ function edit(id = '') {
             }
 
             if (obj.data['produk_rusak'] != null) {
-                $("#selector_produk_stok").attr('disabled', true);
+                // $("#selector_produk_stok").attr('disabled', true);
                 $("#produk_stok").attr('disabled', true);
                 $("#produk_stok").selectpicker('refresh');
 
