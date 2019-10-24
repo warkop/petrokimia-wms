@@ -122,7 +122,7 @@
                             <div class="row">
                                 <div class="col-4 col-form-label">
                                     <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="checkbox" id="selector_pallet_kosong"> Pallet rusak
+                                        <input type="checkbox" id="selector_pallet_rusak"> Pallet rusak
                                         <span></span>
                                     </label>
                                 </div>

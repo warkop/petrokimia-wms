@@ -18,7 +18,10 @@ class AktivitasController extends Controller
      */
     public function index()
     {
-        return new AktivitasResource(Aktivitas::paginate(10));
+        return (new AktivitasResource(Aktivitas::paginate(10)))->additional([
+            'message' => '',
+            'code' => Response::HTTP_OK,
+        ], Response::HTTP_OK);
     }
 
     /**
