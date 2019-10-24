@@ -284,7 +284,6 @@ class RencanaHarianController extends Controller
     public function getArea()
     {
         $users = Users::find(\Auth::id());
-        dump($users);
         $gudang = Gudang::where('id_karu', $users->id_karu)->first();
         $res = Area::where('id_gudang', $gudang->id)->get();
 
