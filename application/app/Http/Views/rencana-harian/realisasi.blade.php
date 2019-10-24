@@ -31,18 +31,19 @@
         </div>
         <div class="kt-portlet__body">
             <div class="row border-bottom mb3">
+                <div class="col-12 mb1">
+                    <button class="btn btn-warning btn-sm  pull-right" onclick="tambahMaterial()"> Tambah Material</button>
+                </div>
                 <div class="col-md-12">
-                    <table class="table">
+                    <table class="table" id="table_material">
                         <thead class="text-center">
-                            <th width="10%">No</th>
-                            <th width="20%">Material</th>
+                            <th width="35%">Material</th>
                             <th width="20%">Bertambah</th>
                             <th width="20%">Berkurang</th>
+                            <th width="5%"></th>
                         </thead>
                         <tbody>
-                            @foreach ($material as $item)
-                                <tr>
-                                    <td class="text-center">1</td>
+                                {{-- <tr>
                                     <td>
                                         <select class="form-control m-select2 kt_select2_housekeeping" name="param"
                                             aria-placeholder="Pilih kategori" style="width: 100%;">
@@ -56,8 +57,10 @@
                                     <td>
                                         <input type="text" class="form-control" name="" placeholder="Jumlah berkurang">
                                     </td>
-                                </tr>
-                            @endforeach
+                                    <td>
+                                        <button class="btn btn-danger btn-md btn-block"><i class="fa fa-trash"></i></button>
+                                    </td>
+                                </tr> --}}
                             {{-- <tr>
                                 <td class="text-center">2</td>
                                 <td>

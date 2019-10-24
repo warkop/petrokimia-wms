@@ -156,6 +156,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/get-tkbm/{id}', 'RencanaHarianController@getTkbm');
         Route::get('/get-rencana-alat-berat/{id_rencana}/', 'RencanaHarianController@getRencanaAlatBerat');
         Route::get('/get-rencana-tkbm-area/{id_rencana}/{id_tkbm?}', 'RencanaHarianController@getRencanaAreaTkbm');
+        Route::get('/get-material/{kategori}', 'RencanaHarianController@getMaterial');
         Route::delete('/{id}', 'RencanaHarianController@destroy');
         Route::group(['prefix' => 'realisasi', 'middleware' => ['eauth', 'revalidate']], function () {
             Route::get('/{rencanaHarian}', 'RencanaHarianController@realisasi');

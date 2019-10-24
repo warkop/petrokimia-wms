@@ -318,6 +318,15 @@ class RencanaHarianController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
+    public function getMaterial($kategori)
+    {
+        $this->responseData = Material::where('kategori', $kategori)->get();
+        $this->responseCode = 200;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);   
+    }
+
     public function destroy(RencanaHarian $rencanaHarian)
     {
         //
