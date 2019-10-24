@@ -52,22 +52,22 @@ class TenagaKerjaNonOrganik extends Model
 
     public function scopeHouseKeeper($query)
     {
-        return $query->where('job_desk_id', 1);
+        return $query->where('job_desk_id', 4);
     }
 
     public function scopeChecker($query)
     {
-        return $query->where('job_desk_id', 2);
+        return $query->where('job_desk_id', 3);
     }
-
+    
     public function scopeOperatorAlatBerat($query)
     {
-        return $query->where('job_desk_id', 3);
+        return $query->where('job_desk_id', 2);
     }
     
     public function scopeAdminLoket($query)
     {
-        return $query->where('job_desk_id', 4);
+        return $query->where('job_desk_id', 1);
     }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)

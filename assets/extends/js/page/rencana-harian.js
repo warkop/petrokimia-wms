@@ -55,7 +55,7 @@ const tambahHouseKeeper = (id_rencana='', id_tkbm='') => {
         placeholder: "Pilih Area Kerja",
     });
 
-    getTkbm(1, "#housekeeper-"+rows, id_rencana, id_tkbm);
+    getTkbm(4, "#housekeeper-"+rows, id_rencana, id_tkbm);
     getArea("#area-"+rows);
 
     if (id_rencana != '') {
@@ -392,9 +392,9 @@ function edit(id = '') {
                 $("#id").val(obj.data.id);
                 $("#id_shift").val(obj.data.id_shift).trigger('change');
 
-                getTkbm(4, "#admin_loket", obj.data.id);
-                getTkbm(3, "#op_alat_berat", obj.data.id);
-                getTkbm(2, "#checker", obj.data.id);
+                getTkbm(1, "#admin_loket", obj.data.id);
+                getTkbm(2, "#op_alat_berat", obj.data.id);
+                getTkbm(3, "#checker", obj.data.id);
                 getAlatBerat(obj.data.id, "#alat_berat");
                 
                 // tambahHouseKeeper(obj.data.id);
