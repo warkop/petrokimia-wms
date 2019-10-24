@@ -98,13 +98,13 @@ class UsersController extends Controller
             $nama   = $req->input('nama');
             $username   = $req->input('username');
             $email      = $req->input('email');
-            $password   = $req->input('password');
             $pilih   = $req->input('pilih');
 
             if (!empty($id)) {
                 $models = Users::find($id);
                 $models->updated_by = session('userdata')['id_user'];
             } else {
+                $password   = $req->input('password');
                 $models->created_by = session('userdata')['id_user'];
             }
 
