@@ -109,9 +109,10 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     Route::group(['prefix' => 'master-jenis-foto', 'middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/', 'JenisFotoController@index');
         Route::put('/', 'JenisFotoController@store');
+        Route::patch('/{jenisFoto}', 'JenisFotoController@store');
         Route::post('/', 'JenisFotoController@json');
-        Route::get('/{id}', 'JenisFotoController@show');
-        Route::delete('/{id}', 'JenisFotoController@destroy');
+        Route::get('/{jenisFoto}', 'JenisFotoController@show');
+        Route::delete('/{jenisFoto}', 'JenisFotoController@destroy');
     });
 
     Route::group(['prefix' => 'master-user', 'middleware' => ['eauth', 'revalidate']], function () {

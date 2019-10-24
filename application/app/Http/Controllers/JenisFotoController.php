@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\JenisFoto;
+use App\Http\Requests\JenisFotoRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Response;
 
 class JenisFotoController extends Controller
 {
@@ -58,59 +59,21 @@ class JenisFotoController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, JenisFoto $models)
+    public function store(JenisFotoRequest $req, JenisFoto $jenisFoto)
     {
-        $rules = [
-            'nama'              => 'required',
-            'start_date'        => 'nullable|date_format:d-m-Y',
-            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
-        ];
+        $req->validated();
 
-        $action = $req->input('action');
-        if ($action == 'edit') {
-            $rules['id'] = 'required';
-        }
+        $jenisFoto->nama           = $req->input('nama');
+        $jenisFoto->start_date     = $req->input('start_date');
+        $jenisFoto->end_date       = $req->input('end_date');
 
-        $validator = Validator::make($req->all(), $rules);
-        if ($validator->fails()) {
-            $this->responseCode                 = 400;
-            $this->responseStatus               = 'Missing Param';
-            $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
-            $this->responseData['error_log']    = $validator->errors();
-        } else {
-            $id = $req->input('id');
+        $jenisFoto->save();
 
-            $start_date  = null;
-            if ($req->input('start_date') != '') {
-                $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            }
-
-            $end_date   = null;
-            if ($req->input('end_date') != '') {
-                $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
-            }
-
-            if (!empty($id)) {
-                $models = JenisFoto::find($id);
-                $models->updated_by = session('userdata')['id_user'];
-            } else {
-                $models->created_by = session('userdata')['id_user'];
-            }
-
-            $models->nama  = strip_tags($req->input('nama'));
-            $models->start_date  = $start_date;
-            $models->end_date   = $end_date;
-            // dump($start_date);
-            // dump($end_date);
-
-            $models->save();
-
-            $this->responseCode = 200;
-            $this->responseMessage = 'Data berhasil disimpan';
-        }
+        $this->responseCode = Response::HTTP_OK;
+        $this->responseMessage = 'Data berhasil disimpan';
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
-        return response()->json($response, $this->responseCode);
+        return response()->json($response, Response::HTTP_OK);
     }
 
     public function show($id, JenisFoto $models, Request $request)
