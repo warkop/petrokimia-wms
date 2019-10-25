@@ -18,9 +18,9 @@ class AktivitasController extends Controller
      */
     public function index()
     {
-        return (new AktivitasResource(Aktivitas::paginate(10)->sortByDesc('created_at')))->additional([
-            'message' => '',
-            'code' => Response::HTTP_OK,
+        return AktivitasResource::collection(Aktivitas::paginate(10))->additional([
+            'status' => ['message' => '',
+            'code' => Response::HTTP_OK],
         ], Response::HTTP_OK);
     }
 
@@ -56,14 +56,18 @@ class AktivitasController extends Controller
         try {
             $aktivitas = Aktivitas::findOrFail($id);
             return (new AktivitasResource($aktivitas))->additional([
-                'message' => '',
-                'code' => Response::HTTP_OK,
+                'status' => [
+                    'message' => '',
+                    'code' => Response::HTTP_OK,
+                ]
             ], Response::HTTP_OK);
         } catch (ModelNotFoundException $ex) {
             return response()->json([
-                'message' => 'Data tidak ditemukan!',
                 'data' => null,
-                'code' => Response::HTTP_BAD_REQUEST
+                'status' => [
+                    'message' => 'Data tidak ditemukan!',
+                    'code' => Response::HTTP_BAD_REQUEST
+                ]
             ], Response::HTTP_BAD_REQUEST);
         }
     }
