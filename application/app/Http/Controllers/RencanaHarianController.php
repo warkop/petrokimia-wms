@@ -183,12 +183,6 @@ class RencanaHarianController extends Controller
         
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Http\Models\RencanaHarian  $rencanaHarian
-     * @return \Illuminate\Http\Response
-     */
     public function edit(RencanaHarian $rencana_harian)
     {
         $alat_berat = new AlatBerat;
@@ -200,7 +194,6 @@ class RencanaHarianController extends Controller
         $data['admin_loket']    = TenagaKerjaNonOrganik::adminLoket()->get();
         $data['shift_kerja']    = ShiftKerja::all();
         $data['tkbm_rencana']    = RencanaAreaTkbm::select('id_rencana','id_tkbm')->where('id_rencana', $rencana_harian->id)->groupBy('id_tkbm', 'id_rencana')->get();
-        // $data['area_rencana']    = RencanaAreaTkbm::select('id_rencana','id_area')->where('id_rencana', $rencana_harian->id)->groupBy('id_tkbm', 'id_rencana')->get();
         return view('rencana-harian.add', $data);
     }
 
@@ -304,7 +297,7 @@ class RencanaHarianController extends Controller
     {
         $data['tkbm_rencana']    = RencanaAreaTkbm::select('id_rencana', 'id_tkbm')->where('id_rencana', $rencanaHarian->id)->groupBy('id_tkbm', 'id_rencana')->get();
         $data['material']    = Material::where('kategori', 3)->get();
-        $data['id_rencana_harian'] = $rencanaHarian->id;
+        $data['id_rencana'] = $rencanaHarian->id;
         return view('rencana-harian.realisasi', $data);
     }
 
@@ -322,6 +315,26 @@ class RencanaHarianController extends Controller
     {
         $this->responseData = Material::where('kategori', $kategori)->get();
         $this->responseCode = 200;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);   
+    }
+
+    public function getHousekeeper($id_rencana)
+    {
+        // $id_rencana = $req->get('id_rencana');
+        if (is_numeric($id_rencana)) {
+            $this->responseData = RencanaAreaTkbm::select('id_tkbm', 'nama')
+            ->where('id_rencana', $id_rencana)
+            ->leftJoin('tenaga_kerja_non_organik', 'id_tkbm', '=', 'id')
+            ->groupBy('id_tkbm', 'nama')
+            ->orderBy('nama', 'asc')
+            ->get();
+            $this->responseCode = 200;
+        } else {
+            $this->responseMessage = 'ID rencana tidak ditemukan';
+            $this->responseCode = 400;
+        }
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);   

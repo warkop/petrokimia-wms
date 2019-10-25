@@ -161,7 +161,8 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::delete('/{id}', 'RencanaHarianController@destroy');
         Route::group(['prefix' => 'realisasi', 'middleware' => ['eauth', 'revalidate']], function () {
             Route::get('/{rencanaHarian}', 'RencanaHarianController@realisasi');
-            Route::put('/{rencanaHarian}', 'RealisasiController@storeRealisasi');
+            Route::get('/get-housekeeper/{id_rencana}', 'RencanaHarianController@getHouseKeeper');
+            Route::put('/{rencanaHarian}', 'RencanaHarianController@storeRealisasi');
         });
     });
 });

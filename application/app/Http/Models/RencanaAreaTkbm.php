@@ -23,4 +23,9 @@ class RencanaAreaTkbm extends Model
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
     public $timestamps  = false;
+
+    public function tkbm()
+    {
+        return $this->hasMany('App\Http\Models\TenagaKerjaNonOrganik', 'id_tkbm', 'id');
+    }
 }

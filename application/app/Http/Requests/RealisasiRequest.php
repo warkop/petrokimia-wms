@@ -23,8 +23,40 @@ class RealisasiRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
+        $rules = [
+            'id_material.*' => 'required',
+            'material_tambah' => 'numeric',
+            'material_kurang' => 'numeric',
         ];
+
+        return $rules;
+    }
+
+    public function attributes()
+    {
+        return [
+            'id_material'       => 'Material',
+            'material_tambah'   => 'Kolom Material Bertambah',
+            'material_kurang'   => 'Kolom Material Berkurang',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required'  => ':attribute wajib diisi!',
+            'numeric'   => ':attribute harus berupa angka!',
+        ];
+    }
+
+    public function sanitize()
+    {
+        $input = $this->all();
+
+        foreach ($input as $key => $value) {
+            $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
+        }
+
+        $this->replace($input);
     }
 }
