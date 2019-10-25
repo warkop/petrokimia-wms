@@ -4,17 +4,15 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Realisasi extends Model
+class RealisasiMaterial extends Model
 {
-    protected $table = 'realisasi';
+    protected $table = 'realisasi_material';
     protected $primaryKey = 'id';
 
     protected $guard = [
         'id',
         'created_at',
-        'created_by',
         'updated_at',
-        'updated_by',
     ];
 
     protected $dates = ['created_at', 'updated_at'];
@@ -26,12 +24,10 @@ class Realisasi extends Model
         parent::boot();
 
         static::updating(function ($table) {
-            $table->updated_by = \Auth::id();
             $table->updated_at = now();
         });
 
         static::creating(function ($table) {
-            $table->created_by = \Auth::id();
             $table->created_at = now();
         });
     }
