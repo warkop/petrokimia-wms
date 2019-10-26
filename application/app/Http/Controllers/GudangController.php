@@ -14,9 +14,7 @@ class GudangController extends Controller
     public function index()
     {
         $data['title'] = 'Gudang';
-        // $data['menu_active'] = 'master';
-        // $data['sub_menu_active'] = 'jenis foto';
-        $data['material'] = Material::where('kategori', 3)->get();
+        $data['material'] = Material::where('kategori', 2)->get();
         $data['karu'] = Karu::all();
         return view('gudang.grid', $data);
     }
@@ -94,9 +92,6 @@ class GudangController extends Controller
 
             if (!empty($id)) {
                 $models = Gudang::find($id);
-                $models->updated_by = session('userdata')['id_user'];
-            } else {
-                $models->created_by = session('userdata')['id_user'];
             }
 
             if (!empty($req->input('id_karu'))) {

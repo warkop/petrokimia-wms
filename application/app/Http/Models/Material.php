@@ -32,10 +32,12 @@ class Material extends Model
 
         static::updating(function ($table) {
             $table->updated_by = \Auth::id();
+            $table->updated_at = now();
         });
 
-        static::saving(function ($table) {
+        static::creating(function ($table) {
             $table->created_by = \Auth::id();
+            $table->created_at = now();
         });
 
         static::addGlobalScope(new EndDateScope);
