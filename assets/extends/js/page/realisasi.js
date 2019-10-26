@@ -58,7 +58,7 @@ function tambahMaterial() {
     let html = 
         `<tr class="material_baris" id="baris-material-${rows}">
             <td>
-                <select class="form-control m-select2 kt_select2_material material_pilih" onchange="checkMaterial(this)" name="id_material[]"
+                <select class="form-control m-select2 kt_select2_material material_pilih" onchange="checkMaterial(this)" name="material[]"
                     aria-placeholder="Pilih material" id="namamaterial-${rows}" style="width: 100%;">
                 </select>
             </td>
@@ -271,6 +271,61 @@ function getHouseKeeper(id_rencana, target) {
         },
         error: (err, oo, pp) => {
 
+        }
+    });
+}
+
+const simpan = () => {
+    $("#btn_save").prop("disabled", true);
+    let data = $("#form1").serializeArray();
+    $.ajax({
+        type: "PUT",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: ajaxUrl,
+        data: data,
+        beforeSend: function () {
+            preventLeaving();
+            $('.btn_close_modal').addClass('hide');
+            $('.se-pre-con').show();
+        },
+        success: function (response) {
+            laddaButton.stop();
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            let obj = response;
+
+            if (obj.status == "OK") {
+                swal.fire('Ok', obj.message, 'success').then(() => {
+                    window.location = ajaxSource;
+                }).catch(() => {
+
+                });
+            } else {
+                swal.fire('Pemberitahuan', obj.message, 'warning');
+            }
+
+        },
+        error: function (response) {
+            const head = 'Pemberitahuan';
+            const type = 'warning';
+            const obj = response.responseJSON.errors;
+            laddaButton.stop();
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            const temp = Object.values(obj);
+            let message = '';
+            temp.forEach(element => {
+                element.forEach(row => {
+                    message += row + "<br>"
+                });
+            });
+            swal.fire(head, message, type);
         }
     });
 }

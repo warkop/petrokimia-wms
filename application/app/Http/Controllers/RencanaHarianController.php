@@ -7,6 +7,8 @@ use App\Http\Models\Area;
 use App\Http\Models\Gudang;
 use App\Http\Models\Material;
 use App\Http\Models\Realisasi;
+use App\Http\Models\RealisasiHousekeeper;
+use App\Http\Models\RealisasiMaterial;
 use App\Http\Models\RencanaAlatBerat;
 use App\Http\Models\RencanaAreaTkbm;
 use App\Http\Models\RencanaHarian;
@@ -304,6 +306,51 @@ class RencanaHarianController extends Controller
     public function storeRealisasi(RealisasiRequest $req, Realisasi $realisasi)
     {
         $req->validated();
+
+        $realisasi->id_rencana = $req->input('id_rencana');
+        $realisasi->tanggal = now();
+        $realisasi->approve = $req->input('approve');
+        $realisasi->save();
+
+        $housekeeper = $req->input('housekeeper');
+        if (!empty($housekeeper)) {
+            foreach ($housekeeper as $key => $value) {
+                if (!empty($req->input('area')[$key])) {
+                    $area = $req->input('area')[$key];
+                    foreach ($area as $row => $hey) {
+                        $arr = [
+                            'id_realisasi' => $realisasi->id,
+                            'id_tkbm' => $value,
+                            'id_area' => $hey,
+                        ];
+
+                        \DB::table('rencana_area_tkbm')->insert(
+                            $arr
+                        );
+                    }
+                }
+            }
+        }
+
+        $material = $req->input('material');
+        $material_tambah = $req->input('material_tambah');
+        $material_kurang = $req->input('material_kurang');
+        $panjang = count($material);
+        $material           = array_values($material);
+        $material_tambah    = array_values($material_tambah);
+        $material_kurang    = array_values($material_kurang);
+        for($i=0; $i<$panjang; $i++) {
+            $arr = [
+                'id_realisasi' => $realisasi->id,
+                'id_material' => $material[$i],
+                'bertambah' => $material_tambah[$i],
+                'berkurang' => $material_kurang[$i],
+            ];
+
+            \DB::table('rencana_tkbm')->insert(
+                $arr
+            );
+        }
 
         $this->responseCode = 200;
 
