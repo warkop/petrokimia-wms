@@ -145,10 +145,11 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
 
     Route::group(['prefix' => 'rencana-harian', 'middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/', 'RencanaHarianController@index');
-        Route::get('/get-area', 'RencanaHarianController@getArea');
+        Route::get('/get-area/{id_gudang?}', 'RencanaHarianController@getArea');
         Route::get('/tambah', 'RencanaHarianController@create');
         Route::get('/ubah/{rencana_harian}', 'RencanaHarianController@edit');
         Route::get('/get-alat-berat', 'RencanaHarianController@getAlatBerat');
+        Route::get('/get-gudang', 'RencanaHarianController@getGudang');
         Route::put('/', 'RencanaHarianController@store');
         Route::patch('/{rencana_harian}', 'RencanaHarianController@update');
         Route::post('/', 'RencanaHarianController@json');
@@ -159,10 +160,11 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/get-rencana-tkbm-area/{id_rencana}/{id_tkbm?}', 'RencanaHarianController@getRencanaAreaTkbm');
         Route::get('/get-material/{kategori}', 'RencanaHarianController@getMaterial');
         Route::delete('/{id}', 'RencanaHarianController@destroy');
+       
         Route::group(['prefix' => 'realisasi', 'middleware' => ['eauth', 'revalidate']], function () {
             Route::get('/{rencanaHarian}', 'RencanaHarianController@realisasi');
             Route::get('/get-housekeeper/{id_rencana}', 'RencanaHarianController@getHouseKeeper');
-            Route::put('/{rencanaHarian}', 'RencanaHarianController@storeRealisasi');
+            Route::put('/{rencanaHarian}/{realisasi?}', 'RencanaHarianController@storeRealisasi');
         });
     });
 });

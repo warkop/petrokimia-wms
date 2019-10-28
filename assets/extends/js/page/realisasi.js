@@ -6,13 +6,20 @@ let datatable,
     laddaButton;
 
 $(document).ready(()=>{
-    getTkbm();
+    $('#btn_save').on('click', function (e) {
+        e.preventDefault();
+        laddaButton = Ladda.create(this);
+        laddaButton.start();
+        simpan();
+    });
 });
 
-function getArea(target) {
+function getArea() {
+    const target = "#kt_select2_area";
+    const id_gudang = $("#kt_select2_gudang").val();
     $.ajax({
         type: "GET",
-        url: ajaxSource + '/get-area/',
+        url: ajaxSource + '/get-area/'+id_gudang,
         success: res => {
             const obj = res.data;
 
@@ -29,29 +36,59 @@ function getArea(target) {
     });
 }
 
-function getTkbm() {
-    const panjang = $("#selected li").length;
-    $.ajax({
-        url: ajaxSource + "/get-tkbm/"+1,
-        success:res=>{
-            const obj = res.data;
-
-            let html = '';
-            obj.forEach((item, index) => {
-                html += `<option value="${item.id}">${item.nama}</option>`;
-            });
-
-            for (let i=1; i<=panjang; i++) {
-                $("#housekeeper-" + i).html(html);
-            }
-        },
-        error:(err, oo, pp)=>{
-
+function pilihArea() {
+    const area = $("#kt_select2_area").val();
+    const id = $("#id_row").val();
+    let collect_area = [];
+    const text_area = $("#kt_select2_area option:selected").each(function () {
+        let $this = $(this);
+        if ($this.length) {
+            let selText = $this.text();
+            collect_area.push(selText);
         }
     });
+    const target = "#tempat_area-"+id;
+    const panjang = area.length;
+    let html = '';
+    for (let i = 0; i<panjang; i++) {
+        if ($('#tempat_area-' + id + " input[name='area_housekeeper']").length < 1) {
+            html += `<div class="col-4 mb1">
+                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                            <input type="checkbox" name="area_housekeeper[${id-1}][]" value="${area[i]}">${collect_area[i]}
+                            <span></span>
+                        </label>
+                    </div>`;
+
+        }
+    }
+
+
+    $(target).append(html);
 }
 
-function tambahMaterial() {
+// function getTkbm() {
+//     const panjang = $("#selected li").length;
+//     $.ajax({
+//         url: ajaxSource + "/get-tkbm/"+1,
+//         success:res=>{
+//             const obj = res.data;
+
+//             let html = '';
+//             obj.forEach((item, index) => {
+//                 html += `<option value="${item.id}">${item.nama}</option>`;
+//             });
+
+//             for (let i=1; i<=panjang; i++) {
+//                 $("#housekeeper-" + i).html(html);
+//             }
+//         },
+//         error:(err, oo, pp)=>{
+
+//         }
+//     });
+// }
+
+function tambahMaterial(id_realisasi='', id_material='', bertambah='', berkurang='') {
     const tableId = "table_material";
     const rows = document.getElementById(tableId).getElementsByTagName("tr").length;
     // console.log(rows);
@@ -78,10 +115,15 @@ function tambahMaterial() {
         placeholder: "Pilih Material"
     });
 
-    getMaterial(3, "#namamaterial-" + rows);
+    
+    getMaterial(3, "#namamaterial-" + rows, rows, id_material, bertambah, berkurang);
 
     protectNumber(`#material-tambah-${rows}`, 10);
     protectNumber(`#material-kurang-${rows}`, 10);
+}
+
+function fill(id_material, bertambah, berkurang, callback) {
+
 }
 
 function tambahHousekeeper() {
@@ -89,84 +131,20 @@ function tambahHousekeeper() {
     const rows = $(tableId +" .housekeeper_baris").length+1;
     let html =
         `<div class="housekeeper_baris" id="baris-housekeeper-${rows}">
-            <div class="col-3">
+            <div class="col-12">
                 <label class="boldd-500">Pilih Housekeeper</label>
                 <select class="form-control m-select2 kt_select2_housekeeping housekeeper_pilih" id="namahousekeeper-${rows}" onchange="check(this)" name="housekeeper[]" aria-placeholder="Pilih Housekeeper" style="width: 100%;">
                 </select>
             </div>
-            <div class="col-9 col-form-label">
+            <div class="col-12 col-form-label">
                 <label class="boldd-500" style="transform: translateY(-.6rem);">Pilih Area Kerja</label>
                 <div class="col-12">
-                    <div class="row form-group mb-0 mb2">
-                        <div class="col-2 mb1">
-                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                <input type="checkbox"> Area 1
-                                <span></span>
-                            </label>
-                        </div>
-                        <div class="col-2 mb1">
-                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                <input type="checkbox"> Area 2
-                                <span></span>
-                            </label>
-                        </div>
-                        <div class="col-2 mb1">
-                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                <input type="checkbox"> Area 3
-                                <span></span>
-                            </label>
-                        </div>
-                        <div class="col-2 mb1">
-                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                <input type="checkbox"> Area 4
-                                <span></span>
-                            </label>
-                        </div>
-                        <div class="col-2 mb1">
-                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                <input type="checkbox"> Area 5
-                                <span></span>
-                            </label>
-                        </div>
-                        <div class="col-2 mb1">
-                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                <input type="checkbox"> Area 6
-                                <span></span>
-                            </label>
-                        </div>
-                        <div class="col-2 mb1">
-                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                <input type="checkbox"> Area 7
-                                <span></span>
-                            </label>
-                        </div>
-                        <div class="col-2 mb1">
-                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                <input type="checkbox"> Area 5
-                                <span></span>
-                            </label>
-                        </div>
-                        <div class="col-2 mb1">
-                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                <input type="checkbox"> Area 6
-                                <span></span>
-                            </label>
-                        </div>
-                        <div class="col-2 mb1">
-                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                <input type="checkbox"> Area 7
-                                <span></span>
-                            </label>
-                        </div>
-                        <div class="col-2 mb1">
-                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                <input type="checkbox"> Area 5
-                                <span></span>
-                            </label>
-                        </div>
-                        <div class="col-2 mb1 text-left">
-                            <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#kt_modal_1"> Tambah Area</button>
-                        </div>
+                    <div class="row form-group mb-0 mb2" id="tempat_area-${rows}">
+                        
+                        
+                    </div>
+                    <div class="mb1 text-left">
+                        <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#kt_modal_1" onclick="tambahArea(${rows})"> Tambah Area</button>
                     </div>
                 </div>
             </div>
@@ -183,7 +161,32 @@ function tambahHousekeeper() {
     protectNumber(`#housekeeper-kurang-${rows}`, 10);
 }
 
-function getMaterial(kategori, target) {
+function tambahArea(id) {
+    $("#kt_select2_area").val("").trigger('change.select2');
+    $("#kt_select2_area").find('option')
+        .remove()
+        .end();
+    const target = "#kt_select2_gudang";
+    $("#id_row").val(id);
+    $.ajax({
+        url: ajaxSource + '/get-gudang',
+        success:(res)=>{
+            const obj = res.data;
+
+            let html = `<option value="">Pilih Gudang</option>`;
+            obj.forEach((item, index) => {
+                html += `<option value="${item.id}">${item.nama}</option>`;
+            });
+
+            $(target).html(html);
+        },
+        error:()=>{
+
+        }
+    });
+}
+
+function getMaterial(kategori, target, number, id_material='', bertambah='', berkurang='') {
     $.ajax({
         url: ajaxSource + '/get-material/' + kategori,
         success:(res) => {
@@ -196,6 +199,9 @@ function getMaterial(kategori, target) {
             
             $(target).html(html);
 
+            $(target).val(id_material).trigger('change');
+            $("#material-tambah-" + number).val(bertambah);
+            $("#material-kurang-" + number).val(berkurang);
         },
         error: (err, oo, pp) =>{
 
@@ -283,7 +289,7 @@ const simpan = () => {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: ajaxUrl,
+        url: ajaxUrl+"/realisasi/"+id_rencana,
         data: data,
         beforeSend: function () {
             preventLeaving();

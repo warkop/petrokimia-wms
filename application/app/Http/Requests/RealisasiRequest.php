@@ -25,8 +25,8 @@ class RealisasiRequest extends FormRequest
     {
         $rules = [
             'id_material.*' => 'required',
-            'material_tambah' => 'numeric',
-            'material_kurang' => 'numeric',
+            'material_tambah.*' => 'numeric',
+            'material_kurang.*' => 'numeric',
         ];
 
         return $rules;

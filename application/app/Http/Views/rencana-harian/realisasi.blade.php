@@ -11,204 +11,155 @@
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
     <div class="kt-portlet">
-        <div class="kt-portlet__head">
-            <div class="kt-portlet__head-title">
-                <h4 class="kt-portlet__head-text title_sub pt-4">
-                    {{-- <i class="la la-group"></i> &nbsp; --}}
-                    Realisasi Rencana Harian
-                </h4>
-                <p class="sub">
-                    Berikut ini adalah form realisasi rencana harian pada <span
-                        class="text-ungu kt-font-bolder">Aplikasi
-                        WMS Petrokimia.</span>
-                </p>
-            </div>
-            <div class="kt-portlet__head-toolbar">
-                <div class="kt-portlet__head-group pt-4">
-
+        <form id="form1" onsubmit="return false">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-title">
+                    <h4 class="kt-portlet__head-text title_sub pt-4">
+                        {{-- <i class="la la-group"></i> &nbsp; --}}
+                        Realisasi Rencana Harian
+                    </h4>
+                    <p class="sub">
+                        Berikut ini adalah form realisasi rencana harian pada <span
+                            class="text-ungu kt-font-bolder">Aplikasi
+                            WMS Petrokimia.</span>
+                    </p>
                 </div>
-            </div>
-        </div>
-        <div class="kt-portlet__body">
-            <div class="row border-bottom mb3">
-                <div class="col-12 mb1">
-                    <button class="btn btn-warning btn-sm  pull-right" onclick="tambahMaterial()"> Tambah Material</button>
-                </div>
-                <div class="col-md-12">
-                    <table class="table" id="table_material">
-                        <thead class="text-center">
-                            <th width="35%">Material</th>
-                            <th width="20%">Bertambah</th>
-                            <th width="20%">Berkurang</th>
-                            <th width="5%"></th>
-                        </thead>
-                        <tbody>
-                                {{-- <tr>
-                                    <td>
-                                        <select class="form-control m-select2 kt_select2_housekeeping" name="param"
-                                            aria-placeholder="Pilih kategori" style="width: 100%;">
-                                            <option value="AK">Sapu Ijuk</option>
-                                            <option value="HI">Sekop</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control" name="" placeholder="Jumlah bertambah">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control" name="" placeholder="Jumlah berkurang">
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger btn-md btn-block"><i class="fa fa-trash"></i></button>
-                                    </td>
-                                </tr> --}}
-                            {{-- <tr>
-                                <td class="text-center">2</td>
-                                <td>
-                                    <select class="form-control m-select2 kt_select2_housekeeping" name="param"
-                                        aria-placeholder="Pilih kategori" style="width: 100%;">
-                                        <option value="AK">Kemoceng</option>
-                                        <option value="HI">Sekop</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" name="" placeholder="Jumlah bertambah">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" name="" placeholder="Jumlah berkurang">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">3</td>
-                                <td>
-                                    <select class="form-control m-select2 kt_select2_housekeeping" name="param"
-                                        aria-placeholder="Pilih kategori" style="width: 100%;">
-                                        <option value="AK">Trash Bag</option>
-                                        <option value="HI">Sekop</option>
-                                        <option value="HI">Sapu</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" name="" placeholder="Jumlah bertambah">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" name="" placeholder="Jumlah berkurang">
-                                </td>
-                            </tr> --}}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                <div class="kt-portlet__head-toolbar">
+                    <div class="kt-portlet__head-group pt-4">
 
-
-            <div class="kel">
-                <div class="row">
-                    <div class="col-6 mb1">
-                        <h4 class="mb2">Housekeeper</h4>
                     </div>
-                    <div class="col-6 mb1">
-                        <button class="btn btn-warning btn-sm  pull-right" onclick="tambahHousekeeper()"> Tambah Housekeeper</button>
+                </div>
+            </div>
+            <div class="kt-portlet__body">
+                <div class="row border-bottom mb3">
+                    <div class="col-12 mb1">
+                        <button class="btn btn-warning btn-sm  pull-right" onclick="tambahMaterial()"> Tambah Material</button>
                     </div>
-                    <div id="table_housekeeper">
-                        {{-- <div class="baris">
-                            <div class="col-3">
-                                <label class="boldd-500">Pilih Housekeeper</label>
-                                <select class="form-control m-select2 kt_select2_housekeeping" id="housekeeper-1" name="housekeeper" aria-placeholder="Pilih Housekeeper" style="width: 100%;">
-                                </select>
-                            </div>
-                            <div class="col-9 col-form-label">
-                                <label class="boldd-500" style="transform: translateY(-.6rem);">Pilih Area Kerja</label>
-                                <div class="col-12">
-                                    <div class="row form-group mb-0 mb2">
-                                        <div class="col-2 mb1">
-                                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                                <input type="checkbox"> Area 1
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div class="col-2 mb1">
-                                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                                <input type="checkbox"> Area 2
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div class="col-2 mb1">
-                                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                                <input type="checkbox"> Area 3
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div class="col-2 mb1">
-                                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                                <input type="checkbox"> Area 4
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div class="col-2 mb1">
-                                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                                <input type="checkbox"> Area 5
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div class="col-2 mb1">
-                                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                                <input type="checkbox"> Area 6
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div class="col-2 mb1">
-                                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                                <input type="checkbox"> Area 7
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div class="col-2 mb1">
-                                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                                <input type="checkbox"> Area 5
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div class="col-2 mb1">
-                                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                                <input type="checkbox"> Area 6
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div class="col-2 mb1">
-                                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                                <input type="checkbox"> Area 7
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div class="col-2 mb1">
-                                            <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                                <input type="checkbox"> Area 5
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div class="col-2 mb1 text-left">
-                                            <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#kt_modal_1"> Tambah Area</button>
+                    <div class="col-md-12">
+                        <table class="table" id="table_material">
+                            <thead class="text-center">
+                                <th width="35%">Material</th>
+                                <th width="20%">Bertambah</th>
+                                <th width="20%">Berkurang</th>
+                                <th width="5%"></th>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <div class="kel">
+                    <div class="row">
+                        <div class="col-6 mb1">
+                            <h4 class="mb2">Housekeeper</h4>
+                        </div>
+                        <div class="col-6 mb1">
+                            <button class="btn btn-warning btn-sm  pull-right" onclick="tambahHousekeeper()"> Tambah Housekeeper</button>
+                        </div>
+                        <div id="table_housekeeper">
+                            {{-- <div class="baris">
+                                <div class="col-3">
+                                    <label class="boldd-500">Pilih Housekeeper</label>
+                                    <select class="form-control m-select2 kt_select2_housekeeping" id="housekeeper-1" name="housekeeper" aria-placeholder="Pilih Housekeeper" style="width: 100%;">
+                                    </select>
+                                </div>
+                                <div class="col-9 col-form-label">
+                                    <label class="boldd-500" style="transform: translateY(-.6rem);">Pilih Area Kerja</label>
+                                    <div class="col-12">
+                                        <div class="row form-group mb-0 mb2">
+                                            <div class="col-2 mb1">
+                                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                                    <input type="checkbox"> Area 1
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-2 mb1">
+                                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                                    <input type="checkbox"> Area 2
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-2 mb1">
+                                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                                    <input type="checkbox"> Area 3
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-2 mb1">
+                                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                                    <input type="checkbox"> Area 4
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-2 mb1">
+                                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                                    <input type="checkbox"> Area 5
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-2 mb1">
+                                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                                    <input type="checkbox"> Area 6
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-2 mb1">
+                                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                                    <input type="checkbox"> Area 7
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-2 mb1">
+                                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                                    <input type="checkbox"> Area 5
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-2 mb1">
+                                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                                    <input type="checkbox"> Area 6
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-2 mb1">
+                                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                                    <input type="checkbox"> Area 7
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-2 mb1">
+                                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                                    <input type="checkbox"> Area 5
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-2 mb1 text-left">
+                                                <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#kt_modal_1"> Tambah Area</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div> --}}
+                            </div> --}}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="kt-portlet__foot">
+                <div class="kt-form__actions">
+                    <div class="row">
+                        <div class="col-lg-12 ml-lg-auto text-right">
+                            <button type="button" id="btn_save" class="btn btn-wms btn-elevate btn-elevate-air ladda-button" data-style="zoom-in"><i class=" la la-save"></i>
+                                Simpan Data
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-
-        </div>
-
-        <div class="kt-portlet__foot">
-            <div class="kt-form__actions">
-                <div class="row">
-                    <div class="col-lg-12 ml-lg-auto text-right">
-                        <a href="#" class="btn btn-wms btn-elevate btn-elevate-air""><i class=" la la-save"></i>
-                            Simpan Data</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        </form>
     </div>
     <!--End::Dashboard 6-->
 </div>
@@ -217,7 +168,7 @@
 
 
 <!--begin::Modal-->
-<div class="modal fade" id="kt_modal_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="kt_modal_1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -225,28 +176,22 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>
-            <form action="">
+            {{-- <form action=""> --}}
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
+                        <input type="hidden" id="id_row">
                         <div class="form-group">
                             <label for="kt_select2_gudang" class="">Gudang</label>
-                            <select class="form-control m-select2" id="kt_select2_gudang" name="param" style="width: 100%">
+                            <select class="form-control m-select2" id="kt_select2_gudang" onchange="getArea()" name="gudang" style="width: 100%">
                                 <option value=""></option>
-                                <option value="AK">Gudang A</option>
-                                <option value="HI">Gudang B</option>
-                                <option value="CA">Gudang C</option>
+                                
                             </select>
                         </div>
                         <div class="form-group">
                             <label class="">List Area</label>
                             <select class="form-control m-select2" id="kt_select2_area" name="param" multiple="multiple" style="width:100%;">
-                                <option value="AK" selected>Area A</option>
-                                <option value="HI">Area B</option>
-                                <option value="CA">Area C</option>
-                                <option value="NV" selected>Area D</option>
-                                <option value="OR">Area E</option>
-                                <option value="WA">Area F</option>
+                               
                             </select>
                             <span class="form-text text-muted">* Anda dapat memilih lebih dari satu area.</span>
                         </div>
@@ -255,9 +200,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-warning">Tambah Area </button>
+                <button type="button" class="btn btn-warning" onclick="pilihArea()">Tambah Area </button>
             </div>
-            </form>
+            {{-- </form> --}}
         </div>
     </div>
 </div>
@@ -297,6 +242,18 @@ $('#kt_select2_area').select2({
 });
 
 const id_rencana = "{{ $id_rencana }}";
+
+@if (!empty($store_material))
+    @foreach($store_material as $item)
+        tambahMaterial({{$item->id_realisasi}}, {{$item->id_material}}, {{$item->bertambah}}, {{$item->berkurang}});
+    @endforeach
+@endif
+
+@if (!empty($store_housekeeper))
+    @foreach($store_material as $item)
+        tambahHousekeeper({{$item->id_realisasi}}, {{$item->id_tkbm}}, {{$item->id_area}});
+    @endforeach
+@endif
 
 </script>
 @endsection

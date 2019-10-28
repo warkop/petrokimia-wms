@@ -276,19 +276,27 @@ class RencanaHarianController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
-    public function getArea()
+    public function getArea($id_gudang ='')
     {
         $users = Users::find(\Auth::id());
-        $gudang = Gudang::where('id_karu', $users->id_karu)->first();
-        if (!empty($gudang)) {
-            $res = Area::where('id_gudang', $gudang->id)->get();
-    
+        if ($id_gudang == '') {
+            $gudang = Gudang::where('id_karu', $users->id_karu)->first();
+            if (!empty($gudang)) {
+                $res = Area::where('id_gudang', $gudang->id)->get();
+        
+                $this->responseCode = 200;
+                $this->responseMessage = 'Data tersedia';
+                $this->responseData = $res;
+            } else {
+                $this->responseCode = 403;
+                $this->responseMessage = 'Anda tidak memiliki gudang! Silahkan daftarkan gudang Anda pada menu Gudang!';
+            }
+        } else {
+            $res = Area::where('id_gudang', $id_gudang)->get();
+
             $this->responseCode = 200;
             $this->responseMessage = 'Data tersedia';
             $this->responseData = $res;
-        } else {
-            $this->responseCode = 403;
-            $this->responseMessage = 'Anda tidak memiliki gudang! Silahkan daftarkan gudang Anda pada menu Gudang!';
         }
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
@@ -300,31 +308,46 @@ class RencanaHarianController extends Controller
         $data['tkbm_rencana']    = RencanaAreaTkbm::select('id_rencana', 'id_tkbm')->where('id_rencana', $rencanaHarian->id)->groupBy('id_tkbm', 'id_rencana')->get();
         $data['material']    = Material::where('kategori', 3)->get();
         $data['id_rencana'] = $rencanaHarian->id;
+
+        $temp_realisasi = Realisasi::where('id_rencana', $rencanaHarian->id)->first();
+        $data['store_material'] = (new RealisasiMaterial)->where('id_realisasi', $temp_realisasi->id)->get();
+        $data['store_housekeeper'] = (new RealisasiHousekeeper)->select('id_tkbm')->where('id_realisasi', $temp_realisasi->id)->groupBy('id_tkbm')->get();
+        $data['store_area_housekeeper'] = (new RealisasiHousekeeper)->where('id_realisasi', $temp_realisasi->id)->get();
+
         return view('rencana-harian.realisasi', $data);
     }
 
-    public function storeRealisasi(RealisasiRequest $req, Realisasi $realisasi)
+    public function storeRealisasi(RealisasiRequest $req, $id_rencana, Realisasi $realisasi)
     {
         $req->validated();
 
-        $realisasi->id_rencana = $req->input('id_rencana');
+        $temp_res = (new Realisasi)->where('id_rencana', $id_rencana)->first();
+        (new Realisasi)->where('id_rencana', $id_rencana)->forceDelete();
+
+        if (!empty($temp_res)) {
+            (new RealisasiHousekeeper)->where('id_realisasi', $temp_res->id)->forceDelete();
+            (new RealisasiMaterial)->where('id_realisasi', $temp_res->id)->forceDelete();
+        }
+
+        $realisasi->id_rencana = $id_rencana;
         $realisasi->tanggal = now();
         $realisasi->approve = $req->input('approve');
         $realisasi->save();
 
         $housekeeper = $req->input('housekeeper');
+        $housekeeper = array_values($housekeeper);
         if (!empty($housekeeper)) {
             foreach ($housekeeper as $key => $value) {
-                if (!empty($req->input('area')[$key])) {
-                    $area = $req->input('area')[$key];
-                    foreach ($area as $row => $hey) {
+                $temp = array_values($req->input('area_housekeeper')[$key]);
+                if (!empty($temp)) {
+                    foreach ($temp as $row => $hey) {
                         $arr = [
                             'id_realisasi' => $realisasi->id,
                             'id_tkbm' => $value,
                             'id_area' => $hey,
                         ];
 
-                        \DB::table('rencana_area_tkbm')->insert(
+                        \DB::table('realisasi_housekeeper')->insert(
                             $arr
                         );
                     }
@@ -332,6 +355,7 @@ class RencanaHarianController extends Controller
             }
         }
 
+        
         $material = $req->input('material');
         $material_tambah = $req->input('material_tambah');
         $material_kurang = $req->input('material_kurang');
@@ -345,9 +369,10 @@ class RencanaHarianController extends Controller
                 'id_material' => $material[$i],
                 'bertambah' => $material_tambah[$i],
                 'berkurang' => $material_kurang[$i],
+                'created_at' => now(),
             ];
 
-            \DB::table('rencana_tkbm')->insert(
+            \DB::table('realisasi_material')->insert(
                 $arr
             );
         }
@@ -382,6 +407,18 @@ class RencanaHarianController extends Controller
             $this->responseMessage = 'ID rencana tidak ditemukan';
             $this->responseCode = 400;
         }
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);   
+    }
+
+    public function getGudang()
+    {
+        $user = \Auth::user();
+        
+        $gudang = Gudang::where('id_karu', $user->id_karu)->get();
+        $this->responseData = $gudang;
+        $this->responseCode = 200;
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);   

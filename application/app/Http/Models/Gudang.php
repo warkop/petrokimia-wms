@@ -42,6 +42,7 @@ class Gudang extends Model
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
+        $user = \Auth::user();
         $result = DB::table($this->table)
             ->select('id AS id', 'nama AS nama', 'tipe_gudang', 'id_sloc', 'id_plant', DB::raw('
             (SELECT
@@ -50,7 +51,8 @@ class Gudang extends Model
                 stok_material_gudang
             WHERE
                 stok_material_gudang.id_gudang = gudang.id
-            )as jumlah'));
+            )as jumlah'))
+            ->where('id_karu', $user->id_karu);
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
