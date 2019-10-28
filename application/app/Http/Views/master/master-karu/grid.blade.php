@@ -23,9 +23,12 @@
                 </p>
             </div>
 			<div class="kt-portlet__head-toolbar">
+                @can('create', App\Http\Models\Karu::class)
+                    
 				<div class="kt-portlet__head-group pt-4">
-					<a href="#" class="btn btn-wms btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1" onclick="tambah()"><i class="la la-plus"></i> Tambah Data</a>
+                    <a href="#" class="btn btn-wms btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1" onclick="tambah()"><i class="la la-plus"></i> Tambah Data</a>
 				</div>
+                @endcan
 			</div>
 		</div>
 		<div class="kt-portlet__body">

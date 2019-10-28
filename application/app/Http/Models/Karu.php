@@ -35,7 +35,7 @@ class Karu extends Model
             $table->updated_by = \Auth::id();
         });
 
-        static::saving(function ($table) {
+        static::creating(function ($table) {
             $table->created_by = \Auth::id();
         });
 

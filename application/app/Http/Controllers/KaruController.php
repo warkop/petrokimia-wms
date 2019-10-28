@@ -84,6 +84,7 @@ class KaruController extends Controller
             return $this->accessForbidden();
         } else {
             $res = $models::withoutGlobalScope(EndDateScope::class)->find($id);
+            $this->authorize('update', $res);
 
             if (!empty($res)) {
                 $this->responseCode = 200;
