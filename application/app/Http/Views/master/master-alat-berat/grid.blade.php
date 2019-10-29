@@ -115,7 +115,7 @@
 					<tr>
 						<th>No</th>
                         <th>Nama Kategori Alat Berat</th>
-                        <th>Anggaran Alat Berat</th>
+                        <th>Biaya</th>
                         <th>Start Date</th>
                         <th>End Date</th>
 						<th>Actions</th>
@@ -150,16 +150,14 @@
                                 <input type="text" class="form-control input-enter" name="nama" id="nama" placeholder="Masukkan nama kategori">
                             </div>
                             <div class="form-group">
-                                <label>Anggaran Alat Berat</label>
-                                <input type="text" class="form-control input-enter" name="anggaran" id="anggaran" placeholder="Masukkan anggaran alat">
+                                <label>Biaya</label>
+                                <input type="text" class="form-control input-enter" name="anggaran" id="anggaran" placeholder="Masukkan biaya">
                             </div>
                             <div class="form-group">
                                 <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                     <input type="checkbox" value="1" name="forklift" id="forklift">Forklift
                                     <span></span>
                                 </label>
-                                
-                                {{-- <input type="text" class="form-control input-enter" name="anggaran" id="anggaran" placeholder="Masukkan anggaran alat"> --}}
                             </div>
                         </div>
                     </div>
