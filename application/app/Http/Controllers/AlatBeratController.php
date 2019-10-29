@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\KategoriAlatBerat;
 use App\Http\Models\AlatBerat;
+use App\Http\Requests\AlatBeratRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -54,42 +55,22 @@ class AlatBeratController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, AlatBerat $models, $id_kategori)
+    public function store(AlatBeratRequest $req, AlatBerat $models, $id_kategori)
     {
+        $req->validated();
         $id = $req->input('id');
-        $rules = [
-            'nomor_lambung'    => ['required', Rule::unique('alat_berat', 'nomor_lambung')->ignore($id)],
-            'nomor_polisi'     => ['required', Rule::unique('alat_berat', 'nomor_polisi')->ignore($id)],
-        ];
 
-        $action = $req->input('action');
-        if ($action == 'edit') {
-            $rules['id'] = 'required';
+        if (!empty($id)) {
+            $models = AlatBerat::find($id);
         }
 
-        $validator = Validator::make($req->all(), $rules);
-        if ($validator->fails()) {
-            $this->responseCode                 = 400;
-            $this->responseStatus               = 'Missing Param';
-            $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
-            $this->responseData['error_log']    = $validator->errors();
-        } else {
-            if (!empty($id)) {
-                $models = AlatBerat::find($id);
-                $models->updated_by = session('userdata')['id_user'];
-            } else {
-                $models->created_by = session('userdata')['id_user'];
-            }
+        $models->nomor_lambung = strtoupper($req->input('nomor_lambung'));
+        $models->id_kategori = $id_kategori;
 
-            $models->nomor_lambung = strtoupper($req->input('nomor_lambung'));
-            $models->nomor_polisi = strtoupper($req->input('nomor_polisi'));
-            $models->id_kategori = $id_kategori;
+        $models->save();
 
-            $models->save();
-
-            $this->responseCode = 200;
-            $this->responseMessage = 'Data berhasil disimpan';
-        }
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data berhasil disimpan';
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);

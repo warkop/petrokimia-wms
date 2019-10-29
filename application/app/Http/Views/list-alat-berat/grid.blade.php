@@ -14,10 +14,10 @@
                     {{-- <i class="la la-group"></i> &nbsp; --}}
                     Kategori: {{$nama_kategori}}
                 </h4>
-                <p class="sub">
+                {{-- <p class="sub">
                     Berikut ini adalah data alat berat {{$nama_kategori}} yang terdapat pada <span class="text-ungu kt-font-bolder">Gudang
                         A.</span>
-                </p>
+                </p> --}}
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-group pt-4">
@@ -34,7 +34,6 @@
                     <tr>
                         <th>No</th>
                         <th>Nomor Lambung</th>
-                        <th>Nomor Polisi</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -66,10 +65,6 @@
                             <div class="form-group">
                                 <label>Nomor Lambung</label>
                                 <input type="text" class="form-control input-enter" name="nomor_lambung" id="nomor_lambung" placeholder="Masukkan nomor lambung">
-                            </div>
-                            <div class="form-group">
-                                <label>Nomor Polisi</label>
-                                <input type="text" class="form-control input-enter" name="nomor_polisi" id="nomor_polisi" placeholder="Masukkan nomor polisi">
                             </div>
                         </div>
                     </div>

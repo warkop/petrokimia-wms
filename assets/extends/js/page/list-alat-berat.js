@@ -52,9 +52,6 @@ var load_table = function () {
                 "mData": "nomor_lambung"
             },
             {
-                "mData": "nomor_polisi"
-            },
-            {
                 "mData": "status"
             },
             {
@@ -80,7 +77,7 @@ var load_table = function () {
                 }
             },
             {
-                "aTargets": [3],
+                "aTargets": -2,
                 "mData": "id",
                 render: function (data, type, full, meta) {
                     let kata = '';
@@ -93,7 +90,7 @@ var load_table = function () {
                 },
             },
             {
-                "aTargets": [4],
+                "aTargets": -1,
                 "mData": "id",
                 render: function (data, type, full, meta) {
                     console.log(full.id);
@@ -231,35 +228,22 @@ function simpan() {
 
         },
         error: function (response) {
-            var head = 'Maaf',
-                message = 'Terjadi kesalahan koneksi',
-                type = 'error';
+            const head = 'Pemberitahuan';
+            const type = 'warning';
+            const obj = response.responseJSON.errors;
             laddaButton.stop();
             window.onbeforeunload = false;
             $('.btn_close_modal').removeClass('hide');
             $('.se-pre-con').hide();
 
-            if (response['status'] == 401 || response['status'] == 419) {
-                location.reload();
-            } else {
-                if (response['status'] != 404 && response['status'] != 500) {
-                    var obj = JSON.parse(response['responseText']);
-
-                    if (!$.isEmptyObject(obj.message)) {
-                        if (obj.code > 400) {
-                            head = 'Maaf';
-                            message = obj.message;
-                            type = 'error';
-                        } else {
-                            head = 'Pemberitahuan';
-                            message = obj.message;
-                            type = 'warning';
-                        }
-                    }
-                }
-
-                swal.fire(head, message, type);
-            }
+            const temp = Object.values(obj);
+            let message = '';
+            temp.forEach(element => {
+                element.forEach(row => {
+                    message += row + "<br>"
+                });
+            });
+            swal.fire(head, message, type);
         }
     });
 }
