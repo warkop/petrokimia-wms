@@ -125,7 +125,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::delete('/{id}', 'UsersController@destroy');
     });
 
-    Route::group(['prefix' => 'gudang', 'middleware' => ['eauth:5', 'revalidate']], function () {
+    Route::group(['prefix' => 'gudang', 'middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/', 'GudangController@index');
         Route::get('/load-pallet', 'GudangController@loadPallet');
         Route::put('/', 'GudangController@store');
