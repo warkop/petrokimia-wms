@@ -37,6 +37,7 @@ let load_table = function () {
         "bDestroy": true,
         "processing": true,
         "serverSide": true,
+        "scrollX":true,
         "ajax": {
             url: ajaxSource,
             type: "POST",
@@ -55,6 +56,15 @@ let load_table = function () {
                 "mData": "nama"
             },
             {
+                "mData": "kategori"
+            },
+            {
+                "mData": "berat"
+            },
+            {
+                "mData": "koefisien_pallet"
+            },
+            {
                 "mData": "start_date"
             },
             {
@@ -69,7 +79,8 @@ let load_table = function () {
         ],
         "lengthMenu": [10, 25, 50, 75, 100],
         "pageLength": 10,
-        "aoColumnDefs": [{
+        "aoColumnDefs": [
+            {
                 "aTargets": [0],
                 "mData": "id",
                 "mRender": function (data, type, full, draw) {
@@ -81,9 +92,21 @@ let load_table = function () {
 
                     return counter;
                 }
+            }, {
+                "aTargets": [3],
+                "mData": "id",
+                "mRender": function (data, type, full, draw) {
+                    if (full.kategori == 1) {
+                        return `<span class="kt-badge kt-badge--danger kt-badge--inline kt-badge--pill kt-badge--rounded" data-toggle="kt-tooltip" data-placement="top" title="Material kategori Produk">Produk</span>`;
+                    } else if (full.kategori == 2) {
+                        return `<span class="kt-badge kt-badge--info kt-badge--inline kt-badge--pill kt-badge--rounded" data-toggle="kt-tooltip" data-placement="top" title="Material kategori Pallet">Pallet</span>`;
+                    } else {
+                        return `<span class="kt-badge kt-badge--dark kt-badge--inline kt-badge--pill kt-badge--rounded" data-toggle="kt-tooltip" data-placement="top" title="Material kategori Lain-lain">Lain-lain</span>`;
+                    }
+                }
             },
             {
-                "aTargets": [5],
+                "aTargets": -1,
                 "mData": "id",
                 render: function (data, type, full, meta) {
                     return `

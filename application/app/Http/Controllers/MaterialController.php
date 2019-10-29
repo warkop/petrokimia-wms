@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Material;
 use App\Http\Requests\MaterialRequest;
+use App\Scopes\EndDateScope;
 use Illuminate\Http\Request;
 
 class MaterialController extends Controller
@@ -78,7 +79,7 @@ class MaterialController extends Controller
         if (!$request->ajax()) {
             return $this->accessForbidden();
         } else {
-            $res = $models::find($id);
+            $res = $models::withoutGlobalScope(EndDateScope::class)->find($id);
 
             if (!empty($res)) {
                 $this->responseCode = 200;

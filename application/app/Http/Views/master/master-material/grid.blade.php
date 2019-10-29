@@ -36,6 +36,9 @@
                         <th>No</th>
                         <th>ID Material SAP</th>
                         <th>Nama Material</th>
+                        <th>Kategori</th>
+                        <th>Berat per Kemasan</th>
+                        <th>Koefisien Pallet</th>
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Actions</th>
@@ -95,12 +98,10 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Berat</label>
+                                <label>Berat per Kemasan</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control input-enter" id="berat" name="berat" placeholder="Masukan berat material"
-                                        aria-describedby="berat">
-                                    <div class="input-group-append"><span class="input-group-text"
-                                            id="berat">Kg</span></div>
+                                    <input type="text" class="form-control input-enter" id="berat" name="berat" placeholder="Masukan berat material" aria-describedby="berat">
+                                    <div class="input-group-append"><span class="input-group-text" id="berat">Kg</span></div>
                                 </div>
                             </div>
                         </div>
