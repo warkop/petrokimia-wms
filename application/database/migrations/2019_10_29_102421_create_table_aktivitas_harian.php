@@ -27,6 +27,7 @@ class CreateTableAktivitasHarian extends Migration
             $table->datetime('approve')->nullable();
             $table->integer('kelayakan_before')->nullable();
             $table->integer('kelayakan_after')->nullable();
+            $table->datetime('dikembalikan')->nullable();
             $table->datetime('created_at')->nullable();
             $table->integer('created_by')->nullable();
         });
