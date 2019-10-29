@@ -45,6 +45,8 @@ class RoleTableSeeder extends Seeder
             ]
         ];
 
+        Role::truncate();
+
         foreach ($data as $key) {
             Role::firstOrCreate([
                 'id' => $key['id'],

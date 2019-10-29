@@ -31,6 +31,8 @@ class JobDeskSeeder extends Seeder
             ]
         ];
 
+        JobDesk::truncate();
+
         foreach ($data as $key) {
             JobDesk::firstOrCreate([
                 'id' => $key['id'],
