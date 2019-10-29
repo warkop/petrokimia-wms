@@ -53,6 +53,7 @@ class MaterialRequest extends FormRequest
             'id_material_sap.integer' => 'ID Material SAP harus berupa angka!',
             'id_material_sap.unique' => 'ID Material SAP sudah ada pada data lain!',
             'nama.unique' => 'Nama Material sudah ada!',
+            'nama.required' => 'Nama Material wajib diisi!',
             'kategori.integer' => 'Kategori yang dimasukkan tidak valid!',
             'kategori.between' => 'Kategori yang dimasukkan tidak valid!',
             'end_date.after'  => 'Tanggal harus lebih kecil dari start date!',
