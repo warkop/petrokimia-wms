@@ -51,8 +51,7 @@ class Gudang extends Model
                 stok_material_gudang
             WHERE
                 stok_material_gudang.id_gudang = gudang.id
-            )as jumlah'))
-            ->where('id_karu', $user->id_karu);
+            )as jumlah'));
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
