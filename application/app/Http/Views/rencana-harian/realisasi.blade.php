@@ -255,5 +255,17 @@ const id_rencana = "{{ $id_rencana }}";
     @endforeach
 @endif
 
+@php 
+$no=1;
+@endphp
+@if (!empty($store_area_housekeeper))
+    // $("#id_row").val({{count($store_area_housekeeper)}});
+    @foreach ($store_area_housekeeper as $item)
+        setArea({{$item->id_tkbm}}, {{$item->id_area}}, "{{$item->nama}}");
+    @php
+        $no++;
+    @endphp
+    @endforeach
+@endif
 </script>
 @endsection

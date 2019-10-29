@@ -312,7 +312,7 @@ class RencanaHarianController extends Controller
         $temp_realisasi = Realisasi::where('id_rencana', $rencanaHarian->id)->first();
         $data['store_material'] = (new RealisasiMaterial)->where('id_realisasi', $temp_realisasi->id)->get();
         $data['store_housekeeper'] = (new RealisasiHousekeeper)->select('id_tkbm')->where('id_realisasi', $temp_realisasi->id)->groupBy('id_tkbm')->get();
-        $data['store_area_housekeeper'] = (new RealisasiHousekeeper)->where('id_realisasi', $temp_realisasi->id)->get();
+        $data['store_area_housekeeper'] = (new RealisasiHousekeeper)->select('id_area', 'id_tkbm', 'nama')->leftJoin('area', 'area.id', '=', 'realisasi_housekeeper.id_area')->where('id_realisasi', $temp_realisasi->id)->get();
         return view('rencana-harian.realisasi', $data);
     }
 

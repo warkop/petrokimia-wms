@@ -36,9 +36,14 @@ function getArea() {
     });
 }
 
-function pilihArea() {
+function pilihArea(number="", id_area="") {
     const area = $("#kt_select2_area").val();
-    const id = $("#id_row").val();
+    let id='';
+    if (number == "") {
+        id = $("#id_row").val();
+    } else {
+        id = number;
+    }
     let collect_area = [];
     const text_area = $("#kt_select2_area option:selected").each(function () {
         let $this = $(this);
@@ -261,7 +266,7 @@ function check(target) {
     }
 }
 
-function getHouseKeeper(id_rencana, target, number='', id_tkbm='', id_area='') {
+function getHouseKeeper(id_rencana, target, number='', id_tkbm='') {
     $.ajax({
         url: ajaxSource + '/realisasi/get-housekeeper/'+id_rencana,
         success: (res) => {
@@ -273,12 +278,50 @@ function getHouseKeeper(id_rencana, target, number='', id_tkbm='', id_area='') {
             });
 
             $(target).html(html);
-
+            if (id_tkbm != "") {
+                $("#namahousekeeper-"+number).val(id_tkbm).trigger('change');
+            }
         },
         error: (err, oo, pp) => {
 
         }
     });
+}
+
+let no_inc = 0;
+let temp_id_tkbm = '';
+
+function setArea(id_tkbm, id_area, nama) {
+    if (temp_id_tkbm != id_tkbm) {
+        no_inc++;
+    }
+    let id = no_inc;
+    const target = "#tempat_area-" + id;
+    // const panjang = area.length;
+    let html = '';
+    // for (let i = 0; i < panjang; i++) {
+    // }
+    // if (id_tkbm == temp_id_tkbm) {
+        
+    
+    temp_id_tkbm = id_tkbm;
+    console.log(id);
+    if ($('#tempat_area-' + id + " input[name='area_housekeeper']").length < 1) {
+        html += `<div class="col-4 mb1">
+                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                        <input type="checkbox" name="area_housekeeper[${id - 1}][]" checked value="${id_area}">${nama}
+                        <span></span>
+                    </label>
+                </div>`;
+
+    }
+    // } else {
+    //     temp_id_tkbm = id_tkbm;
+    // }
+
+
+    $(target).append(html);
+    
 }
 
 const simpan = () => {
