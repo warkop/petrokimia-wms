@@ -111,12 +111,9 @@ License: You must have a valid license purchased only from themeforest(the above
 								<li id="dashboard-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/dashboard')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-area-chart"></span><span class="kt-menu__link-text">Dashboard</span></a></li>
 								<li id="layout-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/layout')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-map"></span><span class="kt-menu__link-text">Layout</span></a>
 								</li>
-								@if (session('userdata')['role_id'] == 5)
 								<li id="gudang-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/gudang')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-institution"></span><span class="kt-menu__link-text">Gudang</span></a>
 								</li>
-								{{-- <li class="kt-menu__item" aria-haspopup="true"><a href="{{url('/anggaran-alat-berat')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-file-text-o"></span><span class="kt-menu__link-text">Anggaran Alat Berat</span></a>
-								</li> --}}
-								{{-- <li class="kt-menu__item" aria-haspopup="true"><a href="{{url('/anggaran-sdm')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-money"></span><span class="kt-menu__link-text">Anggaran SDM</span></a> --}}
+								@if (session('userdata')['role_id'] == 5)
 								</li>
 								<li id="rencanaHarian-nav" class="kt-menu__item rencanaHarian-nav" aria-haspopup="true"><a href="{{url('/rencana-harian')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-calendar"></span><span class="kt-menu__link-text">Rencana Harian</span></a></li>
 								@endif
