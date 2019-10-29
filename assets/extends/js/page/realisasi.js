@@ -126,7 +126,7 @@ function fill(id_material, bertambah, berkurang, callback) {
 
 }
 
-function tambahHousekeeper() {
+function tambahHousekeeper(id_tkbm = '') {
     const tableId = "#table_housekeeper";
     const rows = $(tableId +" .housekeeper_baris").length+1;
     let html =
@@ -155,7 +155,7 @@ function tambahHousekeeper() {
         placeholder: "Pilih Housekeeper"
     });
 
-    getHouseKeeper(id_rencana, "#namahousekeeper-" + rows);
+    getHouseKeeper(id_rencana, "#namahousekeeper-" + rows, rows, id_tkbm);
 
     protectNumber(`#housekeeper-tambah-${rows}`, 10);
     protectNumber(`#housekeeper-kurang-${rows}`, 10);
@@ -186,7 +186,7 @@ function tambahArea(id) {
     });
 }
 
-function getMaterial(kategori, target, number, id_material='', bertambah='', berkurang='') {
+function getMaterial(kategori, target, number='', id_material='', bertambah='', berkurang='') {
     $.ajax({
         url: ajaxSource + '/get-material/' + kategori,
         success:(res) => {
@@ -261,7 +261,7 @@ function check(target) {
     }
 }
 
-function getHouseKeeper(id_rencana, target) {
+function getHouseKeeper(id_rencana, target, number='', id_tkbm='', id_area='') {
     $.ajax({
         url: ajaxSource + '/realisasi/get-housekeeper/'+id_rencana,
         success: (res) => {

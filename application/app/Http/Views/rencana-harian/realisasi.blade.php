@@ -250,8 +250,8 @@ const id_rencana = "{{ $id_rencana }}";
 @endif
 
 @if (!empty($store_housekeeper))
-    @foreach($store_material as $item)
-        tambahHousekeeper({{$item->id_realisasi}}, {{$item->id_tkbm}}, {{$item->id_area}});
+    @foreach($store_housekeeper as $item)
+        tambahHousekeeper({{$item->id_tkbm}});
     @endforeach
 @endif
 
