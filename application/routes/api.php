@@ -16,6 +16,10 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::post('/login', 'API\AuthController@authenticate');
+Route::get('aktivitas', 'API\AktivitasController@index')->middleware('auth:api');
+Route::get('aktivitas/{aktivitas}', 'API\AktivitasController@show')->middleware('auth:api');
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -23,7 +27,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // Route::get('aktivitas', function () {
 //     return (new AktivitasResource(Aktivitas::paginate()))->response()->getStatusCode();
 // });
-Route::get('aktivitas', 'API\AktivitasController@index');
 
 // Route::get('aktivitas/{id}', function ($id) {
 //     // $obj = Aktivitas::find($id);
@@ -33,4 +36,3 @@ Route::get('aktivitas', 'API\AktivitasController@index');
 //     //     return (new AktivitasResource(new Aktivitas))->response()->getStatusCode();
 //     // }
 // });
-Route::get('aktivitas/{aktivitas}', 'API\AktivitasController@show');

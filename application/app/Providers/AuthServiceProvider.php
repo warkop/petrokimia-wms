@@ -17,7 +17,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Model' => 'App\Policies\ModelPolicy',
-        Karu::class => KaruPolicy::class,
     ];
 
     /**
@@ -29,5 +28,9 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        // \Auth::viaRequest('access_token', function ($request) {
+        //     Users::where('api_token', $request->access_token)->first();
+        //     return true;
+        // });
     }
 }

@@ -37,6 +37,11 @@ class Users extends Authenticatable
         static::addGlobalScope(new EndDateScope);
     }
 
+    public function scopeEndDate($query)
+    {
+        return $query->where('end_date', null)->orWhere('end_date', '>', date('Y-m-d'));
+    }
+
     public function getAuthPassword()
     {
         return $this->password;
@@ -77,6 +82,22 @@ class Users extends Authenticatable
         } else {
             $result  = $result->offset($start)->limit($length)->orderBy($field, $sort)->get();
         }
+
+        return $result;
+    }
+
+    public function getByAccessToken($access_token=false)
+    {
+        if ($access_token == false) {
+            return false;
+        }
+
+        $result = DB::table(DB::raw('"users" usr'))
+            ->select(DB::raw('id AS id_user, name, username AS username, email, role_id AS role, api_token AS access_token, id_karu, id_tkbm'));
+
+        $result = $result->where('token', $access_token);
+
+        $result = $result->first();
 
         return $result;
     }
