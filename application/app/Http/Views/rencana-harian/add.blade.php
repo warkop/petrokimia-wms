@@ -211,9 +211,10 @@
     $('.kt_select2_housekeeping').select2({
         placeholder: "Select Housekepping"
     });
-    $('#start_date, #end_date').datepicker({
+    $('#end_date').datepicker({
         rtl: KTUtil.isRTL(),
         todayHighlight: true,
+        clearBtn:true,
         orientation: "top left"
     });
 

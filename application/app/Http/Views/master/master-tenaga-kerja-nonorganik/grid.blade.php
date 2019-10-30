@@ -97,7 +97,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Start Date</label>
-                                <input type="text" class="form-control input-enter" id="start_date" name="start_date" readonly placeholder="Select date">
+                                <input type="text" class="form-control input-enter" id="start_date" name="start_date" readonly placeholder="Select date" value="{{date('d-m-Y')}}">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -158,10 +158,11 @@
 $('#job_desk_id').select2({
     placeholder: "Select Job Desk"
 });
-$('#start_date, #end_date').datepicker({
+$('#end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
     format:'dd-mm-yyyy',
+    clearBtn:true,
     orientation: "top left"
 });
 </script>

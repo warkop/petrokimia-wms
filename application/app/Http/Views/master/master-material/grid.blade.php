@@ -124,7 +124,7 @@
                             <div class="form-group">
                                 <label>Start Date</label>
                                 <input type="text" class="form-control input-enter" id="start_date" name="start_date" readonly
-                                    placeholder="Select date">
+                                    placeholder="Select date" value="{{date('d-m-Y')}}">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -155,10 +155,11 @@
     $('#kt_select2_1').select2({
     placeholder: "Select Material"
 });
-$('#start_date, #end_date').datepicker({
+$('#end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
     format:'dd-mm-yyyy',
+    clearBtn:true,
     orientation: "bottom left"
 });
 </script>

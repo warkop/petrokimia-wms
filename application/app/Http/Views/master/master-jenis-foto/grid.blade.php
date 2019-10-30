@@ -73,7 +73,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Start Date</label>
-                                <input type="text" class="form-control input-enter" id="start_date" name="start_date" readonly placeholder="Select date">
+                                <input type="text" class="form-control input-enter" id="start_date" name="start_date" readonly placeholder="Select date" value="{{date('d-m-Y')}}">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -96,10 +96,11 @@
 
 <script src="{{asset('assets/extends/js/page/master-jenis-foto.js')}}" type="text/javascript"></script>
 <script>
-$('#start_date, #end_date').datepicker({
+$('#end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
     format:'dd-mm-yyyy',
+    clearBtn:true,
     orientation: "bottom left"
 });
 </script>
