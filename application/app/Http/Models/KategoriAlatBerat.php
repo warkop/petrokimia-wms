@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use App\Scopes\EndDateScope;
 use Illuminate\Database\Eloquent\Model;
 
 use DB;
@@ -25,6 +26,24 @@ class KategoriAlatBerat extends Model
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at',];
 
     public $timestamps  = false;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($table) {
+            $table->updated_by = \Auth::id();
+            $table->updated_at = now();
+        });
+
+        static::creating(function ($table) {
+            $table->created_by = \Auth::id();
+            $table->created_at = now();
+            $table->start_date = now();
+        });
+
+        static::addGlobalScope(new EndDateScope);
+    }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {

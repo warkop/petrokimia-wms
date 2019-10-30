@@ -58,14 +58,10 @@ class KategoriAlatBeratRequest extends FormRequest
     public function sanitize()
     {
         $input = $this->all();
-
-        $input['nama'] = filter_var($input['nama'], FILTER_SANITIZE_STRING);
-        $input['forklift'] = filter_var($input['forklift'], 
-        FILTER_SANITIZE_STRING);
-        $input['start_date'] = filter_var($input['start_date'], 
-        FILTER_SANITIZE_STRING);
-        $input['end_date'] = filter_var($input['end_date'], 
-        FILTER_SANITIZE_STRING);
+        
+        foreach ($input as $key => $value) {
+            $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
+        }
 
         $this->replace($input);
     }

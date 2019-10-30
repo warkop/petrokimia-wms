@@ -115,7 +115,7 @@
 					<tr>
 						<th>No</th>
                         <th>Nama Kategori Alat Berat</th>
-                        <th>Biaya</th>
+                        {{-- <th>Biaya</th> --}}
                         <th>Start Date</th>
                         <th>End Date</th>
 						<th>Actions</th>
@@ -149,10 +149,10 @@
                                 <label>Nama Kategori Alat Berat</label>
                                 <input type="text" class="form-control input-enter" name="nama" id="nama" placeholder="Masukkan nama kategori">
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label>Biaya</label>
                                 <input type="text" class="form-control input-enter" name="anggaran" id="anggaran" placeholder="Masukkan biaya">
-                            </div>
+                            </div> --}}
                             <div class="form-group">
                                 <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                     <input type="checkbox" value="1" name="forklift" id="forklift">Forklift
@@ -165,7 +165,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Start Date</label>
-                                <input type="text" class="form-control input-enter" name="start_date" id="start_date" readonly placeholder="Select date">
+                                <input type="text" class="form-control input-enter" name="start_date" id="start_date" value="{{date('d-m-Y')}}" readonly placeholder="Select date">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -186,24 +186,13 @@
 </div>
 <!--end::Modal-->
 
-
-@if ($errors->any())
-    <div id="pesan_error" class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-
 <script src="{{asset('assets/extends/js/page/master-kategori-alatberat.js')}}" type="text/javascript"></script>
 <script>
-$('#start_date, #end_date').datepicker({
+$('#end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
     format:'dd-mm-yyyy',
+    clearBtn:true,
     orientation: "bottom left"
 });
 </script>

@@ -57,9 +57,9 @@ let load_table = function () {
             {
                 "mData": "nama"
             },
-            {
-                "mData": "anggaran"
-            },
+            // {
+            //     "mData": "anggaran"
+            // },
             {
                 "mData": "start_date"
             },
@@ -88,15 +88,15 @@ let load_table = function () {
                     return counter;
                 }
             },
+            // {
+            //     "aTargets": [2],
+            //     "mData": "id",
+            //     render: function (data, type, full, meta) {
+            //         return helpCurrency(full.anggaran);
+            //     },
+            // },
             {
-                "aTargets": [2],
-                "mData": "id",
-                render: function (data, type, full, meta) {
-                    return helpCurrency(full.anggaran);
-                },
-            },
-            {
-                "aTargets": [5],
+                "aTargets": -1,
                 "mData": "id",
                 render: function (data, type, full, meta) {
                     return `
@@ -163,7 +163,7 @@ function edit(id = '') {
 
             if (obj.status == "OK") {
                 $('#nama').val(obj.data['nama']);
-                $('#anggaran').val(helpCurrency(obj.data['anggaran']));
+                // $('#anggaran').val(helpCurrency(obj.data['anggaran']));
                 if (obj.data['forklift'] == 1) {
                     $('#forklift').prop('checked', true);
                 }
@@ -239,22 +239,49 @@ function simpan() {
             $('#modal_form').modal('hide');
         },
         error: function (response) {
-            const head = 'Pemberitahuan';
-            const type = 'warning';
-            const obj = response.responseJSON.errors;
+            $("#btn_save").prop("disabled", false);
+            let head = 'Maaf',
+                message = 'Terjadi kesalahan koneksi',
+                type = 'error';
             laddaButton.stop();
             window.onbeforeunload = false;
             $('.btn_close_modal').removeClass('hide');
             $('.se-pre-con').hide();
 
-            const temp = Object.values(obj);
-            let message = '';
-            temp.forEach(element => {
-                element.forEach(row => {
-                    message += row+"<br>"
-                });
-            });
-            swal.fire(head, message, type);
+            if (response['status'] == 401 || response['status'] == 419) {
+                location.reload();
+            } else {
+                if (response['status'] != 404 && response['status'] != 500) {
+                    let obj = JSON.parse(response['responseText']);
+
+                    if (!$.isEmptyObject(obj.message)) {
+                        if (obj.code > 450) {
+                            head = 'Maaf';
+                            message = obj.message;
+                            type = 'error';
+                        } else {
+                            head = 'Pemberitahuan';
+                            type = 'warning';
+
+                            obj = response.responseJSON.errors;
+                            laddaButton.stop();
+                            window.onbeforeunload = false;
+                            $('.btn_close_modal').removeClass('hide');
+                            $('.se-pre-con').hide();
+
+                            const temp = Object.values(obj);
+                            message = '';
+                            temp.forEach(element => {
+                                element.forEach(row => {
+                                    message += row + "<br>"
+                                });
+                            });
+                        }
+                    }
+                }
+
+                swal.fire(head, message, type);
+            }
         }
     });
 }

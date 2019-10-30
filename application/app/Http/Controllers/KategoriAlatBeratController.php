@@ -61,50 +61,34 @@ class KategoriAlatBeratController extends Controller
 
     public function store(KategoriAlatBeratRequest $req, KategoriAlatBerat $models)
     {
-        $id = $req->input('id');
         $req->validated();
+        $id = $req->input('id');
         
-        // $temp_model = KategoriAlatBerat::whereNotNull('forklift')->first();
-        // if (empty($temp_model) || ($temp_model->id == $id && !empty($temp_model))) {
-            $tampung_anggaran = ($req->input('anggaran') ? $req->input('anggaran') : 0);
-            $tampung_anggaran = str_replace('.', '', $tampung_anggaran);
-            $tampung_anggaran = str_replace(',', '.', $tampung_anggaran);
-            $anggaran = $tampung_anggaran;
+        $tampung_anggaran = ($req->input('anggaran') ? $req->input('anggaran') : 0);
+        $tampung_anggaran = str_replace('.', '', $tampung_anggaran);
+        $tampung_anggaran = str_replace(',', '.', $tampung_anggaran);
+        $anggaran = $tampung_anggaran;
 
-            $forklift = $req->input('forklift');
+        $forklift = $req->input('forklift');
 
-            $start_date  = null;
-            if ($req->input('start_date') != '') {
-                $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            }
+        $end_date   = null;
+        if ($req->input('end_date') != '') {
+            $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
+        }
 
-            $end_date   = null;
-            if ($req->input('end_date') != '') {
-                $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
-            }
+        if (!empty($id)) {
+            $models = KategoriAlatBerat::withoutGlobalScopes()->find($id);
+        }
 
-            if (!empty($id)) {
-                $models = KategoriAlatBerat::find($id);
-                $models->updated_by = session('userdata')['id_user'];
-            } else {
-                $models->created_by = session('userdata')['id_user'];
-            }
+        $models->nama           = $req->input('nama');
+        $models->anggaran       = $anggaran;
+        $models->forklift       = $forklift;
+        $models->end_date       = $end_date;
 
-            $models->nama           = $req->input('nama');
-            $models->anggaran       = $anggaran;
-            $models->forklift       = $forklift;
-            $models->start_date     = $start_date;
-            $models->end_date       = $end_date;
+        $models->save();
 
-            $models->save();
-
-            $this->responseCode = 200;
-            $this->responseMessage = 'Data berhasil disimpan';
-        // } else {
-        //     $this->responseCode                 = 400;
-        //     $this->responseStatus               = 'Missing Param';
-        //     $this->responseMessage              = 'Kategori forklift sudah ada pada data lain!';
-        // }
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data berhasil disimpan';
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
@@ -115,7 +99,7 @@ class KategoriAlatBeratController extends Controller
         if (!$request->ajax()) {
             return $this->accessForbidden();
         } else {
-            $res = $models::find($id);
+            $res = $models::withoutGlobalScopes()->find($id);
 
             if (!empty($res)) {
                 $this->responseCode = 200;
