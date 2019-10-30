@@ -189,6 +189,13 @@ function edit(id = '') {
                 $('#selector_pallet_kosong').prop('checked', true);
                 $('#pallet_kosong').val(obj.data['pallet_kosong']).change();
             }
+            
+            if (obj.data['pallet_rusak'] != null) {
+                $("#pallet_rusak").attr('disabled', false);
+                $("#pallet_rusak").selectpicker('refresh');
+                $('#selector_pallet_rusak').prop('checked', true);
+                $('#pallet_rusak').val(obj.data['pallet_rusak']).change();
+            }
 
             if (obj.data['upload_foto'] != null) {
                 $('#upload_foto').prop('checked', true);
@@ -233,6 +240,10 @@ function edit(id = '') {
             }
             if (obj.data['peminjaman'] != null) {
                 $('#peminjaman').prop('checked', true);
+            }
+
+            if (obj.data['pindah_area'] != null) {
+                $('#pindah_area').prop('checked', true);
             }
             
             if (obj.data['start_date'] != null) {

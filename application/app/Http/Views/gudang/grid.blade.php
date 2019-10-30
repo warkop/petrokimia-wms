@@ -124,8 +124,6 @@
                                     <div class="form-group">
                                         <label>End Date</label>
                                         <input type="text" class="form-control input-enter" id="end_date" name="end_date" readonly placeholder="Select date">
-                                        <br>
-                                        <button class="btn btn-primary btn-sm btn-icon btn-circle" id="clear"><i class="flaticon-refresh"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -283,11 +281,8 @@ $('#start_date, #end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
     format:'dd-mm-yyyy',
+    clearBtn:true,
     orientation: "bottom left"
-}).keyup(function(e) {
-    if(e.keyCode == 8 || e.keyCode == 46) {
-        $.datepicker._clearDate(this);
-    }
-});;
+});
 </script>
 @endsection

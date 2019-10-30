@@ -66,6 +66,7 @@ class AktivitasController extends Controller
         $aktivitas->pallet_stok                = $req->input('pallet_stok');
         $aktivitas->pallet_dipakai             = $req->input('pallet_dipakai');
         $aktivitas->pallet_kosong              = $req->input('pallet_kosong');
+        $aktivitas->pallet_rusak               = $req->input('pallet_rusak');
         $aktivitas->upload_foto                = $req->input('upload_foto');
         $aktivitas->connect_sistro             = $req->input('connect_sistro');
         $aktivitas->pengiriman                 = $req->input('pengiriman');
@@ -79,6 +80,7 @@ class AktivitasController extends Controller
         $aktivitas->butuh_tkbm                 = $req->input('butuh_tkbm');
         $aktivitas->tanda_tangan               = $req->input('tanda_tangan');
         $aktivitas->butuh_approval             = $req->input('butuh_approval');
+        $aktivitas->pindah_area                = $req->input('pindah_area');
         $aktivitas->start_date                 = $req->input('start_date');
         $aktivitas->end_date                   = $req->input('end_date');
 
