@@ -117,15 +117,15 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Start Date</label>
-                                        <input type="text" class="form-control input-enter" id="start_date" name="start_date" readonly
-                                            placeholder="Select date">
+                                        <input type="text" class="form-control input-enter" id="start_date" name="start_date" readonly placeholder="Select date">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>End Date</label>
-                                        <input type="text" class="form-control input-enter" id="end_date" name="end_date" readonly
-                                            placeholder="Select date">
+                                        <input type="text" class="form-control input-enter" id="end_date" name="end_date" readonly placeholder="Select date">
+                                        <br>
+                                        <button class="btn btn-primary btn-sm btn-icon btn-circle" id="clear"><i class="flaticon-refresh"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -272,6 +272,9 @@
 
 <script src="{{asset('assets/extends/js/page/gudang.js')}}" type="text/javascript"></script>
 <script>
+$("#clear").click(function(){
+    $('#end_date').data('datepicker').setDate(null);
+});
 $('#id_karu').select2({
     placeholder: "Pilih Kepala Regu",
     allowClear: true
@@ -281,6 +284,10 @@ $('#start_date, #end_date').datepicker({
     todayHighlight: true,
     format:'dd-mm-yyyy',
     orientation: "bottom left"
-});
+}).keyup(function(e) {
+    if(e.keyCode == 8 || e.keyCode == 46) {
+        $.datepicker._clearDate(this);
+    }
+});;
 </script>
 @endsection
