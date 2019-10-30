@@ -15,6 +15,7 @@ class AlterTableArea extends Migration
     {
         Schema::table('area', function (Blueprint $table) {
             $table->string('kode_area', 20)->nullable();
+            $table->integer('id_sloc')->nullable();
         });
     }
 
@@ -27,6 +28,7 @@ class AlterTableArea extends Migration
     {
         Schema::table('area', function (Blueprint $table) {
             $table->dropColumn('kode_area');
+            $table->dropColumn('id_sloc');
         });
     }
 }
