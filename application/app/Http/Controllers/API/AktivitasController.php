@@ -8,6 +8,7 @@ use App\Http\Models\Aktivitas;
 use App\Http\Models\Area;
 use App\Http\Models\Gudang;
 use App\Http\Models\Material;
+use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Resources\AktivitasResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
@@ -89,9 +90,9 @@ class AktivitasController extends Controller
         //
     }
 
-    public function store(Request $request)
+    public function store(ApiAktivitasRequest $request)
     {
-        //
+        $request->validated();
     }
 
     public function show($id)
