@@ -2,7 +2,6 @@
 
 namespace App\Http\Models;
 
-use App\Scopes\EndDateScope;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 

@@ -18,7 +18,9 @@ class AktivitasController extends Controller
     {
         $search = strip_tags($req->input('search'));
 
-        $obj =  AktivitasResource::collection(Aktivitas::paginate(10))->additional([
+        $obj =  AktivitasResource::collection(Aktivitas::where(function ($where) use ($search) {
+            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        })->paginate(10))->additional([
             'status' => ['message' => '',
             'code' => Response::HTTP_OK],
         ], Response::HTTP_OK);
@@ -28,9 +30,12 @@ class AktivitasController extends Controller
         return $obj;
     }
 
-    public function getMaterial()
+    public function getMaterial(Request $req)
     {
-        $resource = Material::produk()->get();
+        $search = strip_tags($req->input('search'));
+        $resource = Material::produk()->where(function ($where) use ($search) {
+            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
                 'message' => '',
@@ -39,9 +44,12 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
     
-    public function getPallet()
+    public function getPallet(Request $req)
     {
-        $resource = Material::pallet()->get();
+        $search = strip_tags($req->input('search'));
+        $resource = Material::pallet()->where(function ($where) use ($search) {
+            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
                 'message' => '',
@@ -50,9 +58,12 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function getGudang()
+    public function getGudang(Request $req)
     {
-        $resource = Gudang::get();
+        $search = strip_tags($req->input('search'));
+        $resource = Gudang::where(function ($where) use ($search) {
+            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
                 'message' => '',
@@ -61,9 +72,12 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function getArea()
+    public function getArea(Request $req)
     {
-        $resource = Area::get();
+        $search = strip_tags($req->input('search'));
+        $resource = Area::where(function ($where) use ($search) {
+            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
                 'message' => '',
