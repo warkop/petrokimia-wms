@@ -5,17 +5,70 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Aktivitas;
+use App\Http\Models\Area;
+use App\Http\Models\Gudang;
+use App\Http\Models\Material;
 use App\Http\Resources\AktivitasResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 
 class AktivitasController extends Controller
 {
-    public function index()
+    public function index(Request $req)
     {
-        return AktivitasResource::collection(Aktivitas::paginate(10))->additional([
+        $search = strip_tags($req->input('search'));
+
+        $obj =  AktivitasResource::collection(Aktivitas::paginate(10))->additional([
             'status' => ['message' => '',
             'code' => Response::HTTP_OK],
+        ], Response::HTTP_OK);
+
+        // dump(Aktivitas::search($search)->get());
+
+        return $obj;
+    }
+
+    public function getMaterial()
+    {
+        $resource = Material::produk()->get();
+        return (new AktivitasResource($resource))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ]
+        ], Response::HTTP_OK);
+    }
+    
+    public function getPallet()
+    {
+        $resource = Material::pallet()->get();
+        return (new AktivitasResource($resource))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ]
+        ], Response::HTTP_OK);
+    }
+
+    public function getGudang()
+    {
+        $resource = Gudang::get();
+        return (new AktivitasResource($resource))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ]
+        ], Response::HTTP_OK);
+    }
+
+    public function getArea()
+    {
+        $resource = Area::get();
+        return (new AktivitasResource($resource))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ]
         ], Response::HTTP_OK);
     }
 

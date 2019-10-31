@@ -18,6 +18,10 @@ use Illuminate\Http\Request;
 
 Route::post('/login', 'API\AuthController@authenticate');
 Route::get('aktivitas', 'API\AktivitasController@index');
+Route::get('aktivitas/get-gudang', 'API\AktivitasController@getGudang');
+Route::get('aktivitas/get-produk', 'API\AktivitasController@getMaterial');
+Route::get('aktivitas/get-pallet', 'API\AktivitasController@getPallet');
+Route::get('aktivitas/get-area', 'API\AktivitasController@getArea');
 Route::get('aktivitas/{aktivitas}', 'API\AktivitasController@show');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

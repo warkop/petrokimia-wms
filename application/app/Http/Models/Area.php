@@ -39,8 +39,6 @@ class Area extends Model
             $table->created_by = \Auth::id();
             $table->created_at = now();
         });
-
-        static::addGlobalScope(new EndDateScope);
     }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition, $id_gudang)

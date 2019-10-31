@@ -2,10 +2,13 @@
 
 namespace App\Http\Models;
 
+use Laravel\Scout\Searchable;
 use DB;
 
 class Aktivitas extends CustomModel
 {
+    use Searchable;
+
     protected $table = 'aktivitas';
     protected $primaryKey = 'id';
 
@@ -23,6 +26,25 @@ class Aktivitas extends CustomModel
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
     public $timestamps  = false;
+
+    public function searchableAs()
+    {
+        return 'nama';
+    }
+
+    public function toSearchableArray()
+    {
+        $array = $this->toArray();
+
+        // Customize array...
+
+        return $array;
+    }
+
+    public function getScoutKey()
+    {
+        return $this->nama;
+    }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
