@@ -277,8 +277,6 @@ function reset_form(method = '') {
     $('#id').change();
     $('#nama').val('');
     $('#nama').change();
-    $('#start_date').val('');
-    $('#start_date').change();
     $('#end_date').val('');
     $('#end_date').change();
 }

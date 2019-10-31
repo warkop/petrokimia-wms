@@ -332,8 +332,6 @@ function reset_form(method = '') {
     $('#berat').change();
     $('#koefisien_pallet').val('');
     $('#koefisien_pallet').change();
-    $('#start_date').val('');
-    $('#start_date').change();
     $('#end_date').val('');
     $('#end_date').change();
 }

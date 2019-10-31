@@ -2,10 +2,9 @@
 
 namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use DB;
 
-class Aktivitas extends Model
+class Aktivitas extends CustomModel
 {
     protected $table = 'aktivitas';
     protected $primaryKey = 'id';
@@ -24,21 +23,6 @@ class Aktivitas extends Model
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
     public $timestamps  = false;
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::updating(function ($table) {
-            $table->updated_by = \Auth::id();
-            $table->updated_at = date('Y-m-d H:i:s');
-        });
-
-        static::creating(function ($table) {
-            $table->created_by = \Auth::id();
-            $table->created_at = date('Y-m-d H:i:s');
-        });
-    }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {

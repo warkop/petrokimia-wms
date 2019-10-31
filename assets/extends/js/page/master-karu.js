@@ -292,8 +292,6 @@ function reset_form(method = '') {
     $('#nik').change();
     $('#no_hp').val('');
     $('#no_hp').change();
-    $('#start_date').val('');
-    $('#start_date').change();
     $('#end_date').val('');
     $('#end_date').change();
 }

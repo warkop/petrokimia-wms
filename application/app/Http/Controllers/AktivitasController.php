@@ -98,7 +98,7 @@ class AktivitasController extends Controller
         if (!$request->ajax()) {
             return $this->accessForbidden();
         } else {
-            $res = $models::find($id);
+            $res = $models::withoutGlobalScopes()->find($id);
 
             if (!empty($res)) {
                 $this->responseCode = 200;

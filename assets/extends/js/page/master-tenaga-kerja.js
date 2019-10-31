@@ -309,8 +309,6 @@ function reset_form(method = '') {
     $('#job_desk_id').change();
     $('#nomor_bpjs').val('');
     $('#nomor_bpjs').change();
-    // $('#start_date').val('');
-    // $('#start_date').change();
     $('#end_date').val('');
     $('#end_date').change();
 }

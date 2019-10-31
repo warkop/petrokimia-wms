@@ -294,8 +294,6 @@ function reset_form(method = '') {
     $('#anggaran').val('');
     $('#anggaran').change();
     $('#forklift').prop('checked', false);
-    $('#start_date').val('');
-    $('#start_date').change();
     $('#end_date').val('');
     $('#end_date').change();
 }

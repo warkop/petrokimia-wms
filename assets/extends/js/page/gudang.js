@@ -398,8 +398,6 @@ function reset_form(method = '') {
     $('#id_karu').change();
     $('.material').val('');
     $('.material').change();
-    $('#start_date').val('');
-    $('#start_date').change();
     $('#end_date').val('');
     $('#end_date').change();
 }
