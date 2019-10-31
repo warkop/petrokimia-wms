@@ -223,7 +223,8 @@ function simpan() {
 
         },
         error: function (response) {
-            var head = 'Maaf',
+            $("#btn_save").prop("disabled", false);
+            let head = 'Maaf',
                 message = 'Terjadi kesalahan koneksi',
                 type = 'error';
             laddaButton.stop();
@@ -235,17 +236,30 @@ function simpan() {
                 location.reload();
             } else {
                 if (response['status'] != 404 && response['status'] != 500) {
-                    var obj = JSON.parse(response['responseText']);
+                    let obj = JSON.parse(response['responseText']);
 
                     if (!$.isEmptyObject(obj.message)) {
-                        if (obj.code > 400) {
+                        if (obj.code > 450) {
                             head = 'Maaf';
                             message = obj.message;
                             type = 'error';
                         } else {
                             head = 'Pemberitahuan';
-                            message = obj.message;
                             type = 'warning';
+
+                            obj = response.responseJSON.errors;
+                            laddaButton.stop();
+                            window.onbeforeunload = false;
+                            $('.btn_close_modal').removeClass('hide');
+                            $('.se-pre-con').hide();
+
+                            const temp = Object.values(obj);
+                            message = '';
+                            temp.forEach(element => {
+                                element.forEach(row => {
+                                    message += row + "<br>"
+                                });
+                            });
                         }
                     }
                 }

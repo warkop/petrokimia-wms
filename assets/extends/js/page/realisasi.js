@@ -359,22 +359,49 @@ const simpan = () => {
 
         },
         error: function (response) {
-            const head = 'Pemberitahuan';
-            const type = 'warning';
-            const obj = response.responseJSON.errors;
+            $("#btn_save").prop("disabled", false);
+            let head = 'Maaf',
+                message = 'Terjadi kesalahan koneksi',
+                type = 'error';
             laddaButton.stop();
             window.onbeforeunload = false;
             $('.btn_close_modal').removeClass('hide');
             $('.se-pre-con').hide();
 
-            const temp = Object.values(obj);
-            let message = '';
-            temp.forEach(element => {
-                element.forEach(row => {
-                    message += row + "<br>"
-                });
-            });
-            swal.fire(head, message, type);
+            if (response['status'] == 401 || response['status'] == 419) {
+                location.reload();
+            } else {
+                if (response['status'] != 404 && response['status'] != 500) {
+                    let obj = JSON.parse(response['responseText']);
+
+                    if (!$.isEmptyObject(obj.message)) {
+                        if (obj.code > 450) {
+                            head = 'Maaf';
+                            message = obj.message;
+                            type = 'error';
+                        } else {
+                            head = 'Pemberitahuan';
+                            type = 'warning';
+
+                            obj = response.responseJSON.errors;
+                            laddaButton.stop();
+                            window.onbeforeunload = false;
+                            $('.btn_close_modal').removeClass('hide');
+                            $('.se-pre-con').hide();
+
+                            const temp = Object.values(obj);
+                            message = '';
+                            temp.forEach(element => {
+                                element.forEach(row => {
+                                    message += row + "<br>"
+                                });
+                            });
+                        }
+                    }
+                }
+
+                swal.fire(head, message, type);
+            }
         }
     });
 }
