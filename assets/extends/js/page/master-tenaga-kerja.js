@@ -219,16 +219,12 @@ function edit(id = '') {
 function simpan() {
     let data = $("#form1").serializeArray();
     let type = "PUT";
-    const id = $("#id").val();
-    if (id) {
-        type = "PATCH";
-    }
     $.ajax({
         type: type,
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: ajaxUrl + "/" + id,
+        url: ajaxUrl,
         data: data,
         beforeSend: function () {
             preventLeaving();
@@ -313,8 +309,8 @@ function reset_form(method = '') {
     $('#job_desk_id').change();
     $('#nomor_bpjs').val('');
     $('#nomor_bpjs').change();
-    $('#start_date').val('');
-    $('#start_date').change();
+    // $('#start_date').val('');
+    // $('#start_date').change();
     $('#end_date').val('');
     $('#end_date').change();
 }

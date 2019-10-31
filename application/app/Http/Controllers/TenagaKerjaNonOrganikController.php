@@ -59,12 +59,17 @@ class TenagaKerjaNonOrganikController extends Controller
     {
         $req->validated();
 
+        $id = $req->input('id');
+
+        if (!empty($id)) {
+            $tenagaKerjaNonOrganik = TenagaKerjaNonOrganik::withoutGlobalScopes()->find($id);
+        } 
+
         $tenagaKerjaNonOrganik->nama                   = $req->input('nama');
         $tenagaKerjaNonOrganik->nik                    = $req->input('nik');
         $tenagaKerjaNonOrganik->job_desk_id            = $req->input('job_desk_id');
         $tenagaKerjaNonOrganik->nomor_hp               = $req->input('nomor_hp');
         $tenagaKerjaNonOrganik->nomor_bpjs             = $req->input('nomor_bpjs');
-        $tenagaKerjaNonOrganik->start_date             = $req->input('start_date');
         $tenagaKerjaNonOrganik->end_date               = $req->input('end_date');
 
         $tenagaKerjaNonOrganik->save();

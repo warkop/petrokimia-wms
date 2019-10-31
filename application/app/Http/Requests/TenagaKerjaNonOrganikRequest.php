@@ -58,6 +58,7 @@ class TenagaKerjaNonOrganikRequest extends FormRequest
             'nomor_bpjs.numeric' => 'Nomor BPJS harus berupa angka!',
             'start_date.date_format'  => 'Tanggal harus dengan format tanggal-bulan-tahun',
             'end_date.date_format'  => 'Tanggal harus dengan format tanggal-bulan-tahun',
+            'end_date.after'  => 'End Date harus lebih besar dari Start Date!',
         ];
     }
 
@@ -65,14 +66,9 @@ class TenagaKerjaNonOrganikRequest extends FormRequest
     {
         $input = $this->all();
 
-        $input['nama'] = filter_var($input['nama'], FILTER_SANITIZE_STRING);
-        $input['nik'] = filter_var($input['nik'], FILTER_SANITIZE_STRING);
-        $input['nomor_hp'] = filter_var($input['nomor_hp'], FILTER_SANITIZE_STRING);
-        $input['nomor_bpjs'] = filter_var($input['nomor_bpjs'], FILTER_SANITIZE_STRING);
-        $input['start_date'] = filter_var($input['start_date'], 
-        FILTER_SANITIZE_STRING);
-        $input['end_date'] = filter_var($input['end_date'], 
-        FILTER_SANITIZE_STRING);
+        foreach ($input as $key => $value) {
+            $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
+        }
 
         if ($input['start_date'] != '') {
             $input['start_date']  = date('Y-m-d', strtotime($input['start_date']));
