@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\AlatBeratKerusakan;
+use App\Http\Requests\KerusakanRequest;
+use App\Scopes\EndDateScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -57,54 +59,22 @@ class AlatBeratKerusakanController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, AlatBeratKerusakan $models)
+    public function store(KerusakanRequest $req, AlatBeratKerusakan $models)
     {
-        $rules = [
-            'nama'              => 'required',
-            'start_date'        => 'nullable|date_format:d-m-Y',
-            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
-        ];
+       
+        $id = $req->input('id');
 
-        $action = $req->input('action');
-        if ($action == 'edit') {
-            $rules['id'] = 'required';
-        }
+        if (!empty($id)) {
+            $models = AlatBeratKerusakan::withoutGlobalScope(EndDateScope::class)->find($id);
+        } 
 
-        $validator = Validator::make($req->all(), $rules);
-        if ($validator->fails()) {
-            $this->responseCode                 = 400;
-            $this->responseStatus               = 'Missing Param';
-            $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
-            $this->responseData['error_log']    = $validator->errors();
-        } else {
-            $id = $req->input('id');
+        $models->nama       = $req->input('nama');
+        $models->end_date   = $req->input('end_date');
 
-            $start_date  = null;
-            if ($req->input('start_date') != '') {
-                $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            }
+        $models->save();
 
-            $end_date   = null;
-            if ($req->input('end_date') != '') {
-                $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
-            }
-
-            if (!empty($id)) {
-                $models = AlatBeratKerusakan::find($id);
-                $models->updated_by = session('userdata')['id_user'];
-            } else {
-                $models->created_by = session('userdata')['id_user'];
-            }
-
-            $models->nama       = strip_tags($req->input('nama'));
-            $models->start_date = $start_date;
-            $models->end_date   = $end_date;
-
-            $models->save();
-
-            $this->responseCode = 200;
-            $this->responseMessage = 'Data berhasil disimpan';
-        }
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data berhasil disimpan';
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
@@ -115,7 +85,7 @@ class AlatBeratKerusakanController extends Controller
         if (!$request->ajax()) {
             return $this->accessForbidden();
         } else {
-            $res = $models::find($id);
+            $res = $models::withoutGlobalScope(EndDateScope::class)->find($id);
 
             if (!empty($res)) {
                 $this->responseCode = 200;
