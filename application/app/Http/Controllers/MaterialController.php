@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Material;
 use App\Http\Requests\MaterialRequest;
-use App\Scopes\EndDateScope;
 use Illuminate\Http\Request;
 
 class MaterialController extends Controller
@@ -57,6 +56,11 @@ class MaterialController extends Controller
     {
         $req->validate();
 
+        $id = $req->input('id');
+        if (!empty($id)) {
+            $material = Material::withoutGlobalScopes()->find($id);
+        }
+
         $material->id_material_sap    = $req->input('id_material_sap');
         $material->nama               = $req->input('nama');
         $material->kategori           = $req->input('kategori');
@@ -79,7 +83,7 @@ class MaterialController extends Controller
         if (!$request->ajax()) {
             return $this->accessForbidden();
         } else {
-            $res = $models::withoutGlobalScope(EndDateScope::class)->find($id);
+            $res = $models::withoutGlobalScopes()->find($id);
 
             if (!empty($res)) {
                 $this->responseCode = 200;

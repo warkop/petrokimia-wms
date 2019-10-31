@@ -238,16 +238,12 @@ function simpan() {
     let data = $("#form1").serializeArray();
     $('#btn_save').prop('disabled', true);
     let type = "PUT";
-    const id = $("#id").val();
-    if (id) {
-        type = "PATCH";
-    }
     $.ajax({
         type: type,
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: ajaxUrl + "/" + id,
+        url: ajaxUrl,
         data: data,
         beforeSend: function () {
             preventLeaving();

@@ -24,6 +24,21 @@ class Material extends CustomModel
 
     public $timestamps  = true;
 
+    public function scopeProduk($query)
+    {
+        return $query->where('kategori', 1);
+    }
+
+    public function scopePallet($query)
+    {
+        return $query->where('kategori', 2);
+    }
+
+    public function scopeLainlain($query)
+    {
+        return $query->where('kategori', 3);
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('material')
