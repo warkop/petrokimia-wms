@@ -23,12 +23,9 @@ class Users extends Authenticatable
         'password', 'created_at', 'created_by', 'updated_at', 'updated_by'
     ];
 
-    // protected $dateFormat = 'U';
-    protected $casts = [
-        'start_date' => 'date',
-    ];
-
     protected $dates = ['start_date', 'end_date'];
+
+    public $timestamps  = false;
 
     protected static function boot()
     {
@@ -37,7 +34,9 @@ class Users extends Authenticatable
         static::updating(function ($table) {
             $table->updated_by = \Auth::id();
             $table->updated_at = now();
+        });
 
+        static::saving(function ($table) {
             if ($table->start_date == null) {
                 $table->start_date = now();
             }
@@ -45,7 +44,6 @@ class Users extends Authenticatable
 
         static::creating(function ($table) {
             $table->created_by = \Auth::id();
-            $table->start_date = now();
             $table->created_at = now();
         });
 

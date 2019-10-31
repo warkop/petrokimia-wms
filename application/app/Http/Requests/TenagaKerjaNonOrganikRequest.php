@@ -70,12 +70,6 @@ class TenagaKerjaNonOrganikRequest extends FormRequest
             $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
         }
 
-        if ($input['start_date'] != '') {
-            $input['start_date']  = date('Y-m-d', strtotime($input['start_date']));
-        } else {
-            $input['start_date'] = null;
-        }
-
         if ($input['end_date'] != '') {
             $input['end_date']   = date('Y-m-d', strtotime($input['end_date']));
         } else {

@@ -14,7 +14,9 @@ class CustomModel extends Model
         static::updating(function ($table) {
             $table->updated_by = \Auth::id();
             $table->updated_at = now();
+        });
 
+        static::saving(function ($table) {
             if ($table->start_date == null) {
                 $table->start_date = now();
             }
@@ -22,7 +24,6 @@ class CustomModel extends Model
 
         static::creating(function ($table) {
             $table->created_by = \Auth::id();
-            $table->start_date = now();
             $table->created_at = now();
         });
 

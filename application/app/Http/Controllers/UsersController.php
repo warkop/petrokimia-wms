@@ -6,6 +6,7 @@ use App\Http\Models\Karu;
 use App\Http\Models\Users;
 use App\Http\Models\Role;
 use App\Http\Models\TenagaKerjaNonOrganik;
+use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -62,81 +63,40 @@ class UsersController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, Users $models)
+    public function store(UserRequest $req, Users $models)
     {
+        $req->validated();
         $role = $req->input('role_id');
         $id   = $req->input('id');
 
-        $rules = [
-            'username'      => [
-                'required',
-                Rule::unique('users', 'username')->ignore($id, 'id')
-            ],
-            'email'         => 'email',
-            'role_id'       => [
-                'required',
-                // Rule::exists('role')->where(function ($query) use ($role) {
-                //     $query->where('id',  $role);
-                // })
-            ],
-            'start_date'    => 'nullable|date_format:d-m-Y',
-            'end_date'      => 'nullable|date_format:d-m-Y|after:start_date',
-        ];
+        $nama   = $req->input('nama');
+        $username   = $req->input('username');
+        $email      = $req->input('email');
+        $pilih   = $req->input('pilih');
+        $end_date   = $req->input('end_date');
 
-        $action = $req->input('action');
-        if ($action == 'edit') {
-            $rules['id'] = 'required';
-        }
-
-        $validator = Validator::make($req->all(), $rules);
-        if ($validator->fails()) {
-            $this->responseCode                 = 400;
-            $this->responseStatus               = 'Missing Param';
-            $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
-            $this->responseData['error_log']    = $validator->errors();
+        if (!empty($id)) {
+            $models = Users::withoutGlobalScopes()->find($id);
         } else {
-            $nama   = $req->input('nama');
-            $username   = $req->input('username');
-            $email      = $req->input('email');
-            $pilih   = $req->input('pilih');
-
-            if (!empty($id)) {
-                $models = Users::find($id);
-                $models->updated_by = session('userdata')['id_user'];
-            } else {
-                $password   = $req->input('password');
-                $models->created_by = session('userdata')['id_user'];
-            }
-
-            $start_date  = null;
-            if ($req->input('start_date') != '') {
-                $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            }
-
-            $end_date   = null;
-            if ($req->input('end_date') != '') {
-                $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
-            }
-
-            if ($role == 5) {
-                $models->id_karu    = strip_tags($pilih);    
-            } else {
-                $models->id_tkbm    = strip_tags($pilih);    
-            }
-
-            $models->role_id        = strip_tags($role);
-            $models->name           = strip_tags($nama);
-            $models->username       = strip_tags($username);
-            $models->email          = strip_tags($email);
-            $models->password       = strip_tags(bcrypt($password));
-            $models->start_date     = $start_date;
-            $models->end_date       = $end_date;
-
-            $models->save();
-
-            $this->responseCode = 200;
-            $this->responseMessage = 'Data berhasil disimpan';
+            $password               = $req->input('password');
+            $models->password       = bcrypt($password);
         }
+
+        if ($role == 5) {
+            $models->id_karu    = $pilih;    
+        } else if ($role == 1) {
+            $models->id_tkbm    = $pilih;    
+        }
+        $models->role_id        = $role;
+        $models->name           = $nama;
+        $models->username       = $username;
+        $models->email          = $email;
+        $models->end_date       = $req->input('end_date');
+
+        $models->save();
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data berhasil disimpan';
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
@@ -164,7 +124,7 @@ class UsersController extends Controller
         if (!$request->ajax()) {
             return $this->accessForbidden();
         } else {
-            $res = $models::find($id);
+            $res = $models::withoutGlobalScopes()->find($id);
 
             if (!empty($res)) {
                 $this->responseCode = 200;
