@@ -60,7 +60,6 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     Route::group(['prefix' => 'master-tenaga-kerja-nonorganik', 'middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/', 'TenagaKerjaNonOrganikController@index');
         Route::put('/', 'TenagaKerjaNonOrganikController@store');
-        Route::patch('/{tenagaKerjaNonOrganik}', 'TenagaKerjaNonOrganikController@store');
         Route::post('/', 'TenagaKerjaNonOrganikController@json');
         Route::get('/{id}', 'TenagaKerjaNonOrganikController@show');
         Route::delete('/{id}', 'TenagaKerjaNonOrganikController@destroy');

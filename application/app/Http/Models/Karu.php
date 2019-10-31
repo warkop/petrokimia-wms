@@ -2,12 +2,9 @@
 
 namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Scopes\EndDateScope;
-
 use DB;
 
-class Karu extends Model
+class Karu extends CustomModel
 {
     protected $table = 'karu';
     protected $primaryKey = 'id';
@@ -26,21 +23,6 @@ class Karu extends Model
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
     public $timestamps  = false;
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::updating(function ($table) {
-            $table->updated_by = \Auth::id();
-        });
-
-        static::creating(function ($table) {
-            $table->created_by = \Auth::id();
-        });
-
-        // static::addGlobalScope(new EndDateScope);
-    }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {

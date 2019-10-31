@@ -2,11 +2,9 @@
 
 namespace App\Http\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 use DB;
 
-class JenisFoto extends Model
+class JenisFoto extends CustomModel
 {
     protected $table = 'foto_jenis';
     protected $primaryKey = 'id';
@@ -25,22 +23,6 @@ class JenisFoto extends Model
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
     public $timestamps  = false;
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::updating(function ($table) {
-            $table->updated_by = \Auth::id();
-        });
-
-        static::creating(function ($table) {
-            $table->created_by = \Auth::id();
-            $table->created_at = date('Y-m-d H:i:s');
-        });
-
-        // static::addGlobalScope(new EndDateScope);
-    }
 
     public function jsonGrid($start=0, $length=10, $search = '', $count = false, $sort='asc', $field='id', $condition)
     {
