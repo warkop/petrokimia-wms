@@ -122,10 +122,9 @@ class GudangController extends Controller
                     if (!empty($resource)) {
                         StokMaterial::where('id_gudang', $models->id)
                             ->where('id_material', $material[$i])
-                            ->update(['stok_min' => $stok_min[$i]]);
+                        ->update(['stok_min' => $stok_min[$i]]);
                         // $resource->stok_min = $stok_min[$i];
                         // $resource->save();
-                        // print_r($resource->stok_min);
                     } else {
                         $stok_material = new StokMaterial();
 
@@ -133,13 +132,8 @@ class GudangController extends Controller
                         $stok_material->id_material = $material[$i];
                         $stok_material->stok_min = $stok_min[$i];
                         $stok_material->save();
-                        // echo 'assegfdh';
                     }
                 }
-
-                // $stok_material = new StokMaterial();
-                // print_r($stok_material);
-
                 $this->responseCode = 200;
                 $this->responseMessage = 'Data berhasil disimpan';
             }
@@ -164,7 +158,7 @@ class GudangController extends Controller
         if (!$request->ajax()) {
             return $this->accessForbidden();
         } else {
-            $res = $models::find($id);
+            $res = $models::withoutGlobalScopes()->find($id);
 
             if (!empty($res)) {
                 $this->responseCode = 200;

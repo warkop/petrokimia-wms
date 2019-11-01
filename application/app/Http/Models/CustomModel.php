@@ -7,6 +7,37 @@ use App\Scopes\EndDateScope;
 
 class CustomModel extends Model
 {
+    private function specialColumn($column, $value)
+    {
+        switch ($column) {
+            case 'tipe_gudang':
+                if ($value == 1) {
+                    return 'Internal';
+                } else if ($value == 2) {
+                    return 'Eksternal';
+                } else {
+                    return 'kosong';
+                }
+                break;
+            case 'id_karu':
+                if ($value == '') {
+                    return 'kosong';
+                }
+                
+                $res = Karu::withoutGlobalScopes()->find($value);
+                return $res->nama;
+                break;
+            default:
+                return $value;
+                break;
+        }
+    }
+
+    public function bar()
+    {
+        return get_class($this);
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -16,14 +47,16 @@ class CustomModel extends Model
 
             if ($changes) {
                 foreach ($changes as $attr => $value) {
-                    $old = $table->getOriginal($attr)??'kosong';
-                    $new = $table->$attr??'kosong';
-                    
+                    // $old = $table->getOriginal($attr)??'kosong';
+                    // $new = $table->$attr??'kosong';
+
+                    $old = (new CustomModel)->specialColumn($attr, $table->getOriginal($attr));
+                    $new = (new CustomModel)->specialColumn($attr, $table->$attr);
 
                     $arr = [
-                        'modul' => $table->table,
+                        'modul' => ucwords(str_replace('_', ' ', $table->table)),
                         'action' => 2,
-                        'aktivitas' => 'Mengubah '.$table->table.' '.$attr.' dari '.$old.' menjadi '.$new,
+                        'aktivitas' => 'Mengubah data '.ucwords(str_replace('_', ' ', $table->table)).' dengan ID '.$table->id.' pada '.$attr.' dari '.$old.' menjadi '.$new,
                         'created_at' => now(),
                         'created_by' => \Auth::id(),
                     ];
@@ -43,9 +76,9 @@ class CustomModel extends Model
 
         static::creating(function ($table) {
             $arr = [
-                'modul' => $table->table,
+                'modul' => ucwords(str_replace('_', ' ', $table->table)),
                 'action' => 1,
-                'aktivitas' => 'Menambah data ' . $table->table,
+                'aktivitas' => 'Menambah data ' . ucwords(str_replace('_', ' ', $table->table)).' dengan nama '.($table->nama),
                 'created_at' => now(),
                 'created_by' => \Auth::id(),
             ];
