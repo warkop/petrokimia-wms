@@ -24,25 +24,6 @@ class Aktivitas extends CustomModel
 
     public $timestamps  = false;
 
-    public function searchableAs()
-    {
-        return 'nama';
-    }
-
-    public function toSearchableArray()
-    {
-        $array = $this->toArray();
-
-        // Customize array...
-
-        return $array;
-    }
-
-    public function getScoutKey()
-    {
-        return $this->nama;
-    }
-
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('aktivitas')

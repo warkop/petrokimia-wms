@@ -69,10 +69,10 @@ class UsersController extends Controller
         $role = $req->input('role_id');
         $id   = $req->input('id');
 
-        $nama   = $req->input('nama');
+        $nama       = $req->input('nama');
         $username   = $req->input('username');
         $email      = $req->input('email');
-        $pilih   = $req->input('pilih');
+        $pilih      = $req->input('pilih');
         $end_date   = $req->input('end_date');
 
         if (!empty($id)) {
@@ -87,11 +87,12 @@ class UsersController extends Controller
         } else if ($role == 1) {
             $models->id_tkbm    = $pilih;    
         }
+        
         $models->role_id        = $role;
         $models->name           = $nama;
         $models->username       = $username;
         $models->email          = $email;
-        $models->end_date       = $req->input('end_date');
+        $models->end_date       = $end_date;
 
         $models->save();
 
