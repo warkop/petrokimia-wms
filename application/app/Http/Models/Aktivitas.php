@@ -2,13 +2,10 @@
 
 namespace App\Http\Models;
 
-use Laravel\Scout\Searchable;
 use DB;
 
 class Aktivitas extends CustomModel
 {
-    use Searchable;
-
     protected $table = 'aktivitas';
     protected $primaryKey = 'id';
 
