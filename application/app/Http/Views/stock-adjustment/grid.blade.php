@@ -43,7 +43,7 @@
 
 
 <!--begin::Modal-->
-<div class="modal fade" id="kt_modal_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="kt_modal_1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -62,10 +62,10 @@
                             </div>
                             <div class="form-group">
                                 <label>Foto</label>
-                                <div class="kt-dropzone dropzone" action="inc/api/dropzone/upload.php" id="m-dropzone-one">
+                                <div class="kt-dropzone dropzone" id="m-dropzone-one">
                                     <div class="kt-dropzone__msg dz-message needsclick">
-                                        <h3 class="kt-dropzone__msg-title">Drop files here or click to upload.</h3>
-                                        <span class="kt-dropzone__msg-desc">This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.</span>
+                                        <h3 class="kt-dropzone__msg-title">Seret berkas atau klik untuk mengunggah</h3>
+                                        <span class="kt-dropzone__msg-desc">Hanya berkas dengan format <strong>jpg, png, jpeg, gif</strong> yang diizinkan untuk diunggah</span>
                                     </div>
                                 </div>
                             </div>
@@ -73,18 +73,18 @@
                     </div>
                     <div class="mt-2">
                         <h5>List produk</h5>
-                        <table class="table">
+                        <table class="table" id="table_produk">
                             <thead>
                                 <tr>
                                     <th width="">No</th>
                                     <th width="">Nama</th>
                                     <th width="25%">Jenis</th>
                                     <th width="25%">Jumlah</th>
-                                    <th width=""><button class="btn btn-success btn-elevate btn-icon btn-sm"><i class="la la-plus"></i></button></th>
+                                    <th width=""><button type="button" class="btn btn-success btn-elevate btn-icon btn-sm" onclick="tambahProduk()"><i class="la la-plus"></i></button></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                {{-- <tr>
                                     <td>1</td>
                                     <td>
                                         <select class="form-control m-select2" id="kt_select2_produk" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
@@ -105,8 +105,8 @@
                                     <td>
                                         <button class="btn btn-danger btn-elevate btn-icon btn-sm"><i class="la la-trash"></i></button>
                                     </td>
-                                </tr>
-                                <tr>
+                                </tr> --}}
+                                {{-- <tr>
                                     <td>2</td>
                                     <td>
                                         <select class="form-control m-select2" id="kt_select2_produk2" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
@@ -127,24 +127,24 @@
                                     <td>
                                         <button class="btn btn-danger btn-elevate btn-icon btn-sm"><i class="la la-trash"></i></button>
                                     </td>
-                                </tr>
+                                </tr> --}}
                             </tbody>
                         </table>
                     </div>
                     <div class="mt-4">
                         <h5>List pallet</h5>
-                        <table class="table">
+                        <table class="table" id="table_pallet">
                             <thead>
                                 <tr>
                                     <th width="">No</th>
                                     <th width="">Nama</th>
                                     <th width="25%">Jenis</th>
                                     <th width="25%">Jumlah</th>
-                                    <th width=""><button class="btn btn-success btn-elevate btn-icon btn-sm"><i class="la la-plus"></i></button></th>
+                                    <th width=""><button type="button" onclick="tambahPallet()" class="btn btn-success btn-elevate btn-icon btn-sm"><i class="la la-plus"></i></button></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                {{-- <tr>
                                     <td>1</td>
                                     <td>
                                         <select class="form-control m-select2" id="kt_select2_pallet3" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
@@ -165,11 +165,11 @@
                                     <td>
                                         <button class="btn btn-danger btn-elevate btn-icon btn-sm"><i class="la la-trash"></i></button>
                                     </td>
-                                </tr>
+                                </tr> --}}
                             </tbody>
                         </table>
                     </div>
-                    <div class="mt-4">
+                    {{-- <div class="mt-4">
                         <h5>List terplas</h5>
                         <table class="table">
                             <thead>
@@ -206,7 +206,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
@@ -219,7 +219,7 @@
 <!--end::Modal-->
 
 
-<script src="{{asset('assets/extends/js/page/stok-adjustment.js')}}" type="text/javascript"></script>
+<script src="{{asset('assets/extends/js/page/stock-adjustment.js')}}" type="text/javascript"></script>
 <script>
 $('.kt-selectpicker').selectpicker();
 $('#kt_select2_produk, #kt_select2_produk2, #kt_select2_pallet3, #kt_select2_terplas4').select2({
@@ -228,6 +228,7 @@ $('#kt_select2_produk, #kt_select2_produk2, #kt_select2_pallet3, #kt_select2_ter
 $('#tanggal').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
+    format:'dd-mm-yyyy',
     clearBtn:true,
     orientation: "bottom left"
 });

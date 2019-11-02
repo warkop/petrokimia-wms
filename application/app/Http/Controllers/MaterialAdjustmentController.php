@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Gudang;
+use App\Http\Models\Material;
 use App\Http\Models\MaterialAdjustment;
 use App\Http\Models\MaterialTrans;
 use Illuminate\Http\Request;
@@ -19,7 +20,6 @@ class MaterialAdjustmentController extends Controller
         } else {
             abort(404);
         }
-
     }
 
     public function json(Request $req)
@@ -86,5 +86,10 @@ class MaterialAdjustmentController extends Controller
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
+    }
+
+    public function uploadFile($id_material_adjustment)
+    {
+        
     }
 }

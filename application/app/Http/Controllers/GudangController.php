@@ -175,6 +175,20 @@ class GudangController extends Controller
         }
     }
 
+    public function getProduk()
+    {
+        $data = Material::produk()->get();
+
+        return response()->render(200, $data);
+    }
+
+    public function getPallet()
+    {
+        $data = Material::pallet()->get();
+
+        return response()->render(200, $data);
+    }
+
     public function edit(Gudang $gudang)
     {
         //

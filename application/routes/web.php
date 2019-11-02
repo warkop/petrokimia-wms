@@ -127,6 +127,8 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     Route::group(['prefix' => 'gudang'], function () {
         Route::get('/', 'GudangController@index');
         Route::get('/load-pallet', 'GudangController@loadPallet');
+        Route::get('/get-produk', 'GudangController@getProduk');
+        Route::get('/get-pallet', 'GudangController@getPallet');
         Route::put('/', 'GudangController@store');
         Route::post('/', 'GudangController@json');
         Route::get('/load-material/{id_gudang}', 'GudangController@loadMaterial');
