@@ -7,7 +7,7 @@ use DB;
 
 class MaterialAdjustment extends Model
 {
-    protected $table = 'material_adjusment';
+    protected $table = 'material_adjustment';
     protected $primaryKey = 'id';
 
     protected $guard = [

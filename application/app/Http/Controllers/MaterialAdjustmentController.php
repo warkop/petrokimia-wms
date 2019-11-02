@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Gudang;
-use App\Http\Models\MaterialAdjusment;
+use App\Http\Models\MaterialAdjustment;
 use App\Http\Models\MaterialTrans;
 use Illuminate\Http\Request;
 
@@ -11,11 +11,11 @@ class MaterialAdjustmentController extends Controller
 {
     public function index($id)
     {
-        $data['title'] = 'Stok Adjusment';
+        $data['title'] = 'Stock Adjustment';
 
         $gudang = Gudang::find($id);
         if (!empty($gudang)) {
-            return view('stok-adjusment.grid', $data);
+            return view('stock-adjustment.grid', $data);
         } else {
             abort(404);
         }
@@ -24,7 +24,7 @@ class MaterialAdjustmentController extends Controller
 
     public function json(Request $req)
     {
-        $models = new MaterialAdjusment();
+        $models = new MaterialAdjustment();
 
         $numbcol = $req->get('order');
         $columns = $req->get('columns');
@@ -58,26 +58,26 @@ class MaterialAdjustmentController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(MaterialRequest $req, MaterialAdjusment $materialAdjusment)
+    public function store(MaterialRequest $req, MaterialAdjustment $materialAdjustment)
     {
         $req->validate();
 
         $id = $req->input('id');
         if (!empty($id)) {
-            $materialAdjusment = MaterialAdjusment::withoutGlobalScopes()->find($id);
+            $materialAdjustment = MaterialAdjustment::withoutGlobalScopes()->find($id);
         }
 
         //material adjusment
-        $materialAdjusment->tanggal            = $req->input('tanggal');
-        // $materialAdjusment->foto               = $req->input('foto');
-        $materialAdjusment->save();
+        $materialAdjustment->tanggal            = $req->input('tanggal');
+        // $materialAdjustment->foto               = $req->input('foto');
+        $materialAdjustment->save();
 
         //material trans
         $id_material = $req->input('id_material');
 
         foreach ($id_material as $key => $value) {
             $materialTrans = new MaterialTrans;
-            $materialTrans->id_adjusment    = $materialAdjusment->id;
+            $materialTrans->id_adjusment    = $materialAdjustment->id;
             $materialTrans->id_material     = $value;
         }
 

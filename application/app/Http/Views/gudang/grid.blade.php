@@ -270,9 +270,6 @@
 
 <script src="{{asset('assets/extends/js/page/gudang.js')}}" type="text/javascript"></script>
 <script>
-$("#clear").click(function(){
-    $('#end_date').data('datepicker').setDate(null);
-});
 $('#id_karu').select2({
     placeholder: "Pilih Kepala Regu",
     allowClear: true

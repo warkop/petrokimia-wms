@@ -134,7 +134,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::delete('/{id}', 'GudangController@destroy');
         
         Route::group(['prefix' => 'stock-adjustment'], function () {
-            Route::get('/{id_gudang}', 'MaterialAdjustmentController@index');
+            Route::get('/{id_gudang}', 'MaterialAdjustmentController@index')->where('id_gudang', '[0-9]+');
         });
     });
 

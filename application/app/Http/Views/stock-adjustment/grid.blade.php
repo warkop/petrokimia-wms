@@ -12,10 +12,10 @@
 			<div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
                     {{-- <i class="la la-group"></i> &nbsp; --}}
-                    Stok Adjustment
+                    Stock Adjustment
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah data stok adjustment yang terdapat pada <span class="text-ungu kt-font-bolder">Gudang A.</span>
+                    Berikut ini adalah data stock adjustment yang terdapat pada <span class="text-ungu kt-font-bolder">Gudang A.</span>
                 </p>
             </div>
 			<div class="kt-portlet__head-toolbar">
@@ -58,7 +58,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Tanggal</label>
-                                <input type="text" class="form-control" id="end_date" readonly placeholder="Select date">
+                                <input type="text" class="form-control" id="tanggal" readonly placeholder="Select date">
                             </div>
                             <div class="form-group">
                                 <label>Foto</label>
@@ -225,9 +225,10 @@ $('.kt-selectpicker').selectpicker();
 $('#kt_select2_produk, #kt_select2_produk2, #kt_select2_pallet3, #kt_select2_terplas4').select2({
     placeholder: "Select"
 });
-$('#start_date, #end_date').datepicker({
+$('#tanggal').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
+    clearBtn:true,
     orientation: "bottom left"
 });
 </script>
