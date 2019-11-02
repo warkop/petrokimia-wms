@@ -346,7 +346,7 @@ function helpResponse($code, $data = NULL, $msg = '', $status = '')
 		break;
 		case '401':
 			$s = 'Unauthorized';
-			$mm = 'Silahkan login terlebih dahulu';
+			$m = 'Silahkan login terlebih dahulu';
 		break;
 		case '403':
 			$s = 'Forbidden';
