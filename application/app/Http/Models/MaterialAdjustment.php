@@ -5,7 +5,7 @@ namespace App\Http\Models;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
-class MaterialAdjusment extends Model
+class MaterialAdjustment extends Model
 {
     protected $table = 'material_adjusment';
     protected $primaryKey = 'id';

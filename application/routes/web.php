@@ -133,8 +133,8 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/{id}', 'GudangController@show');
         Route::delete('/{id}', 'GudangController@destroy');
         
-        Route::group(['prefix' => 'stock-adjusment'], function () {
-            Route::get('/{id_gudang}', 'MaterialAdjusmentController@index');
+        Route::group(['prefix' => 'stock-adjustment'], function () {
+            Route::get('/{id_gudang}', 'MaterialAdjustmentController@index');
         });
     });
 

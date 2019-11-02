@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Models\Gudang;
 use App\Http\Models\MaterialAdjusment;
 use App\Http\Models\MaterialTrans;
 use Illuminate\Http\Request;
 
-class MaterialAdjusmentController extends Controller
+class MaterialAdjustmentController extends Controller
 {
     public function index($id)
     {
