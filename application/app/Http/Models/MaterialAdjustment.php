@@ -18,6 +18,8 @@ class MaterialAdjustment extends Model
         'updated_by',
     ];
 
+    public $timestamps  = false;
+
     protected static function boot()
     {
         parent::boot();

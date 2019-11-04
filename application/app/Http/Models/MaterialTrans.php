@@ -17,6 +17,8 @@ class MaterialTrans extends Model
         'updated_by',
     ];
 
+    public $timestamps  = false;
+
     protected static function boot()
     {
         parent::boot();
@@ -41,8 +43,8 @@ class MaterialTrans extends Model
                 }
             }
 
-            $table->updated_by = \Auth::id();
-            $table->updated_at = now();
+            // $table->updated_by = \Auth::id();
+            // $table->updated_at = now();
         });
 
         static::creating(function ($table) {
@@ -55,8 +57,8 @@ class MaterialTrans extends Model
             ];
             (new LogActivity)->log($arr);
 
-            $table->created_by = \Auth::id();
-            $table->created_at = now();
+            // $table->created_by = \Auth::id();
+            // $table->created_at = now();
         });
     }
 }

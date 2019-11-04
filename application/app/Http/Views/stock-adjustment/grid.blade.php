@@ -20,7 +20,7 @@
             </div>
 			<div class="kt-portlet__head-toolbar">
 				<div class="kt-portlet__head-group pt-4">
-					<a href="#" class="btn btn-wms btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
+					<button type="button" class="btn btn-wms btn-elevate btn-elevate-air" onclick="tambah()"><i class="la la-plus"></i> Tambah Data</button>
 				</div>
 			</div>
 		</div>
@@ -43,7 +43,7 @@
 
 
 <!--begin::Modal-->
-<div class="modal fade" id="kt_modal_1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade btn_close_modal" id="modal_form" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -58,7 +58,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Tanggal</label>
-                                <input type="text" class="form-control" id="tanggal" readonly placeholder="Select date">
+                                <input type="text" class="form-control" name="tanggal" id="tanggal" readonly placeholder="Select date">
                             </div>
                             <div class="form-group">
                                 <label>Foto</label>
@@ -168,5 +168,7 @@ $('#tanggal').datepicker({
     clearBtn:true,
     orientation: "bottom left"
 });
+
+const id_gudang = {{$id_gudang}}
 </script>
 @endsection

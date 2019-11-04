@@ -49,7 +49,7 @@ const dropzoneOptions = {
 const myDropzone = new Dropzone('#m-dropzone-one', dropzoneOptions);
 
 $(document).ready(function () {
-    // load_table();
+    load_table();
 
     if (typeof datatable !== 'undefined') {
         datatable.on('draw.dt', function () {
@@ -83,7 +83,7 @@ const load_table = function () {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            url: ajaxSource,
+            url: ajaxSource + "/stock-adjustment/" + id_gudang,
             method: "POST",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -94,19 +94,10 @@ const load_table = function () {
             "mData": "id"
         },
         {
-            "mData": "id_sloc"
+            "mData": "tanggal"
         },
         {
-            "mData": "id_plant"
-        },
-        {
-            "mData": "nama"
-        },
-        {
-            "mData": "tipe_gudang"
-        },
-        {
-            "mData": "jumlah"
+            "mData": null
         },
         {
             "mData": "id"
@@ -130,38 +121,25 @@ const load_table = function () {
                 return counter;
             }
         },
-        {
-            "aTargets": [4],
-            // title: 'Jumlah Pupuk',
-            "orderable": true,
-            render: function (data, type, full, meta) {
-                let result = '';
-                if (full.tipe_gudang == 1) {
-                    result = "Internal";
-                } else {
-                    result = "Eksternal";
-                }
-                // var result = '<a href="" data-toggle="modal" data-target="#kt_modal_pupuk">' + data + '</a>';
-                return result;
-            },
-        },
-        {
-            "aTargets": [6],
-            "mData": "id",
-            "orderable": false,
-            render: function (data, type, full, meta) {
-                return `
-                        <button class="btn btn-orens btn-elevate btn-elevate-air dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Actions
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="` + ajaxSource + `/stock-adjustment/${full.id}"><i class="flaticon-cogwheel-1"></i> Stok adjustment</a> 
-                            <a class="dropdown-item" href="${baseUrl + 'list-area/' + full.id}"><i class="flaticon-symbol"></i> List area</a>
-                            <a class="dropdown-item" href="` + baseUrl + `list-pallet"><i class="flaticon-layers"></i> List pallet</a>
-                            <button class="dropdown-item" onclick="edit(${full.id})" data-toggle="modal" data-target="#kt_modal_1"><i class="flaticon-edit-1"></i> Edit data</button>
-                        </div>`;
-            },
-        }
+            {
+                className: 'text-center',
+                targets: -1,
+                title: 'Actions',
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return `
+                            <button type = "button" class="btn btn-orens btn-elevate btn-icon" onclick="edit(${full.id})" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
+                            <i class="flaticon-edit-1"></i> </button>
+                        <button type = "button" onclick="showme()" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i class="flaticon-delete"></i> </button>`;
+                },
+            }, {
+                className: 'text-center',
+                targets: -2,
+                render: function (data, type, full, meta) {
+                    var image = '<a class="fancybox" rel="ligthbox" href="' + data + '"><img class="img-responsive" width="100px" src="' + data + '" alt=""></a>';
+                    return image;
+                },
+            }
         ],
         "fnHeaderCallback": function (nHead, aData, iStart, iEnd, aiDisplay) {
             $(nHead).children('th:nth-child(1), th:nth-child(2), th:nth-child(3)').addClass('text-center');
@@ -209,6 +187,7 @@ function tambahProduk() {
     protectNumber(`#produk-jumlah-${rows}`, 10);
 
     getProduk(`#produk-${rows}`);
+    $(`#produk-${rows}`).val(id);
 }
 
 function hapusProduk(id) {
@@ -219,7 +198,7 @@ function hapusProduk(id) {
     }
 }
 
-function tambahPallet() {
+function tambahPallet(id='') {
     const tableId = "table_pallet";
     const rows = document.getElementById(tableId).getElementsByTagName("tr").length;
 
@@ -335,6 +314,188 @@ function checkPallet(target) {
     }
 }
 
+function edit(id = '') {
+    $('#id').val(id);
+    $('#action').val('edit');
+    $('#btn_save').html('Simpan Data');
+    $('#modal_form .modal-title').html('Edit Data Kategori Alat Berat');
+    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk mengubah data master Kategori Alat Berat sesuai kebutuhan.');
+    $('#modal_form').modal({
+        backdrop: 'static',
+        keyboard: false
+    }, 'show');
+
+    $.ajax({
+        type: "GET",
+        url: ajaxUrl + "/stock-adjustment/"+id_gudang + "/" + id,
+        beforeSend: function () {
+            preventLeaving();
+            $('.btn_close_modal').addClass('hide');
+            $('.se-pre-con').show();
+        },
+        success: function (response) {
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            let obj_adjustment = response.data.material_adjustment;
+            let obj_trans = response.data.material_trans;
+
+            console.log(obj_adjustment)
+            console.log(obj_trans)
+            if (obj_adjustment.tanggal != null) {
+                $('#tanggal').val(helpDateFormat(obj_adjustment.tanggal, 'si'));
+            }
+
+            obj_trans.forEach(element => {
+                tambahProduk();
+            });
+        },
+        error: function (response) {
+            let head = 'Maaf',
+                message = 'Terjadi kesalahan koneksi',
+                type = 'error';
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            if (response['status'] == 401 || response['status'] == 419) {
+                location.reload();
+            } else {
+                if (response['status'] != 404 && response['status'] != 500) {
+                    let obj = JSON.parse(response['responseText']);
+
+                    if (!$.isEmptyObject(obj.message)) {
+                        if (obj.code > 400) {
+                            head = 'Maaf';
+                            message = obj.message;
+                            type = 'error';
+                        } else {
+                            head = 'Pemberitahuan';
+                            message = obj.message;
+                            type = 'warning';
+                        }
+                    }
+                }
+
+                swal.fire(head, message, type);
+            }
+        }
+    });
+}
+
+function simpan() {
+    let data = $("#form1").serializeArray();
+    $.ajax({
+        type: "PUT",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: ajaxUrl +"/stock-adjustment/"+id_gudang,
+        data: data,
+        beforeSend: function () {
+            preventLeaving();
+            $('.btn_close_modal').addClass('hide');
+            $('.se-pre-con').show();
+        },
+        success: function (response) {
+            laddaButton.stop();
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            let obj = response;
+
+            if (obj.status == "OK") {
+                console.log('moden');
+                // datatable.api().ajax.reload();
+                swal.fire('Ok', "Data berhasil disimpan", 'success');
+                $('#modal_form').modal('hide');
+            } else {
+                swal.fire('Pemberitahuan', obj.message, 'warning');
+            }
+
+        },
+        error: function (response) {
+            $("#btn_save").prop("disabled", false);
+            let head = 'Maaf',
+                message = 'Terjadi kesalahan koneksi',
+                type = 'error';
+            laddaButton.stop();
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            if (response['status'] == 401 || response['status'] == 419) {
+                location.reload();
+            } else {
+                if (response['status'] != 404 && response['status'] != 500) {
+                    let obj = JSON.parse(response['responseText']);
+
+                    if (!$.isEmptyObject(obj.message)) {
+                        if (obj.code > 450) {
+                            head = 'Maaf';
+                            message = obj.message;
+                            type = 'error';
+                        } else {
+                            head = 'Pemberitahuan';
+                            type = 'warning';
+
+                            obj = response.responseJSON.errors;
+                            laddaButton.stop();
+                            window.onbeforeunload = false;
+                            $('.btn_close_modal').removeClass('hide');
+                            $('.se-pre-con').hide();
+
+                            const temp = Object.values(obj);
+                            message = '';
+                            temp.forEach(element => {
+                                element.forEach(row => {
+                                    message += row + "<br>"
+                                });
+                            });
+                        }
+                    }
+                }
+
+                swal.fire(head, message, type);
+            }
+        }
+    });
+}
+
+function tambah() {
+    reset_form();
+    $('#id').val('');
+    $('#action').val('add');
+    $('#btn_save').html('Tambah Data');
+    $('#modal_form .modal-title').html('Tambah Data Stock Adjustment');
+    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk menambahkan data terkait stock adjustment.');
+    $('#modal_form').modal({
+        backdrop: 'static',
+        keyboard: false
+    }, 'show');
+}
+
+function reset_form(method = '') {
+    $('#id').val('');
+    $('#id').change();
+    $('#nama').val('');
+    $('#nama').change();
+    $('#id_sloc').val('');
+    $('#id_sloc').change();
+    $('#id_plant').val('');
+    $('#id_plant').change();
+    $('#tipe_gudang').val('');
+    $('#tipe_gudang').change();
+    $('#id_karu').val('');
+    $('#id_karu').change();
+    $('.material').val('');
+    $('.material').change();
+    $('#end_date').val('');
+    $('#end_date').change();
+}
+
 var KTDatatablesDataSourceHtml = function () {
     var dataJSONArray = JSON.parse(
         '[[1,"10-10-2019", "https://www.sikumis.com/media/frontend/products/Urea-Petro-(Non-Sub).jpg"], [2, "10-10-2019", "https://www.sikumis.com/media/frontend/products/Urea-Petro-(Non-Sub).jpg"], [3, "10-10-2019", "https://www.sikumis.com/media/frontend/products/Urea-Petro-(Non-Sub).jpg"]]');
@@ -402,6 +563,6 @@ function showme() {
         }
     });
 }
-jQuery(document).ready(function () {
-    KTDatatablesDataSourceHtml.init();
-});
+// jQuery(document).ready(function () {
+//     KTDatatablesDataSourceHtml.init();
+// });
