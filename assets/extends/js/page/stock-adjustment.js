@@ -191,8 +191,8 @@ function tambahProduk() {
                     </td>
                     <td>
                         <select class="form-control kt-selectpicker" name="action_produk[]" id="produk-status-${rows}" style="width: 100%;">
-                            <option>Menambah</option>
-                            <option>Mengurangi</option>
+                            <option value="1">Menambah</option>
+                            <option value="2">Mengurangi</option>
                         </select>
                     </td>
                     <td>
@@ -232,8 +232,8 @@ function tambahPallet() {
                     </td>
                     <td>
                         <select class="form-control kt-selectpicker" name="action_pallet[]" id="pallet-status-${rows}" style="width: 100%;">
-                            <option>Menambah</option>
-                            <option>Mengurangi</option>
+                            <option value="1">Menambah</option>
+                            <option value="2">Mengurangi</option>
                         </select>
                     </td>
                     <td>

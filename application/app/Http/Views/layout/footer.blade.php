@@ -40,8 +40,8 @@
 		<script src="{{aset_tema()}}vendors/general/bootstrap-select/dist/js/bootstrap-select.js" type="text/javascript"></script>
 		<script src="{{aset_tema()}}vendors/general/bootstrap-switch/dist/js/bootstrap-switch.js" type="text/javascript"></script>
 		<script src="{{aset_tema()}}vendors/general/dropzone/dist/dropzone.js" type="text/javascript"></script>
-		<script src="{{aset_tema()}}vendors/general/select2/dist/js/select2.full.js" type="text/javascript"></script>
 		<script src="{{aset_tema()}}vendors/general/sweetalert2/dist/sweetalert2.min.js" type="text/javascript"></script>
+		<script src="{{aset_extends()}}plugin/select2-4.0.11/dist/js/select2.full.min.js" type="text/javascript"></script>
 		<!--end:: Global Optional Vendors -->
 
 		<!--begin::Global Theme Bundle(used by all pages) -->

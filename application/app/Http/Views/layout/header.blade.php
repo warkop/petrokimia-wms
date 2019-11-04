@@ -13,7 +13,6 @@
 		<link href="{{aset_tema()}}vendors/general/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css" rel="stylesheet" type="text/css" />
 		<link href="{{aset_tema()}}vendors/general/bootstrap-select/dist/css/bootstrap-select.css" rel="stylesheet" type="text/css" />
 		<link href="{{aset_tema()}}vendors/general/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" rel="stylesheet" type="text/css" />
-		<link href="{{aset_tema()}}vendors/general/select2/dist/css/select2.css" rel="stylesheet" type="text/css" />
 		<link href="{{aset_tema()}}vendors/general/dropzone/dist/dropzone.css" rel="stylesheet" type="text/css" />
 		<link href="{{aset_tema()}}vendors/general/animate.css/animate.css" rel="stylesheet" type="text/css" />
 		<link href="{{aset_tema()}}vendors/general/sweetalert2/dist/sweetalert2.css" rel="stylesheet" type="text/css" />
@@ -23,6 +22,7 @@
 		<link href="{{aset_tema()}}vendors/custom/vendors/flaticon2/flaticon.css" rel="stylesheet" type="text/css" />
 		<link href="{{aset_tema()}}vendors/custom/vendors/fontawesome5/css/all.min.css" rel="stylesheet" type="text/css" />
 		<link href="{{aset_tema()}}vendors/general/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
+		<link href="{{aset_extends()}}plugin/select2-4.0.11/dist/css/select2.min.css" rel="stylesheet" type="text/css" />
 
 		<!--end:: Global Optional Vendors -->
 

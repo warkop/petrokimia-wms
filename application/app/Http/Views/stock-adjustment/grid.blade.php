@@ -52,7 +52,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>
-            <form action="">
+            <form action="" id="form1" onsubmit="return false">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
@@ -84,50 +84,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- <tr>
-                                    <td>1</td>
-                                    <td>
-                                        <select class="form-control m-select2" id="kt_select2_produk" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
-                                            <option value="">Pilih produk</option>
-                                            <option value="AK">Urea</option>
-                                            <option value="HI">Za</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select class="form-control kt-selectpicker" style="width: 100%;">
-                                            <option>Menambah</option>
-                                            <option>Mengurangi</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="text" name="jumlah" class="form-control" placeholder="Masukkan jumlah">
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger btn-elevate btn-icon btn-sm"><i class="la la-trash"></i></button>
-                                    </td>
-                                </tr> --}}
-                                {{-- <tr>
-                                    <td>2</td>
-                                    <td>
-                                        <select class="form-control m-select2" id="kt_select2_produk2" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
-                                            <option value="">Pilih produk</option>
-                                            <option value="AK">Urea</option>
-                                            <option value="HI">Za</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select class="form-control kt-selectpicker" style="width: 100%;">
-                                            <option>Menambah</option>
-                                            <option>Mengurangi</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="text" name="jumlah" class="form-control" placeholder="Masukkan jumlah">
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger btn-elevate btn-icon btn-sm"><i class="la la-trash"></i></button>
-                                    </td>
-                                </tr> --}}
+                                
                             </tbody>
                         </table>
                     </div>
@@ -144,28 +101,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- <tr>
-                                    <td>1</td>
-                                    <td>
-                                        <select class="form-control m-select2" id="kt_select2_pallet3" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
-                                            <option value="">Pilih produk</option>
-                                            <option value="AK">Pallet A</option>
-                                            <option value="HI">Pallet B</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select class="form-control kt-selectpicker" style="width: 100%;">
-                                            <option>Menambah</option>
-                                            <option>Mengurangi</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="text" name="jumlah" class="form-control" placeholder="Masukkan jumlah">
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger btn-elevate btn-icon btn-sm"><i class="la la-trash"></i></button>
-                                    </td>
-                                </tr> --}}
+                                
                             </tbody>
                         </table>
                     </div>
@@ -210,7 +146,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-wms">Simpan data</button>
+                    <button type="button" class="btn btn-wms ladda-button" data-style="zoom-in" id="btn_save">Simpan data</button>
                 </div>
             </form>
         </div>
