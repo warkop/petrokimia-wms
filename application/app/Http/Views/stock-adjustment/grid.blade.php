@@ -4,6 +4,39 @@
 
 @section('content')
 
+<style>
+.shine {
+    background: #f6f7f8;
+    background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+    background-repeat: no-repeat;
+    background-size: 800px 104px; 
+    display: inline-block;
+    position: relative; 
+    
+    -webkit-animation-duration: 1s;
+    -webkit-animation-fill-mode: forwards; 
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-name: placeholderShimmer;
+    -webkit-animation-timing-function: linear;
+}
+
+lines {
+  height: 10px;
+  margin-top: 10px;
+  width: 200px; 
+}
+
+@-webkit-keyframes placeholderShimmer {
+    0% {
+        background-position: -468px 0;
+    }
+    
+    100% {
+        background-position: 468px 0; 
+    }
+}
+</style>
+
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
@@ -53,6 +86,8 @@
                 </button>
             </div>
             <form action="" id="form1" onsubmit="return false">
+                <input type="hidden" class="form-control" id="id" name="id">
+                <input type="hidden" name="action" id="action" value="add">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">

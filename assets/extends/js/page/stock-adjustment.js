@@ -18,7 +18,8 @@ function __completeFiles() {
 Dropzone.autoDiscover = false;
 
 const dropzoneOptions = {
-    url: ajaxSource + '/stock_adjustment/upload-file',
+    url: ajaxSource + "/stock-adjustment/"+id_gudang+"/upload",
+    type:"POST",
     params: {
         _token: "{{ csrf_token() }}",
     },
@@ -130,7 +131,7 @@ const load_table = function () {
                     return `
                             <button type = "button" class="btn btn-orens btn-elevate btn-icon" onclick="edit(${full.id})" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
                             <i class="flaticon-edit-1"></i> </button>
-                        <button type = "button" onclick="showme()" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i class="flaticon-delete"></i> </button>`;
+                        <button type = "button" onclick="hapus(${full.id})" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i class="flaticon-delete"></i> </button>`;
                 },
             }, {
                 className: 'text-center',
@@ -156,7 +157,7 @@ const load_table = function () {
     });
 };
 
-function tambahProduk() {
+function tambahProduk(id = "", tipe = "", jumlah = "") {
     const tableId = "table_produk";
     const rows = document.getElementById(tableId).getElementsByTagName("tr").length;
 
@@ -185,9 +186,7 @@ function tambahProduk() {
         placeholder: "Pilih Produk"
     });
     protectNumber(`#produk-jumlah-${rows}`, 10);
-
-    getProduk(`#produk-${rows}`);
-    $(`#produk-${rows}`).val(id);
+    getProduk(`#produk-${rows}`, rows, id, tipe, jumlah);
 }
 
 function hapusProduk(id) {
@@ -198,7 +197,7 @@ function hapusProduk(id) {
     }
 }
 
-function tambahPallet(id='') {
+function tambahPallet(id = "", tipe = "", jumlah = "") {
     const tableId = "table_pallet";
     const rows = document.getElementById(tableId).getElementsByTagName("tr").length;
 
@@ -227,8 +226,7 @@ function tambahPallet(id='') {
         placeholder: "Pilih Pallet"
     });
     protectNumber(`#pallet-jumlah-${rows}`, 10);
-
-    getPallet(`#pallet-${rows}`);
+    getPallet(`#pallet-${rows}`, rows, id, tipe, jumlah);
 }
 
 function hapusPallet(id) {
@@ -239,9 +237,13 @@ function hapusPallet(id) {
     }
 }
 
-function getProduk(target) {
+function getProduk(target, no, id = "", tipe = "", jumlah = "") {
+    // $("#table_produk").children('tr:nth-child(' + no + ')').html(`<lines class="shine"></lines>`);
     $.ajax({
         url:ajaxSource+"/"+"get-produk",
+        beforeSend:()=>{
+            
+        },
         success:(res)=>{
             const obj = res.data;
 
@@ -251,6 +253,9 @@ function getProduk(target) {
             });
 
             $(target).html(html);
+            $(target).val(id);
+            $("#produk-status-" + no).val(tipe);
+            $("#produk-jumlah-" + no).val(jumlah);
         },
         error:()=>{
             
@@ -258,7 +263,7 @@ function getProduk(target) {
     });
 }
 
-function getPallet(target) {
+function getPallet(target, no, id = "", tipe = "", jumlah = "") {
     $.ajax({
         url: ajaxSource+"/"+"get-pallet",
         success:(res)=>{
@@ -270,6 +275,9 @@ function getPallet(target) {
             });
 
             $(target).html(html);
+            $(target).val(id);
+            $("#pallet-status-" + no).val(tipe);
+            $("#pallet-jumlah-" + no).val(jumlah);
         },
         error:()=>{
             
@@ -315,6 +323,7 @@ function checkPallet(target) {
 }
 
 function edit(id = '') {
+    reset_form();
     $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
@@ -339,16 +348,19 @@ function edit(id = '') {
             $('.se-pre-con').hide();
 
             let obj_adjustment = response.data.material_adjustment;
-            let obj_trans = response.data.material_trans;
+            let obj_produk = response.data.produk;
+            let obj_pallet = response.data.pallet;
 
-            console.log(obj_adjustment)
-            console.log(obj_trans)
             if (obj_adjustment.tanggal != null) {
                 $('#tanggal').val(helpDateFormat(obj_adjustment.tanggal, 'si'));
             }
 
-            obj_trans.forEach(element => {
-                tambahProduk();
+            obj_produk.forEach(element => {
+                tambahProduk(element.id, element.tipe, element.jumlah);
+            });
+
+            obj_pallet.forEach(element => {
+                tambahPallet(element.id, element.tipe, element.jumlah);
             });
         },
         error: function (response) {
@@ -386,6 +398,7 @@ function edit(id = '') {
 
 function simpan() {
     let data = $("#form1").serializeArray();
+    myDropzone.processQueue();
     $.ajax({
         type: "PUT",
         headers: {
@@ -407,8 +420,7 @@ function simpan() {
             let obj = response;
 
             if (obj.status == "OK") {
-                console.log('moden');
-                // datatable.api().ajax.reload();
+                datatable.api().ajax.reload();
                 swal.fire('Ok', "Data berhasil disimpan", 'success');
                 $('#modal_form').modal('hide');
             } else {
@@ -480,20 +492,40 @@ function tambah() {
 function reset_form(method = '') {
     $('#id').val('');
     $('#id').change();
-    $('#nama').val('');
-    $('#nama').change();
-    $('#id_sloc').val('');
-    $('#id_sloc').change();
-    $('#id_plant').val('');
-    $('#id_plant').change();
-    $('#tipe_gudang').val('');
-    $('#tipe_gudang').change();
-    $('#id_karu').val('');
-    $('#id_karu').change();
-    $('.material').val('');
-    $('.material').change();
-    $('#end_date').val('');
-    $('#end_date').change();
+    $('#tanggal').val('');
+    $('#table_produk tbody').html('');
+    $('#table_pallet tbody').html('');
+   
+}
+
+function hapus(id) {
+    swal.fire({
+        title: 'Are you sure?',
+        text: "Data yang sudah dihapus tidak bisa dibatalkan.",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus data!'
+    }).then(function (result) {
+        if (result.value) {
+            $.ajax({
+                url: ajaxSource + "/stock-adjustment/" + id_gudang + "/" + id,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: "DELETE",
+                success: (res) => {
+                    const head = "Pemberitahuan",
+                        message = "Data berhasil dihapus",
+                        type = "success";
+                    swal.fire(head, message, type);
+                    datatable.api().ajax.reload();
+                },
+                error: () => {
+
+                }
+            });
+        }
+    });
 }
 
 var KTDatatablesDataSourceHtml = function () {
@@ -547,21 +579,7 @@ var KTDatatablesDataSourceHtml = function () {
 }();
 
 function showme() {
-    swal.fire({
-        title: 'Are you sure?',
-        text: "Data yang sudah dihapus tidak bisa dibatalkan.",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, hapus data!'
-    }).then(function (result) {
-        if (result.value) {
-            swal.fire(
-                'Berhasil!',
-                'Data berhasil dihapus.',
-                'success'
-            )
-        }
-    });
+    
 }
 // jQuery(document).ready(function () {
 //     KTDatatablesDataSourceHtml.init();

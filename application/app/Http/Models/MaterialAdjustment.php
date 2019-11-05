@@ -51,7 +51,7 @@ class MaterialAdjustment extends Model
             $arr = [
                 'modul' => ucwords(str_replace('_', ' ', $table->table)),
                 'action' => 1,
-                'aktivitas' => 'Menambah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' dengan nama ' . ($table->nama),
+                'aktivitas' => 'Menambah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' dengan tanggal ' . date('d-m-Y', strtotime($table->tanggal)),
                 'created_at' => now(),
                 'created_by' => \Auth::id(),
             ];

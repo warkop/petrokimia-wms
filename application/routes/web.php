@@ -138,8 +138,10 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::group(['prefix' => 'stock-adjustment'], function () {
             Route::get('/{id_gudang}', 'MaterialAdjustmentController@index')->where('id_gudang', '[0-9]+');
             Route::get('/{id_gudang}/{id}', 'MaterialAdjustmentController@show')->where('id_gudang', '[0-9]+');
+            Route::delete('/{id_gudang}/{materialAdjustment}', 'MaterialAdjustmentController@destroy')->where('id_gudang', '[0-9]+');
             Route::post('/{id_gudang}', 'MaterialAdjustmentController@json')->where('id_gudang', '[0-9]+');
             Route::put('/{id_gudang}', 'MaterialAdjustmentController@store')->where('id_gudang', '[0-9]+');
+            Route::post('/{id_gudang}/upload', 'MaterialAdjustmentController@uploadFile')->where('id_gudang', '[0-9]+');
         });
     });
 

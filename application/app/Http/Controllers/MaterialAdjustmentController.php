@@ -69,11 +69,10 @@ class MaterialAdjustmentController extends Controller
             $id = $req->input('id');
             if (!empty($id)) {
                 $materialAdjustment = MaterialAdjustment::withoutGlobalScopes()->find($id);
+                MaterialTrans::where('id_adjustment', $id)->truncate();
             } else {
                 $materialAdjustment = new MaterialAdjustment;
             }
-
-            // dump($req->input('produk_jumlah'));
 
             //material adjustment
             $materialAdjustment->tanggal            = $req->input('tanggal');
@@ -84,7 +83,7 @@ class MaterialAdjustmentController extends Controller
             $produk = $req->input('produk');
             $action_produk = $req->input('action_produk');
             $produk_jumlah = $req->input('produk_jumlah');
-            if (!empty($pallet)) {
+            if (!empty($produk)) {
                 $panjang          = count($produk);
                 $produk           = array_values($produk);
                 $action_produk    = array_values($action_produk);
@@ -130,9 +129,19 @@ class MaterialAdjustmentController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
-    public function uploadFile($id_material_adjustment)
+    public function uploadFile($id_material_adjustment, Request $req)
     {
-        
+        $res = MaterialAdjustment::find($id_material_adjustment);
+        $pics_url = $req->file('pics_url')->getClientOriginalName();
+        if ($req->file('pics_url')->isValid()) {
+            $destinationPath = storage_path('app/public') . '/material/' . $res->id;
+            $req->file('pics_url')->move($destinationPath, $pics_url);
+
+            $resource = MaterialAdjustment::find($res->id);
+
+            $resource->pics_url = $pics_url;
+            $resource->save();
+        }
     }
 
     public function show($id_gudang, $id, MaterialAdjustment $models, Request $request)
@@ -145,12 +154,25 @@ class MaterialAdjustmentController extends Controller
                 $res = $models::withoutGlobalScopes()->find($id);
     
                 if (!empty($res)) {
-                    $resTrans = MaterialTrans::where('id_adjustment', $res->id)->get();
+                    $resProduk = \DB::table('material_adjustment as ma')
+                    ->leftJoin('material_trans as mt', 'mt.id_adjustment', '=', 'ma.id')
+                    ->leftJoin('material as m', 'mt.id_material', '=', 'm.id')
+                    ->where('id_adjustment', $res->id)
+                    ->where('kategori', 1)
+                    ->get();
+
+                    $resPallet = \DB::table('material_adjustment as ma')
+                    ->leftJoin('material_trans as mt', 'mt.id_adjustment', '=', 'ma.id')
+                    ->leftJoin('material as m', 'mt.id_material', '=', 'm.id')
+                    ->where('id_adjustment', $res->id)
+                    ->where('kategori', 2)
+                    ->get();
 
                     $this->responseCode = 200;
                     $this->responseMessage = 'Data tersedia.';
                     $this->responseData['material_adjustment'] = $res;
-                    $this->responseData['material_trans'] = $resTrans;
+                    $this->responseData['produk'] = $resProduk;
+                    $this->responseData['pallet'] = $resPallet;
                 } else {
                     $this->responseData = [];
                     $this->responseStatus = 'No Data Available';
@@ -164,5 +186,11 @@ class MaterialAdjustmentController extends Controller
             $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
             return response()->json($response, $this->responseCode);
         }
+    }
+
+    public function destroy($id_gudang, MaterialAdjustment $materialAdjustment)
+    {
+        MaterialTrans::where('id_adjustment', $materialAdjustment->id)->forceDelete();
+        $materialAdjustment->forceDelete();
     }
 }

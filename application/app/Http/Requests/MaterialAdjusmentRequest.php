@@ -38,7 +38,7 @@ class MaterialAdjusmentRequest extends FormRequest
             'produk_jumlah.*'   => 'numeric',
             // 'pallet_jumlah'     => 'array',
             'pallet_jumlah.*'   => 'numeric',
-            'tanggal'           => 'nullable|date_format:d-m-Y',
+            'tanggal'           => 'required|date_format:d-m-Y',
         ];
 
         $this->sanitize();
