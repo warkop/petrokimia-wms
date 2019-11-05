@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Aktivitas;
 use App\Http\Models\Area;
 use App\Http\Models\Gudang;
+use App\Http\Models\JenisFoto;
 use App\Http\Models\Material;
 use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Resources\AktivitasResource;
@@ -114,6 +115,17 @@ class AktivitasController extends Controller
                 ]
             ], Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    public function getJenisFoto()
+    {
+        $resource = JenisFoto::get();
+        return (new AktivitasResource($resource))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ]
+        ], Response::HTTP_OK);
     }
 
     public function edit($id)
