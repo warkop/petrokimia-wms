@@ -9,4 +9,6 @@ class KerusakanAlatBerat extends Model
     protected $table = 'kerusakan_alat_berat';
     protected $primaryKey = null;
     public $incrementing = false;
+
+    public $timestamps  = false;
 }
