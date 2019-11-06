@@ -26,6 +26,7 @@ Route::get('aktivitas/get-jenis-foto', 'API\AktivitasController@getJenisFoto');
 Route::get('aktivitas/{aktivitas}', 'API\AktivitasController@show');
 
 Route::get('alat-berat', 'API\AlatBeratController@index');
+Route::get('alat-berat/history', 'API\AlatBeratController@history');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
