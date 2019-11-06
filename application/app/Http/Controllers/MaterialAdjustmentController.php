@@ -117,6 +117,7 @@ class MaterialAdjustmentController extends Controller
                 }
             }
 
+            $this->responseData = $materialAdjustment;
             $this->responseCode = 200;
             $this->responseMessage = 'Data berhasil disimpan';
         } else {
@@ -129,18 +130,50 @@ class MaterialAdjustmentController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
-    public function uploadFile($id_material_adjustment, Request $req)
+    public function uploadFile($id_gudang, Request $req)
     {
-        $res = MaterialAdjustment::find($id_material_adjustment);
-        $pics_url = $req->file('pics_url')->getClientOriginalName();
-        if ($req->file('pics_url')->isValid()) {
-            $destinationPath = storage_path('app/public') . '/material/' . $res->id;
-            $req->file('pics_url')->move($destinationPath, $pics_url);
+        $id = $req->get("id");
+        $file = $req->file('file');
 
-            $resource = MaterialAdjustment::find($res->id);
+        $cek_penggunaan = MaterialAdjustment::find($id);
 
-            $resource->pics_url = $pics_url;
-            $resource->save();
+        if (!empty($cek_penggunaan)) {
+            $ext = $file->getClientOriginalExtension();
+            $filename = $file->getClientOriginalName();
+            // $file_enc = md5($filename) . '.' . $ext;
+             
+
+            $filter = [
+                'jpg',
+                'png',
+                'jpeg',
+                'gif',
+            ];
+
+            if (in_array($ext, $filter)) {
+                $path = storage_path('app/public') . '/material/' . $id;
+                $req->file('file')->move($path, $filename);
+                $resource = MaterialAdjustment::find($id);
+
+                $resource->foto = $filename;
+                $resource->save(); 
+
+                return response()->json([
+                    'code' => http_response_code(),
+                    'msg' => 'success',
+                    'data' => $filename
+                ], http_response_code());
+            } else {
+                return response()->json([
+                    'code' => http_response_code(),
+                    'msg' => 'fail',
+                ], http_response_code());
+            }
+        } else {
+            return response()->json([
+                'code' => http_response_code(),
+                'msg' => 'fail',
+            ], http_response_code());
         }
     }
 
@@ -173,6 +206,7 @@ class MaterialAdjustmentController extends Controller
                     $this->responseData['material_adjustment'] = $res;
                     $this->responseData['produk'] = $resProduk;
                     $this->responseData['pallet'] = $resPallet;
+                    $this->responseData['url'] = '{base_url}/watch/{pics_url}?token={access_token}&un={asset_id}&ctg=assets&src={pics_url}';
                 } else {
                     $this->responseData = [];
                     $this->responseStatus = 'No Data Available';

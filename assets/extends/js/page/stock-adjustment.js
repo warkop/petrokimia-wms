@@ -7,31 +7,22 @@ let datatable,
     completeFiles = 0,
     laddaButton;
 
-function __addedFile() {
-    totalFiles++;
-}
-
-function __completeFiles() {
-    completeFiles++;
-}
 
 Dropzone.autoDiscover = false;
-
 const dropzoneOptions = {
-    url: ajaxSource + "/stock-adjustment/"+id_gudang+"/upload",
+    url: ajaxSource + "/stock-adjustment/upload/" + id_gudang,
     type:"POST",
     params: {
-        _token: "{{ csrf_token() }}",
+        _token: $('meta[name="csrf-token"]').attr('content'),
     },
     parallelUploads: 1000,
-    // maxFiles: 1,
+    maxFiles: 1,
     addRemoveLinks: true,
     dictDefaultMessage: 'Seret File atau klik disini untuk mengunggah',
     acceptedFiles: ".jpg,.png,.jpeg,.gif",
     autoProcessQueue: false,
     init: function () {
         this.on("addedfile", function (file) {
-            __addedFile(); 
             if (!file.type.match('image.*')) {
                 // alert("Upload Image Only!");
 
@@ -39,7 +30,6 @@ const dropzoneOptions = {
             }
         });
         this.on("success", function (file) {
-            __completeFiles();
             if (completeFiles === totalFiles) {
                 /* window["myDropzone"+i+"_"+val+"_1"].removeAllFiles(); */
             }
@@ -51,7 +41,7 @@ const myDropzone = new Dropzone('#m-dropzone-one', dropzoneOptions);
 
 $(document).ready(function () {
     load_table();
-
+    // initFancybox('.fancybox', '.fancybox-effects-a');
     if (typeof datatable !== 'undefined') {
         datatable.on('draw.dt', function () {
             $('[data-toggle=kt-tooltip]').tooltip();
@@ -137,7 +127,9 @@ const load_table = function () {
                 className: 'text-center',
                 targets: -2,
                 render: function (data, type, full, meta) {
-                    var image = '<a class="fancybox" rel="ligthbox" href="' + data + '"><img class="img-responsive" width="100px" src="' + data + '" alt=""></a>';
+                    const link = baseUrl + /watch/ + full.foto + '?' + 'un=' + full.id + '&ctg=material&src=' + full.foto;
+                    const image = '<a target="_blank" class="fancybox fancybox-effects-a" data-fancybox="file-' + full.id +'" data-caption="' + full.foto +'" rel="ligthbox" href="' + link + '"><img class="img-responsive" width="100px" src="' + link + '" alt=""></a>';
+
                     return image;
                 },
             }
@@ -355,6 +347,11 @@ function edit(id = '') {
                 $('#tanggal').val(helpDateFormat(obj_adjustment.tanggal, 'si'));
             }
 
+            if (obj_adjustment.foto != null) {
+                let html = '<a target="_blank" href="' + baseUrl + /watch/ + obj_adjustment.foto + '?' + 'un=' + obj_adjustment.id + '&ctg=material&src=' + obj_adjustment.foto + '">' + obj_adjustment.foto+'</a>';
+                $("#list").html(html);
+            }
+
             obj_produk.forEach(element => {
                 tambahProduk(element.id, element.tipe, element.jumlah);
             });
@@ -398,7 +395,7 @@ function edit(id = '') {
 
 function simpan() {
     let data = $("#form1").serializeArray();
-    myDropzone.processQueue();
+    
     $.ajax({
         type: "PUT",
         headers: {
@@ -416,8 +413,12 @@ function simpan() {
             window.onbeforeunload = false;
             $('.btn_close_modal').removeClass('hide');
             $('.se-pre-con').hide();
-
             let obj = response;
+            myDropzone.on("sending", function (file, xhr, formData) {
+                formData.append("id", obj.data.id);
+            });
+
+            myDropzone.processQueue();
 
             if (obj.status == "OK") {
                 datatable.api().ajax.reload();
@@ -495,7 +496,7 @@ function reset_form(method = '') {
     $('#tanggal').val('');
     $('#table_produk tbody').html('');
     $('#table_pallet tbody').html('');
-   
+    myDropzone.removeAllFiles();
 }
 
 function hapus(id) {

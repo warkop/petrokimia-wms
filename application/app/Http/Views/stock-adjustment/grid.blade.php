@@ -97,11 +97,26 @@ lines {
                             </div>
                             <div class="form-group">
                                 <label>Foto</label>
-                                <div class="kt-dropzone dropzone" id="m-dropzone-one">
+                                {{-- <form action="/file-upload" class="kt-dropzone dropzone" id="m-dropzone-one">
+                                    <div class="fallback">
+                                        <input type="file" name="file" />
+                                    </div>
+                                </form> --}}
+                                <div class="kt-dropzone dropzone" id="m-dropzone-one" >
                                     <div class="kt-dropzone__msg dz-message needsclick">
                                         <h3 class="kt-dropzone__msg-title">Seret berkas atau klik untuk mengunggah</h3>
                                         <span class="kt-dropzone__msg-desc">Hanya berkas dengan format <strong>jpg, png, jpeg, gif</strong> yang diizinkan untuk diunggah</span>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>List Foto</label>
+                                <div id="list">
+                                            
                                 </div>
                             </div>
                         </div>
@@ -190,7 +205,7 @@ lines {
 <!--end::Modal-->
 
 
-<script src="{{asset('assets/extends/js/page/stock-adjustment.js')}}" type="text/javascript"></script>
+
 <script>
 $('.kt-selectpicker').selectpicker();
 $('#kt_select2_produk, #kt_select2_produk2, #kt_select2_pallet3, #kt_select2_terplas4').select2({
@@ -204,6 +219,7 @@ $('#tanggal').datepicker({
     orientation: "bottom left"
 });
 
-const id_gudang = {{$id_gudang}}
+const id_gudang = "{{$id_gudang}}"
 </script>
+<script src="{{asset('assets/extends/js/page/stock-adjustment.js')}}" type="text/javascript"></script>
 @endsection
