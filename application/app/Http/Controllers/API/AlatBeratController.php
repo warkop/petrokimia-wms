@@ -62,8 +62,9 @@ class AlatBeratController extends Controller
             \DB::raw('TO_CHAR(waktu, \'dd-mm-yyyy\') as tanggal'), 
             \DB::raw('TO_CHAR(waktu, \'H:i:s\') as pukul'), 
             'keterangan')
-            ->leftJoin('alat_berat as ab', 'alat_berat_history.id_alat_berat_kerusakan', '=', 'ab.id')
-            ->leftJoin('kerusakan_alat_berat as kab', 'kab.id_alat_berat_kerusakan', '=', 'ab.id')
+            ->leftJoin('alat_berat_kerusakan as abk', 'alat_berat_history.id_alat_berat_kerusakan', '=', 'abk.id')
+            ->leftJoin('kerusakan_alat_berat as kab', 'abk.id', '=', 'kab.id_kerusakan')
+            ->leftJoin('alat_berat_kat as abkat', 'kab.id_alat_berat_kat', '=', 'abkat.id')
             ->where(function ($where) use ($search) {
                 $where->where(\DB::raw('LOWER(keterangan)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(\DB::raw('TO_CHAR(waktu, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
