@@ -141,7 +141,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
             Route::delete('/{id_gudang}/{materialAdjustment}', 'MaterialAdjustmentController@destroy')->where('id_gudang', '[0-9]+');
             Route::post('/{id_gudang}', 'MaterialAdjustmentController@json')->where('id_gudang', '[0-9]+');
             Route::put('/{id_gudang}', 'MaterialAdjustmentController@store')->where('id_gudang', '[0-9]+');
-            Route::post('/{id_gudang}/upload', 'MaterialAdjustmentController@uploadFile')->where('id_gudang', '[0-9]+');
+            Route::post('/upload/{id_gudang}', 'MaterialAdjustmentController@uploadFile')->where('id_gudang', '[0-9]+');
         });
     });
 
@@ -178,6 +178,8 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         });
     });
 });
+
+Route::get('watch/{nama}/', 'WatchController@default');
 
 // Route::get('/master-material', function () {
 //     return view('master.master-material.grid');

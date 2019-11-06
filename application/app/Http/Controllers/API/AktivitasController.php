@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Aktivitas;
+use App\Http\Models\AktivitasHarian;
 use App\Http\Models\Area;
 use App\Http\Models\Gudang;
 use App\Http\Models\JenisFoto;
@@ -91,9 +92,36 @@ class AktivitasController extends Controller
         //
     }
 
-    public function store(ApiAktivitasRequest $request)
+    public function store(ApiAktivitasRequest $req)
     {
-        $request->validated();
+        $req->validated();
+
+        $models = new AktivitasHarian;
+
+        $arr = [
+            'id_aktivitas' => $req->input('id_aktivitas'),
+            'id_gudang' => $req->input('id_gudang'),
+            'id_karu' => $req->input('id_karu'),
+            'id_shift' => $req->input('id_shift'),
+            'ref_number' => $req->input('ref_number'),
+            'id_area' => $req->input('id_area'),
+            'id_alat_berat' => $req->input('id_alat_berat'),
+            'ttd' => $req->input('ttd'),
+            'sistro' => $req->input('sistro'),
+            'approve' => $req->input('approve'),
+            'kelayakan_before' => $req->input('kelayakan_before'),
+            'kelayakan_after' => $req->input('kelayakan_after'),
+            'dikembalikan' => $req->input('dikembalikan'),
+        ];
+
+        $aktivitas = $models->create($arr);
+
+        return (new AktivitasResource($aktivitas))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ]
+        ], Response::HTTP_OK);
     }
 
     public function show($id)
