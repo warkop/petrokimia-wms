@@ -39,6 +39,11 @@ class AlatBerat extends Model
             $table->created_at = now();
         });
     }
+    
+    public function kategori()
+    {
+        return $this->belongsTo('App\Http\Models\KategoriAlatBerat', 'id_kategori');
+    }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition, $id_kategori)
     {
