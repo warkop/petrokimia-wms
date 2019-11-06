@@ -477,5 +477,33 @@ function toAlpha($data){
 		}
 		return $alpha;
 	}
+}
 
+function helpEmpty($value = '', $replace_with = '-', $null = false)
+{
+	if ($null == false) {
+		$result = (empty($value) && $value != '0') ? $replace_with : $value;
+	} else {
+		$result = (empty($value) && $value != '0') ? '' : $value;
+	}
+
+	return $result;
+}
+
+function myBasePath($replace = '', $to = '')
+{
+	$root = $_SERVER['DOCUMENT_ROOT'];
+	$root .= preg_replace('@/+$@', '', dirname($_SERVER['SCRIPT_NAME'])) . '/';
+
+	if (!empty($replace)) {
+		$root = str_replace($replace, $to, $root);
+	}
+
+	return $root;
+}
+
+function protectPath($value = '')
+{
+	$arr_forbidden = ['../', '..'];
+	return str_replace($arr_forbidden, '', $value);
 }
