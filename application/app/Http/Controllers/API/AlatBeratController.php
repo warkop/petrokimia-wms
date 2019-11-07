@@ -104,6 +104,7 @@ class AlatBeratController extends Controller
 
         if (!empty($res)) {
             $obj =  AktivitasResource::collection($res)->additional([
+                'url' => '{base_url}/watch/{foto}?token={access_token}&un={id_ab_history}&ctg=history&src={pics_url}',
                 'status' => [
                     'message' => '',
                     'code' => Response::HTTP_OK
