@@ -17,17 +17,23 @@ use Illuminate\Http\Request;
 */
 
 Route::post('/login', 'API\AuthController@authenticate');
-Route::get('aktivitas', 'API\AktivitasController@index');
-Route::get('aktivitas/get-gudang', 'API\AktivitasController@getGudang');
-Route::get('aktivitas/get-produk', 'API\AktivitasController@getMaterial');
-Route::get('aktivitas/get-pallet', 'API\AktivitasController@getPallet');
-Route::get('aktivitas/get-area', 'API\AktivitasController@getArea');
-Route::get('aktivitas/get-jenis-foto', 'API\AktivitasController@getJenisFoto');
-Route::get('aktivitas/{aktivitas}', 'API\AktivitasController@show')->where('aktivitas', '[0-9]+');
+Route::group(['prefix' => 'aktivitas'], function () {
+    Route::get('/', 'API\AktivitasController@index');
+    Route::get('/get-gudang', 'API\AktivitasController@getGudang');
+    Route::get('/get-produk', 'API\AktivitasController@getMaterial');
+    Route::get('/get-pallet', 'API\AktivitasController@getPallet');
+    Route::get('/get-area', 'API\AktivitasController@getArea');
+    Route::get('/get-alat-berat', 'API\AktivitasController@getAlatBerat');
+    Route::get('/get-jenis-foto', 'API\AktivitasController@getJenisFoto');
+    Route::get('/{aktivitas}', 'API\AktivitasController@show')->where('aktivitas', '[0-9]+');
+    Route::put('/', 'API\AktivitasController@store')->middleware('auth:api');
+});
 
-Route::get('alat-berat', 'API\AlatBeratController@index');
-Route::get('alat-berat/history', 'API\AlatBeratController@history');
-Route::get('alat-berat/history/{id}', 'API\AlatBeratController@detailHistory')->where('id', '[0-9]+');
+Route::group(['prefix' => 'alat-berat'], function () {
+    Route::get('/', 'API\AlatBeratController@index');
+    Route::get('/history', 'API\AlatBeratController@history');
+    Route::get('/history/{id}', 'API\AlatBeratController@detailHistory')->where('id', '[0-9]+');
+});
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
