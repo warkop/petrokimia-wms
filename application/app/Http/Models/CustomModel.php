@@ -49,9 +49,9 @@ class CustomModel extends Model
                 foreach ($changes as $attr => $value) {
                     // $old = $table->getOriginal($attr)??'kosong';
                     // $new = $table->$attr??'kosong';
-
-                    $old = (new CustomModel)->specialColumn($attr, $table->getOriginal($attr));
-                    $new = (new CustomModel)->specialColumn($attr, $table->$attr);
+                    $temp = new CustomModel;
+                    $old = $temp->specialColumn($attr, $table->getOriginal($attr));
+                    $new = $temp->specialColumn($attr, $table->$attr);
 
                     $arr = [
                         'modul' => ucwords(str_replace('_', ' ', $table->table)),
