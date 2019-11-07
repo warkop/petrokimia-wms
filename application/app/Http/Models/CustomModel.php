@@ -7,36 +7,7 @@ use App\Scopes\EndDateScope;
 
 class CustomModel extends Model
 {
-    private function specialColumn($column, $value)
-    {
-        switch ($column) {
-            case 'tipe_gudang':
-                if ($value == 1) {
-                    return 'Internal';
-                } else if ($value == 2) {
-                    return 'Eksternal';
-                } else {
-                    return 'kosong';
-                }
-                break;
-            case 'id_karu':
-                if ($value == '') {
-                    return 'kosong';
-                }
-                
-                $res = Karu::withoutGlobalScopes()->find($value);
-                return $res->nama;
-                break;
-            default:
-                return $value;
-                break;
-        }
-    }
-
-    public function bar()
-    {
-        return get_class($this);
-    }
+    
 
     protected static function boot()
     {
@@ -89,5 +60,36 @@ class CustomModel extends Model
         });
 
         static::addGlobalScope(new EndDateScope);
+    }
+
+    public function specialColumn($column, $value)
+    {
+        switch ($column) {
+            case 'tipe_gudang':
+                if ($value == 1) {
+                    return 'Internal';
+                } else if ($value == 2) {
+                    return 'Eksternal';
+                } else {
+                    return 'kosong';
+                }
+                break;
+            case 'id_karu':
+                if ($value == '') {
+                    return 'kosong';
+                }
+
+                $res = Karu::withoutGlobalScopes()->find($value);
+                return $res->nama;
+                break;
+            default:
+                return $value;
+                break;
+        }
+    }
+
+    public function bar()
+    {
+        return get_class($this);
     }
 }
