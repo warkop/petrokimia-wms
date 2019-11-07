@@ -65,22 +65,6 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::delete('/{id}', 'TenagaKerjaNonOrganikController@destroy');
     });
 
-    Route::group(['prefix' => 'master-pekerjaan'], function () {
-        Route::get('/', 'JobDeskController@index');
-        Route::put('/', 'JobDeskController@store');
-        Route::post('/', 'JobDeskController@json');
-        Route::get('/{id}', 'JobDeskController@show');
-        Route::delete('/{id}', 'JobDeskController@destroy');
-    });
-
-    Route::group(['prefix' => 'master-shift-kerja'], function () {
-        Route::get('/', 'ShiftKerjaController@index');
-        Route::put('/', 'ShiftKerjaController@store');
-        Route::post('/', 'ShiftKerjaController@json');
-        Route::get('/{id}', 'ShiftKerjaController@show');
-        Route::delete('/{id}', 'ShiftKerjaController@destroy');
-    });
-
     Route::group(['prefix' => 'master-kerusakan-alat'], function () {
         Route::get('/', 'AlatBeratKerusakanController@index');
         Route::put('/', 'AlatBeratKerusakanController@store');
