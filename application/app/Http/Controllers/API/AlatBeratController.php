@@ -5,8 +5,10 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\AlatBerat;
+use App\Http\Models\AlatBeratKerusakan;
 use App\Http\Models\LaporanKerusakan;
 use App\Http\Models\LaporanKerusakanFoto;
+use App\Http\Models\ShiftKerja;
 use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Resources\AktivitasResource;
 use Illuminate\Http\Response;
@@ -132,58 +134,94 @@ class AlatBeratController extends Controller
         return $obj;
     }
 
-    public function store(Request $req)
+    public function store(Request $req, LaporanKerusakan $laporan)
     {
         // $req->validated();
-        $models = new LaporanKerusakan;
+        // $models = new LaporanKerusakan;
 
         $user = $req->get('my_auth');
-        $arr = [
-            'id_kerusakan'      => $req->input('id_kerusakan'),
-            'id_alat_berat'     => $req->input('id_alat_berat'),
-            'id_shift'          => $req->input('id_shift'),
-            'keterangan'        => $req->input('keterangan'),
-            'jenis'             => $req->input('jenis'),
-            'jam_rusak'         => $req->input('jam_rusak'),
-            'created_by'        => $user->id_user,
-            'created_at'        => now(),
-        ];
+        $laporan->id_kerusakan      = $req->input('id_kerusakan');
+        $laporan->id_alat_berat     = $req->input('id_alat_berat');
+        $laporan->id_shift          = $req->input('id_shift');
+        $laporan->keterangan        = $req->input('keterangan');
+        $laporan->jenis             = $req->input('jenis');
+        $laporan->jam_rusak         = $req->input('jam_rusak');
+        $laporan->created_by        = $user->id_user;
+        $laporan->created_at        = now();
 
-        $resource = $models->create($arr);
+        $resource = $laporan->save();
 
-        $foto = $req->file('foto');
-        foreach ($foto as $key => $value) {
-            if ($value->isValid()) {
-                $res = new LaporanKerusakanFoto;
+        if ($resource) {
+            $foto = $req->file('foto');
+            (new LaporanKerusakanFoto)->where('id_laporan', '=', $laporan->id)->delete();
+            \Storage::deleteDirectory('/public/history/' . $laporan->id);
 
-                $tujuan_upload = storage_path('app/public/history/') . $resource->id;
-                $md5Name = md5_file($value->getRealPath());
-                $guessExtension = $value->getClientOriginalExtension();
-                // \Storage::makeDirectory('/history/' . $resource->id);
-                $file = $value->storeAs('/public/history/' . $resource->id, $md5Name . '.' . $guessExtension);
-                
-                // $value->move($tujuan_upload, $value->getClientOriginalName());
+            foreach ($foto as $key => $value) {
+                if ($value->isValid()) {
+                    $res = new LaporanKerusakanFoto;
 
-                $arrayFoto = [
-                    'id_laporan'    => $resource->id,
-                    'file_ori'      => $value->getClientOriginalName(),
-                    'size'          => $value->getSize(),
-                    'ekstensi'      => $value->getClientOriginalExtension(),
-                    'file_enc'      => $md5Name. '.' . $guessExtension,
-                ];
+                    $tujuan_upload = storage_path('app/public/history/') . $laporan->id;
+                    $md5Name = md5_file($value->getRealPath());
+                    $guessExtension = $value->getClientOriginalExtension();
+                    // \Storage::makeDirectory('/history/' . $laporan->id);
+                    $file = $value->storeAs('/public/history/' . $laporan->id, $md5Name . '.' . $guessExtension);
 
-                $res->create($arrayFoto);
+                    // $value->move($tujuan_upload, $value->getClientOriginalName());
+
+                    $arrayFoto = [
+                        'id_laporan'    => $laporan->id,
+                        'file_ori'      => $value->getClientOriginalName(),
+                        'size'          => $value->getSize(),
+                        'ekstensi'      => $value->getClientOriginalExtension(),
+                        'file_enc'      => $md5Name . '.' . $guessExtension,
+                    ];
+
+                    $res->create($arrayFoto);
+                }
             }
+
+            $foto = LaporanKerusakanFoto::where('id_laporan', $laporan->id)->get();
+
+            return (new AktivitasResource($laporan))->additional([
+                'file' => $foto,
+                'status' => [
+                    'message' => 'Data berhasil disimpan',
+                    'code' => Response::HTTP_CREATED,
+                ]
+            ], Response::HTTP_CREATED);
+        } else {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Gagal menyimpan laporan!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
         }
+    }
 
-        $foto = LaporanKerusakanFoto::where('id_laporan', $resource->id)->get();
-
+    public function getKerusakan(Request $req)
+    {
+        $search = strip_tags($req->input('search'));
+        $resource = AlatBeratKerusakan::where(function ($where) use ($search) {
+            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        })->get();
         return (new AktivitasResource($resource))->additional([
-            'file' => $foto,
             'status' => [
-                'message' => 'Data berhasil disimpan',
-                'code' => Response::HTTP_CREATED,
+                'message' => '',
+                'code' => Response::HTTP_OK,
             ]
-        ], Response::HTTP_CREATED);
+        ], Response::HTTP_OK);
+    }
+
+    public function getShift(Request $req)
+    {
+        $search = strip_tags($req->input('search'));
+        $resource = ShiftKerja::where(function ($where) use ($search) {
+            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        })->get();
+        return (new AktivitasResource($resource))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ]
+        ], Response::HTTP_OK);
     }
 }

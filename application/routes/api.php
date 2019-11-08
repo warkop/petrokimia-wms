@@ -29,12 +29,14 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-alat-berat', 'API\AktivitasController@getAlatBerat');
         Route::get('/get-jenis-foto', 'API\AktivitasController@getJenisFoto');
         Route::get('/{aktivitas}', 'API\AktivitasController@show')->where('aktivitas', '[0-9]+');
-        Route::post('/{aktivitas?}', 'API\AktivitasController@store');
+        Route::post('/{aktivitas?}', 'API\AktivitasController@store')->where('aktivitas', '[0-9]+');
     });
     
     Route::group(['prefix' => 'alat-berat'], function () {
         Route::get('/', 'API\AlatBeratController@index');
-        Route::post('/', 'API\AlatBeratController@store');
+        Route::post('/{laporan?}', 'API\AlatBeratController@store')->where('aktivitas', '[0-9]+');
+        Route::get('/get-kerusakan', 'API\AlatBeratController@getKerusakan');
+        Route::get('/get-shift', 'API\AlatBeratController@getShift');
         Route::get('/history', 'API\AlatBeratController@history');
         Route::get('/history/{id}', 'API\AlatBeratController@detailHistory')->where('id', '[0-9]+');
     });

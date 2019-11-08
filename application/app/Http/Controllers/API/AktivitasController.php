@@ -142,7 +142,7 @@ class AktivitasController extends Controller
             $lat = $req->input('lat');
             $lng = $req->input('lng');
             $panjang = count($foto);
-            (new AktivitasFoto)->truncate();
+            (new AktivitasFoto)->where('id_aktivitas_harian', '=', $aktivitas->id)->delete();
             \Storage::deleteDirectory('/public/aktivitas_harian/' . $aktivitas->id);
 
             for ($i = 0; $i < $panjang; $i++) {
