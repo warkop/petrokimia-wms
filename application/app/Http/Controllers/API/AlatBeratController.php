@@ -18,12 +18,15 @@ class AlatBeratController extends Controller
         $search = strip_tags($req->input('search'));
 
         $res = AlatBerat::
-            select('alat_berat.id', 'nomor_lambung', 'nama')
-            ->leftJoin('alat_berat_kat as abk', 'alat_berat.id_kategori', '=', 'abk.id')
+            select('alat_berat.id', 'nomor_lambung', 'nama', 'alat_berat.created_at')
+            ->join('alat_berat_kat as abk', 'alat_berat.id_kategori', '=', 'abk.id')
+            ->join('rencana_alat_berat as rab', 'alat_berat.id', '=', 'rab.id_alat_berat')
             ->where(function ($where) use ($search) {
                 $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(\DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
-            })->paginate(10);
+            })
+            ->orderBy('alat_berat.created_at', 'asc')
+            ->paginate(10);
 
         $obj =  AktivitasResource::collection($res)->additional([
             'status' => [
@@ -48,15 +51,18 @@ class AlatBeratController extends Controller
             \DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\') as tanggal'), 
             \DB::raw('TO_CHAR(jam_rusak, \'HH24:MI:SS\') as pukul'), 
             'keterangan')
-            ->leftJoin('alat_berat_kerusakan as abk', 'laporan_kerusakan.id_kerusakan', '=', 'abk.id')
-            ->leftJoin('alat_berat as ab', 'laporan_kerusakan.id_alat_berat', '=', 'ab.id')
-            ->leftJoin('shift_kerja as s', 'laporan_kerusakan.id_shift', '=', 's.id')
             
+            ->join('alat_berat_kerusakan as abk', 'laporan_kerusakan.id_kerusakan', '=', 'abk.id')
+            ->join('alat_berat as ab', 'laporan_kerusakan.id_alat_berat', '=', 'ab.id')
+            ->join('shift_kerja as s', 'laporan_kerusakan.id_shift', '=', 's.id')
+            // ->where('rab.id_alat_berat', 'laporan_kerusakan.id_alat_berat')
             ->where(function ($where) use ($search) {
                 $where->where(\DB::raw('LOWER(keterangan)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(\DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
                 $where->orWhere(\DB::raw('TO_CHAR(jam_rusak, \'HH24:MI:SS\')'), 'ILIKE', '%' . $search . '%');
-            });
+            })
+            ->orderBy('laporan_kerusakan.created_at', 'desc')
+            ;
         
         if (!empty($id_alat_berat)){
             $res = $res->where('laporan_kerusakan.id_alat_berat', $id_alat_berat);

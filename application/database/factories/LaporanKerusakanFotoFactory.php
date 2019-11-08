@@ -22,11 +22,15 @@ $factory->define(LaporanKerusakanFoto::class, function (Faker $faker) {
 
     $file_ori = $faker->image($dir, $width, $height, 'cats', false);
     $ext = explode('.', $file_ori);
+
+    $enc = md5($ext[0]) . '.' . $ext[1];
+
+    \Storage::move($dir.'/'.$file_ori, $dir . '/' . $enc);
     return [
         'id_laporan'    => $id_laporan,
         'file_ori'      => $file_ori,
         'size'          => '',
         'ekstensi'      => $ext[1],
-        'file_enc'      => '',
+        'file_enc'      => $file_ori,
     ];
 });

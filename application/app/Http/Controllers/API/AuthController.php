@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Models\Users;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Models\RencanaTkbm;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,39 +32,70 @@ class AuthController extends Controller
 
             if ($cek_user) {
                 if (Hash::check($password, $cek_user['password'])) {
-                    
-                    // if () {
+                    if ($cek_user['role_id'] == 3) {
+                        $rencanaTkbm = RencanaTkbm::where('id_tkbm', $cek_user['id_tkbm'])->get();
+                        // dump($rencanaTkbm);
+                        if (!$rencanaTkbm->isEmpty()) {
+                            $m_user = Users::withoutGlobalScopes()->find($cek_user['id']);
 
-                    // } else {
+                            if (empty($cek_user['api_token'])) {
+                                $access_token = 'wMs-' . rand_str(10) . date('Y') . rand_str(6) . date('m') . rand_str(6) . date('d') . rand_str(6) . date('H') . rand_str(6) . date('i') . rand_str(6) . date('s');
 
-                    // }
-                    $m_user = Users::find($cek_user['id']);
+                                $m_user->api_token = $access_token;
+                            } else {
+                                $access_token = $cek_user['api_token'];
+                            }
 
-                    if (empty($cek_user['api_token'])) {
-                        $access_token = 'wMs-' . rand_str(10) . date('Y') . rand_str(6) . date('m') . rand_str(6) . date('d') . rand_str(6) . date('H') . rand_str(6) . date('i') . rand_str(6) . date('s');
+                            $m_user->device = $device_id;
+                            $m_user->save();
 
-                        $m_user->api_token = $access_token;
+                            $arr = [
+                                'access_token'  => $access_token,
+                                'role'          => $m_user->role_id,
+                                'name'          => $m_user->name,
+                                'username'      => $m_user->username,
+                                'email'         => $m_user->email,
+                                'id_tkbm'       => $m_user->id_tkbm,
+                                'id_karu'       => $m_user->id_karu,
+                                'gcid'          => $m_user->user_gcid,
+                            ];
+
+                            $this->responseCode = 200;
+                            $this->responseData = $arr;
+                            $this->responseMessage = 'Anda berhasil login';
+                        } else {
+                            $this->responseCode = 403;
+                            $this->responseMessage = 'Checker tidak didaftarkan pada rencana harian!';
+                        }
                     } else {
-                        $access_token = $cek_user['api_token'];
+                        $m_user = Users::withoutGlobalScopes()->find($cek_user['id']);
+
+                        if (empty($cek_user['api_token'])) {
+                            $access_token = 'wMs-' . rand_str(10) . date('Y') . rand_str(6) . date('m') . rand_str(6) . date('d') . rand_str(6) . date('H') . rand_str(6) . date('i') . rand_str(6) . date('s');
+
+                            $m_user->api_token = $access_token;
+                        } else {
+                            $access_token = $cek_user['api_token'];
+                        }
+
+                        $m_user->device = $device_id;
+                        $m_user->save();
+
+                        $arr = [
+                            'access_token'  => $access_token,
+                            'role'          => $m_user->role_id,
+                            'name'          => $m_user->name,
+                            'username'      => $m_user->username,
+                            'email'         => $m_user->email,
+                            'id_tkbm'       => $m_user->id_tkbm,
+                            'id_karu'       => $m_user->id_karu,
+                            'gcid'          => $m_user->user_gcid,
+                        ];
+
+                        $this->responseCode = 200;
+                        $this->responseData = $arr;
+                        $this->responseMessage = 'Anda berhasil login';
                     }
-
-                    $m_user->device = $device_id;
-                    $m_user->save();
-
-                    $arr = [
-                        'access_token'  => $access_token,
-                        'role'          => $m_user->role_id,
-                        'name'          => $m_user->name,
-                        'username'      => $m_user->username,
-                        'email'         => $m_user->email,
-                        'id_tkbm'       => $m_user->id_tkbm,
-                        'id_karu'       => $m_user->id_karu,
-                        'gcid'          => $m_user->user_gcid,
-                    ];
-
-                    $this->responseCode = 200;
-                    $this->responseData = $arr;                    
-                    $this->responseMessage = 'Anda berhasil login';
                 } else {
                     $this->responseCode = 401;
                     $this->responseMessage = 'Username atau Password Anda salah';

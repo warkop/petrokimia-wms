@@ -84,7 +84,7 @@ class UsersController extends Controller
 
         if ($role == 5) {
             $models->id_karu    = $pilih;    
-        } else if ($role == 1) {
+        } else if ($role == 3) {
             $models->id_tkbm    = $pilih;    
         }
         
@@ -155,7 +155,8 @@ class UsersController extends Controller
 
     public function changePassword($id_user)
     {
-        $res = Users::find($id_user);
+        $res = Users::withoutGlobalScopes()->find($id_user);
+        // dump($res);
         $res->password = bcrypt('petrokimia123');
 
         $saved = $res->save();
