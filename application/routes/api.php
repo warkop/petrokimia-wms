@@ -38,6 +38,10 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/history', 'API\AlatBeratController@history');
         Route::get('/history/{id}', 'API\AlatBeratController@detailHistory')->where('id', '[0-9]+');
     });
+
+    Route::group(['prefix' => 'layout'], function () {
+        Route::get('/', 'API\LayoutController@index');
+    });
 });
 
 
