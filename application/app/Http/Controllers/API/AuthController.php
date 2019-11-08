@@ -68,7 +68,7 @@ class AuthController extends Controller
             }
         }
 
-        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
         return response()->json($response, $this->responseCode);
     }
 
@@ -93,7 +93,7 @@ class AuthController extends Controller
             $responseCode = 200;
             $responseMessage = 'Berhasil melakukan logout.';
         }
-        $response = helpResponse($responseCode, $responseData, $responseMessage, $responseStatus);
+        $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
         return response()->json($response, $responseCode);
     }
 }
