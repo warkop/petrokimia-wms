@@ -4,9 +4,9 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AktivitasFoto extends Model
+class AktivitasArea extends Model
 {
-    protected $table = 'aktivitas_foto';
+    protected $table = 'aktivitas_area';
     protected $primaryKey = 'id';
 
     protected $guarded = [

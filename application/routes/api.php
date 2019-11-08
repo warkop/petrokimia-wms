@@ -29,7 +29,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-alat-berat', 'API\AktivitasController@getAlatBerat');
         Route::get('/get-jenis-foto', 'API\AktivitasController@getJenisFoto');
         Route::get('/{aktivitas}', 'API\AktivitasController@show')->where('aktivitas', '[0-9]+');
-        Route::put('/', 'API\AktivitasController@store');
+        Route::post('/{aktivitas?}', 'API\AktivitasController@store');
     });
     
     Route::group(['prefix' => 'alat-berat'], function () {

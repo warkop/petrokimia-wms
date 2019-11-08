@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Aktivitas;
+use App\Http\Models\AktivitasFoto;
 use App\Http\Models\AktivitasHarian;
 use App\Http\Models\AlatBerat;
 use App\Http\Models\Area;
@@ -105,38 +106,81 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function store(Request $req)
+    public function store(Request $req, AktivitasHarian $aktivitas)
     {
         // $req->validated();
 
-        $models = new AktivitasHarian;
+        // $models = new AktivitasHarian;
+        $user = $req->get('my_auth');
 
-        $arr = [
-            'id_aktivitas'      => $req->input('id_aktivitas'),
-            'id_gudang'         => $req->input('id_gudang'),
-            'id_karu'           => $req->input('id_karu'),
-            'id_shift'          => $req->input('id_shift'),
-            'ref_number'        => $req->input('ref_number'),
-            'id_area'           => $req->input('id_area'),
-            'id_alat_berat'     => $req->input('id_alat_berat'),
-            'ttd'               => $req->input('ttd'),
-            'sistro'            => $req->input('sistro'),
-            'approve'           => $req->input('approve'),
-            'kelayakan_before'  => $req->input('kelayakan_before'),
-            'kelayakan_after'   => $req->input('kelayakan_after'),
-            'dikembalikan'      => $req->input('dikembalikan'),
-            // 'created_by'        => $req->input('dikembalikan'),
-            // 'created_at'        => now(),
-        ];
+        // $id = $req->input('id');
+        // if (!empty($id)) {
+        //     $aktivitas = AktivitasHarian::find($id);
+        // }
+        
+        $aktivitas->id_aktivitas      = $req->input('id_aktivitas');
+        $aktivitas->id_gudang         = $req->input('id_gudang');
+        $aktivitas->id_karu           = $req->input('id_karu');
+        $aktivitas->id_shift          = $req->input('id_shift');
+        $aktivitas->ref_number        = $req->input('ref_number');
+        $aktivitas->id_area           = $req->input('id_area');
+        $aktivitas->id_alat_berat     = $req->input('id_alat_berat');
+        $aktivitas->ttd               = $req->input('ttd');
+        $aktivitas->sistro            = $req->input('sistro');
+        $aktivitas->approve           = $req->input('approve');
+        $aktivitas->kelayakan_before  = $req->input('kelayakan_before');
+        $aktivitas->kelayakan_after   = $req->input('kelayakan_after');
+        $aktivitas->dikembalikan      = $req->input('dikembalikan');
+        $aktivitas->created_by        = $user->id_user;
+        $aktivitas->created_at        = now();
 
-        $aktivitas = $models->create($arr);
+        $saved = $aktivitas->save();
 
-        return (new AktivitasResource($aktivitas))->additional([
-            'status' => [
-                'message' => '',
-                'code' => Response::HTTP_CREATED,
-            ]
-        ], Response::HTTP_CREATED);
+        if ($saved) {
+            $foto = $req->file('foto');
+            $foto_jenis = $req->input('foto_jenis');
+            $lat = $req->input('lat');
+            $lng = $req->input('lng');
+            $panjang = count($foto);
+            (new AktivitasFoto)->truncate();
+            \Storage::deleteDirectory('/public/aktivitas_harian/' . $aktivitas->id);
+
+            for ($i = 0; $i < $panjang; $i++) {
+                if ($foto[$i]->isValid()) {
+                    $aktivitasFoto = new AktivitasFoto;
+
+                    $foto[$i]->storeAs('/public/aktivitas_harian/' . $aktivitas->id, $foto[$i]->getClientOriginalName());
+
+                    $arrayFoto = [
+                        'id_aktivitas_harian'       => $aktivitas->id,
+                        'id_foto_jenis'             => $foto_jenis[$i],
+                        'foto'                      => $foto[$i]->getClientOriginalName(),
+                        'size'                      => $foto[$i]->getSize(),
+                        'lat'                       => $lat[$i],
+                        'lng'                       => $lng[$i],
+                        'created_by'                => $user->id_user,
+                        'created_at'                => now(),
+                    ];
+
+                    $aktivitasFoto->create($arrayFoto);
+                }
+            }
+
+            $foto = AktivitasFoto::where('id_aktivitas_harian', $aktivitas->id)->get();
+
+            return (new AktivitasResource($aktivitas))->additional([
+                'foto' => $foto,
+                'status' => [
+                    'message' => '',
+                    'code' => Response::HTTP_CREATED,
+                ]
+            ], Response::HTTP_CREATED);
+        } else {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Gagal menyimpan aktivitas!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
     }
 
     public function show($id)
