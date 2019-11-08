@@ -136,7 +136,7 @@ class Users extends Authenticatable
         $result = DB::table(DB::raw('"users" usr'))
             ->select(DB::raw('id AS id_user, name, username AS username, email, role_id AS role, api_token AS access_token, id_karu, id_tkbm'));
 
-        $result = $result->where('token', $access_token);
+        $result = $result->where('api_token', $access_token);
 
         $result = $result->first();
 

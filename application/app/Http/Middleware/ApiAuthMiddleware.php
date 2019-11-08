@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Models\Users;
 use Closure;
 
 class ApiAuthMiddleware
@@ -23,7 +24,7 @@ class ApiAuthMiddleware
         $access_token = $request->header('Authorization') ? $request->header('Authorization') : $request->input('Authorization');
 
         if ($access_token) {
-            $auth = Users::getByAccessToken(str_replace('Bearer ', '', $access_token));
+            $auth = (new Users)->getByAccessToken(str_replace('Bearer ', '', $access_token));
 
             if ($auth) {
                 if (!empty($idRole)) {
