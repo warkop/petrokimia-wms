@@ -153,12 +153,12 @@
                                 <label>Biaya</label>
                                 <input type="text" class="form-control input-enter" name="anggaran" id="anggaran" placeholder="Masukkan biaya">
                             </div> --}}
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                     <input type="checkbox" value="1" name="forklift" id="forklift">Forklift
                                     <span></span>
                                 </label>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="row">

@@ -70,9 +70,8 @@ class AlatBerat extends Model
     public function getWithRelation($id='')
     {
         $query = DB::table($this->table)
-        ->select($this->table.'.id','nama', 'anggaran', 'nomor_lambung', 'nomor_polisi')
+        ->select($this->table.'.id','nama', 'nomor_lambung', 'nomor_polisi')
         ->leftJoin('alat_berat_kat as abk', 'alat_berat.id_kategori', '=', 'abk.id')
-        ->where('forklift', 1)
         ->whereNull('abk.end_date');
 
         if (!empty($id)) {

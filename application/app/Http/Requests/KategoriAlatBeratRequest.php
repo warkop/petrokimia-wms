@@ -36,7 +36,6 @@ class KategoriAlatBeratRequest extends FormRequest
                 'required',
                 Rule::unique('alat_berat_kat', 'nama')->ignore(\Request::instance()->id, 'id')
             ],
-            'forklift'     => Rule::unique('alat_berat_kat', 'forklift')->ignore(\Request::instance()->id, 'id'),
             'start_date'                  => 'nullable|date_format:d-m-Y',
             'end_date'                    => 'nullable|date_format:d-m-Y|after:start_date',
         ];
@@ -49,7 +48,6 @@ class KategoriAlatBeratRequest extends FormRequest
         return [
             'nama.required' => 'Nama Kategori Alat Berat harus diisi!',
             'nama.unique' => 'Nama Kategori Alat sudah ada!',
-            'forklift.unique' => 'Kategori forklift sudah ada pada data lain!',
             'start_date.date_format'  => 'Tanggal harus dengan format tanggal-bulan-tahun',
             'end_date.date_format'  => 'Tanggal harus dengan format tanggal-bulan-tahun',
         ];

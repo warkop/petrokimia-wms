@@ -27,12 +27,11 @@ class KategoriAlatBerat extends CustomModel
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('alat_berat_kat')
-            ->select('id AS id', 'nama AS nama', 'anggaran AS anggaran', DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\') AS end_date'));
+            ->select('id AS id', 'nama AS nama', DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\') AS end_date'));
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
                 $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-                // $where->orWhere('anggaran', 'ILIKE', '%' . $search . '%');
                 $where->orWhere(DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
                 $where->orWhere(DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
             });

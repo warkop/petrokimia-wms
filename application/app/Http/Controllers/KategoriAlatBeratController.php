@@ -64,12 +64,10 @@ class KategoriAlatBeratController extends Controller
         $req->validated();
         $id = $req->input('id');
         
-        $tampung_anggaran = ($req->input('anggaran') ? $req->input('anggaran') : 0);
-        $tampung_anggaran = str_replace('.', '', $tampung_anggaran);
-        $tampung_anggaran = str_replace(',', '.', $tampung_anggaran);
-        $anggaran = $tampung_anggaran;
-
-        $forklift = $req->input('forklift');
+        // $tampung_anggaran = ($req->input('anggaran') ? $req->input('anggaran') : 0);
+        // $tampung_anggaran = str_replace('.', '', $tampung_anggaran);
+        // $tampung_anggaran = str_replace(',', '.', $tampung_anggaran);
+        // $anggaran = $tampung_anggaran;
 
         $end_date   = null;
         if ($req->input('end_date') != '') {
@@ -81,8 +79,7 @@ class KategoriAlatBeratController extends Controller
         }
 
         $models->nama           = $req->input('nama');
-        $models->anggaran       = $anggaran;
-        $models->forklift       = $forklift;
+        // $models->anggaran       = $anggaran;
         $models->end_date       = $end_date;
 
         $models->save();

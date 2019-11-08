@@ -53,7 +53,6 @@ class KerusakanRequest extends FormRequest
         return [
             'nama.required' => 'Nama Kategori Alat Berat harus diisi!',
             'nama.unique' => 'Nama Kategori Alat sudah ada!',
-            'forklift.unique' => 'Kategori forklift sudah ada pada data lain!',
             'start_date.date_format'  => 'Tanggal harus dengan format tanggal-bulan-tahun',
             'end_date.date_format'  => 'Tanggal harus dengan format tanggal-bulan-tahun',
         ];
