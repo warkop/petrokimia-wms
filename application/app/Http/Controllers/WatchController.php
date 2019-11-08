@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Models\Users;
 use App\Http\Models\Transactions;
 use App\Http\Models\Assets;
+use App\Http\Models\LaporanKerusakan;
 use App\Http\Models\MaterialAdjustment;
 
 class WatchController extends Controller
@@ -44,7 +45,7 @@ class WatchController extends Controller
                     $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
                 }
             } else if ($category == 'history') {
-                $cek_id = AlatBeratHistory::find($id_file);
+                $cek_id = LaporanKerusakan::find($id_file);
 
                 if (!empty($source) && !empty($category) && !empty($cek_id)) {
                     $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);

@@ -13,7 +13,7 @@ class ApiAktivitasRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        // return (new Users)->getByAccessToken(str_replace('Bearer ', '', $access_token));
     }
 
     /**
@@ -27,7 +27,7 @@ class ApiAktivitasRequest extends FormRequest
             'id_aktivitas'      => 'required|numeric',
             'id_gudang'         => 'required|numeric',
             'id_karu'           => 'required|numeric',
-            'id_shift'          => 'requried|numeric',
+            'id_shift'          => 'required|numeric',
             // 'ref_number'        => '',
             // 'id_area'           => 'Area',
             // 'id_alat_berat'     => 'Alat Berat',

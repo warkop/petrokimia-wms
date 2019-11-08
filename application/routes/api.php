@@ -34,6 +34,7 @@ Route::group(['middleware' => 'api.auth'], function () {
     
     Route::group(['prefix' => 'alat-berat'], function () {
         Route::get('/', 'API\AlatBeratController@index');
+        Route::post('/', 'API\AlatBeratController@store');
         Route::get('/history', 'API\AlatBeratController@history');
         Route::get('/history/{id}', 'API\AlatBeratController@detailHistory')->where('id', '[0-9]+');
     });

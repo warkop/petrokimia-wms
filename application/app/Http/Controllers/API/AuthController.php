@@ -31,6 +31,12 @@ class AuthController extends Controller
 
             if ($cek_user) {
                 if (Hash::check($password, $cek_user['password'])) {
+                    
+                    // if () {
+
+                    // } else {
+
+                    // }
                     $m_user = Users::find($cek_user['id']);
 
                     if (empty($cek_user['api_token'])) {
