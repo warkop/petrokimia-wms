@@ -125,6 +125,8 @@ class AktivitasController extends Controller
             'kelayakan_before'  => $req->input('kelayakan_before'),
             'kelayakan_after'   => $req->input('kelayakan_after'),
             'dikembalikan'      => $req->input('dikembalikan'),
+            // 'created_by'        => $req->input('dikembalikan'),
+            // 'created_at'        => now(),
         ];
 
         $aktivitas = $models->create($arr);

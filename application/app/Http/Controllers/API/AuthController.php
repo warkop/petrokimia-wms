@@ -44,15 +44,19 @@ class AuthController extends Controller
                     $m_user->device = $device_id;
                     $m_user->save();
 
+                    $arr = [
+                        'access_token'  => $access_token,
+                        'role'          => $m_user->role_id,
+                        'name'          => $m_user->name,
+                        'username'      => $m_user->username,
+                        'email'         => $m_user->email,
+                        'id_tkbm'       => $m_user->id_tkbm,
+                        'id_karu'       => $m_user->id_karu,
+                        'gcid'          => $m_user->user_gcid,
+                    ];
+
                     $this->responseCode = 200;
-                    $this->responseData['access_token'] = $access_token;
-                    $this->responseData['role'] = $m_user->role_id;
-                    $this->responseData['name'] = $m_user->name;
-                    $this->responseData['username'] = $m_user->username;
-                    $this->responseData['email'] = $m_user->email;
-                    $this->responseData['id_tkbm'] = $m_user->id_tkbm;
-                    $this->responseData['id_karu'] = $m_user->id_karu;
-                    $this->responseData['gcid'] = $m_user->user_gcid;
+                    $this->responseData = $arr;                    
                     $this->responseMessage = 'Anda berhasil login';
                 } else {
                     $this->responseCode = 401;
