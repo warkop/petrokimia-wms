@@ -68,7 +68,7 @@ class LayoutController extends Controller
         ->leftJoin('area', 'area_stok.id_area', '=', 'area.id')
         ->where('id_area',$id_area)->get();
 
-        $obj =  (new AktivitasResource($res))->additional([
+        $obj =  AktivitasResource::collection($res)->additional([
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK
