@@ -28,7 +28,7 @@ class AlatBeratController extends Controller
                 'status',
                 \DB::raw('
                     CASE
-                        WHEN status=1 THEN \'Aktif\'
+                        WHEN status=\'1\' THEN \'Aktif\'
                     ELSE \'Rusak\'
                 END AS text_status'),
                 'alat_berat.created_at'
