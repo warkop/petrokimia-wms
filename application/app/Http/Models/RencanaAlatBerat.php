@@ -13,4 +13,8 @@ class RencanaAlatBerat extends Model
         'id_rencana',
         'id_alat_berat',
     ];
+
+    protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
+
+    public $timestamps  = false;
 }
