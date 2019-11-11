@@ -13,7 +13,7 @@ class ApiAktivitasRequest extends FormRequest
      */
     public function authorize()
     {
-        // return (new Users)->getByAccessToken(str_replace('Bearer ', '', $access_token));
+        return true;
     }
 
     /**
@@ -76,6 +76,7 @@ class ApiAktivitasRequest extends FormRequest
         $input = $this->all();
 
         foreach ($input as $key => $value) {
+            if ($input[$key] == 'file')
             $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
         }
 

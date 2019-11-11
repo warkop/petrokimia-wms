@@ -10,6 +10,7 @@ use App\Http\Models\LaporanKerusakan;
 use App\Http\Models\LaporanKerusakanFoto;
 use App\Http\Models\ShiftKerja;
 use App\Http\Requests\ApiAktivitasRequest;
+use App\Http\Requests\ApiLaporanKerusakanRequest;
 use App\Http\Resources\AktivitasResource;
 use Illuminate\Http\Response;
 
@@ -134,9 +135,9 @@ class AlatBeratController extends Controller
         return $obj;
     }
 
-    public function store(Request $req, LaporanKerusakan $laporan)
+    public function store(ApiLaporanKerusakanRequest $req, LaporanKerusakan $laporan)
     {
-        // $req->validated();
+        $req->validated();
         // $models = new LaporanKerusakan;
 
         $user = $req->get('my_auth');

@@ -5,9 +5,9 @@ use Faker\Generator as Faker;
 
 $factory->define(LaporanKerusakanFoto::class, function (Faker $faker) {
     $id_laporan = $faker->unique()->numberBetween(1, 50);
-    $dir = storage_path('app/public') . '/history/' . $id_laporan;
-    if (!file_exists(storage_path('app/public') . '/history/')) {
-        mkdir(storage_path('app/public') . '/history/', 755);
+    $dir = storage_path('app\\public') . '\\history\\' . $id_laporan;
+    if (!file_exists(storage_path('app\\public') . '\\history\\')) {
+        mkdir(storage_path('app\\public') . '\\history\\', 755);
         if (!file_exists($dir)) {
             mkdir($dir, 755);
         }
@@ -25,12 +25,16 @@ $factory->define(LaporanKerusakanFoto::class, function (Faker $faker) {
 
     $enc = md5($ext[0]) . '.' . $ext[1];
 
-    \Storage::move($dir.'/'.$file_ori, $dir . '/' . $enc);
+    rename($dir.'\\'.$file_ori, $dir . '\\' . $enc);
+
+    $size = filesize($dir.'\\'.$enc);
+    // $size = '';
+
     return [
         'id_laporan'    => $id_laporan,
         'file_ori'      => $file_ori,
-        'size'          => '',
+        'size'          => $size,
         'ekstensi'      => $ext[1],
-        'file_enc'      => $file_ori,
+        'file_enc'      => $enc,
     ];
 });

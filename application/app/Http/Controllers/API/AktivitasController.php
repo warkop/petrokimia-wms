@@ -106,9 +106,9 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function store(Request $req, AktivitasHarian $aktivitas)
+    public function store(ApiAktivitasRequest $req, AktivitasHarian $aktivitas)
     {
-        // $req->validated();
+        $req->validated();
 
         // $models = new AktivitasHarian;
         $user = $req->get('my_auth');
