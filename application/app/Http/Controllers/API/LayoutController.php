@@ -21,6 +21,7 @@ class LayoutController extends Controller
                 'tipe_gudang',
                 'kapasitas',
                 'tipe as tipe_area',
+                \DB::raw('(SELECT SUM(jumlah) FROM area_stok WHERE area_stok.id_area = area.id) AS total'),
                 \DB::raw('
                     CASE
                         WHEN tipe_gudang=1 THEN \'Internal\'
