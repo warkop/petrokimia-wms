@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Area;
+use App\Http\Models\AreaStok;
 use App\Http\Resources\AktivitasResource;
 use Illuminate\Http\Response;
 
@@ -43,6 +44,31 @@ class LayoutController extends Controller
             ->paginate(10);
 
         $obj =  AktivitasResource::collection($res)->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ],
+        ], Response::HTTP_OK);
+
+        return $obj;
+    }
+
+    public function detail($id_area)
+    {
+        $res = AreaStok::select(
+            'area.id',
+            'id_material',
+            'area.nama as nama_area',
+            'material.nama as nama_material',
+            'area_stok.tanggal',
+            'area_stok.jumlah',
+            'area.kapasitas'
+        )
+        ->leftJoin('material', 'area_stok.id_material', '=', 'material.id')
+        ->leftJoin('area', 'area_stok.id_area', '=', 'area.id')
+        ->where('id_area',$id_area)->get();
+
+        $obj =  (new AktivitasResource($res))->additional([
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK

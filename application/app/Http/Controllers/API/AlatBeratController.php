@@ -61,7 +61,8 @@ class AlatBeratController extends Controller
             'laporan_kerusakan.id', 
             'id_kerusakan', 
             'id_alat_berat', 
-            'id_shift', 
+            'id_shift',
+            \DB::raw('CASE WHEN jenis=1 THEN \'Perbaikan\' ELSE \'Keluhan\' END AS jenis_pelaporan'),
             \DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\') as tanggal'), 
             \DB::raw('TO_CHAR(jam_rusak, \'HH24:MI:SS\') as pukul'), 
             'keterangan')
@@ -112,7 +113,7 @@ class AlatBeratController extends Controller
             'id_shift',
             's.nama as nama_shift',
             'jenis',
-            // \DB::raw('IF jenis=1 THEN \'Perbaikan\' ELSE \'Keluhan\' END IF AS jenis_pelaporan'),
+            \DB::raw('CASE WHEN jenis=1 THEN \'Perbaikan\' ELSE \'Keluhan\' END AS jenis_pelaporan'),
             'abk.nama as nama_kerusakan',
             \DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\') as tanggal'),
             \DB::raw('TO_CHAR(jam_rusak, \'HH24:MI:SS\') as pukul'),

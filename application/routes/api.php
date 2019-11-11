@@ -28,6 +28,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-area', 'API\AktivitasController@getArea');
         Route::get('/get-alat-berat', 'API\AktivitasController@getAlatBerat');
         Route::get('/get-jenis-foto', 'API\AktivitasController@getJenisFoto');
+        Route::get('/get-area-stok', 'API\AktivitasController@areaStok');
         Route::get('/{aktivitas}', 'API\AktivitasController@show')->where('aktivitas', '[0-9]+');
         Route::post('/{aktivitas?}', 'API\AktivitasController@store')->where('aktivitas', '[0-9]+');
     });
@@ -43,6 +44,7 @@ Route::group(['middleware' => 'api.auth'], function () {
 
     Route::group(['prefix' => 'layout'], function () {
         Route::get('/', 'API\LayoutController@index');
+        Route::get('/{id_area}', 'API\LayoutController@detail')->where('id_area', '[0-9]+');
     });
 });
 

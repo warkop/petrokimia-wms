@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Aktivitas;
+use App\Http\Models\AktivitasArea;
 use App\Http\Models\AktivitasFoto;
 use App\Http\Models\AktivitasHarian;
 use App\Http\Models\AlatBerat;
@@ -12,6 +13,7 @@ use App\Http\Models\Area;
 use App\Http\Models\Gudang;
 use App\Http\Models\JenisFoto;
 use App\Http\Models\Material;
+use App\Http\Models\MaterialTrans;
 use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Resources\AktivitasResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -110,74 +112,156 @@ class AktivitasController extends Controller
     {
         $req->validated();
 
-        // $models = new AktivitasHarian;
         $user = $req->get('my_auth');
 
-        // $id = $req->input('id');
-        // if (!empty($id)) {
-        //     $aktivitas = AktivitasHarian::find($id);
-        // }
-        
-        $aktivitas->id_aktivitas      = $req->input('id_aktivitas');
-        $aktivitas->id_gudang         = $req->input('id_gudang');
-        $aktivitas->id_karu           = $req->input('id_karu');
-        $aktivitas->id_shift          = $req->input('id_shift');
-        $aktivitas->ref_number        = $req->input('ref_number');
-        $aktivitas->id_area           = $req->input('id_area');
-        $aktivitas->id_alat_berat     = $req->input('id_alat_berat');
-        $aktivitas->ttd               = $req->input('ttd');
-        $aktivitas->sistro            = $req->input('sistro');
-        $aktivitas->approve           = $req->input('approve');
-        $aktivitas->kelayakan_before  = $req->input('kelayakan_before');
-        $aktivitas->kelayakan_after   = $req->input('kelayakan_after');
-        $aktivitas->dikembalikan      = $req->input('dikembalikan');
-        $aktivitas->created_by        = $user->id_user;
-        $aktivitas->created_at        = now();
+        $res_user = Users::find($user->id_user);
 
-        $saved = $aktivitas->save();
-
-        if ($saved) {
-            $foto = $req->file('foto');
-            $foto_jenis = $req->input('foto_jenis');
-            $lat = $req->input('lat');
-            $lng = $req->input('lng');
-            $panjang = count($foto);
-            (new AktivitasFoto)->where('id_aktivitas_harian', '=', $aktivitas->id)->delete();
-            \Storage::deleteDirectory('/public/aktivitas_harian/' . $aktivitas->id);
-
-            for ($i = 0; $i < $panjang; $i++) {
-                if ($foto[$i]->isValid()) {
-                    $aktivitasFoto = new AktivitasFoto;
-
-                    $foto[$i]->storeAs('/public/aktivitas_harian/' . $aktivitas->id, $foto[$i]->getClientOriginalName());
-
-                    $arrayFoto = [
-                        'id_aktivitas_harian'       => $aktivitas->id,
-                        'id_foto_jenis'             => $foto_jenis[$i],
-                        'foto'                      => $foto[$i]->getClientOriginalName(),
-                        'size'                      => $foto[$i]->getSize(),
-                        'lat'                       => $lat[$i],
-                        'lng'                       => $lng[$i],
-                        'created_by'                => $user->id_user,
-                        'created_at'                => now(),
-                    ];
-
-                    $aktivitasFoto->create($arrayFoto);
+        if ($res_user == 3) {
+            $ttd = $req->file('ttd');
+            if (!empty($ttd)) {
+                if ($ttd->isValid()) {
+                    \Storage::deleteDirectory('/public/aktivitas_harian/' . $aktivitas->id);
+                    $ttd->storeAs('/public/aktivitas_harian/' . $aktivitas->id, $ttd->getClientOriginalName());
+                    $aktivitas->ttd = $ttd->getClientOriginalName();
                 }
             }
 
-            $foto = AktivitasFoto::where('id_aktivitas_harian', $aktivitas->id)->get();
+            $aktivitas->id_aktivitas      = $req->input('id_aktivitas');
+            $aktivitas->id_gudang         = $req->input('id_gudang');
+            $aktivitas->id_karu           = $req->input('id_karu');
+            $aktivitas->id_shift          = $req->input('id_shift');
+            $aktivitas->ref_number        = $req->input('ref_number');
+            $aktivitas->id_area           = $req->input('id_area');
+            $aktivitas->id_alat_berat     = $req->input('id_alat_berat');
+            $aktivitas->sistro            = $req->input('sistro');
+            $aktivitas->approve           = $req->input('approve');
+            $aktivitas->kelayakan_before  = $req->input('kelayakan_before');
+            $aktivitas->kelayakan_after   = $req->input('kelayakan_after');
+            $aktivitas->dikembalikan      = $req->input('dikembalikan');
+            $aktivitas->created_by        = $user->id_user;
+            $aktivitas->created_at        = now();
 
-            return (new AktivitasResource($aktivitas))->additional([
-                'foto' => $foto,
-                'status' => [
-                    'message' => '',
-                    'code' => Response::HTTP_CREATED,
-                ]
-            ], Response::HTTP_CREATED);
+            $saved = $aktivitas->save();
+
+            if ($saved) {
+                //simpan foto
+                $foto = $req->file('foto');
+                $foto_jenis = $req->input('foto_jenis');
+                $lat = $req->input('lat');
+                $lng = $req->input('lng');
+                if (!empty($foto)) {
+                    $panjang = count($foto);
+                    (new AktivitasFoto)->where('id_aktivitas_harian', '=', $aktivitas->id)->delete();
+                    \Storage::deleteDirectory('/public/aktivitas_harian/' . $aktivitas->id);
+                    for ($i = 0; $i < $panjang; $i++) {
+                        if ($foto[$i]->isValid()) {
+                            $aktivitasFoto = new AktivitasFoto;
+
+                            $foto[$i]->storeAs('/public/aktivitas_harian/' . $aktivitas->id, $foto[$i]->getClientOriginalName());
+
+                            $arrayFoto = [
+                                'id_aktivitas_harian'       => $aktivitas->id,
+                                'id_foto_jenis'             => $foto_jenis[$i],
+                                'foto'                      => $foto[$i]->getClientOriginalName(),
+                                'size'                      => $foto[$i]->getSize(),
+                                'lat'                       => $lat[$i],
+                                'lng'                       => $lng[$i],
+                                'created_by'                => $user->id_user,
+                                'created_at'                => now(),
+                            ];
+
+                            $aktivitasFoto->create($arrayFoto);
+                        }
+                    }
+
+                    $foto = AktivitasFoto::where('id_aktivitas_harian', $aktivitas->id)->get();
+                }
+
+
+                //simpan area
+                $area_stok = $req->input('area_stok');
+                $jumlah = $req->input('jumlah');
+                $tipe = $req->input('tipe');
+                if (!empty($area_stok)) {
+                    $panjang = count($area_stok);
+                    (new AktivitasArea)->where('id_aktivitas_harian', '=', $aktivitas->id)->delete();
+                    for ($i = 0; $i < $panjang; $i++) {
+                        $aktivitas_area = AktivitasArea::sum('jumlah')->where('id_aktivitas', $aktivitas->id)->get();
+
+                        $area = Area::join('area_stok', 'area.id', '=', 'area_stok.id_area')->orderBy('area_stok.tanggal', 'asc')
+                            ->get();
+
+                        $area->groupBy();
+
+                        $arr = [
+                            'id_aktivitas_harian'       => $aktivitas->id,
+                            'id_area_stok'              => $area_stok[$i],
+                            'jumlah'                    => $jumlah[$i],
+                            'tipe'                      => $tipe[$i],
+                            'created_by'                => $user->id_user,
+                            'created_at'                => now(),
+                        ];
+
+                        (new AktivitasArea)->create($arr);
+                    }
+                }
+
+                //simpan produk
+                $produk = $req->input('produk');
+                $jumlah = $req->input('jumlah');
+                $tipe = $req->input('tipe');
+                if (!empty($produk)) {
+                    $panjang = count($produk);
+                    (new MaterialTrans)->where('id_aktivitas_harian', '=', $aktivitas->id)->delete();
+                    for ($i = 0; $i < $panjang; $i++) {
+                        $arr = [
+                            'id_aktivitas_harian'       => $aktivitas->id,
+                            'id_material'               => $produk[$i],
+                            'jumlah'                    => $jumlah[$i],
+                            'tipe'                      => $tipe[$i],
+                            'created_by'                => $user->id_user,
+                            'created_at'                => now(),
+                        ];
+                        \DB::table('material_trans')->insert($arr);
+                    }
+                }
+
+                //simpan pallet
+                $pallet = $req->input('pallet');
+                $jumlah = $req->input('jumlah');
+                $tipe = $req->input('tipe');
+                if (!empty($pallet)) {
+                    $panjang = count($pallet);
+                    for ($i = 0; $i < $panjang; $i++) {
+                        $arr = [
+                            'id_aktivitas_harian'       => $aktivitas->id,
+                            'id_material'               => $pallet[$i],
+                            'jumlah'                    => $jumlah[$i],
+                            'tipe'                      => $tipe[$i],
+                            'created_by'                => $user->id_user,
+                            'created_at'                => now(),
+                        ];
+                        \DB::table('material_trans')->insert($arr);
+                    }
+                }
+
+
+                return (new AktivitasResource($aktivitas))->additional([
+                    'foto' => $foto,
+                    'status' => [
+                        'message' => '',
+                        'code' => Response::HTTP_CREATED,
+                    ]
+                ], Response::HTTP_CREATED);
+            } else {
+                $this->responseCode = 500;
+                $this->responseMessage = 'Gagal menyimpan aktivitas!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
         } else {
-            $this->responseCode = 500;
-            $this->responseMessage = 'Gagal menyimpan aktivitas!';
+            $this->responseCode = 403;
+            $this->responseMessage = 'Hanya Checker yang diizinkan untuk menyimpan aktivitass!';
             $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
             return response()->json($response, $this->responseCode);
         }
@@ -213,5 +297,15 @@ class AktivitasController extends Controller
                 'code' => Response::HTTP_OK,
             ]
         ], Response::HTTP_OK);
+    }
+
+    public function areaStok()
+    {
+        $area = Area::join('area_stok', 'area.id', '=', 'area_stok.id_area')->orderBy('area_stok.tanggal', 'asc')
+            ->get();
+
+        collect($area)->groupBy('tanggal');
+
+        return $area->toArray();
     }
 }

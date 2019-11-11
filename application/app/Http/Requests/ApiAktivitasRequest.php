@@ -25,9 +25,10 @@ class ApiAktivitasRequest extends FormRequest
     {
         $rules = [
             'id_aktivitas'      => 'required|numeric',
-            'id_gudang'         => 'required|numeric',
-            'id_karu'           => 'required|numeric',
-            'id_shift'          => 'required|numeric',
+            'id_gudang'         => 'numeric',
+            'id_karu'           => 'numeric',
+            'id_shift'          => 'numeric',
+            'id_alat_berat'     => 'numeric',
             // 'ref_number'        => '',
             // 'id_area'           => 'Area',
             // 'id_alat_berat'     => 'Alat Berat',
