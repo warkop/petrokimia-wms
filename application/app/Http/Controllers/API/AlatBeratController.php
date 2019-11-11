@@ -21,7 +21,18 @@ class AlatBeratController extends Controller
         $search = strip_tags($req->input('search'));
 
         $res = AlatBerat::
-            select('alat_berat.id', 'nomor_lambung', 'nama', 'alat_berat.created_at')
+            select(
+                'alat_berat.id', 
+                'nomor_lambung', 
+                'nama', 
+                'status',
+                \DB::raw('
+                    CASE
+                        WHEN status=1 THEN \'Aktif\'
+                    ELSE \'Rusak\'
+                END AS text_status'),
+                'alat_berat.created_at'
+            )
             ->join('alat_berat_kat as abk', 'alat_berat.id_kategori', '=', 'abk.id')
             ->join('rencana_alat_berat as rab', 'alat_berat.id', '=', 'rab.id_alat_berat')
             ->where(function ($where) use ($search) {
