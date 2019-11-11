@@ -143,7 +143,7 @@
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="upload_foto" id="upload_foto" value="1"> Upload Foto
+                                        <input type="checkbox" id="upload_foto" value="1"> Upload Foto
                                         <span></span>
                                     </label>
                                 </div>
@@ -281,6 +281,90 @@
                 </div>
             </div>
 
+            <div class="modal fade" id="modalFoto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Upload Foto</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox" id="select_all_photos"> Pilih Semua
+                                        <span></span>
+                                    </label>
+                                </div>
+                                @foreach ($foto as $row)
+                                    <div class="col-md-6">
+                                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                            <input class="upload_foto_checkbox" type="checkbox" name="upload_foto[]" id="upload_foto_{{$row->id}}" value="{{$row->id}}"> {{$row->nama}}
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                            <button type="button" class="btn btn-success">Simpan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modalAlatBerat" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Alat berat</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox" name="pilih_semua" id="pilih_semua" value="1"> Pilih Semua
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="kel mt1" style="padding: .5rem !important">
+                                        <div class="col-12 mb1">
+                                            <small >pilih spesifik</small>
+                                        </div>
+                                        @php $i=0 @endphp
+                                        @foreach ($alat_berat as $row)
+                                            <div class="col-md-12">
+                                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                                    <input type="checkbox" onclick="loadAnggaran({{$row->id}})" name="alat_berat[{{$i}}]" id="Forklift_{{$row->id}}" value="{{$row->id}}"> {{$row->nama}}
+                                                    <span></span>
+                                                </label>
+                                                <div id="ffForklift_{{$row->id}}" class="form-group alat_berat" style="display:none">
+                                                    <small for="idAForklift">Masukkan Anggaran</small>
+                                                    <input type="text" class="form-control" name="anggaran[{{$i}}]" id="idAForklift_{{$row->id}}" placeholder="Masukkan Anggaran">
+                                                </div>
+                                            </div>
+                                        @php $i++ @endphp
+                                        @endforeach
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                            <button type="button" class="btn btn-success">Simpan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="kt-portlet__foot">
                 <div class="kt-form__actions">
                     <div class="row">
@@ -300,135 +384,11 @@
 
 
 <!--begin::Modal-->
-<div class="modal fade" id="modalFoto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Upload Foto</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                            <input type="checkbox" name="pilih_semua" id="pilih_semua" value="1"> Pilih Semua
-                            <span></span>
-                        </label>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                            <input type="checkbox" name="depan" id="depan" value="1"> Tampak Depan
-                            <span></span>
-                        </label>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                            <input type="checkbox" name="belakang" id="belakang" value="1"> Tampak Belakang
-                            <span></span>
-                        </label>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                            <input type="checkbox" name="samping_kanan" id="samping_kanan" value="1"> Tampak Samping Kanan
-                            <span></span>
-                        </label>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                            <input type="checkbox" name="samping_kiri" id="samping_kiri" value="1"> Tampak Samping Kiri
-                            <span></span>
-                        </label>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                            <input type="checkbox" name="atas" id="atas" value="1"> Tampak Atas
-                            <span></span>
-                        </label>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                            <input type="checkbox" name="bawah" id="bawah" value="1"> Tampak Bawah
-                            <span></span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-success">Simpan</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!--end::Modal-->
 
 <!--begin::Modal-->
-<div class="modal fade" id="modalAlatBerat" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Alat berat</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                            <input type="checkbox" name="pilih_semua" id="pilih_semua" value="1"> Pilih Semua
-                            <span></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="kel mt1" style="padding: .5rem !important">
-                            <div class="col-12 mb1">
-                                <small >pilih spesifik</small>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                    <input type="checkbox" name="Forklift" id="Forklift" value="1"> Forklift
-                                    <span></span>
-                                </label>
-                                <div id="ffForklift" class="form-group" style="display:none">
-                                    <small for="idAForklift">Masukkan Anggaran</small>
-                                    <input type="text" class="form-control" id="idAForklift" placeholder="Masukkan Anggaran">
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                    <input type="checkbox" name="Bulldozer" id="Bulldozer" value="1"> Bulldozer
-                                    <span></span>
-                                </label>
-                                <div id="ffBulldozer" class="form-group" style="display:none">
-                                    <small for="idABulldozer">Masukkan Anggaran</small>
-                                    <input type="text" class="form-control" id="idABulldozer" placeholder="Masukkan Anggaran">
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                    <input type="checkbox" name="Truk" id="Truk" value="1"> Truk
-                                    <span></span>
-                                </label>
-                                <div id="ffTruk" class="form-group" style="display:none">
-                                    <small for="idATruk">Masukkan Anggaran</small>
-                                    <input type="text" class="form-control" id="idATruk" placeholder="Masukkan Anggaran">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-success">Simpan</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!--end::Modal-->
 
@@ -569,6 +529,13 @@
             $('#upload_foto-label').hide();
         }
     });
+    // $('#select_all_photos').change(function() {
+    //     var checkboxes = $(this).closest('form').find(':checkbox');
+    //     checkboxes.prop('checked', $(this).is(':checked'));
+    // });
+    $("#select_all_photos").click(function(){
+        $('input:checkbox .upload_foto_checkbox').not(this).prop('checked', this.checked);
+    });
 
     function showModalUploadFoto(){
         $('#modalFoto').modal();
@@ -588,6 +555,16 @@
         $('#modalAlatBerat').modal();
     }
 
+    function loadAnggaran(id) {
+        console.log(id)
+        $('#Forklift_'+id).on('change', function(e){
+            if(e.target.checked){
+                $('#ffForklift_'+id).show('slow');
+            } else {
+                $('#ffForklift_'+id).hide('slow');
+            }
+        });
+    }
     $('#Forklift').on('change', function(e){
         if(e.target.checked){
             $('#ffForklift').show('slow');

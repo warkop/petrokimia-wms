@@ -12,6 +12,6 @@ class AlatBeratSeeder extends Seeder
      */
     public function run()
     {
-        factory(AlatBerat::class, 20)->create();
+        factory(AlatBerat::class, 10)->create();
     }
 }

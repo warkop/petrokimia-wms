@@ -59,10 +59,14 @@ class JenisFotoController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(JenisFotoRequest $req, JenisFoto $jenisFoto)
+    public function store(JenisFotoRequest $req, $id='')
     {
+        $jenisFoto = new JenisFoto;
+        if ($id != '') {
+            $jenisFoto = JenisFoto::withoutGlobalScopes()->find($id);
+        }
         $req->validated();
-
+        
         $jenisFoto->nama           = $req->input('nama');
         $jenisFoto->start_date     = $req->input('start_date');
         $jenisFoto->end_date       = $req->input('end_date');
@@ -81,7 +85,7 @@ class JenisFotoController extends Controller
         if (!$request->ajax()) {
             return $this->accessForbidden();
         } else {
-            $res = $models::find($id);
+            $res = $models::withoutGlobalScopes()->find($id);
 
             if (!empty($res)) {
                 $this->responseCode = 200;

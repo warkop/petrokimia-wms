@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Aktivitas;
+use App\Http\Models\AktivitasAlatBerat;
+use App\Http\Models\AktivitasMasterFoto;
+use App\Http\Models\AlatBerat;
+use App\Http\Models\JenisFoto;
+use App\Http\Models\KategoriAlatBerat;
 use App\Http\Requests\AktivitasRequest;
 use Illuminate\Http\Request;
 
@@ -17,6 +22,7 @@ class AktivitasController extends Controller
     public function create()
     {
         $data['title'] = 'Master Tambah Aktivitas';
+        $data['foto'] = new JenisFoto;
         return view('master.master-aktivitas.second', $data);
     }
 
@@ -67,7 +73,6 @@ class AktivitasController extends Controller
         $aktivitas->pallet_dipakai             = $req->input('pallet_dipakai');
         $aktivitas->pallet_kosong              = $req->input('pallet_kosong');
         $aktivitas->pallet_rusak               = $req->input('pallet_rusak');
-        $aktivitas->upload_foto                = $req->input('upload_foto');
         $aktivitas->connect_sistro             = $req->input('connect_sistro');
         $aktivitas->pengiriman                 = $req->input('pengiriman');
         $aktivitas->fifo                       = $req->input('fifo');
@@ -76,7 +81,6 @@ class AktivitasController extends Controller
         $aktivitas->peminjaman                 = $req->input('peminjaman');
         $aktivitas->pengaruh_tgl_produksi      = $req->input('pengaruh_tgl_produksi');
         $aktivitas->internal_gudang            = $req->input('internal_gudang');
-        $aktivitas->butuh_alat_berat           = $req->input('butuh_alat_berat');
         $aktivitas->butuh_tkbm                 = $req->input('butuh_tkbm');
         $aktivitas->tanda_tangan               = $req->input('tanda_tangan');
         $aktivitas->butuh_approval             = $req->input('butuh_approval');
@@ -85,6 +89,30 @@ class AktivitasController extends Controller
         $aktivitas->end_date                   = $req->input('end_date');
 
         $aktivitas->save();
+
+        $upload_foto    = $req->input('upload_foto');
+        $alat_berat     = $req->input('alat_berat');
+        $anggaran       = $req->input('anggaran');
+
+        for ($i=0; $i<count($upload_foto); $i++) {
+            $arr = [
+                'id_aktivitas'  => $aktivitas->id,
+                'id_foto_jenis' => $upload_foto[$i],
+            ];
+
+            AktivitasMasterFoto::create($arr);
+        }
+        
+        for ($i=0; $i<count($alat_berat); $i++) {
+            $arr = [
+                'id_aktivitas'  => $aktivitas->id,
+                'id_katergori_alat_berat' => $alat_berat[$i],
+                'anggaran' => $anggaran[$i],
+            ];
+
+            AktivitasAlatBerat::create($arr);
+        }
+
 
         $this->responseCode     = 200;
         $this->responseMessage  = 'Data berhasil disimpan';
@@ -118,16 +146,8 @@ class AktivitasController extends Controller
     public function edit($id)
     {
         $data['id'] = $id;
+        $data['foto'] = JenisFoto::get();
+        $data['alat_berat'] = KategoriAlatBerat::get();
         return view('master.master-aktivitas.second', $data);
-    }
-
-    public function update(Request $request, Aktivitas $aktivitas)
-    {
-        //
-    }
-
-    public function destroy(Aktivitas $aktivitas)
-    {
-        //
     }
 }

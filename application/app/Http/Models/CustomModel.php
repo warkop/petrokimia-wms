@@ -22,11 +22,15 @@ class CustomModel extends Model
                     // $new = $table->$attr??'kosong';
                     $old = (new CustomModel)->specialColumn($attr, $table->getOriginal($attr));
                     $new = (new CustomModel)->specialColumn($attr, $table->$attr);
+                    $text = '';
+
+                    if (!is_array($new))
+                        $text = 'Mengubah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' dengan ID ' . $table->id . ' pada ' . $attr . ' dari ' . $old . ' menjadi ' . $new;
 
                     $arr = [
                         'modul' => ucwords(str_replace('_', ' ', $table->table)),
                         'action' => 2,
-                        'aktivitas' => 'Mengubah data '.ucwords(str_replace('_', ' ', $table->table)).' dengan ID '.$table->id.' pada '.$attr.' dari '.$old.' menjadi '.$new,
+                        'aktivitas' => $text,
                         'created_at' => now(),
                         'created_by' => \Auth::id(),
                     ];

@@ -37,7 +37,6 @@ class AktivitasRequest extends FormRequest
             'pallet_stok'               => 'nullable|numeric',
             'pallet_dipakai'            => 'nullable|numeric',
             'pallet_kosong'             => 'nullable|numeric',
-            'upload_foto'               => 'nullable|numeric',
             'connect_sistro'            => 'nullable|numeric',
             'pengiriman'                => 'nullable|numeric',
             'fifo'                      => 'nullable|numeric',
@@ -46,12 +45,13 @@ class AktivitasRequest extends FormRequest
             'peminjaman'                => 'nullable|numeric',
             'pengaruh_tgl_produksi'     => 'nullable|numeric',
             'internal_gudang'           => 'nullable|numeric',
-            'butuh_alat_berat'          => 'nullable|numeric',
             'butuh_tkbm'                => 'nullable|numeric',
             'tanda_tangan'              => 'nullable|numeric',
-            'butuh_approval'            => 'nullable|numeric',
             'start_date'                => 'nullable|date_format:d-m-Y',
             'end_date'                  => 'nullable|date_format:d-m-Y|after:start_date',
+            'upload_foto.*'             => 'nullable|numeric',
+            'alat_berat.*'              => 'nullable|numeric',
+            'anggaran.*'                => 'nullable|numeric',
         ];
 
         
@@ -80,17 +80,20 @@ class AktivitasRequest extends FormRequest
             'butuh_tkbm'                => 'Butuh Tkbm',
             'tanda_tangan'              => 'Tanda Tangan',
             'butuh_approval'            => 'Butuh Approval',
+            'upload_foto.*'             => 'Upload Foto',
+            'alat_berat.*'              => 'Alat Berat',
+            'anggaran.*'                => 'Anggaran',
         ];
     }
 
     public function messages()
     {
         return [
-            'nama.required' => 'Nama Aktivitas wajib diisi!',
-            'numeric' => 'Inputan :attribute tidak valid!',
-            'start_date.date_format'  => 'Tanggal harus dengan format tanggal-bulan-tahun',
-            'end_date.date_format'  => 'Tanggal harus dengan format tanggal-bulan-tahun',
-            'end_date.after'  => 'Tanggal End Date tidak boleh melebihi Start Date!',
+            'nama.required'             => 'Nama Aktivitas wajib diisi!',
+            'numeric'                   => 'Inputan :attribute tidak valid!',
+            'start_date.date_format'    => 'Tanggal harus dengan format tanggal-bulan-tahun',
+            'end_date.date_format'      => 'Tanggal harus dengan format tanggal-bulan-tahun',
+            'end_date.after'            => 'Tanggal End Date tidak boleh melebihi Start Date!',
         ];
     }
 
