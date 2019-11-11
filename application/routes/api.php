@@ -29,6 +29,8 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-alat-berat', 'API\AktivitasController@getAlatBerat');
         Route::get('/get-jenis-foto', 'API\AktivitasController@getJenisFoto');
         Route::get('/get-area-stok', 'API\AktivitasController@areaStok');
+        Route::get('/history', 'API\AktivitasController@history');
+        Route::get('/history/{id}', 'API\AktivitasController@detailHistory')->where('id', '[0-9]+');
         Route::get('/{aktivitas}', 'API\AktivitasController@show')->where('aktivitas', '[0-9]+');
         Route::post('/{aktivitas?}', 'API\AktivitasController@store')->where('aktivitas', '[0-9]+');
     });

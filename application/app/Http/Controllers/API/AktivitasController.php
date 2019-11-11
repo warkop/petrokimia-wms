@@ -308,4 +308,61 @@ class AktivitasController extends Controller
 
         return $area->toArray();
     }
+
+    public function history(Request $req)
+    {
+        $search = $req->input('search');
+
+        $res = AktivitasHarian::select(
+            'aktivitas_harian.id',
+            'aktivitas.nama as nama_aktivitas',
+            'gudang.nama as nama_gudang',
+            'aktivitas_harian.created_at',
+            'aktivitas_harian.created_by'
+        )
+        ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+        ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
+        ->where(function ($where) use ($search) {
+            $where->where(\DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->orWhere(\DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        })
+        ;
+
+        $obj =  AktivitasResource::collection($res->paginate(10))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ],
+        ], Response::HTTP_OK);
+
+        return $obj;
+    }
+
+    public function detailHistory($id)
+    {
+        $res = AktivitasHarian::select(
+            'aktivitas_harian.id',
+            'aktivitas.nama as nama_aktivitas',
+            'gudang.nama as nama_gudang',
+            'karu.nama as nama_karu',
+            'aktivitas_harian.created_at',
+            'aktivitas_harian.created_by'
+        )
+        ->leftjoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+        ->leftjoin('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
+        ->leftjoin('aktivitas_gudang', 'aktivitas_harian.id_gudang', '=', 'aktivitas_harian.id_karu')
+        ->join('karu', 'aktivitas_harian.id_karu', '=', 'aktivitas_harian.id_karu')
+        ->join('karu', 'aktivitas_harian.id_karu', '=', 'aktivitas_harian.id_karu')
+        ->where('aktivitas_harian.id', $id)
+        ;
+
+        $obj = (AktivitasResource::collection($res->first()))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ],
+        ], Response::HTTP_OK);
+
+        return $obj;
+    }
 }
