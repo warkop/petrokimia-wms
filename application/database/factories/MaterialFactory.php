@@ -9,6 +9,6 @@ $factory->define(Material::class, function (Faker $faker) {
         'kategori' => $faker->numberBetween(1, 3),
         'berat' => $faker->numberBetween(50, 100),
         'koefisien_pallet' => $faker->numberBetween(1, 10),
-        'nama' => $faker->words(),
+        'nama' => $faker->word(),
     ];
 });
