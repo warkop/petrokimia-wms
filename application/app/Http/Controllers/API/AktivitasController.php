@@ -10,6 +10,7 @@ use App\Http\Models\AktivitasFoto;
 use App\Http\Models\AktivitasHarian;
 use App\Http\Models\AlatBerat;
 use App\Http\Models\Area;
+use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
 use App\Http\Models\JenisFoto;
 use App\Http\Models\Material;
@@ -345,19 +346,46 @@ class AktivitasController extends Controller
             'aktivitas_harian.id',
             'aktivitas.nama as nama_aktivitas',
             'gudang.nama as nama_gudang',
-            'karu.nama as nama_karu',
+            'nomor_lambung',
             'aktivitas_harian.created_at',
             'aktivitas_harian.created_by'
         )
         ->leftjoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
         ->leftjoin('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
-        ->leftjoin('aktivitas_gudang', 'aktivitas_harian.id_gudang', '=', 'aktivitas_harian.id_karu')
-        ->join('karu', 'aktivitas_harian.id_karu', '=', 'aktivitas_harian.id_karu')
-        ->join('karu', 'aktivitas_harian.id_karu', '=', 'aktivitas_harian.id_karu')
+        ->leftjoin('alat_berat', 'aktivitas_harian.id_gudang', '=', 'alat_berat.id')
         ->where('aktivitas_harian.id', $id)
         ;
 
-        $obj = (AktivitasResource::collection($res->first()))->additional([
+        $res_produk = MaterialTrans::select(
+            'material.id as id_material',
+            'material.nama as nama_material',
+            'tipe',
+            \DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
+            'jumlah'
+        )
+        ->leftJoin('material', 'material_trans.id_material', '=', 'material.id')
+        ->where('id_aktivitas_harian', $id)
+        ->where('kategori', 1)
+        ->get();
+
+        $res_pallet = MaterialTrans::select(
+            'material.id as id_material',
+            'material.nama as nama_material',
+            'tipe',
+            \DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
+            'jumlah'
+        )
+        ->leftJoin('material', 'material_trans.id_material', '=', 'material.id')
+        ->where('id_aktivitas_harian', $id)
+        ->where('kategori', 2)
+        ->get();
+
+        $foto = AktivitasFoto::where('id_aktivitas_harian', $id)->get();
+
+        $obj = (new AktivitasResource($res->get()))->additional([
+            'produk' => $res_produk,
+            'pallet' => $res_pallet,
+            'foto' => $foto,
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK
