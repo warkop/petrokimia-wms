@@ -317,6 +317,7 @@ class AktivitasController extends Controller
             'aktivitas_harian.id',
             'aktivitas.nama as nama_aktivitas',
             'gudang.nama as nama_gudang',
+            \DB::raw('CASE WHEN approve IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
             'aktivitas_harian.created_at',
             'aktivitas_harian.created_by'
         )
