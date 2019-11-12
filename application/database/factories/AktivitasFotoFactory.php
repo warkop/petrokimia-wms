@@ -35,7 +35,7 @@ $factory->define(AktivitasFoto::class, function (Faker $faker) {
         'id_foto_jenis'         => $faker->numberBetween(1, 4),
         'foto'                  => $file_ori,
         'size'                  => $size,
-        'lat'                   => $faker->latitude(-7, -6),
-        'lng'                   => $faker->longitude(112, 117),
+        // 'lat'                   => $faker->latitude(-7, -6),
+        // 'lng'                   => $faker->longitude(112, 117),
     ];
 });
