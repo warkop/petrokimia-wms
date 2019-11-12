@@ -78,18 +78,35 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function getArea(Request $req)
+    public function getArea(Request $req, $id_aktivitas)
     {
         $search = strip_tags($req->input('search'));
-        $resource = Area::where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-        })->get();
+        $aktivitas = Aktivitas::find($id_aktivitas);
+        if ($aktivitas->pengaruh_tgl_produksi != null) {
+            $resource = AreaStok::select(
+                'area.id',
+                'area.nama',
+                'area.kapasitas',
+                'area_stok.tanggal',
+                'area_stok.jumlah',
+            )
+            ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
+            
+            ->where(function ($where) use ($search) {
+                $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            })->get();
+        } else {
+            $resource = Area::where(function ($where) use ($search) {
+                $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            })->get();
+        }
         return (new AktivitasResource($resource))->additional([
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK,
             ]
         ], Response::HTTP_OK);
+
     }
 
     public function getAlatBerat(Request $req)
@@ -265,6 +282,30 @@ class AktivitasController extends Controller
             $this->responseMessage = 'Hanya Checker yang diizinkan untuk menyimpan aktivitass!';
             $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
             return response()->json($response, $this->responseCode);
+        }
+    }
+
+    public function approve(AktivitasHarian $aktivitas)
+    {
+        $aktivitas->approve = date('Y-m-d H:i:s');
+
+        $saved = $aktivitas->save();
+
+        if ($saved) {
+            return (new AktivitasResource($aktivitas))->additional([
+                'status' => [
+                    'message' => 'Aktivitas Harian berhasil disetujui',
+                    'code' => Response::HTTP_OK,
+                ]
+            ], Response::HTTP_OK);
+        } else {
+            return response()->json([
+                'data' => null,
+                'status' => [
+                    'message' => 'Aktivitas Harian tidak dapat diapprove. Terjadi kesalahan dalam pemrosesan!',
+                    'code' => Response::HTTP_INTERNAL_SERVER_ERROR
+                ]
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

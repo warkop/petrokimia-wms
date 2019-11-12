@@ -5,9 +5,9 @@ use Faker\Generator as Faker;
 
 $factory->define(AktivitasFoto::class, function (Faker $faker) {
     $id_aktivitas_harian = $faker->numberBetween(1, 50);
-    $dir = storage_path('app\\public') . '\\aktivitas_harian\\' . $id_aktivitas_harian;
-    if (!file_exists(storage_path('app\\public') . '\\aktivitas_harian\\')) {
-        mkdir(storage_path('app\\public') . '\\aktivitas_harian\\', 755);
+    $dir = storage_path('app/public') . '/aktivitas_harian/' . $id_aktivitas_harian;
+    if (!file_exists(storage_path('app/public') . '/aktivitas_harian/')) {
+        mkdir(storage_path('app/public') . '/aktivitas_harian/', 755);
         if (!file_exists($dir)) {
             mkdir($dir, 755);
         }
