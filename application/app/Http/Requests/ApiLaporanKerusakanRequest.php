@@ -69,6 +69,13 @@ class ApiLaporanKerusakanRequest extends FormRequest
             $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
         }
 
+        if ($input['jam_rusak'] != '') {
+            $input['jam_rusak']   = date('Y-m-d H:i:s', strtotime($input['jam_rusak']));
+        } else {
+            $input['jam_rusak'] = null;
+        }
+
+
         $this->replace($input);
     }
 }
