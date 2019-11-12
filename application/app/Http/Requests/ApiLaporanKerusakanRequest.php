@@ -26,7 +26,6 @@ class ApiLaporanKerusakanRequest extends FormRequest
         $rules = [
             'id_kerusakan'      => 'required|numeric',
             'id_alat_berat'     => 'required|numeric',
-            'id_shift'          => 'required|numeric',
             'jenis'             => 'between:1,2',
             'jam_rusak'         => 'date_format:d-m-Y H:i:s',
             'foto.*'            => 'image',
