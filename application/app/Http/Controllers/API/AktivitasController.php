@@ -88,7 +88,7 @@ class AktivitasController extends Controller
                 'area.nama',
                 'area.kapasitas',
                 'area_stok.tanggal',
-                'area_stok.jumlah',
+                'area_stok.jumlah'
             )
             ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
             
