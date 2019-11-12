@@ -25,14 +25,14 @@ class ApiAktivitasRequest extends FormRequest
     {
         $rules = [
             'id_aktivitas'      => 'required|numeric',
-            'id_gudang'         => 'numeric',
-            'id_karu'           => 'numeric',
-            'id_shift'          => 'numeric',
-            'id_alat_berat'     => 'numeric',
+            'id_gudang'         => 'nullable|numeric',
+            'id_karu'           => 'nullable|numeric',
+            'id_shift'          => 'nullable|numeric',
+            'id_alat_berat'     => 'nullable|numeric',
             // 'ref_number'        => '',
-            // 'id_area'           => 'Area',
-            // 'id_alat_berat'     => 'Alat Berat',
-            // 'ttd'               => 'Tanda Tangan',
+            'id_pindah_area'           => 'nullable|numeric',
+            'id_alat_berat'     => 'nullable|numeric',
+            'ttd'               => 'nullable|image',
             // 'sistro'            => 'Sistro',
             // 'approve'           => 'Approve',
             // 'kelayakan_before'  => 'Kelayakan Before',
@@ -53,7 +53,7 @@ class ApiAktivitasRequest extends FormRequest
             'id_karu'           => 'Karu',
             'id_shift'          => 'Shift',
             'ref_number'        => 'Nomor Referensi',
-            'id_area'           => 'Area',
+            'id_pindah_area'    => 'Pindah Area',
             'id_alat_berat'     => 'Alat Berat',
             'ttd'               => 'Tanda Tangan',
             'sistro'            => 'Sistro',
@@ -69,6 +69,7 @@ class ApiAktivitasRequest extends FormRequest
         return [
             'required'  => ':attribute wajib diisi!',
             'numeric'   => ':attribute harus berupa angka!',
+            'image'     => ':attribute harus berupa gambar!',
         ];
     }
 

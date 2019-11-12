@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Aktivitas;
 use App\Http\Models\AktivitasArea;
 use App\Http\Models\AktivitasFoto;
+use App\Http\Models\AktivitasGudang;
 use App\Http\Models\AktivitasHarian;
 use App\Http\Models\AlatBerat;
 use App\Http\Models\Area;
@@ -203,12 +204,17 @@ class AktivitasController extends Controller
                 ->orderBy('rencana_harian.id', 'desc')
                 ->take(1)->first();
 
+            $gudang = Gudang::find($rencana_tkbm->id_gudang)->orderBy('id', 'desc')->first();
+
+            // AktivitasGudang::where('id_aktivitas', $req->input('id_aktivitas'))->where('id_gudang', );
+
             $aktivitas->id_aktivitas      = $req->input('id_aktivitas');
-            $aktivitas->id_gudang         = $req->input('id_gudang');
-            // $aktivitas->id_karu           = $req->input('id_karu');
-            // $aktivitas->id_shift          = $req->input('id_shift');
+            $aktivitas->id_gudang         = $gudang->id;
+            $aktivitas->id_gudang_tujuan  = $req->input('id_gudang_tujuan');
+            $aktivitas->id_karu           = $gudang->id_karu;
+            $aktivitas->id_shift          = $rencana_tkbm->id_shift;
             $aktivitas->ref_number        = $req->input('ref_number');
-            $aktivitas->id_area           = $req->input('id_area');
+            $aktivitas->id_area           = $req->input('id_pindah_area');
             $aktivitas->id_alat_berat     = $req->input('id_alat_berat');
             $aktivitas->sistro            = $req->input('sistro');
             $aktivitas->approve           = $req->input('approve');
@@ -256,32 +262,64 @@ class AktivitasController extends Controller
 
 
                 //simpan area
-                $area_stok = $req->input('area_stok');
-                $jumlah = $req->input('jumlah');
-                $tipe = $req->input('tipe');
-                if (!empty($area_stok)) {
-                    $panjang = count($area_stok);
-                    (new AktivitasArea)->where('id_aktivitas_harian', '=', $aktivitas->id)->delete();
-                    for ($i = 0; $i < $panjang; $i++) {
-                        $aktivitas_area = AktivitasArea::sum('jumlah')->where('id_aktivitas', $aktivitas->id)->get();
-
-                        $area = Area::join('area_stok', 'area.id', '=', 'area_stok.id_area')->orderBy('area_stok.tanggal', 'asc')
+                $res_aktivitas = Aktivitas::find($req->input('id_aktivitas'));
+                if ($res_aktivitas->pengaruh_tgl_produksi != null) {
+                    $id_area = $req->input('id_area');
+                    $jumlah = $req->input('jumlah');
+                    $id_produk = $req->input('id_produk');
+                    if (!empty($id_area)) {
+                        $panjang = count($id_area);
+                        for ($i = 0; $i < $panjang; $i++) {
+                            $area_stok = AreaStok::where('id_area', $id_area[$i])
+                            ->where('id_material', $id_produk)
                             ->get();
 
-                        $area->groupBy();
+                            $area_stok->jumlah = $jumlah[$i];
+                            $area_stok->save();
+                        }
+                    }
+                } else {
+                    $id_area = $req->input('id_area');
+                    $jumlah = $req->input('jumlah');
+                    $id_produk = $req->input('id_produk');
+                    if (!empty($id_area)) {
+                        $panjang = count($id_area);
+                        for ($i = 0; $i < $panjang; $i++) {
+                            $area_stok = AreaStok::where('id_area', $id_area[$i])
+                                ->where('id_material', $id_produk)
+                                ->get();
 
-                        $arr = [
-                            'id_aktivitas_harian'       => $aktivitas->id,
-                            'id_area_stok'              => $area_stok[$i],
-                            'jumlah'                    => $jumlah[$i],
-                            'tipe'                      => $tipe[$i],
-                            'created_by'                => $user->id_user,
-                            'created_at'                => now(),
-                        ];
-
-                        (new AktivitasArea)->create($arr);
+                            $area_stok->jumlah = $jumlah[$i];
+                            $area_stok->save();
+                        }
                     }
                 }
+                
+                // $area_stok = $req->input('id_area_stok');
+                // $jumlah = $req->input('jumlah');
+                // $tipe = $req->input('tipe');
+                // if (!empty($area_stok)) {
+                //     $panjang = count($area_stok);
+                //     // (new AktivitasArea)->where('id_aktivitas_harian', '=', $aktivitas->id)->delete();
+                //     for ($i = 0; $i < $panjang; $i++) {
+                //         $aktivitas_area = AktivitasArea::sum('jumlah')->where('id_aktivitas', $aktivitas->id)->get();
+
+                //         $area = Area::join('area_stok', 'area.id', '=', 'area_stok.id_area')->orderBy('area_stok.tanggal', 'asc')
+                //             ->get();
+
+
+                //         $arr = [
+                //             'id_aktivitas_harian'       => $aktivitas->id,
+                //             'id_area_stok'              => $area_stok[$i],
+                //             'jumlah'                    => $jumlah[$i],
+                //             'tipe'                      => $tipe[$i],
+                //             'created_by'                => $user->id_user,
+                //             'created_at'                => now(),
+                //         ];
+
+                //         (new AktivitasArea)->create($arr);
+                //     }
+                // }
 
                 //simpan produk
                 $produk = $req->input('produk');

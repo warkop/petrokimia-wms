@@ -28,7 +28,7 @@ class ApiLaporanKerusakanRequest extends FormRequest
             'id_alat_berat'     => 'required|numeric',
             'jenis'             => 'between:1,2',
             'jam_rusak'         => 'date_format:d-m-Y H:i:s',
-            'foto.*'            => 'image',
+            'foto.*'            => 'nullable|image',
         ];
 
         $this->sanitize();
