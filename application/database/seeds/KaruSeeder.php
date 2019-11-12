@@ -3,7 +3,7 @@
 use App\Http\Models\Karu;
 use Illuminate\Database\Seeder;
 
-class KaroSeeder extends Seeder
+class KaruSeeder extends Seeder
 {
     /**
      * Run the database seeds.
