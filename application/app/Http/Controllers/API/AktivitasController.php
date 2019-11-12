@@ -96,7 +96,14 @@ class AktivitasController extends Controller
                 $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             })->get();
         } else {
-            $resource = Area::where(function ($where) use ($search) {
+            $resource = Area::select(
+                'area.id',
+                'area.nama',
+                'area.kapasitas',
+                \DB::raw('null as tanggal'),
+                \DB::raw('null as jumlah')
+            )
+            ->where(function ($where) use ($search) {
                 $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             })->get();
         }
