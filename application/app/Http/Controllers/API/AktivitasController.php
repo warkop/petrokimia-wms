@@ -83,18 +83,14 @@ class AktivitasController extends Controller
         $search = strip_tags($req->input('search'));
         $aktivitas = Aktivitas::find($id_aktivitas);
         if ($aktivitas->pengaruh_tgl_produksi != null) {
-            $resource = AreaStok::select(
-                'area.id',
-                'area.nama',
-                'area.kapasitas',
-                'area_stok.tanggal',
-                'area_stok.jumlah'
-            )
-            ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
-            
+            $resource = \DB::table('')->select(\DB::raw('DISTINCT  b.id_area, b.nama, sum(jumlah) AS jumlah'))
+            ->from(\DB::raw('(SELECT area_stok.id_area, area.nama, area.kapasitas, area_stok.tanggal, area_stok.jumlah FROM area_stok LEFT JOIN area ON area_stok.id_area = area.id ORDER BY id_area ) AS b'))
             ->where(function ($where) use ($search) {
                 $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-            })->get();
+            })
+            ->groupBy(\DB::raw('b.id_area, b.nama'))
+            ->orderBy(\DB::raw('nama'))
+            ->get();
         } else {
             $resource = Area::select(
                 'area.id',
@@ -113,7 +109,29 @@ class AktivitasController extends Controller
                 'code' => Response::HTTP_OK,
             ]
         ], Response::HTTP_OK);
+    }
 
+    public function getAreaStok($id_area)
+    {
+        $detail = \DB::table('')->selectRaw(
+            '
+                area_stok.id,
+                area.nama,
+                area.kapasitas,
+                area_stok.tanggal,
+                area_stok.jumlah'
+        )
+        ->from('area_stok')
+        ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
+        ->where('area.id', $id_area)
+        ->orderBy('nama', 'ASC')->get();
+
+        return (new AktivitasResource($detail))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ]
+        ], Response::HTTP_OK);
     }
 
     public function getAlatBerat(Request $req)
