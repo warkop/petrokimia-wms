@@ -111,27 +111,41 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function getAreaStok($id_area)
+    public function getAreaStok($id_aktivitas, $id_area)
     {
-        $detail = \DB::table('')->selectRaw(
-            '
-                area_stok.id,
-                area.nama,
-                area.kapasitas,
-                area_stok.tanggal,
-                area_stok.jumlah'
-        )
-        ->from('area_stok')
-        ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
-        ->where('area.id', $id_area)
-        ->orderBy('nama', 'ASC')->get();
+        $aktivitas = Aktivitas::find($id_aktivitas);
+        if ($aktivitas->pengaruh_tgl_produksi != null) {
+            $detail = \DB::table('')->selectRaw(
+                '
+                    area_stok.id,
+                    area.nama,
+                    area.kapasitas,
+                    area_stok.tanggal,
+                    area_stok.jumlah'
+            )
+            ->from('area_stok')
+            ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
+            ->where('area.id', $id_area)
+            ->orderBy('nama', 'ASC')->get();
+            return (new AktivitasResource($detail))->additional([
+                'status' => [
+                    'message' => '',
+                    'code' => Response::HTTP_OK,
+                ]
+            ], Response::HTTP_OK);
+        } else {
+            $detail = [];
 
-        return (new AktivitasResource($detail))->additional([
-            'status' => [
-                'message' => '',
-                'code' => Response::HTTP_OK,
-            ]
-        ], Response::HTTP_OK);
+            return [
+                'data' => $detail,
+                'status' => [
+                    'message' => '',
+                    'code' => Response::HTTP_OK,
+                ]
+            ];
+        }
+
+        
     }
 
     public function getAlatBerat(Request $req)
