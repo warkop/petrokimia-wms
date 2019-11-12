@@ -111,6 +111,20 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
+    public function pindahArea(Request $req)
+    {
+        $search = strip_tags($req->input('search'));
+        $resource = Area::where(function ($where) use ($search) {
+            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        })->get();
+        return (new AktivitasResource($resource))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ]
+        ], Response::HTTP_OK);
+    }
+
     public function getAreaStok($id_aktivitas, $id_area)
     {
         $aktivitas = Aktivitas::find($id_aktivitas);
