@@ -24,4 +24,8 @@ class AreaStok extends Model
 
     public $timestamps  = false;
 
+    public function area()
+    {
+        return $this->belongsTo('App\Http\Models\Area', 'id_area');
+    }
 }

@@ -347,6 +347,26 @@ class AktivitasController extends Controller
             'aktivitas.nama as nama_aktivitas',
             'gudang.nama as nama_gudang',
             'nomor_lambung',
+            'sistro',
+            'internal_gudang',
+            'butuh_approval',
+            \DB::raw('
+                CASE
+                    WHEN internal_gudang IS NOT NULL AND butuh_approval IS NOT NULL THEN true
+                ELSE false
+            END AS tombol_approval'),
+            \DB::raw('
+                CASE 
+                WHEN pindah_area IS NOT NULL AND internal_gudang IS NOT NULL THEN
+                    \'Pindah Area\'
+                WHEN internal_gudang IS NOT NULL THEN
+                    \'Pengiriman Gudang Internal\'
+                WHEN pengiriman IS NOT NULL THEN
+                    \'Pengiriman GP\'
+                WHEN peminjaman IS NOT NULL THEN
+                    \'Peminjaman\'
+            END AS jenis_aktivitas'),
+            \DB::raw('CASE WHEN approve IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
             'aktivitas_harian.created_at',
             'aktivitas_harian.created_by'
         )
@@ -385,7 +405,28 @@ class AktivitasController extends Controller
         $obj = (new AktivitasResource($res->get()))->additional([
             'produk' => $res_produk,
             'pallet' => $res_pallet,
-            'foto' => $foto,
+            'file' => $foto,
+            'url' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_aktivitas_harian}}&ctg=aktivitas_harian&src={{foto}}',
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ],
+        ], Response::HTTP_OK);
+
+        return $obj;
+    }
+
+    public function historyMaterialArea($id_material)
+    {
+        $res = AreaStok::select(
+            'id_area',
+            'nama',
+            'jumlah'
+        )
+        ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
+        ->where('id_material', $id_material);
+
+        $obj = (new AktivitasResource($res->get()))->additional([
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK
