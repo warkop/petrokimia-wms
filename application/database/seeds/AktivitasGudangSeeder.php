@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Models\RencanaTkbm;
+use App\Http\Models\AktivitasGudang;
 use Illuminate\Database\Seeder;
 
-class RencanaTkbmSeeder extends Seeder
+class AktivitasGudangSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,6 +12,6 @@ class RencanaTkbmSeeder extends Seeder
      */
     public function run()
     {
-        factory(RencanaTkbm::class, 300)->create();
+        factory(AktivitasGudang::class, 100)->create();
     }
 }

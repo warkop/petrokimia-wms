@@ -8,11 +8,8 @@ use DB;
 class RencanaTkbm extends Model
 {
     protected $table = 'rencana_tkbm';
-    protected $primaryKey = 'id';
+    protected $primaryKey = null;
 
-    protected $guarded = [
-        'id',
-    ];
 
     protected $hidden = [
         'created_at',
@@ -24,4 +21,5 @@ class RencanaTkbm extends Model
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
     public $timestamps  = false;
+    public $incrementing = false;
 }

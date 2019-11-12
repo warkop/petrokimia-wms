@@ -15,6 +15,7 @@ use App\Http\Models\Gudang;
 use App\Http\Models\JenisFoto;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
+use App\Http\Models\RencanaTkbm;
 use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Resources\AktivitasResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -187,7 +188,7 @@ class AktivitasController extends Controller
 
         $res_user = Users::find($user->id_user);
 
-        if ($res_user == 3) {
+        if ($res_user->role_id == 3) {
             $ttd = $req->file('ttd');
             if (!empty($ttd)) {
                 if ($ttd->isValid()) {
@@ -197,10 +198,15 @@ class AktivitasController extends Controller
                 }
             }
 
+            $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+                ->where('id_tkbm', $user->id_tkbm)
+                ->orderBy('rencana_harian.id', 'desc')
+                ->take(1)->first();
+
             $aktivitas->id_aktivitas      = $req->input('id_aktivitas');
             $aktivitas->id_gudang         = $req->input('id_gudang');
-            $aktivitas->id_karu           = $req->input('id_karu');
-            $aktivitas->id_shift          = $req->input('id_shift');
+            // $aktivitas->id_karu           = $req->input('id_karu');
+            // $aktivitas->id_shift          = $req->input('id_shift');
             $aktivitas->ref_number        = $req->input('ref_number');
             $aktivitas->id_area           = $req->input('id_area');
             $aktivitas->id_alat_berat     = $req->input('id_alat_berat');
@@ -332,7 +338,7 @@ class AktivitasController extends Controller
             }
         } else {
             $this->responseCode = 403;
-            $this->responseMessage = 'Hanya Checker yang diizinkan untuk menyimpan aktivitass!';
+            $this->responseMessage = 'Hanya Checker yang diizinkan untuk menyimpan aktivitas!';
             $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
             return response()->json($response, $this->responseCode);
         }
