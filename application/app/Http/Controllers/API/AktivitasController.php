@@ -83,21 +83,21 @@ class AktivitasController extends Controller
         $search = strip_tags($req->input('search'));
         $aktivitas = Aktivitas::find($id_aktivitas);
         if ($aktivitas->pengaruh_tgl_produksi != null) {
-            $resource = \DB::table('')->select(\DB::raw('DISTINCT  b.id_area, b.nama, sum(jumlah) AS jumlah'))
+            $resource = \DB::table('')->select(\DB::raw('DISTINCT  b.id_area, b.nama, b.kapasitas'))
             ->from(\DB::raw('(SELECT area_stok.id_area, area.nama, area.kapasitas, area_stok.tanggal, area_stok.jumlah FROM area_stok LEFT JOIN area ON area_stok.id_area = area.id ORDER BY id_area ) AS b'))
             ->where(function ($where) use ($search) {
                 $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             })
-            ->groupBy(\DB::raw('b.id_area, b.nama'))
+            ->groupBy(\DB::raw('b.id_area, b.nama, b.kapasitas'))
             ->orderBy(\DB::raw('nama'))
             ->get();
         } else {
             $resource = Area::select(
                 'area.id',
                 'area.nama',
-                'area.kapasitas',
-                \DB::raw('null as tanggal'),
-                \DB::raw('null as jumlah')
+                'area.kapasitas'
+                // \DB::raw('null as tanggal'),
+                // \DB::raw('null as jumlah')
             )
             ->where(function ($where) use ($search) {
                 $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
