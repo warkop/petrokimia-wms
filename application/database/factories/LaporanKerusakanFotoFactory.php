@@ -25,16 +25,16 @@ $factory->define(LaporanKerusakanFoto::class, function (Faker $faker) {
 
     $enc = md5($ext[0]) . '.' . $ext[1];
 
-    // rename($dir.'\\'.$file_ori, $dir . '\\' . $enc);
+    rename($dir.'/'.$file_ori, $dir . '/' . $enc);
 
-    // $size = filesize($dir.'\\'.$enc);
-    $size = '';
+    $size = filesize($dir.'/'.$enc);
+    // $size = '';
 
     return [
         'id_laporan'    => $id_laporan,
         'file_ori'      => $file_ori,
         'size'          => $size,
         'ekstensi'      => $ext[1],
-        'file_enc'      => $file_ori,
+        'file_enc'      => $enc,
     ];
 });
