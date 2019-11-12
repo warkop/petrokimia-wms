@@ -168,32 +168,36 @@ class AlatBeratController extends Controller
             $foto = $req->file('foto');
             (new LaporanKerusakanFoto)->where('id_laporan', '=', $laporan->id)->delete();
             \Storage::deleteDirectory('/public/history/' . $laporan->id);
+            if (!empty($foto)) {
+                foreach ($foto as $key => $value) {
+                    if ($value->isValid()) {
+                        $res = new LaporanKerusakanFoto;
 
-            foreach ($foto as $key => $value) {
-                if ($value->isValid()) {
-                    $res = new LaporanKerusakanFoto;
+                        $tujuan_upload = storage_path('app/public/history/') . $laporan->id;
+                        $md5Name = md5_file($value->getRealPath());
+                        $guessExtension = $value->getClientOriginalExtension();
+                        // \Storage::makeDirectory('/history/' . $laporan->id);
+                        $file = $value->storeAs('/public/history/' . $laporan->id, $md5Name . '.' . $guessExtension);
 
-                    $tujuan_upload = storage_path('app/public/history/') . $laporan->id;
-                    $md5Name = md5_file($value->getRealPath());
-                    $guessExtension = $value->getClientOriginalExtension();
-                    // \Storage::makeDirectory('/history/' . $laporan->id);
-                    $file = $value->storeAs('/public/history/' . $laporan->id, $md5Name . '.' . $guessExtension);
+                        // $value->move($tujuan_upload, $value->getClientOriginalName());
 
-                    // $value->move($tujuan_upload, $value->getClientOriginalName());
+                        $arrayFoto = [
+                            'id_laporan'    => $laporan->id,
+                            'file_ori'      => $value->getClientOriginalName(),
+                            'size'          => $value->getSize(),
+                            'ekstensi'      => $value->getClientOriginalExtension(),
+                            'file_enc'      => $md5Name . '.' . $guessExtension,
+                        ];
 
-                    $arrayFoto = [
-                        'id_laporan'    => $laporan->id,
-                        'file_ori'      => $value->getClientOriginalName(),
-                        'size'          => $value->getSize(),
-                        'ekstensi'      => $value->getClientOriginalExtension(),
-                        'file_enc'      => $md5Name . '.' . $guessExtension,
-                    ];
-
-                    $res->create($arrayFoto);
+                        $res->create($arrayFoto);
+                    }
                 }
-            }
 
-            $foto = LaporanKerusakanFoto::where('id_laporan', $laporan->id)->get();
+                $foto = LaporanKerusakanFoto::where('id_laporan', $laporan->id)->get();
+            } else {
+                $foto = null;
+            }
+            
 
             return (new AktivitasResource($laporan))->additional([
                 'file' => $foto,
