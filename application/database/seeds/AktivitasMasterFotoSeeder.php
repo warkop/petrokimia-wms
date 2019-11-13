@@ -1,9 +1,8 @@
 <?php
 
-use App\Http\Models\KategoriAlatBerat;
 use Illuminate\Database\Seeder;
 
-class KategoriAlatBeratSeeder extends Seeder
+class AktivitasMasterFotoSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,6 +11,6 @@ class KategoriAlatBeratSeeder extends Seeder
      */
     public function run()
     {
-        factory(KategoriAlatBerat::class, 50)->create();
+        //
     }
 }

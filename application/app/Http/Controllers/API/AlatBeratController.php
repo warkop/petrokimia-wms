@@ -178,6 +178,16 @@ class AlatBeratController extends Controller
 
             $resource = $laporan->save();
 
+            $alatBerat = AlatBerat::find($req->input('id_alat_berat'));
+
+            if ($req->input('jenis') == 2) {
+                $alatBerat->status = 0;
+            } else if ($req->input('jenis') == 1) {
+                $alatBerat->status = 1;
+            }
+
+            $alatBerat->save();
+
             if ($resource) {
                 $foto = $req->file('foto');
                 (new LaporanKerusakanFoto)->where('id_laporan', '=', $laporan->id)->delete();
