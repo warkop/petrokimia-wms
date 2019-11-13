@@ -27,7 +27,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-pallet', 'API\AktivitasController@getPallet');
         Route::get('/get-alat-berat', 'API\AktivitasController@getAlatBerat');
         Route::get('/get-jenis-foto', 'API\AktivitasController@getJenisFoto');
-        Route::get('/get-area-stok', 'API\AktivitasController@areaStok');
+        // Route::get('/get-area-stok', 'API\AktivitasController@areaStok');
         Route::get('/get-pindah-area', 'API\AktivitasController@pindahArea');
         Route::get('/history', 'API\AktivitasController@history');
         Route::get('/get-area/{id_aktivitas}', 'API\AktivitasController@getArea')->where('id_aktivitas', '[0-9]+');
@@ -35,7 +35,8 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/history/{id}', 'API\AktivitasController@detailHistory')->where('id', '[0-9]+');
         Route::get('/history/{id}/{id_material}', 'API\AktivitasController@historyMaterialArea')->where(['id' => '[0-9]+', 'id_material' => '[0-9]+']);
         Route::get('/{aktivitas}', 'API\AktivitasController@show')->where('aktivitas', '[0-9]+');
-        Route::post('/{aktivitas?}', 'API\AktivitasController@store')->where('aktivitas', '[0-9]+');
+        Route::put('/{aktivitas?}', 'API\AktivitasController@store')->where('aktivitas', '[0-9]+');
+        Route::post('/{aktivitas?}', 'API\AktivitasController@storePhotos')->where('aktivitas', '[0-9]+');
         Route::patch('/{aktivitas}', 'API\AktivitasController@approve')->where('aktivitas', '[0-9]+');
     });
     
