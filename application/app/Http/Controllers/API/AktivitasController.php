@@ -271,7 +271,7 @@ class AktivitasController extends Controller
                         $panjang = count($id_area);
                         for ($i = 0; $i < $panjang; $i++) {
                             $area_stok = AreaStok::where('id_area', $id_area[$i])
-                            ->where('id_material', $id_produk)
+                            ->where('id_material', $id_produk[$i])
                             ->get();
 
                             $area_stok->jumlah = $jumlah[$i];
