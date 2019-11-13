@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Models\Gudang;
 use Illuminate\Database\Seeder;
 
 class GudangSeeder extends Seeder
@@ -11,6 +12,6 @@ class GudangSeeder extends Seeder
      */
     public function run()
     {
-        //
+        factory(Gudang::class, 100)->create();
     }
 }
