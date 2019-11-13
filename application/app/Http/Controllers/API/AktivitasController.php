@@ -568,7 +568,9 @@ class AktivitasController extends Controller
             'lng'
         )
         ->leftJoin('foto_jenis', 'id_foto_jenis', '=', 'foto_jenis.id')
-        ->where('id_aktivitas_harian', $id)->get();
+        ->where('id_aktivitas_harian', $id)
+        ->orderBy('id_foto_jenis', 'asc')
+        ->get();
 
         $obj = (new AktivitasResource($res->get()))->additional([
             'produk' => $res_produk,
