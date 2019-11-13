@@ -170,6 +170,7 @@ class AktivitasController extends Controller
         $search = strip_tags($req->input('search'));
         $resource = AlatBerat::
         leftJoin('alat_berat_kat as abk', 'alat_berat.id_kategori', '=', 'abk.id')
+        ->where('status', 1)
         ->where(function ($where) use ($search) {
             $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             $where->orWhere(\DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
