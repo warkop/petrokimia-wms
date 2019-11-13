@@ -9,12 +9,16 @@ class MaterialTrans extends Model
     protected $table = 'material_trans';
     protected $primaryKey = 'id';
 
-    protected $guard = [
-        'id',
-        'created_at',
-        'created_by',
-        'updated_at',
-        'updated_by',
+    protected $fillable = [
+        'id_material',
+        'id_adjustment',
+        'tanggal',
+        'tipe',
+        'jumlah',
+        'alasan',
+        'id_realisasi_material',
+        'id_aktivitas_harian',
+        'status_pallet',
     ];
 
     public $timestamps  = false;
