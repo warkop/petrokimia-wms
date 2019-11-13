@@ -277,6 +277,18 @@ class AktivitasController extends Controller
 
                             $area_stok->jumlah = $jumlah[$i];
                             $area_stok->save();
+
+                            $material_trans = new MaterialTrans;
+
+                            $array = [
+                                'id_material'           => $id_produk[$i],
+                                'id_aktivitas_harian'   => $aktivitas->id,
+                                'tanggal'               => now(),
+                                'tipe'                  => $tipe[$i],
+                                'jumlah'                => $jumlah[$i],
+                            ];
+
+                            $material_trans->create($array);
                         }
                     }
                 } else {
@@ -293,9 +305,9 @@ class AktivitasController extends Controller
 
                             $arr = [
                                 'id_material'   => $id_produk[$i],
-                                'id_area'        => $id_area[$i],
+                                'id_area'       => $id_area[$i],
                                 'jumlah'        => $jumlah[$i],
-                                'tanggal'        => now(),
+                                'tanggal'       => now(),
                             ];
 
                             $area_stok->create($arr);
@@ -303,10 +315,11 @@ class AktivitasController extends Controller
                             $material_trans = new MaterialTrans;
 
                             $array = [
-                                'id_material' => $id_produk[$i],
-                                'tanggal' => now(),
-                                'tipe' => $tipe[$i],
-                                'jumlah' => $jumlah[$i],
+                                'id_material'           => $id_produk[$i],
+                                'id_aktivitas_harian'   => $aktivitas->id,
+                                'tanggal'               => now(),
+                                'tipe'                  => $tipe[$i],
+                                'jumlah'                => $jumlah[$i],
                             ];
 
                             $material_trans->create($array);
