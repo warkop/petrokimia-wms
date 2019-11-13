@@ -27,7 +27,7 @@ $factory->define(AktivitasFoto::class, function (Faker $faker) {
 
     // rename($dir . '\\' . $file_ori, $dir . '\\' . $enc);
 
-    $size = filesize($dir . '\\' . $file_ori);
+    $size = filesize($dir . '/' . $file_ori);
     // $size = '';
 
     return [
