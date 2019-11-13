@@ -13,6 +13,7 @@ use App\Http\Models\AlatBerat;
 use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
+use App\Http\Models\GudangPallet;
 use App\Http\Models\JenisFoto;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
@@ -326,32 +327,17 @@ class AktivitasController extends Controller
                         }
                     }
                 }
+
+                //simpan pallet
+                $id_produk = $req->input('produk');
+                if (!empty($id_produk)) {
+                    $panjang = count($id_produk);
+                    for ($i = 0; $i < $panjang; $i++) {
+                        $res_gudang = GudangPallet::where('id_material', $id_produk[$i])->get();
+
+                    }
+                }
                 
-                // $area_stok = $req->input('id_area_stok');
-                // $jumlah = $req->input('jumlah');
-                // $tipe = $req->input('tipe');
-                // if (!empty($area_stok)) {
-                //     $panjang = count($area_stok);
-                //     // (new AktivitasArea)->where('id_aktivitas_harian', '=', $aktivitas->id)->delete();
-                //     for ($i = 0; $i < $panjang; $i++) {
-                //         $aktivitas_area = AktivitasArea::sum('jumlah')->where('id_aktivitas', $aktivitas->id)->get();
-
-                //         $area = Area::join('area_stok', 'area.id', '=', 'area_stok.id_area')->orderBy('area_stok.tanggal', 'asc')
-                //             ->get();
-
-
-                //         $arr = [
-                //             'id_aktivitas_harian'       => $aktivitas->id,
-                //             'id_area_stok'              => $area_stok[$i],
-                //             'jumlah'                    => $jumlah[$i],
-                //             'tipe'                      => $tipe[$i],
-                //             'created_by'                => $user->id_user,
-                //             'created_at'                => now(),
-                //         ];
-
-                //         (new AktivitasArea)->create($arr);
-                //     }
-                // }
 
                 //simpan produk
                 $produk = $req->input('produk');
