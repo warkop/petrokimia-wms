@@ -291,11 +291,12 @@ class AktivitasController extends Controller
 
                             $arr = [
                                 'id_material'   => $id_produk[$i],
-                                'jumlah'        => $jumlah[$i]
+                                'id_area'        => $id_area[$i],
+                                'jumlah'        => $jumlah[$i],
+                                'tanggal'        => now(),
                             ];
 
-                            $area_stok->jumlah = $jumlah[$i];
-                            $area_stok->save();
+                            $area_stok->create($arr);
                         }
                     }
                 }
