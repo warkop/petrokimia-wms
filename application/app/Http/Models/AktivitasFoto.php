@@ -23,4 +23,14 @@ class AktivitasFoto extends Model
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
     public $timestamps  = false;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($table) {
+            // $table->created_by = \Auth::id();
+            $table->created_at = now();
+        });
+    }
 }

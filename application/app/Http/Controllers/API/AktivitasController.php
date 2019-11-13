@@ -289,6 +289,11 @@ class AktivitasController extends Controller
                                 ->where('id_material', $id_produk)
                                 ->get();
 
+                            $arr = [
+                                'id_material'   => $id_produk[$i],
+                                'jumlah'        => $jumlah[$i]
+                            ];
+
                             $area_stok->jumlah = $jumlah[$i];
                             $area_stok->save();
                         }
