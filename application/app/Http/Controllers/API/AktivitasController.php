@@ -307,6 +307,7 @@ class AktivitasController extends Controller
                                 'tanggal' => now(),
                                 'tipe' => $tipe[$i],
                                 'jumlah' => $jumlah[$i],
+                                'id_aktivitas_harian' => $aktivitas->id,
                             ];
 
                             $material_trans->create($array);
