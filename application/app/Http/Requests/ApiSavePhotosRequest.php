@@ -13,7 +13,7 @@ class ApiSavePhotosRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,44 @@ class ApiSavePhotosRequest extends FormRequest
      */
     public function rules()
     {
+        $this->sanitize();
+
         return [
-            //
+            'id_aktivitas_harian'       => 'required|numeric',
+            'ttd'                       => 'nullable|image',
+            'foto.*'                    => 'nullable|image',
+            'id_foto_jenis.*'           => 'nullable|numeric',
         ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'id_aktivitas_harian'      => 'ID Aktivitas harian',
+            'ttd'               => 'Tanda Tangan',
+            'foto.*'            => 'Foto',
+            'id_foto_jenis.*'            => 'Jenis Foto',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required'  => ':attribute wajib diisi!',
+            'numeric'   => ':attribute harus berupa angka!',
+            'image'     => ':attribute harus berupa gambar!',
+        ];
+    }
+
+    public function sanitize()
+    {
+        $input = $this->all();
+
+        foreach ($input as $key => $value) {
+            if ($input[$key] == 'file')
+            $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
+        }
+
+        $this->replace($input);
     }
 }

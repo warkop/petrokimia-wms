@@ -234,20 +234,21 @@ class AktivitasController extends Controller
                     $list_produk = $req->input('list_produk');
 
                     if (!empty($list_produk)) {
-                        $list_produk = count($list_produk);
+                        $jums_list_produk = count($list_produk);
 
-                        for ($i = 0; $i < $list_produk; $i++) {
+                        for ($i = 0; $i < $jums_list_produk; $i++) {
                             $produk = $list_produk[$i]['produk'];
                             $list_area = $list_produk[$i]['list_area'];
-                            $list_area = count($list_area);
+                            // dump($list_produk);
+                            $jums_list_area = count($list_area);
 
-                            for ($j = 0; $j < $list_area; $j++) {
+                            for ($j = 0; $j < $jums_list_area; $j++) {
                                 $tipe = $list_area[$j]['tipe'];
                                 $id_area_stok = $list_area[$j]['id_area_stok'];
                                 $list_jumlah = $list_area[$j]['list_jumlah'];
-                                $list_jumlah = count($list_jumlah);
+                                $jums_list_jumlah = count($list_jumlah);
 
-                                for ($k = 0; $k < $list_jumlah; $k++) {
+                                for ($k = 0; $k < $jums_list_jumlah; $k++) {
                                     $area_stok = AreaStok::
                                     where('id_area', $id_area_stok)
                                     ->where('id_material', $produk)
@@ -268,7 +269,7 @@ class AktivitasController extends Controller
                                         'id_aktivitas_harian'   => $aktivitas->id,
                                         'tanggal'               => now(),
                                         'tipe'                  => $tipe,
-                                        'jumlah'                => $list_jumlah[$k],
+                                        'jumlah'                => $list_jumlah[$k]['jumlah'],
                                     ];
         
                                     $material_trans->create($array);
@@ -450,6 +451,14 @@ class AktivitasController extends Controller
 
             $foto = AktivitasFoto::where('id_aktivitas_harian', $aktivitas->id)->get();
         }
+
+        return (new AktivitasResource($foto))->additional([
+            // 'foto' => $foto,
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_CREATED,
+            ]
+        ], Response::HTTP_CREATED);
     }
 
     public function approve(AktivitasHarian $aktivitas)
