@@ -13,6 +13,7 @@ use App\Http\Models\AlatBerat;
 use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
+use App\Http\Models\GudangPallet;
 use App\Http\Models\JenisFoto;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
@@ -271,12 +272,30 @@ class AktivitasController extends Controller
                     if (!empty($id_area)) {
                         $panjang = count($id_area);
                         for ($i = 0; $i < $panjang; $i++) {
+                            
                             $area_stok = AreaStok::where('id_area', $id_area[$i])
                             ->where('id_material', $id_produk[$i])
                             ->get();
 
-                            $area_stok->jumlah = $jumlah[$i];
+                            if ($tipe[$i] == 1) {
+                                $area_stok->jumlah = $area_stok->jumlah-$jumlah[$i];
+                            } else {
+                                $area_stok->jumlah = $area_stok->jumlah+$jumlah[$i];
+                            }
+                            
                             $area_stok->save();
+
+                            $material_trans = new MaterialTrans;
+
+                            $array = [
+                                'id_material'           => $id_produk[$i],
+                                'id_aktivitas_harian'   => $aktivitas->id,
+                                'tanggal'               => now(),
+                                'tipe'                  => $tipe[$i],
+                                'jumlah'                => $jumlah[$i],
+                            ];
+
+                            $material_trans->create($array);
                         }
                     }
                 } else {
@@ -291,11 +310,12 @@ class AktivitasController extends Controller
                                 ->where('id_material', $id_produk)
                                 ->get();
 
+
                             $arr = [
                                 'id_material'   => $id_produk[$i],
-                                'id_area'        => $id_area[$i],
+                                'id_area'       => $id_area[$i],
                                 'jumlah'        => $jumlah[$i],
-                                'tanggal'        => now(),
+                                'tanggal'       => now(),
                             ];
 
                             $area_stok->create($arr);
@@ -303,43 +323,32 @@ class AktivitasController extends Controller
                             $material_trans = new MaterialTrans;
 
                             $array = [
-                                'id_material' => $id_produk[$i],
-                                'tanggal' => now(),
-                                'tipe' => $tipe[$i],
-                                'jumlah' => $jumlah[$i],
-                                'id_aktivitas_harian' => $aktivitas->id,
+                                'id_material'           => $id_produk[$i],
+                                'id_aktivitas_harian'   => $aktivitas->id,
+                                'tanggal'               => now(),
+                                'tipe'                  => $tipe[$i],
+                                'jumlah'                => $jumlah[$i],
                             ];
 
                             $material_trans->create($array);
                         }
                     }
                 }
+
+                //simpan pallet
+                $id_produk = $req->input('produk');
+                if (!empty($id_produk)) {
+                    $panjang = count($id_produk);
+                    for ($i = 0; $i < $panjang; $i++) {
+                        $res_gudang = GudangPallet::where('id_material', $id_produk[$i])->get();
+
+                        AreaStok::where('id_material', $id_produk[$i]);
+                        $material = Material::find($id_produk[$i]);
+
+
+                    }
+                }
                 
-                // $area_stok = $req->input('id_area_stok');
-                // $jumlah = $req->input('jumlah');
-                // $tipe = $req->input('tipe');
-                // if (!empty($area_stok)) {
-                //     $panjang = count($area_stok);
-                //     // (new AktivitasArea)->where('id_aktivitas_harian', '=', $aktivitas->id)->delete();
-                //     for ($i = 0; $i < $panjang; $i++) {
-                //         $aktivitas_area = AktivitasArea::sum('jumlah')->where('id_aktivitas', $aktivitas->id)->get();
-
-                //         $area = Area::join('area_stok', 'area.id', '=', 'area_stok.id_area')->orderBy('area_stok.tanggal', 'asc')
-                //             ->get();
-
-
-                //         $arr = [
-                //             'id_aktivitas_harian'       => $aktivitas->id,
-                //             'id_area_stok'              => $area_stok[$i],
-                //             'jumlah'                    => $jumlah[$i],
-                //             'tipe'                      => $tipe[$i],
-                //             'created_by'                => $user->id_user,
-                //             'created_at'                => now(),
-                //         ];
-
-                //         (new AktivitasArea)->create($arr);
-                //     }
-                // }
 
                 //simpan produk
                 $produk = $req->input('produk');
@@ -569,7 +578,9 @@ class AktivitasController extends Controller
             'lng'
         )
         ->leftJoin('foto_jenis', 'id_foto_jenis', '=', 'foto_jenis.id')
-        ->where('id_aktivitas_harian', $id)->get();
+        ->where('id_aktivitas_harian', $id)
+        ->orderBy('id_foto_jenis', 'asc')
+        ->get();
 
         $obj = (new AktivitasResource($res->get()))->additional([
             'produk' => $res_produk,

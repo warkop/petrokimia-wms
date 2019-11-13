@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Models\AktivitasFoto;
+use App\Http\Models\AktivitasHarian;
 use Illuminate\Http\Request;
 use App\Http\Models\Users;
 use App\Http\Models\Transactions;
@@ -46,6 +47,12 @@ class WatchController extends Controller
                 }
             } else if ($category == 'history') {
                 $cek_id = LaporanKerusakan::find($id_file);
+
+                if (!empty($source) && !empty($category) && !empty($cek_id)) {
+                    $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
+                }
+            } else if ($category == 'aktivitas_harian') {
+                $cek_id = AktivitasHarian::find($id_file);
 
                 if (!empty($source) && !empty($category) && !empty($cek_id)) {
                     $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
