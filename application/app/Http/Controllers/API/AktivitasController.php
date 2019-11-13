@@ -538,7 +538,18 @@ class AktivitasController extends Controller
         ->where('kategori', 2)
         ->get();
 
-        $foto = AktivitasFoto::where('id_aktivitas_harian', $id)->get();
+        $foto = AktivitasFoto::select(
+            'aktivitas_foto.id',
+            'id_aktivitas_harian',
+            'id_foto_jenis',
+            'foto_jenis.nama as nama_jenis',
+            'foto',
+            'size',
+            'lat',
+            'lng'
+        )
+        ->leftJoin('foto_jenis', 'id_foto_jenis', '=', 'foto_jenis.id')
+        ->where('id_aktivitas_harian', $id)->get();
 
         $obj = (new AktivitasResource($res->get()))->additional([
             'produk' => $res_produk,
