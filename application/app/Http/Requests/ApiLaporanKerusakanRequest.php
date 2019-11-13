@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ApiLaporanKerusakanRequest extends FormRequest
 {
@@ -25,7 +26,10 @@ class ApiLaporanKerusakanRequest extends FormRequest
     {
         $rules = [
             'id_kerusakan'      => 'required|numeric',
-            'id_alat_berat'     => 'required|numeric',
+            'id_alat_berat'     => [
+                'required',
+                'numeric',
+            ],
             'jenis'             => 'between:1,2',
             'jam_rusak'         => 'date_format:d-m-Y H:i:s',
             'foto.*'            => 'nullable|image',

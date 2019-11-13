@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ApiAktivitasRequest extends FormRequest
 {
@@ -33,6 +34,7 @@ class ApiAktivitasRequest extends FormRequest
             'id_pindah_area'           => 'nullable|numeric',
             'id_alat_berat'     => 'nullable|numeric',
             'ttd'               => 'nullable|image',
+            'id_produk.*'       => 'unique',
             // 'sistro'            => 'Sistro',
             // 'approve'           => 'Approve',
             // 'kelayakan_before'  => 'Kelayakan Before',
@@ -61,6 +63,7 @@ class ApiAktivitasRequest extends FormRequest
             'kelayakan_before'  => 'Kelayakan Before',
             'kelayakan_after'   => 'Kelayakan After',
             'dikembalikan'      => 'Dikembalikan',
+            'id_produk.*'       => 'Produk',
         ];
     }
 

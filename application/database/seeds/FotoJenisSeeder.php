@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Models\AktivitasMasterFoto;
+use App\Http\Models\JenisFoto;
 use Illuminate\Database\Seeder;
 
-class AktivitasMasterFotoSeeder extends Seeder
+class FotoJenisSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,6 +12,6 @@ class AktivitasMasterFotoSeeder extends Seeder
      */
     public function run()
     {
-        factory(AktivitasMasterFoto::class, 200)->create();
+        factory(JenisFoto::class, 50)->create();
     }
 }

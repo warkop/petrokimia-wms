@@ -9,6 +9,7 @@ use App\Http\Models\AktivitasArea;
 use App\Http\Models\AktivitasFoto;
 use App\Http\Models\AktivitasGudang;
 use App\Http\Models\AktivitasHarian;
+use App\Http\Models\AktivitasMasterFoto;
 use App\Http\Models\AlatBerat;
 use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
@@ -457,9 +458,16 @@ class AktivitasController extends Controller
         }
     }
 
-    public function getJenisFoto()
+    public function getJenisFoto(Request $req)
     {
-        $resource = JenisFoto::get();
+        $id_aktivitas = $req->input('id_aktivitas');
+        $resource = AktivitasMasterFoto::select(
+            'id_foto_jenis',
+            'foto_jenis.nama',
+            'id_aktivitas'
+        )
+        ->join('foto_jenis', 'id_foto_jenis', '=', 'foto_jenis.id')
+        ->where('id_aktivitas', $id_aktivitas)->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
                 'message' => '',
