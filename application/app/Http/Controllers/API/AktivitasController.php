@@ -267,6 +267,7 @@ class AktivitasController extends Controller
                     $id_area = $req->input('id_area');
                     $jumlah = $req->input('jumlah');
                     $id_produk = $req->input('id_produk');
+                    $tipe = $req->input('tipe');
                     if (!empty($id_area)) {
                         $panjang = count($id_area);
                         for ($i = 0; $i < $panjang; $i++) {
@@ -282,6 +283,7 @@ class AktivitasController extends Controller
                     $id_area = $req->input('id_area');
                     $jumlah = $req->input('jumlah');
                     $id_produk = $req->input('id_produk');
+                    $tipe = $req->input('tipe');
                     if (!empty($id_area)) {
                         $panjang = count($id_area);
                         for ($i = 0; $i < $panjang; $i++) {
@@ -297,6 +299,17 @@ class AktivitasController extends Controller
                             ];
 
                             $area_stok->create($arr);
+
+                            $material_trans = new MaterialTrans;
+
+                            $array = [
+                                'id_material' => $id_produk[$i],
+                                'tanggal' => now(),
+                                'tipe' => $tipe[$i],
+                                'jumlah' => $jumlah[$i],
+                            ];
+
+                            $material_trans->create($array);
                         }
                     }
                 }
