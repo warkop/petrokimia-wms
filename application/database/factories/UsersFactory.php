@@ -14,7 +14,7 @@ $factory->define(Users::class, function (Faker $faker) {
     }
 
     return [
-        'role_id'       => $faker->numberBetween(2, 5),
+        'role_id'       => $role_id,
         'name'          => $faker->unique()->name(),
         'username'      => $faker->unique()->word,
         'password'      => bcrypt('qwerty123456'),
