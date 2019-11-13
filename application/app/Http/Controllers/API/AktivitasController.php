@@ -272,11 +272,17 @@ class AktivitasController extends Controller
                     if (!empty($id_area)) {
                         $panjang = count($id_area);
                         for ($i = 0; $i < $panjang; $i++) {
+                            
                             $area_stok = AreaStok::where('id_area', $id_area[$i])
                             ->where('id_material', $id_produk[$i])
                             ->get();
 
-                            $area_stok->jumlah = $jumlah[$i];
+                            if ($tipe[$i] == 1) {
+                                $area_stok->jumlah = $area_stok->jumlah-$jumlah[$i];
+                            } else {
+                                $area_stok->jumlah = $area_stok->jumlah+$jumlah[$i];
+                            }
+                            
                             $area_stok->save();
 
                             $material_trans = new MaterialTrans;
@@ -303,6 +309,7 @@ class AktivitasController extends Controller
                             $area_stok = AreaStok::where('id_area', $id_area[$i])
                                 ->where('id_material', $id_produk)
                                 ->get();
+
 
                             $arr = [
                                 'id_material'   => $id_produk[$i],
@@ -334,6 +341,10 @@ class AktivitasController extends Controller
                     $panjang = count($id_produk);
                     for ($i = 0; $i < $panjang; $i++) {
                         $res_gudang = GudangPallet::where('id_material', $id_produk[$i])->get();
+
+                        AreaStok::where('id_material', $id_produk[$i]);
+                        $material = Material::find($id_produk[$i]);
+
 
                     }
                 }
