@@ -95,7 +95,7 @@ class AktivitasController extends Controller
             ->where(function ($where) use ($search) {
                 $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             })
-            ->groupBy(\DB::raw('b.id_area, b.nama, b.kapasitas'))
+            ->groupBy(\DB::raw('b.id_area, b.nama, b.kapasitas, area_stok.tanggal, area_stok.jumlah'))
             ->orderBy(\DB::raw('nama'))
             ->get();
         } else {
