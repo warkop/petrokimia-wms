@@ -102,9 +102,9 @@ class AktivitasController extends Controller
             $resource = Area::select(
                 'area.id',
                 'area.nama',
-                'area.kapasitas'
-                // \DB::raw('null as tanggal'),
-                // \DB::raw('null as jumlah')
+                'area.kapasitas',
+                \DB::raw('null as tanggal'),
+                \DB::raw('null as jumlah')
             )
             ->where(function ($where) use ($search) {
                 $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
