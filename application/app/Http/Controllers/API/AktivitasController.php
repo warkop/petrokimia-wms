@@ -254,25 +254,33 @@ class AktivitasController extends Controller
                                     ->where('id_material', $produk)
                                     ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
                                     ->first();
-                                    if ($tipe == 1) {
-                                        $area_stok->jumlah = $area_stok->jumlah-$list_jumlah[$k]['jumlah'];
+
+                                    if (!empty($area_stok)) {
+                                        if ($tipe == 1) {
+                                            $area_stok->jumlah = $area_stok->jumlah-$list_jumlah[$k]['jumlah'];
+                                        } else {
+                                            $area_stok->jumlah = $area_stok->jumlah+$list_jumlah[$k]['jumlah'];
+                                        }
+                                        
+                                        $area_stok->save();
+            
+                                        $material_trans = new MaterialTrans;
+            
+                                        $array = [
+                                            'id_material'           => $produk,
+                                            'id_aktivitas_harian'   => $aktivitas->id,
+                                            'tanggal'               => now(),
+                                            'tipe'                  => $tipe,
+                                            'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                        ];
+            
+                                        $material_trans->create($array);
                                     } else {
-                                        $area_stok->jumlah = $area_stok->jumlah+$list_jumlah[$k]['jumlah'];
+                                        $this->responseCode = 500;
+                                        $this->responseMessage = 'Gagal menyimpan aktivitas! Tidak ada area dengan produk yang cocok';
+                                        $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                                        return response()->json($response, $this->responseCode);
                                     }
-                                    
-                                    $area_stok->save();
-        
-                                    $material_trans = new MaterialTrans;
-        
-                                    $array = [
-                                        'id_material'           => $produk,
-                                        'id_aktivitas_harian'   => $aktivitas->id,
-                                        'tanggal'               => now(),
-                                        'tipe'                  => $tipe,
-                                        'jumlah'                => $list_jumlah[$k]['jumlah'],
-                                    ];
-        
-                                    $material_trans->create($array);
                                 }
                             }
                         }
