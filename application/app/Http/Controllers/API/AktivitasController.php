@@ -89,8 +89,9 @@ class AktivitasController extends Controller
         $search = strip_tags($req->input('search'));
         $aktivitas = Aktivitas::find($id_aktivitas);
         if ($aktivitas->pengaruh_tgl_produksi != null) {
-            $resource = \DB::table('')->select(\DB::raw('DISTINCT  b.id_area as id, b.nama, b.kapasitas'))
-            ->from(\DB::raw('(SELECT area_stok.id_area, area.nama, area.kapasitas, area_stok.tanggal, area_stok.jumlah FROM area_stok LEFT JOIN area ON area_stok.id_area = area.id ORDER BY id_area ) AS b'))
+            $resource = \DB::table('')
+            ->select(\DB::raw('DISTINCT  b.id_area as id, b.nama, b.kapasitas'))
+            ->from(\DB::raw('(SELECT area_stok.id_area, area.nama, area.kapasitas, area_stok.tanggal, area_stok.jumlah FROM area_stok JOIN area ON area_stok.id_area = area.id ORDER BY id_area ) AS b'))
             ->where(function ($where) use ($search) {
                 $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             })
