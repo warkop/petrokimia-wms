@@ -420,11 +420,15 @@ class AktivitasController extends Controller
 
         $res_user = Users::find($user->id_user);
 
+        $id_aktivitas_harian = $req->input('id_aktivitas_harian');
+        $aktivitas = AktivitasHarian::find($id_aktivitas_harian);
+
+
         $ttd = $req->file('ttd');
         if (!empty($ttd)) {
             if ($ttd->isValid()) {
-                \Storage::deleteDirectory('/public/aktivitas_harian/' . $aktivitas->id);
-                $ttd->storeAs('/public/aktivitas_harian/' . $aktivitas->id, $ttd->getClientOriginalName());
+                \Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
+                $ttd->storeAs('/public/aktivitas_harian/' . $id_aktivitas_harian, $ttd->getClientOriginalName());
                 $aktivitas->ttd = $ttd->getClientOriginalName();
             }
         }
@@ -436,16 +440,16 @@ class AktivitasController extends Controller
         $lng = $req->input('lng');
         if (!empty($foto)) {
             $panjang = count($foto);
-            (new AktivitasFoto)->where('id_aktivitas_harian', '=', $aktivitas->id)->delete();
-            \Storage::deleteDirectory('/public/aktivitas_harian/' . $aktivitas->id);
+            (new AktivitasFoto)->where('id_aktivitas_harian', '=', $id_aktivitas_harian)->delete();
+            \Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
             for ($i = 0; $i < $panjang; $i++) {
                 if ($foto[$i]->isValid()) {
                     $aktivitasFoto = new AktivitasFoto;
 
-                    $foto[$i]->storeAs('/public/aktivitas_harian/' . $aktivitas->id, $foto[$i]->getClientOriginalName());
+                    $foto[$i]->storeAs('/public/aktivitas_harian/' . $id_aktivitas_harian, $foto[$i]->getClientOriginalName());
 
                     $arrayFoto = [
-                        'id_aktivitas_harian'       => $aktivitas->id,
+                        'id_aktivitas_harian'       => $id_aktivitas_harian,
                         'id_foto_jenis'             => $foto_jenis[$i],
                         'foto'                      => $foto[$i]->getClientOriginalName(),
                         'size'                      => $foto[$i]->getSize(),
@@ -459,7 +463,7 @@ class AktivitasController extends Controller
                 }
             }
 
-            $foto = AktivitasFoto::where('id_aktivitas_harian', $aktivitas->id)->get();
+            $foto = AktivitasFoto::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
         }
 
         return (new AktivitasResource($foto))->additional([
