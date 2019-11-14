@@ -31,7 +31,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-pindah-area', 'API\AktivitasController@pindahArea');
         Route::get('/history', 'API\AktivitasController@history');
         Route::get('/get-area/{id_aktivitas}', 'API\AktivitasController@getArea')->where('id_aktivitas', '[0-9]+');
-        Route::get('/get-area-stok/{id_aktivitas}/{id_area}', 'API\AktivitasController@getAreaStok')->where(['id_area' => '[0-9]+', 'id_aktivitas' => '[0-9]+']);
+        Route::get('/get-area-stok/{id_aktivitas}/{id_material}/{id_area}', 'API\AktivitasController@getAreaStok')->where(['id_area' => '[0-9]+', 'id_material' => '[0-9]+','id_aktivitas' => '[0-9]+']);
         Route::get('/history/{id}', 'API\AktivitasController@detailHistory')->where('id', '[0-9]+');
         Route::get('/history/{id}/{id_material}', 'API\AktivitasController@historyMaterialArea')->where(['id' => '[0-9]+', 'id_material' => '[0-9]+']);
         Route::get('/{aktivitas}', 'API\AktivitasController@show')->where('aktivitas', '[0-9]+');

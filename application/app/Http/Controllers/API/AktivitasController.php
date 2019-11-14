@@ -131,7 +131,7 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function getAreaStok($id_aktivitas, $id_area)
+    public function getAreaStok($id_aktivitas, $id_material, $id_area)
     {
         $aktivitas = Aktivitas::find($id_aktivitas);
         if ($aktivitas->pengaruh_tgl_produksi != null) {
@@ -145,6 +145,7 @@ class AktivitasController extends Controller
             )
             ->from('area_stok')
             ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
+            ->where('id_material', $id_material)
             ->where('area.id', $id_area)
             ->orderBy('nama', 'ASC')->get();
             return (new AktivitasResource($detail))->additional([
