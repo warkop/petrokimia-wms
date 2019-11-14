@@ -90,7 +90,7 @@ class AktivitasController extends Controller
         $aktivitas = Aktivitas::find($id_aktivitas);
         if ($aktivitas->pengaruh_tgl_produksi != null) {
             $resource = \DB::table('')
-            ->select(\DB::raw('DISTINCT  b.id_area as id, b.nama, b.kapasitas, area_stok.tanggal, area_stok.jumlah'))
+            ->select(\DB::raw('DISTINCT  b.id_area as id, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
             ->from(\DB::raw('(SELECT area_stok.id_area, area.nama, area.kapasitas, area_stok.tanggal, area_stok.jumlah FROM area_stok JOIN area ON area_stok.id_area = area.id WHERE area_stok.id_material = '.$id_material.' ORDER BY id_area ) AS b'))
             ->where(function ($where) use ($search) {
                 $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
