@@ -147,7 +147,7 @@ class AktivitasController extends Controller
             ->from('area_stok')
             ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
             ->where('id_material', $id_material)
-            ->where('area.id', $id_area)
+            ->where('area_stok.id_area', $id_area)
             ->orderBy('nama', 'ASC')->get();
             return (new AktivitasResource($detail))->additional([
                 'status' => [
