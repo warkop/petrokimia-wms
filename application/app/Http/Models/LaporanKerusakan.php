@@ -21,4 +21,14 @@ class LaporanKerusakan extends Model
     protected $dates = ['created_at'];
 
     public $timestamps  = false;
+
+    public function scopeIsPerbaikan($query)
+    {
+        return $query->where('jenis', 1)->exist;
+    }
+
+    public function scopeIsKeluhan($query)
+    {
+        return $query->where('jenis', 2);
+    }
 }

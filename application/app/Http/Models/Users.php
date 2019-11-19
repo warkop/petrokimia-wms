@@ -83,6 +83,16 @@ class Users extends Authenticatable
         return $query->where('end_date', null)->orWhere('end_date', '>', date('Y-m-d'));
     }
 
+    public function scopeIsKaru($query)
+    {
+        return $query->where('role_id', 5);
+    }
+
+    public function scopeIsChecker($query)
+    {
+        return $query->where('role_id', 3);
+    }
+
     public function getAuthPassword()
     {
         return $this->password;

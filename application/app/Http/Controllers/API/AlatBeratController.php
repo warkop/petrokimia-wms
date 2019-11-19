@@ -149,16 +149,84 @@ class AlatBeratController extends Controller
         return $obj;
     }
 
+    public function repairing(Request $req)
+    {
+        $id_laporan = $req->input('id_laporan');
+        $laporan = LaporanKerusakan::find($id_laporan);
+        $user = $req->get('my_auth');
+        $res_user = Users::find($user->id_user);
+
+        // dump();
+        if ($res_user->role_id == 5) {
+            if ($laporan->jenis == 2) {
+                if ($laporan->status == null) {
+                    $arr = [
+                        'id_kerusakan' => $laporan->id_kerusakan,
+                        'id_alat_berat' => $laporan->id_alat_berat,
+                        'id_shift' => $laporan->id_shift,
+                        'jenis' => 1,
+                        'jam_rusak' => $laporan->jam_rusak,
+                        'induk' => $id_laporan,
+                        'created_by' => $user->id_user,
+                        'created_at' => now(),
+                    ];
+                    LaporanKerusakan::create($arr);
+
+                    $resource = LaporanKerusakan::find($id_laporan);
+                    $resource->status = 1;
+                    $resource->save();
+
+                    $alatBerat = AlatBerat::find($laporan->id_alat_berat);
+
+                    $alatBerat->status = 1;
+
+                    $alatBerat->save();
+
+                    return (new AktivitasResource($laporan))->additional([
+                        'status' => [
+                            'message' => 'Data berhasil disimpan',
+                            'code' => Response::HTTP_ACCEPTED,
+                        ]
+                    ], Response::HTTP_ACCEPTED);
+                } else {
+                    $this->responseCode = Response::HTTP_FORBIDDEN;
+                    $this->responseMessage = 'Keluhan sudah dalam perbaikan!';
+                    $response = [
+                        'data' => $this->responseData,
+                        'message' => $this->responseMessage,
+                        'errors' => '',
+                        'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                    return response()->json($response, $this->responseCode);
+                }
+            } else {
+                $this->responseCode = Response::HTTP_FORBIDDEN;
+                $this->responseMessage = 'Aksi yang Anda lakukan hanya boleh ketika data pada status keluhan!';
+                $response = [
+                    'data' => $this->responseData,
+                    'message' => $this->responseMessage,
+                    'errors' => '',
+                    'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+        } else {
+            $this->responseCode = Response::HTTP_FORBIDDEN;
+            $this->responseMessage = 'Hanya Karu yang diizinkan untuk mengganti status perbaikan!';
+            $response = [
+                'data' => $this->responseData,
+                'message' => $this->responseMessage,
+                'errors' => '',
+                'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+    }
+
     public function store(ApiLaporanKerusakanRequest $req, LaporanKerusakan $laporan)
     {
         $req->validated();
-        // $models = new LaporanKerusakan;
 
         $user = $req->get('my_auth');
 
         $res_user = Users::find($user->id_user);
-
-        // dump($res_user);
         
         if ($res_user->role_id == 3) {
             $rencana_tkbm = RencanaTkbm::

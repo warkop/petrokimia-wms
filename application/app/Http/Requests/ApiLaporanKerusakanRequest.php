@@ -30,7 +30,7 @@ class ApiLaporanKerusakanRequest extends FormRequest
                 'required',
                 'numeric',
             ],
-            'jenis'             => 'between:1,2',
+            // 'jenis'             => 'between:1,2',
             'jam_rusak'         => 'date_format:d-m-Y H:i:s',
             'foto.*'            => 'nullable|image',
         ];
