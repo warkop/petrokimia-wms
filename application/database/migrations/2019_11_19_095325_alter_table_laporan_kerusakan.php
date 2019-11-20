@@ -14,7 +14,7 @@ class AlterTableLaporanKerusakan extends Migration
     public function up()
     {
         Schema::table('laporan_kerusakan', function (Blueprint $table) {
-            $table->integer('status')->nullable();
+            $table->integer('status')->default(0)->nullable();
             $table->integer('induk')->nullable();
         });
     }

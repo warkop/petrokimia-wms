@@ -64,6 +64,7 @@ class AlatBeratController extends Controller
             'id_kerusakan', 
             'id_alat_berat', 
             'id_shift',
+            'laporan_kerusakan.status',
             \DB::raw('CASE WHEN jenis=1 THEN \'Perbaikan\' ELSE \'Keluhan\' END AS jenis_pelaporan'),
             \DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\') as tanggal'), 
             \DB::raw('TO_CHAR(jam_rusak, \'HH24:MI:SS\') as pukul'), 
@@ -115,6 +116,7 @@ class AlatBeratController extends Controller
             'id_shift',
             's.nama as nama_shift',
             'jenis',
+            'status',
             \DB::raw('CASE WHEN jenis=1 THEN \'Perbaikan\' ELSE \'Keluhan\' END AS jenis_pelaporan'),
             'abk.nama as nama_kerusakan',
             \DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\') as tanggal'),
@@ -270,11 +272,18 @@ class AlatBeratController extends Controller
         }
     }
 
-    public function store(ApiLaporanKerusakanRequest $req, LaporanKerusakan $laporan)
+    public function store(ApiLaporanKerusakanRequest $req)
     {
         $req->validated();
 
+        $id_laporan = $req->input('id_laporan');
         $user = $req->get('my_auth');
+
+        if ($id_laporan != null) {
+            $laporan = LaporanKerusakan::find($id_laporan);
+        } else {
+            $laporan = new LaporanKerusakan;
+        }
 
         $res_user = Users::find($user->id_user);
         
