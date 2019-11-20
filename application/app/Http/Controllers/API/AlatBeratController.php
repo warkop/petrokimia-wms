@@ -290,7 +290,7 @@ class AlatBeratController extends Controller
 
             if ($laporan->status == 1) {
                 $this->responseCode = Response::HTTP_FORBIDDEN;
-                $this->responseMessage = 'Keluhan sudah dalam perbaikan!';
+                $this->responseMessage = 'Laporan keluhan sudah dalam perbaikan!';
                 $response = [
                     'data' => $this->responseData,
                     'message' => $this->responseMessage,
