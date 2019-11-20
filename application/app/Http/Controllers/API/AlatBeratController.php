@@ -65,6 +65,7 @@ class AlatBeratController extends Controller
             'id_alat_berat', 
             'id_shift',
             'laporan_kerusakan.status',
+            'laporan_kerusakan.jenis',
             \DB::raw('CASE WHEN jenis=1 THEN \'Perbaikan\' ELSE \'Keluhan\' END AS jenis_pelaporan'),
             \DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\') as tanggal'), 
             \DB::raw('TO_CHAR(jam_rusak, \'HH24:MI:SS\') as pukul'), 
@@ -153,7 +154,6 @@ class AlatBeratController extends Controller
 
     public function repairing(ApiLaporanKerusakanRequest $req, $id_laporan)
     {
-        // $id_laporan = $req->input('id_laporan');
         $laporan = LaporanKerusakan::find($id_laporan);
         $user = $req->get('my_auth');
         $res_user = Users::find($user->id_user);
@@ -161,14 +161,6 @@ class AlatBeratController extends Controller
         if ($res_user->role_id == 3) {
             if ($laporan->jenis == 2) {
                 if ($laporan->status == null) {
-                    // $laporan->id_kerusakan      = $req->input('id_kerusakan');
-                    // $laporan->id_alat_berat     = $req->input('id_alat_berat');
-                    // $laporan->id_shift          = $laporan->id_shift;
-                    // $laporan->keterangan        = $req->input('keterangan');
-                    // $laporan->jenis             = 2;
-                    // $laporan->jam_rusak         = $req->input('jam_rusak');
-                    // $laporan->created_by        = $user->id_user;
-                    // $laporan->created_at        = now();
 
                     $arr = [
                         'id_kerusakan'  => $req->input('id_kerusakan'),
@@ -278,93 +270,201 @@ class AlatBeratController extends Controller
 
         $id_laporan = $req->input('id_laporan');
         $user = $req->get('my_auth');
+        $res_user = Users::find($user->id_user);
 
         if ($id_laporan != null) {
             $laporan = LaporanKerusakan::find($id_laporan);
-        } else {
-            $laporan = new LaporanKerusakan;
-        }
 
-        $res_user = Users::find($user->id_user);
-        
-        if ($res_user->role_id == 3) {
-            $rencana_tkbm = RencanaTkbm::
-            leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
-            ->where('id_tkbm', $user->id_tkbm)
-            ->orderBy('rencana_harian.id', 'desc')
-            ->take(1)->first();
+            if ($laporan->jenis == 1) {
+                $this->responseCode = Response::HTTP_FORBIDDEN;
+                $this->responseMessage = 'Aksi yang Anda lakukan hanya boleh pada status keluhan!';
+                $response = [
+                    'data' => $this->responseData,
+                    'message' => $this->responseMessage,
+                    'errors' => '',
+                    'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]
+                ];
+                return response()->json($response, $this->responseCode);
+            }
 
-            $laporan->id_kerusakan      = $req->input('id_kerusakan');
-            $laporan->id_alat_berat     = $req->input('id_alat_berat');
-            $laporan->id_shift          = $rencana_tkbm->id_shift;
-            $laporan->keterangan        = $req->input('keterangan');
-            $laporan->jenis             = 2;
-            $laporan->jam_rusak         = $req->input('jam_rusak');
-            $laporan->created_by        = $user->id_user;
-            $laporan->created_at        = now();
+            if ($laporan->status == 1) {
+                $this->responseCode = Response::HTTP_FORBIDDEN;
+                $this->responseMessage = 'Keluhan sudah dalam perbaikan!';
+                $response = [
+                    'data' => $this->responseData,
+                    'message' => $this->responseMessage,
+                    'errors' => '',
+                    'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]
+                ];
+                return response()->json($response, $this->responseCode);
+            }
 
-            $resource = $laporan->save();
+            if ($res_user->role_id == 3) {
+                $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+                    ->where('id_tkbm', $user->id_tkbm)
+                    ->orderBy('rencana_harian.id', 'desc')
+                    ->take(1)->first();
 
-            $alatBerat = AlatBerat::find($req->input('id_alat_berat'));
+                $arr = [
+                    'id_kerusakan'  => $req->input('id_kerusakan'),
+                    'id_alat_berat' => $req->input('id_alat_berat'),
+                    'id_shift'      => $laporan->id_shift,
+                    'keterangan'    => $req->input('keterangan'),
+                    'jenis'         => 1,
+                    'jam_rusak'     => $req->input('jam_rusak'),
+                    'induk'         => $id_laporan,
+                    'created_by'    => $user->id_user,
+                    'created_at'    => now(),
+                ];
 
-            $alatBerat->status = 0;
+                $resource = LaporanKerusakan::create($arr);
 
-            $alatBerat->save();
+                $laporan->status = 1;
+                $laporan->save();
 
-            if ($resource) {
-                $foto = $req->file('foto');
-                (new LaporanKerusakanFoto)->where('id_laporan', '=', $laporan->id)->delete();
-                \Storage::deleteDirectory('/public/history/' . $laporan->id);
-                if (!empty($foto)) {
-                    foreach ($foto as $key => $value) {
-                        if ($value->isValid()) {
-                            $res = new LaporanKerusakanFoto;
+                $alatBerat = AlatBerat::find($req->input('id_alat_berat'));
 
-                            $tujuan_upload = storage_path('app/public/history/') . $laporan->id;
-                            $md5Name = md5_file($value->getRealPath());
-                            $guessExtension = $value->getClientOriginalExtension();
-                            // \Storage::makeDirectory('/history/' . $laporan->id);
-                            $file = $value->storeAs('/public/history/' . $laporan->id, $md5Name . '.' . $guessExtension);
+                $alatBerat->status = 1;
 
-                            // $value->move($tujuan_upload, $value->getClientOriginalName());
+                $alatBerat->save();
 
-                            $arrayFoto = [
-                                'id_laporan'    => $laporan->id,
-                                'file_ori'      => $value->getClientOriginalName(),
-                                'size'          => $value->getSize(),
-                                'ekstensi'      => $value->getClientOriginalExtension(),
-                                'file_enc'      => $md5Name . '.' . $guessExtension,
-                            ];
+                if ($resource) {
+                    $foto = $req->file('foto');
+                    (new LaporanKerusakanFoto)->where('id_laporan', '=', $laporan->id)->delete();
+                    \Storage::deleteDirectory('/public/history/' . $laporan->id);
+                    if (!empty($foto)) {
+                        foreach ($foto as $key => $value) {
+                            if ($value->isValid()) {
+                                $res = new LaporanKerusakanFoto;
 
-                            $res->create($arrayFoto);
+                                $tujuan_upload = storage_path('app/public/history/') . $laporan->id;
+                                $md5Name = md5_file($value->getRealPath());
+                                $guessExtension = $value->getClientOriginalExtension();
+                                // \Storage::makeDirectory('/history/' . $laporan->id);
+                                $file = $value->storeAs('/public/history/' . $laporan->id, $md5Name . '.' . $guessExtension);
+
+                                // $value->move($tujuan_upload, $value->getClientOriginalName());
+
+                                $arrayFoto = [
+                                    'id_laporan'    => $laporan->id,
+                                    'file_ori'      => $value->getClientOriginalName(),
+                                    'size'          => $value->getSize(),
+                                    'ekstensi'      => $value->getClientOriginalExtension(),
+                                    'file_enc'      => $md5Name . '.' . $guessExtension,
+                                ];
+
+                                $res->create($arrayFoto);
+                            }
                         }
+
+                        $foto = LaporanKerusakanFoto::where('id_laporan', $laporan->id)->get();
+                    } else {
+                        $foto = null;
                     }
 
-                    $foto = LaporanKerusakanFoto::where('id_laporan', $laporan->id)->get();
+
+                    return (new AktivitasResource($laporan))->additional([
+                        'file' => $foto,
+                        'status' => [
+                            'message' => 'Data berhasil disimpan',
+                            'code' => Response::HTTP_CREATED,
+                        ]
+                    ], Response::HTTP_CREATED);
                 } else {
-                    $foto = null;
+                    $this->responseCode = 500;
+                    $this->responseMessage = 'Gagal menyimpan laporan!';
+                    $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                    return response()->json($response, $this->responseCode);
                 }
-
-
-                return (new AktivitasResource($laporan))->additional([
-                    'file' => $foto,
-                    'status' => [
-                        'message' => 'Data berhasil disimpan',
-                        'code' => Response::HTTP_CREATED,
-                    ]
-                ], Response::HTTP_CREATED);
             } else {
-                $this->responseCode = 500;
-                $this->responseMessage = 'Gagal menyimpan laporan!';
+                $this->responseCode = 403;
+                $this->responseMessage = 'Hanya Checker yang diizinkan untuk menyimpan Laporan Kerusakan!';
                 $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                 return response()->json($response, $this->responseCode);
             }
         } else {
-            $this->responseCode = 403;
-            $this->responseMessage = 'Hanya Checker yang diizinkan untuk menyimpan Laporan Kerusakan!';
-            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-            return response()->json($response, $this->responseCode);
+            $laporan = new LaporanKerusakan;
+
+            if ($res_user->role_id == 3) {
+                $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+                    ->where('id_tkbm', $user->id_tkbm)
+                    ->orderBy('rencana_harian.id', 'desc')
+                    ->take(1)->first();
+
+                $laporan->id_kerusakan      = $req->input('id_kerusakan');
+                $laporan->id_alat_berat     = $req->input('id_alat_berat');
+                $laporan->id_shift          = $rencana_tkbm->id_shift;
+                $laporan->keterangan        = $req->input('keterangan');
+                $laporan->jenis             = 2;
+                $laporan->jam_rusak         = $req->input('jam_rusak');
+                $laporan->created_by        = $user->id_user;
+                $laporan->created_at        = now();
+
+                $resource = $laporan->save();
+
+                $alatBerat = AlatBerat::find($req->input('id_alat_berat'));
+
+                $alatBerat->status = 0;
+
+                $alatBerat->save();
+
+                if ($resource) {
+                    $foto = $req->file('foto');
+                    (new LaporanKerusakanFoto)->where('id_laporan', '=', $laporan->id)->delete();
+                    \Storage::deleteDirectory('/public/history/' . $laporan->id);
+                    if (!empty($foto)) {
+                        foreach ($foto as $key => $value) {
+                            if ($value->isValid()) {
+                                $res = new LaporanKerusakanFoto;
+
+                                $tujuan_upload = storage_path('app/public/history/') . $laporan->id;
+                                $md5Name = md5_file($value->getRealPath());
+                                $guessExtension = $value->getClientOriginalExtension();
+                                // \Storage::makeDirectory('/history/' . $laporan->id);
+                                $file = $value->storeAs('/public/history/' . $laporan->id, $md5Name . '.' . $guessExtension);
+
+                                // $value->move($tujuan_upload, $value->getClientOriginalName());
+
+                                $arrayFoto = [
+                                    'id_laporan'    => $laporan->id,
+                                    'file_ori'      => $value->getClientOriginalName(),
+                                    'size'          => $value->getSize(),
+                                    'ekstensi'      => $value->getClientOriginalExtension(),
+                                    'file_enc'      => $md5Name . '.' . $guessExtension,
+                                ];
+
+                                $res->create($arrayFoto);
+                            }
+                        }
+
+                        $foto = LaporanKerusakanFoto::where('id_laporan', $laporan->id)->get();
+                    } else {
+                        $foto = null;
+                    }
+
+
+                    return (new AktivitasResource($laporan))->additional([
+                        'file' => $foto,
+                        'status' => [
+                            'message' => 'Data berhasil disimpan',
+                            'code' => Response::HTTP_CREATED,
+                        ]
+                    ], Response::HTTP_CREATED);
+                } else {
+                    $this->responseCode = 500;
+                    $this->responseMessage = 'Gagal menyimpan laporan!';
+                    $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                    return response()->json($response, $this->responseCode);
+                }
+            } else {
+                $this->responseCode = 403;
+                $this->responseMessage = 'Hanya Checker yang diizinkan untuk menyimpan Laporan Kerusakan!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
         }
+
+       
     }
 
     public function getKerusakan(Request $req)
