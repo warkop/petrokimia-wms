@@ -42,8 +42,8 @@ Route::group(['middleware' => 'api.auth'], function () {
     
     Route::group(['prefix' => 'alat-berat'], function () {
         Route::get('/', 'API\AlatBeratController@index');
-        Route::post('/{laporan?}', 'API\AlatBeratController@store')->where('laporan', '[0-9]+');
-        Route::patch('/{laporan?}', 'API\AlatBeratController@repairing')->where('laporan', '[0-9]+');
+        Route::post('/', 'API\AlatBeratController@store')->where('laporan', '[0-9]+');
+        Route::post('/{laporan}', 'API\AlatBeratController@repairing')->where('laporan', '[0-9]+');
         Route::get('/get-kerusakan', 'API\AlatBeratController@getKerusakan');
         Route::get('/get-shift', 'API\AlatBeratController@getShift');
         Route::get('/history', 'API\AlatBeratController@history');

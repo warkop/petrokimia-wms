@@ -149,28 +149,38 @@ class AlatBeratController extends Controller
         return $obj;
     }
 
-    public function repairing(Request $req)
+    public function repairing(ApiLaporanKerusakanRequest $req, $id_laporan)
     {
-        $id_laporan = $req->input('id_laporan');
+        // $id_laporan = $req->input('id_laporan');
         $laporan = LaporanKerusakan::find($id_laporan);
         $user = $req->get('my_auth');
         $res_user = Users::find($user->id_user);
 
-        // dump();
-        if ($res_user->role_id == 5) {
+        if ($res_user->role_id == 3) {
             if ($laporan->jenis == 2) {
                 if ($laporan->status == null) {
+                    // $laporan->id_kerusakan      = $req->input('id_kerusakan');
+                    // $laporan->id_alat_berat     = $req->input('id_alat_berat');
+                    // $laporan->id_shift          = $laporan->id_shift;
+                    // $laporan->keterangan        = $req->input('keterangan');
+                    // $laporan->jenis             = 2;
+                    // $laporan->jam_rusak         = $req->input('jam_rusak');
+                    // $laporan->created_by        = $user->id_user;
+                    // $laporan->created_at        = now();
+
                     $arr = [
-                        'id_kerusakan' => $laporan->id_kerusakan,
-                        'id_alat_berat' => $laporan->id_alat_berat,
-                        'id_shift' => $laporan->id_shift,
-                        'jenis' => 1,
-                        'jam_rusak' => $laporan->jam_rusak,
-                        'induk' => $id_laporan,
-                        'created_by' => $user->id_user,
-                        'created_at' => now(),
+                        'id_kerusakan'  => $req->input('id_kerusakan'),
+                        'id_alat_berat' => $req->input('id_alat_berat'),
+                        'id_shift'      => $laporan->id_shift,
+                        'keterangan'    => $req->input('keterangan'),
+                        'jenis'         => 1,
+                        'jam_rusak'     => $req->input('jam_rusak'),
+                        'induk'         => $id_laporan,
+                        'created_by'    => $user->id_user,
+                        'created_at'    => now(),
                     ];
-                    LaporanKerusakan::create($arr);
+                    
+                    $saved = LaporanKerusakan::create($arr);
 
                     $resource = LaporanKerusakan::find($id_laporan);
                     $resource->status = 1;
@@ -182,12 +192,52 @@ class AlatBeratController extends Controller
 
                     $alatBerat->save();
 
-                    return (new AktivitasResource($laporan))->additional([
-                        'status' => [
-                            'message' => 'Data berhasil disimpan',
-                            'code' => Response::HTTP_ACCEPTED,
-                        ]
-                    ], Response::HTTP_ACCEPTED);
+                    if ($saved) {
+                        $foto = $req->file('foto');
+                        (new LaporanKerusakanFoto)->where('id_laporan', '=', $laporan->id)->delete();
+                        \Storage::deleteDirectory('/public/history/' . $laporan->id);
+                        if (!empty($foto)) {
+                            foreach ($foto as $key => $value) {
+                                if ($value->isValid()) {
+                                    $res = new LaporanKerusakanFoto;
+
+                                    $tujuan_upload = storage_path('app/public/history/') . $laporan->id;
+                                    $md5Name = md5_file($value->getRealPath());
+                                    $guessExtension = $value->getClientOriginalExtension();
+                                    // \Storage::makeDirectory('/history/' . $laporan->id);
+                                    $file = $value->storeAs('/public/history/' . $laporan->id, $md5Name . '.' . $guessExtension);
+
+
+                                    $arrayFoto = [
+                                        'id_laporan'    => $laporan->id,
+                                        'file_ori'      => $value->getClientOriginalName(),
+                                        'size'          => $value->getSize(),
+                                        'ekstensi'      => $value->getClientOriginalExtension(),
+                                        'file_enc'      => $md5Name . '.' . $guessExtension,
+                                    ];
+
+                                    $res->create($arrayFoto);
+                                }
+                            }
+
+                            $foto = LaporanKerusakanFoto::where('id_laporan', $laporan->id)->get();
+                        } else {
+                            $foto = null;
+                        }
+
+                        return (new AktivitasResource($laporan))->additional([
+                            'file' => $foto,
+                            'status' => [
+                                'message' => 'Data berhasil disimpan',
+                                'code' => Response::HTTP_ACCEPTED,
+                            ]
+                        ], Response::HTTP_ACCEPTED);
+                    } else {
+                        $this->responseCode = 500;
+                        $this->responseMessage = 'Gagal menyimpan laporan!';
+                        $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                        return response()->json($response, $this->responseCode);
+                    }
                 } else {
                     $this->responseCode = Response::HTTP_FORBIDDEN;
                     $this->responseMessage = 'Keluhan sudah dalam perbaikan!';
@@ -210,7 +260,7 @@ class AlatBeratController extends Controller
             }
         } else {
             $this->responseCode = Response::HTTP_FORBIDDEN;
-            $this->responseMessage = 'Hanya Karu yang diizinkan untuk mengganti status perbaikan!';
+            $this->responseMessage = 'Hanya Checker yang diizinkan untuk mengganti status perbaikan!';
             $response = [
                 'data' => $this->responseData,
                 'message' => $this->responseMessage,
@@ -239,7 +289,7 @@ class AlatBeratController extends Controller
             $laporan->id_alat_berat     = $req->input('id_alat_berat');
             $laporan->id_shift          = $rencana_tkbm->id_shift;
             $laporan->keterangan        = $req->input('keterangan');
-            $laporan->jenis             = $req->input('jenis');
+            $laporan->jenis             = 2;
             $laporan->jam_rusak         = $req->input('jam_rusak');
             $laporan->created_by        = $user->id_user;
             $laporan->created_at        = now();
@@ -248,11 +298,7 @@ class AlatBeratController extends Controller
 
             $alatBerat = AlatBerat::find($req->input('id_alat_berat'));
 
-            if ($req->input('jenis') == 2) {
-                $alatBerat->status = 0;
-            } else if ($req->input('jenis') == 1) {
-                $alatBerat->status = 1;
-            }
+            $alatBerat->status = 0;
 
             $alatBerat->save();
 
