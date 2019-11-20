@@ -23,7 +23,7 @@ class AlatBeratController extends Controller
         $search = strip_tags($req->input('search'));
 
         $res = AlatBerat::
-            select(
+            distinct()->select(
                 'alat_berat.id', 
                 'nomor_lambung', 
                 'nama', 
@@ -64,6 +64,7 @@ class AlatBeratController extends Controller
             'id_kerusakan', 
             'id_alat_berat', 
             'id_shift',
+            'nomor_lambung',
             'laporan_kerusakan.status',
             'laporan_kerusakan.jenis',
             \DB::raw('CASE WHEN jenis=1 THEN \'Perbaikan\' ELSE \'Keluhan\' END AS jenis_pelaporan'),
@@ -322,7 +323,7 @@ class AlatBeratController extends Controller
                 $laporan->status = 1;
                 $laporan->save();
 
-                $alatBerat = AlatBerat::find($req->input('id_alat_berat'));
+                $alatBerat = AlatBerat::find($laporan->id_alat_berat);
 
                 $alatBerat->status = 1;
 
