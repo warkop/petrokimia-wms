@@ -118,7 +118,7 @@ class AlatBeratController extends Controller
             'id_shift',
             's.nama as nama_shift',
             'jenis',
-            'status',
+            'ab.status',
             \DB::raw('CASE WHEN jenis=1 THEN \'Perbaikan\' ELSE \'Keluhan\' END AS jenis_pelaporan'),
             'abk.nama as nama_kerusakan',
             \DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\') as tanggal'),
