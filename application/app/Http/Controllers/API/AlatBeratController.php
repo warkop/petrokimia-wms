@@ -11,7 +11,6 @@ use App\Http\Models\LaporanKerusakanFoto;
 use App\Http\Models\RencanaTkbm;
 use App\Http\Models\ShiftKerja;
 use App\Http\Models\Users;
-use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Requests\ApiLaporanKerusakanRequest;
 use App\Http\Resources\AktivitasResource;
 use Illuminate\Http\Response;
@@ -75,7 +74,6 @@ class AlatBeratController extends Controller
             ->join('alat_berat_kerusakan as abk', 'laporan_kerusakan.id_kerusakan', '=', 'abk.id')
             ->join('alat_berat as ab', 'laporan_kerusakan.id_alat_berat', '=', 'ab.id')
             ->leftJoin('shift_kerja as s', 'laporan_kerusakan.id_shift', '=', 's.id')
-            // ->where('rab.id_alat_berat', 'laporan_kerusakan.id_alat_berat')
             ->where(function ($where) use ($search) {
                 $where->where(\DB::raw('LOWER(keterangan)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(\DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
@@ -153,129 +151,18 @@ class AlatBeratController extends Controller
         return $obj;
     }
 
-    public function repairing(ApiLaporanKerusakanRequest $req, $id_laporan)
-    {
-        $laporan = LaporanKerusakan::find($id_laporan);
-        $user = $req->get('my_auth');
-        $res_user = Users::find($user->id_user);
-
-        if ($res_user->role_id == 3) {
-            if ($laporan->jenis == 2) {
-                if ($laporan->status == null) {
-
-                    $arr = [
-                        'id_kerusakan'  => $req->input('id_kerusakan'),
-                        'id_alat_berat' => $req->input('id_alat_berat'),
-                        'id_shift'      => $laporan->id_shift,
-                        'keterangan'    => $req->input('keterangan'),
-                        'jenis'         => 1,
-                        'jam_rusak'     => $req->input('jam_rusak'),
-                        'induk'         => $id_laporan,
-                        'created_by'    => $user->id_user,
-                        'created_at'    => now(),
-                    ];
-                    
-                    $saved = LaporanKerusakan::create($arr);
-
-                    $resource = LaporanKerusakan::find($id_laporan);
-                    $resource->status = 1;
-                    $resource->save();
-
-                    $alatBerat = AlatBerat::find($laporan->id_alat_berat);
-
-                    $alatBerat->status = 1;
-
-                    $alatBerat->save();
-
-                    if ($saved) {
-                        $foto = $req->file('foto');
-                        (new LaporanKerusakanFoto)->where('id_laporan', '=', $laporan->id)->delete();
-                        \Storage::deleteDirectory('/public/history/' . $laporan->id);
-                        if (!empty($foto)) {
-                            foreach ($foto as $key => $value) {
-                                if ($value->isValid()) {
-                                    $res = new LaporanKerusakanFoto;
-
-                                    $tujuan_upload = storage_path('app/public/history/') . $laporan->id;
-                                    $md5Name = md5_file($value->getRealPath());
-                                    $guessExtension = $value->getClientOriginalExtension();
-                                    // \Storage::makeDirectory('/history/' . $laporan->id);
-                                    $file = $value->storeAs('/public/history/' . $laporan->id, $md5Name . '.' . $guessExtension);
-
-
-                                    $arrayFoto = [
-                                        'id_laporan'    => $laporan->id,
-                                        'file_ori'      => $value->getClientOriginalName(),
-                                        'size'          => $value->getSize(),
-                                        'ekstensi'      => $value->getClientOriginalExtension(),
-                                        'file_enc'      => $md5Name . '.' . $guessExtension,
-                                    ];
-
-                                    $res->create($arrayFoto);
-                                }
-                            }
-
-                            $foto = LaporanKerusakanFoto::where('id_laporan', $laporan->id)->get();
-                        } else {
-                            $foto = null;
-                        }
-
-                        return (new AktivitasResource($laporan))->additional([
-                            'file' => $foto,
-                            'status' => [
-                                'message' => 'Data berhasil disimpan',
-                                'code' => Response::HTTP_ACCEPTED,
-                            ]
-                        ], Response::HTTP_ACCEPTED);
-                    } else {
-                        $this->responseCode = 500;
-                        $this->responseMessage = 'Gagal menyimpan laporan!';
-                        $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                        return response()->json($response, $this->responseCode);
-                    }
-                } else {
-                    $this->responseCode = Response::HTTP_FORBIDDEN;
-                    $this->responseMessage = 'Keluhan sudah dalam perbaikan!';
-                    $response = [
-                        'data' => $this->responseData,
-                        'message' => $this->responseMessage,
-                        'errors' => '',
-                        'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                    return response()->json($response, $this->responseCode);
-                }
-            } else {
-                $this->responseCode = Response::HTTP_FORBIDDEN;
-                $this->responseMessage = 'Aksi yang Anda lakukan hanya boleh ketika data pada status keluhan!';
-                $response = [
-                    'data' => $this->responseData,
-                    'message' => $this->responseMessage,
-                    'errors' => '',
-                    'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                return response()->json($response, $this->responseCode);
-            }
-        } else {
-            $this->responseCode = Response::HTTP_FORBIDDEN;
-            $this->responseMessage = 'Hanya Checker yang diizinkan untuk mengganti status perbaikan!';
-            $response = [
-                'data' => $this->responseData,
-                'message' => $this->responseMessage,
-                'errors' => '',
-                'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-            return response()->json($response, $this->responseCode);
-        }
-    }
-
     public function store(ApiLaporanKerusakanRequest $req)
     {
         $req->validated();
 
         $id_laporan = $req->input('id_laporan');
         $user = $req->get('my_auth');
-        $res_user = Users::find($user->id_user);
+        $res_user = Users::findOrFail($user->id_user);
 
         if ($id_laporan != null) {
-            $laporan = LaporanKerusakan::find($id_laporan);
+            $laporan = LaporanKerusakan::findOrFail($id_laporan);
 
+            //jenis 1 = perbaikan, jenis 2 = keluhan
             if ($laporan->jenis == 1) {
                 $this->responseCode = Response::HTTP_FORBIDDEN;
                 $this->responseMessage = 'Aksi yang Anda lakukan hanya boleh pada status keluhan!';
@@ -288,6 +175,7 @@ class AlatBeratController extends Controller
                 return response()->json($response, $this->responseCode);
             }
 
+            //status 1 = sudah direspon, status = 0 belum direspon
             if ($laporan->status == 1) {
                 $this->responseCode = Response::HTTP_FORBIDDEN;
                 $this->responseMessage = 'Laporan keluhan sudah dalam perbaikan!';
@@ -320,10 +208,12 @@ class AlatBeratController extends Controller
 
                 $resource = LaporanKerusakan::create($arr);
 
+                $res = LaporanKerusakan::where(['id_alat_berat' => $req->input('id_alat_berat'), 'id_shift' => $laporan->id_shift])->update(['status' => 1]);
+
                 $laporan->status = 1;
                 $laporan->save();
 
-                $alatBerat = AlatBerat::find($laporan->id_alat_berat);
+                $alatBerat = AlatBerat::findOrFail($laporan->id_alat_berat);
 
                 $alatBerat->status = 1;
 
@@ -338,13 +228,10 @@ class AlatBeratController extends Controller
                             if ($value->isValid()) {
                                 $res = new LaporanKerusakanFoto;
 
-                                $tujuan_upload = storage_path('app/public/history/') . $laporan->id;
+                                storage_path('app/public/history/') . $laporan->id;
                                 $md5Name = md5_file($value->getRealPath());
                                 $guessExtension = $value->getClientOriginalExtension();
-                                // \Storage::makeDirectory('/history/' . $laporan->id);
-                                $file = $value->storeAs('/public/history/' . $laporan->id, $md5Name . '.' . $guessExtension);
-
-                                // $value->move($tujuan_upload, $value->getClientOriginalName());
+                                $value->storeAs('/public/history/' . $laporan->id, $md5Name . '.' . $guessExtension);
 
                                 $arrayFoto = [
                                     'id_laporan'    => $laporan->id,
@@ -418,13 +305,10 @@ class AlatBeratController extends Controller
                             if ($value->isValid()) {
                                 $res = new LaporanKerusakanFoto;
 
-                                $tujuan_upload = storage_path('app/public/history/') . $laporan->id;
+                                storage_path('app/public/history/') . $laporan->id;
                                 $md5Name = md5_file($value->getRealPath());
                                 $guessExtension = $value->getClientOriginalExtension();
-                                // \Storage::makeDirectory('/history/' . $laporan->id);
-                                $file = $value->storeAs('/public/history/' . $laporan->id, $md5Name . '.' . $guessExtension);
-
-                                // $value->move($tujuan_upload, $value->getClientOriginalName());
+                                $value->storeAs('/public/history/' . $laporan->id, $md5Name . '.' . $guessExtension);
 
                                 $arrayFoto = [
                                     'id_laporan'    => $laporan->id,
@@ -464,8 +348,6 @@ class AlatBeratController extends Controller
                 return response()->json($response, $this->responseCode);
             }
         }
-
-       
     }
 
     public function getKerusakan(Request $req)
