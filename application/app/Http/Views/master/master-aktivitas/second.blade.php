@@ -141,14 +141,25 @@
                     <div class="row">
                         <div class="col-md-4 col-lg-4">
                             <div class="row form-group mb-0 mb2">
+                                @if (!$aktivitas_master_foto->isEmpty())
+                                    @php 
+                                        $show_upload_foto = 'display:block'; 
+                                        $checked = 'checked'; 
+                                    @endphp
+                                @else
+                                    @php 
+                                        $show_upload_foto = 'display:none'; 
+                                        $checked = ''; 
+                                    @endphp
+                                @endif
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" id="upload_foto" value="1"> Upload Foto
+                                        <input type="checkbox" id="upload_foto" value="1" {{$checked}}> Upload Foto
                                         <span></span>
                                     </label>
                                 </div>
                                 <div class="col-3">
-                                    <span id="upload_foto-label" onclick="showModalUploadFoto()" class="pull-right pointer kt-font-success kt-font-bold undelinehov" style="display:none">Lihat</span>
+                                    <span id="upload_foto-label" onclick="showModalUploadFoto()" class="pull-right pointer kt-font-success kt-font-bold undelinehov" style="{{$show_upload_foto}}">Lihat</span>
                                 </div>
                             </div>
                             <div class="row form-group mb-0 mb2">
@@ -228,14 +239,25 @@
                         </div>
                         <div class="col-md-4 col-lg-4">
                             <div class="row form-group mb-0 mb2">
+                                @if (!$aktivitas_alat_berat->isEmpty())
+                                    @php 
+                                        $show_alat_berat = 'display:block'; 
+                                        $checked = 'checked'; 
+                                    @endphp
+                                @else
+                                    @php 
+                                        $show_alat_berat = 'display:none'; 
+                                        $checked = ''; 
+                                    @endphp
+                                @endif
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="butuh_alat_berat" id="butuh_alat_berat" value="1"> Butuh alat berat
+                                        <input type="checkbox" name="butuh_alat_berat" id="butuh_alat_berat" value="1" {{$checked}}> Butuh alat berat
                                         <span></span>
                                     </label>
                                 </div>
                                 <div class="col-3">
-                                    <span id="butuh_alat_berat-label" onclick="showModalAlatBerat()" class="pull-right pointer kt-font-success kt-font-bold undelinehov" style="display:none">Lihat</span>
+                                    <span id="butuh_alat_berat-label" onclick="showModalAlatBerat()" class="pull-right pointer kt-font-success kt-font-bold undelinehov" style="{{$show_alat_berat}}">Lihat</span>
                                 </div>
                             </div>
                             <div class="row form-group mb-0 mb2">
@@ -309,7 +331,6 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                            <button type="button" class="btn btn-success">Simpan</button>
                         </div>
                     </div>
                 </div>
@@ -342,12 +363,12 @@
                                         @foreach ($alat_berat as $row)
                                             <div class="col-md-12">
                                                 <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                                    <input type="checkbox" onclick="loadAnggaran({{$row->id}})" name="alat_berat[{{$i}}]" id="Forklift_{{$row->id}}" value="{{$row->id}}"> {{$row->nama}}
+                                                    <input type="checkbox" onclick="loadAnggaran({{$row->id}})" name="alat_berat[]" id="alat_berat_{{$row->id}}" value="{{$row->id}}"> {{$row->nama}}
                                                     <span></span>
                                                 </label>
-                                                <div id="ffForklift_{{$row->id}}" class="form-group alat_berat" style="display:none">
+                                                <div id="tempat_anggaran_{{$row->id}}" class="form-group alat_berat" style="display:none">
                                                     <small for="idAForklift">Masukkan Anggaran</small>
-                                                    <input type="text" class="form-control" name="anggaran[{{$i}}]" id="idAForklift_{{$row->id}}" placeholder="Masukkan Anggaran">
+                                                    <input type="text" class="form-control" name="anggaran[{{$row->id}}]" id="anggaran_{{$row->id}}" placeholder="Masukkan Anggaran">
                                                 </div>
                                             </div>
                                         @php $i++ @endphp
@@ -359,7 +380,6 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                            <button type="button" class="btn btn-success">Simpan</button>
                         </div>
                     </div>
                 </div>
@@ -381,50 +401,33 @@
     <!-- end:: Content -->
 </form>
 
-
-
-<!--begin::Modal-->
-
-<!--end::Modal-->
-
-<!--begin::Modal-->
-
-
-<!--end::Modal-->
-
 <script src="{{asset('assets/extends/js/page/master-aktivitas.js')}}" type="text/javascript"></script>
 <script>
     $(document).ready(()=>{
-        // if ($("#selector_produk_rusak").checked) {
-            $("#produk_stok").attr('disabled',true);
-            $("#produk_stok").selectpicker('refresh');
-        //     $("#selector_produk_stok").attr("disabled", true);
-        // }
-        
-        // if ($("#selector_produk_stok").checked) {
-            $("#produk_rusak").attr('disabled',true);
-            $("#produk_rusak").selectpicker('refresh');
-        //     $("#selector_produk_rusak").attr("disabled", true);
-        // }
+    $("#produk_stok").attr('disabled',true);
+    $("#produk_stok").selectpicker('refresh');
 
-        $("#pallet_stok").attr('disabled',true);
-        $("#pallet_stok").selectpicker('refresh');
+    $("#produk_rusak").attr('disabled',true);
+    $("#produk_rusak").selectpicker('refresh');
 
-        $("#pallet_dipakai").attr('disabled',true);
-        $("#pallet_dipakai").selectpicker('refresh');
+    $("#pallet_stok").attr('disabled',true);
+    $("#pallet_stok").selectpicker('refresh');
 
-        $("#pallet_kosong").attr('disabled',true);
-        $("#pallet_kosong").selectpicker('refresh');
+    $("#pallet_dipakai").attr('disabled',true);
+    $("#pallet_dipakai").selectpicker('refresh');
 
-        $("#pallet_rusak").attr('disabled',true);
-        $("#pallet_rusak").selectpicker('refresh');
-        
-        $("#butuh_approval").attr('disabled',true);
+    $("#pallet_kosong").attr('disabled',true);
+    $("#pallet_kosong").selectpicker('refresh');
 
-        @if (!empty($id)) {
-            edit({{$id}});
-        }
-        @endif
+    $("#pallet_rusak").attr('disabled',true);
+    $("#pallet_rusak").selectpicker('refresh');
+    
+    $("#butuh_approval").attr('disabled',true);
+
+    @if (!empty($id)) {
+        edit({{$id}});
+    }
+    @endif
     });
     $('.kt-selectpicker').selectpicker();
     $('#end_date').datepicker({
@@ -434,32 +437,6 @@
         clearBtn:true,
         orientation: "top left"
     });
-
-    // $("#selector_produk_stok").change(function() {
-    //     if(this.checked) {
-    //         $("#produk_stok").attr('disabled',false);
-    //         $("#produk_stok").selectpicker('refresh');
-    //         $("#selector_produk_rusak").attr('disabled',true);
-    //     } else {
-    //         $("#produk_stok").val("").change();
-    //         $("#produk_stok").attr('disabled',true);
-    //         $("#produk_stok").selectpicker('refresh');
-    //         $("#selector_produk_rusak").attr('disabled',false);
-    //     }
-    // });
-
-    // $("#selector_produk_rusak").change(function() {
-    //     if(this.checked) {
-    //         $("#produk_rusak").attr('disabled',false);
-    //         $("#produk_rusak").selectpicker('refresh');
-    //         $("#selector_produk_stok").attr('disabled',true);
-    //     } else {
-    //         $("#produk_rusak").val("").change();
-    //         $("#produk_rusak").attr('disabled',true);
-    //         $("#produk_rusak").selectpicker('refresh');
-    //         $("#selector_produk_stok").attr('disabled',false);
-    //     }
-    // });
 
     $('input[type=radio][name=selector]').change(function() {
         if (this.value == 1) {
@@ -539,6 +516,20 @@
 
     function showModalUploadFoto(){
         $('#modalFoto').modal();
+        const id = $("#id").val();
+        $.ajax({
+            url: baseUrl+"master-aktivitas/get-upload-foto/"+id,
+            success:res=>{
+                const obj = res.data;
+                obj.forEach(element => {
+                    console.log(element)
+                    $("#upload_foto_"+element.id_foto_jenis).attr('checked', true);
+                });
+            },
+            error:()=>{
+
+            }
+        });
     }
 
 
@@ -553,41 +544,33 @@
 
     function showModalAlatBerat(){
         $('#modalAlatBerat').modal();
-    }
+        const id = $("#id").val();
+        $.ajax({
+            url: baseUrl+"master-aktivitas/get-alat-berat/"+id,
+            success:res=>{
+                const obj = res.data;
+                obj.forEach(element => {
+                    console.log(element)
+                    $("#alat_berat_"+element.id_kategori_alat_berat).attr('checked', true);
+                    $("#tempat_anggaran_"+element.id_kategori_alat_berat).show();
+                    $("#anggaran_"+element.id_kategori_alat_berat).val(element.anggaran);
+                });
+            },
+            error:()=>{
 
-    function loadAnggaran(id) {
-        console.log(id)
-        $('#Forklift_'+id).on('change', function(e){
-            if(e.target.checked){
-                $('#ffForklift_'+id).show('slow');
-            } else {
-                $('#ffForklift_'+id).hide('slow');
             }
         });
     }
-    $('#Forklift').on('change', function(e){
-        if(e.target.checked){
-            $('#ffForklift').show('slow');
-        } else {
-            $('#ffForklift').hide('slow');
-        }
-    });
 
-    $('#Bulldozer').on('change', function(e){
-        if(e.target.checked){
-            $('#ffBulldozer').show('slow');
-        } else {
-            $('#ffBulldozer').hide('slow');
-        }
-    });
-
-    $('#Truk').on('change', function(e){
-        if(e.target.checked){
-            $('#ffTruk').show('slow');
-        } else {
-            $('#ffTruk').hide('slow');
-        }
-    });
+    function loadAnggaran(id) {
+        $('#alat_berat_'+id).on('change', function(e){
+            if(e.target.checked){
+                $('#tempat_anggaran_'+id).show('slow');
+            } else {
+                $('#tempat_anggaran_'+id).hide('slow');
+            }
+        });
+    }
 
     $('#pengiriman').on('change', function(e){
         if(e.target.checked){
@@ -620,5 +603,6 @@
             }
         }
     });
+
 </script>
 @endsection

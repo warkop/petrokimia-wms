@@ -36,6 +36,8 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::patch('/{aktivitas}', 'AktivitasController@store');
         Route::post('/', 'AktivitasController@json');
         Route::get('/{id}', 'AktivitasController@show')->where('id', '[0-9]+');
+        Route::get('/get-upload-foto/{id}', 'AktivitasController@getFotoOfAktivitas')->where('id', '[0-9]+');
+        Route::get('/get-alat-berat/{id}', 'AktivitasController@getAlatBeratOfAktivitas')->where('id', '[0-9]+');
     });
 
     Route::group(['prefix' => 'master-karu'], function () {

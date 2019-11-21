@@ -94,24 +94,30 @@ class AktivitasController extends Controller
         $upload_foto    = $req->input('upload_foto');
         $alat_berat     = $req->input('alat_berat');
         $anggaran       = $req->input('anggaran');
+        
+        if (!empty($upload_foto)) {
+            AktivitasMasterFoto::where('id_aktivitas', $aktivitas->id)->delete();
+            for ($i=0; $i<count($upload_foto); $i++) {
+                $arr = [
+                    'id_aktivitas'  => $aktivitas->id,
+                    'id_foto_jenis' => $upload_foto[$i],
+                ];
 
-        for ($i=0; $i<count($upload_foto); $i++) {
-            $arr = [
-                'id_aktivitas'  => $aktivitas->id,
-                'id_foto_jenis' => $upload_foto[$i],
-            ];
-
-            AktivitasMasterFoto::create($arr);
+                AktivitasMasterFoto::create($arr);
+            }
         }
         
-        for ($i=0; $i<count($alat_berat); $i++) {
-            $arr = [
-                'id_aktivitas'  => $aktivitas->id,
-                'id_katergori_alat_berat' => $alat_berat[$i],
-                'anggaran' => $anggaran[$i],
-            ];
-
-            AktivitasAlatBerat::create($arr);
+        if (!empty($alat_berat)) {
+            AktivitasAlatBerat::where('id_aktivitas', $aktivitas->id)->delete();
+            for ($i=0; $i<count($alat_berat); $i++) {
+                $arr = [
+                    'id_aktivitas'  => $aktivitas->id,
+                    'id_kategori_alat_berat' => $alat_berat[$i],
+                    'anggaran' => $anggaran[$alat_berat[$i]],
+                ];
+    
+                AktivitasAlatBerat::create($arr);
+            }
         }
 
 
@@ -146,9 +152,30 @@ class AktivitasController extends Controller
 
     public function edit($id)
     {
+        Aktivitas::findOrFail($id);
         $data['id'] = $id;
         $data['foto'] = JenisFoto::get();
         $data['alat_berat'] = KategoriAlatBerat::get();
+        $data['aktivitas_alat_berat'] = AktivitasAlatBerat::where('id_aktivitas', $id)->get();
+        $data['aktivitas_master_foto'] = AktivitasMasterFoto::where('id_aktivitas', $id)->get();
         return view('master.master-aktivitas.second', $data);
+    }
+
+    public function getFotoOfAktivitas($id)
+    {
+        Aktivitas::withoutGlobalScopes()->findOrFail($id);
+
+        $res = AktivitasMasterFoto::where('id_aktivitas', $id)->get();
+
+        return response()->json(['data' => $res], 200);
+    }
+
+    public function getAlatBeratOfAktivitas($id)
+    {
+        Aktivitas::withoutGlobalScopes()->findOrFail($id);
+
+        $res = AktivitasAlatBerat::where('id_aktivitas', $id)->get();
+
+        return response()->json(['data' => $res], 200);
     }
 }
