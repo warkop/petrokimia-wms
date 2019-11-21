@@ -475,6 +475,69 @@ class AktivitasController extends Controller
         ], Response::HTTP_CREATED);
     }
 
+    public function storeKelayakanPhotos(Request $req)
+    {
+        $req->validated();
+
+        $user = $req->get('my_auth');
+
+        $res_user = Users::find($user->id_user);
+
+        $id_aktivitas_harian = $req->input('id_aktivitas_harian');
+        $aktivitas = AktivitasHarian::find($id_aktivitas_harian);
+
+
+        $ttd = $req->file('ttd');
+        if (!empty($ttd)) {
+            if ($ttd->isValid()) {
+                \Storage::deleteDirectory('/public/kelayakan/' . $id_aktivitas_harian);
+                $ttd->storeAs('/public/kelayakan/' . $id_aktivitas_harian, $ttd->getClientOriginalName());
+                $aktivitas->ttd = $ttd->getClientOriginalName();
+            }
+        }
+
+        //simpan foto
+        $foto = $req->file('foto');
+        $jenis = $req->input('jenis');
+        $lat = $req->input('lat');
+        $lng = $req->input('lng');
+        if (!empty($foto)) {
+            $panjang = count($foto);
+            (new AktivitasFoto)->where('id_aktivitas_harian', '=', $id_aktivitas_harian)->delete();
+            \Storage::deleteDirectory('/public/kelayakan/' . $id_aktivitas_harian);
+            for ($i = 0; $i < $panjang; $i++) {
+                if ($foto[$i]->isValid()) {
+                    $aktivitasFoto = new AktivitasFoto;
+
+                    $foto[$i]->storeAs('/public/kelayakan/' . $id_aktivitas_harian, $foto[$i]->getClientOriginalName());
+
+                    $arrayFoto = [
+                        'id_aktivitas_harian'       => $id_aktivitas_harian,
+                        'jenis'                     => $jenis[$i],
+                        'foto'                      => $foto[$i]->getClientOriginalName(),
+                        'size'                      => $foto[$i]->getSize(),
+                        'ekstensi'                  => $foto[$i]->getSize(),
+                        'file_enc'                  => $foto[$i]->getSize(),
+                        'created_by'                => $res_user->id_user,
+                        'created_at'                => now(),
+                    ];
+
+                    $aktivitasFoto->create($arrayFoto);
+                }
+            }
+
+            $foto = AktivitasFoto::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
+        }
+
+        return (new AktivitasResource($foto))->additional([
+            // 'foto' => $foto,
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_CREATED,
+            ]
+        ], Response::HTTP_CREATED);
+    }
+
     public function approve(AktivitasHarian $aktivitas)
     {
         $aktivitas->approve = date('Y-m-d H:i:s');
