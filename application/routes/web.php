@@ -31,71 +31,63 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     Route::group(['prefix' => 'master-aktivitas'], function () {
         Route::get('/', 'AktivitasController@index');
         Route::get('/tambah', 'AktivitasController@create');
-        Route::get('/edit/{id}', 'AktivitasController@edit');
+        Route::get('/edit/{id}', 'AktivitasController@edit')->where('id', '[0-9]+');
         Route::put('/', 'AktivitasController@store');
         Route::patch('/{aktivitas}', 'AktivitasController@store');
         Route::post('/', 'AktivitasController@json');
-        Route::get('/{id}', 'AktivitasController@show');
-        Route::delete('/{id}', 'AktivitasController@destroy');
+        Route::get('/{id}', 'AktivitasController@show')->where('id', '[0-9]+');
     });
 
     Route::group(['prefix' => 'master-karu'], function () {
         Route::get('/', 'KaruController@index');
         Route::put('/', 'KaruController@store');
-        Route::patch('/{karu}', 'KaruController@store');
+        Route::patch('/{karu}', 'KaruController@store')->where('karu', '[0-9]+');
         Route::post('/', 'KaruController@json');
-        Route::get('/{id}', 'KaruController@show');
-        Route::delete('/{id}', 'KaruController@destroy');
+        Route::get('/{id}', 'KaruController@show')->where('id', '[0-9]+');
     });
 
     Route::group(['prefix' => 'master-material'], function () {
         Route::get('/', 'MaterialController@index');
         Route::put('/', 'MaterialController@store');
-        Route::patch('/{material}', 'MaterialController@store');
+        Route::patch('/{material}', 'MaterialController@store')->where('material', '[0-9]+');
         Route::post('/', 'MaterialController@json');
-        Route::get('/{id}', 'MaterialController@show');
-        Route::delete('/{id}', 'MaterialController@destroy');
+        Route::get('/{id}', 'MaterialController@show')->where('id', '[0-9]+');
     });
 
     Route::group(['prefix' => 'master-tenaga-kerja-nonorganik'], function () {
         Route::get('/', 'TenagaKerjaNonOrganikController@index');
         Route::put('/', 'TenagaKerjaNonOrganikController@store');
         Route::post('/', 'TenagaKerjaNonOrganikController@json');
-        Route::get('/{id}', 'TenagaKerjaNonOrganikController@show');
-        Route::delete('/{id}', 'TenagaKerjaNonOrganikController@destroy');
+        Route::get('/{id}', 'TenagaKerjaNonOrganikController@show')->where('id', '[0-9]+');
     });
 
     Route::group(['prefix' => 'master-kerusakan-alat'], function () {
         Route::get('/', 'AlatBeratKerusakanController@index');
         Route::put('/', 'AlatBeratKerusakanController@store');
         Route::post('/', 'AlatBeratKerusakanController@json');
-        Route::get('/{id}', 'AlatBeratKerusakanController@show');
-        Route::delete('/{id}', 'AlatBeratKerusakanController@destroy');
+        Route::get('/{id}', 'AlatBeratKerusakanController@show')->where('id', '[0-9]+');
     });
 
     Route::group(['prefix' => 'master-kategori-alat-berat'], function () {
         Route::get('/', 'KategoriAlatBeratController@index');
         Route::put('/', 'KategoriAlatBeratController@store');
         Route::post('/', 'KategoriAlatBeratController@json');
-        Route::get('/{id}', 'KategoriAlatBeratController@show');
-        Route::delete('/{id}', 'KategoriAlatBeratController@destroy');
+        Route::get('/{id}', 'KategoriAlatBeratController@show')->where('id', '[0-9]+');
     });
 
     Route::group(['prefix' => 'list-alat-berat'], function () {
-        Route::get('/{id}', 'AlatBeratController@index');
-        Route::put('/{id}', 'AlatBeratController@store');
-        Route::post('/{id}', 'AlatBeratController@json');
-        Route::get('/{kategoriAlatBerat}/{alatBerat}', 'AlatBeratController@show');
-        Route::delete('/{id}/{id_list}', 'AlatBeratController@destroy');
+        Route::get('/{id}', 'AlatBeratController@index')->where('id', '[0-9]+');
+        Route::put('/{id}', 'AlatBeratController@store')->where('id', '[0-9]+');
+        Route::post('/{id}', 'AlatBeratController@json')->where('id', '[0-9]+');
+        Route::get('/{kategoriAlatBerat}/{alatBerat}', 'AlatBeratController@show')->where(['kategoriAlatBerat' => '[0-9]+', 'alatBerat' => '[0-9]+']);
     });
 
     Route::group(['prefix' => 'master-jenis-foto'], function () {
         Route::get('/', 'JenisFotoController@index');
         Route::put('/', 'JenisFotoController@store');
-        Route::patch('/{jenisFoto}', 'JenisFotoController@store');
+        Route::patch('/{jenisFoto}', 'JenisFotoController@store')->where('jenisFoto', '[0-9]+');
         Route::post('/', 'JenisFotoController@json');
-        Route::get('/{jenisFoto}', 'JenisFotoController@show');
-        Route::delete('/{jenisFoto}', 'JenisFotoController@destroy');
+        Route::get('/{jenisFoto}', 'JenisFotoController@show')->where('jenisFoto', '[0-9]+');
     });
 
     Route::group(['prefix' => 'master-user'], function () {
@@ -103,9 +95,9 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/load-pegawai/{id_kategori}', 'UsersController@loadPegawai');
         Route::put('/', 'UsersController@store');
         Route::post('/', 'UsersController@json');
-        Route::get('/{id}', 'UsersController@show');
-        Route::patch('/{id}', 'UsersController@changePassword');
-        Route::delete('/{id}', 'UsersController@destroy');
+        Route::get('/{id}', 'UsersController@show')->where('id', '[0-9]+');
+        Route::patch('/{id}', 'UsersController@changePassword')->where('id', '[0-9]+');
+        Route::delete('/{id}', 'UsersController@destroy')->where('id', '[0-9]+');
     });
 
     Route::group(['prefix' => 'gudang'], function () {
@@ -115,14 +107,14 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/get-pallet', 'GudangController@getPallet');
         Route::put('/', 'GudangController@store');
         Route::post('/', 'GudangController@json');
-        Route::get('/load-material/{id_gudang}', 'GudangController@loadMaterial');
-        Route::get('/{id}', 'GudangController@show');
+        Route::get('/load-material/{id_gudang}', 'GudangController@loadMaterial')->where('id_gudang', '[0-9]+');
+        Route::get('/{id}', 'GudangController@show')->where('id', '[0-9]+');
         Route::delete('/{id}', 'GudangController@destroy');
         
         Route::group(['prefix' => 'stock-adjustment'], function () {
             Route::get('/{id_gudang}', 'MaterialAdjustmentController@index')->where('id_gudang', '[0-9]+');
             Route::get('/{id_gudang}/{id}', 'MaterialAdjustmentController@show')->where('id_gudang', '[0-9]+');
-            Route::delete('/{id_gudang}/{materialAdjustment}', 'MaterialAdjustmentController@destroy')->where('id_gudang', '[0-9]+');
+            Route::delete('/{id_gudang}/{materialAdjustment}', 'MaterialAdjustmentController@destroy')->where(['id_gudang' => '[0-9]+', 'materialAdjustment' => '[0-9]+']);
             Route::post('/{id_gudang}', 'MaterialAdjustmentController@json')->where('id_gudang', '[0-9]+');
             Route::put('/{id_gudang}', 'MaterialAdjustmentController@store')->where('id_gudang', '[0-9]+');
             Route::post('/upload/{id_gudang}', 'MaterialAdjustmentController@uploadFile')->where('id_gudang', '[0-9]+');
@@ -131,34 +123,34 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
 
     Route::group(['prefix' => 'list-area'], function () {
         Route::get('/{id}', 'AreaController@index');
-        Route::put('/{id}', 'AreaController@store');
-        Route::post('/{id}', 'AreaController@json');
-        Route::get('/{id}/{id_area}', 'AreaController@show');
-        Route::delete('/{id}/{id_area}', 'AreaController@destroy');
+        Route::put('/{id}', 'AreaController@store')->where('id', '[0-9]+');
+        Route::post('/{id}', 'AreaController@json')->where('id', '[0-9]+');
+        Route::get('/{id}/{id_area}', 'AreaController@show')->where(['id' => '[0-9]+', 'id_area' => '[0-9]+']);
+        Route::delete('/{id}/{id_area}', 'AreaController@destroy')->where(['id' => '[0-9]+', 'id_area' => '[0-9]+']);
     });
 
     Route::group(['prefix' => 'rencana-harian'], function () {
         Route::get('/', 'RencanaHarianController@index');
-        Route::get('/get-area/{id_gudang?}', 'RencanaHarianController@getArea');
+        Route::get('/get-area/{id_gudang?}', 'RencanaHarianController@getArea')->where('id_gudang', '[0-9]+');
         Route::get('/tambah', 'RencanaHarianController@create');
-        Route::get('/ubah/{rencana_harian}', 'RencanaHarianController@edit');
+        Route::get('/ubah/{rencana_harian}', 'RencanaHarianController@edit')->where('rencana_harian', '[0-9]+');
         Route::get('/get-alat-berat', 'RencanaHarianController@getAlatBerat');
         Route::get('/get-gudang', 'RencanaHarianController@getGudang');
         Route::put('/', 'RencanaHarianController@store');
-        Route::patch('/{rencana_harian}', 'RencanaHarianController@update');
+        Route::patch('/{rencana_harian}', 'RencanaHarianController@update')->where('rencana_harian', '[0-9]+');
         Route::post('/', 'RencanaHarianController@json');
-        Route::get('/{rencana_harian}', 'RencanaHarianController@show');
-        Route::get('/get-rencana-tkbm/{id_job_desk}/{id_rencana}/', 'RencanaHarianController@getRencanaTkbm');
-        Route::get('/get-tkbm/{id}', 'RencanaHarianController@getTkbm');
-        Route::get('/get-rencana-alat-berat/{id_rencana}/', 'RencanaHarianController@getRencanaAlatBerat');
-        Route::get('/get-rencana-tkbm-area/{id_rencana}/{id_tkbm?}', 'RencanaHarianController@getRencanaAreaTkbm');
-        Route::get('/get-material/{kategori}', 'RencanaHarianController@getMaterial');
+        Route::get('/{rencana_harian}', 'RencanaHarianController@show')->where('rencana_harian', '[0-9]+');
+        Route::get('/get-rencana-tkbm/{id_job_desk}/{id_rencana}/', 'RencanaHarianController@getRencanaTkbm')->where(['id_job_desk' => '[0-9]+', 'id_rencana' => '[0-9]+']);
+        Route::get('/get-tkbm/{id}', 'RencanaHarianController@getTkbm')->where('id', '[0-9]+');
+        Route::get('/get-rencana-alat-berat/{id_rencana}/', 'RencanaHarianController@getRencanaAlatBerat')->where('id_rencana', '[0-9]+');
+        Route::get('/get-rencana-tkbm-area/{id_rencana}/{id_tkbm?}', 'RencanaHarianController@getRencanaAreaTkbm')->where(['id_rencana' => '[0-9]+', 'id_tkbm' => '[0-9]+']);
+        Route::get('/get-material/{kategori}', 'RencanaHarianController@getMaterial')->where('kategori', '[0-9]+');
         Route::delete('/{id}', 'RencanaHarianController@destroy');
        
         Route::group(['prefix' => 'realisasi'], function () {
-            Route::get('/{rencanaHarian}', 'RencanaHarianController@realisasi');
-            Route::get('/get-housekeeper/{id_rencana}', 'RencanaHarianController@getHouseKeeper');
-            Route::put('/{rencanaHarian}/{realisasi?}', 'RencanaHarianController@storeRealisasi');
+            Route::get('/{rencanaHarian}', 'RencanaHarianController@realisasi')->where('rencanaHarian', '[0-9]+');
+            Route::get('/get-housekeeper/{id_rencana}', 'RencanaHarianController@getHouseKeeper')->where('id_rencana', '[0-9]+');
+            Route::put('/{rencanaHarian}/{realisasi?}', 'RencanaHarianController@storeRealisasi')->where(['rencanaHarian' => '[0-9]+', 'realisasi' => '[0-9]+']);
         });
     });
 });
