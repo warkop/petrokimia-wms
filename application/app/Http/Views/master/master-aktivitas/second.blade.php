@@ -141,7 +141,7 @@
                     <div class="row">
                         <div class="col-md-4 col-lg-4">
                             <div class="row form-group mb-0 mb2">
-                                @if (!$aktivitas_master_foto->isEmpty())
+                                @if (!empty($aktivitas_master_foto))
                                     @php 
                                         $show_upload_foto = 'display:block'; 
                                         $checked = 'checked'; 
@@ -239,7 +239,7 @@
                         </div>
                         <div class="col-md-4 col-lg-4">
                             <div class="row form-group mb-0 mb2">
-                                @if (!$aktivitas_alat_berat->isEmpty())
+                                @if (!empty($aktivitas_alat_berat))
                                     @php 
                                         $show_alat_berat = 'display:block'; 
                                         $checked = 'checked'; 
