@@ -487,57 +487,58 @@ class AktivitasController extends Controller
 
         $id_aktivitas_harian = $req->input('id_aktivitas_harian');
         $aktivitas = AktivitasHarian::findOrFail($id_aktivitas_harian);
-
-
-        $ttd = $req->file('ttd');
-        if (!empty($ttd)) {
-            if ($ttd->isValid()) {
+        $res_aktivitas = Aktivitas::find($aktivitas->id_aktivitas);
+        if ($res_aktivitas->kelayakan != null) {
+            //simpan foto
+            $foto = $req->file('foto');
+            $jenis = $req->input('jenis');
+            if (!empty($foto)) {
+                $panjang = count($foto);
+                (new AktivitasKelayakanFoto)->where('id_aktivitas_harian', '=', $id_aktivitas_harian)->delete();
                 \Storage::deleteDirectory('/public/kelayakan/' . $id_aktivitas_harian);
-                $ttd->storeAs('/public/kelayakan/' . $id_aktivitas_harian, $ttd->getClientOriginalName());
-                $aktivitas->ttd = $ttd->getClientOriginalName();
-            }
-        }
+                for ($i = 0; $i < $panjang; $i++) {
+                    if ($foto[$i]->isValid()) {
+                        $aktivitasKelayakanFoto = new AktivitasKelayakanFoto;
 
-        //simpan foto
-        $foto = $req->file('foto');
-        $jenis = $req->input('jenis');
-        if (!empty($foto)) {
-            $panjang = count($foto);
-            (new AktivitasFoto)->where('id_aktivitas_harian', '=', $id_aktivitas_harian)->delete();
-            \Storage::deleteDirectory('/public/kelayakan/' . $id_aktivitas_harian);
-            for ($i = 0; $i < $panjang; $i++) {
-                if ($foto[$i]->isValid()) {
-                    $aktivitasFoto = new AktivitasFoto;
+                        storage_path('app/public/kelayakan/') . $id_aktivitas_harian;
+                        $md5Name = md5_file($foto[$i]->getRealPath());
+                        $guessExtension = $foto[$i]->getClientOriginalExtension();
+                        $foto[$i]->storeAs('/public/kelayakan/' . $id_aktivitas_harian, $md5Name . '.' . $guessExtension);
 
-                    $foto[$i]->storeAs('/public/kelayakan/' . $id_aktivitas_harian, $foto[$i]->getClientOriginalName());
-                    $md5Name = md5_file($foto[$i]->getRealPath());
-                    $guessExtension = $foto[$i]->getClientOriginalExtension();
+                        $arrayFoto = [
+                            'id_aktivitas_harian'       => $id_aktivitas_harian,
+                            'jenis'                     => $jenis[$i],
+                            'foto'                      => $foto[$i]->getClientOriginalName(),
+                            'size'                      => $foto[$i]->getSize(),
+                            'ekstensi'                  => $foto[$i]->getClientOriginalExtension(),
+                            'file_enc'                  => $md5Name . '.' . $guessExtension,
+                            'created_by'                => $user->id_user,
+                            'created_at'                => now(),
+                        ];
 
-                    $arrayFoto = [
-                        'id_aktivitas_harian'       => $id_aktivitas_harian,
-                        'jenis'                     => $jenis[$i],
-                        'foto'                      => $foto[$i]->getClientOriginalName(),
-                        'size'                      => $foto[$i]->getSize(),
-                        'ekstensi'                  => $foto[$i]->getClientOriginalExtension(),
-                        'file_enc'                  => $md5Name . '.' . $guessExtension,
-                        'created_by'                => $res_user->id_user,
-                        'created_at'                => now(),
-                    ];
-
-                    $aktivitasFoto->create($arrayFoto);
+                        $aktivitasKelayakanFoto->create($arrayFoto);
+                    }
                 }
+
+                $foto = AktivitasKelayakanFoto::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
             }
 
-            $foto = AktivitasKelayakanFoto::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
+            return (new AktivitasResource($foto))->additional([
+                // 'foto' => $foto,
+                'status' => [
+                    'message' => '',
+                    'code' => Response::HTTP_CREATED,
+                ]
+            ], Response::HTTP_CREATED);
+        } else {
+            return response()->json([
+                'data' => null,
+                'status' => [
+                    'message' => 'Opsi kelayakan tidak tersedia pada aktivitas ini!',
+                    'code' => Response::HTTP_FORBIDDEN
+                ]
+            ], Response::HTTP_FORBIDDEN);
         }
-
-        return (new AktivitasResource($foto))->additional([
-            // 'foto' => $foto,
-            'status' => [
-                'message' => '',
-                'code' => Response::HTTP_CREATED,
-            ]
-        ], Response::HTTP_CREATED);
     }
 
     public function approve(AktivitasHarian $aktivitas)

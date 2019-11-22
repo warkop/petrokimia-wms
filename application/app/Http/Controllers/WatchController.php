@@ -57,6 +57,12 @@ class WatchController extends Controller
                 if (!empty($source) && !empty($category) && !empty($cek_id)) {
                     $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
                 }
+            } else if ($category == 'kelayakan') {
+                $cek_id = AktivitasHarian::find($id_file);
+
+                if (!empty($source) && !empty($category) && !empty($cek_id)) {
+                    $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
+                }
             }
 
             $file = protectPath($file);
