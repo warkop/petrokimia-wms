@@ -155,6 +155,10 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
             Route::put('/{rencanaHarian}/{realisasi?}', 'RencanaHarianController@storeRealisasi')->where(['rencanaHarian' => '[0-9]+', 'realisasi' => '[0-9]+']);
         });
     });
+
+    Route::get('/layout', function () {
+        return view('menu-layout.grid');
+    });
 });
 
 Route::get('watch/{nama}/', 'WatchController@default');
@@ -162,9 +166,7 @@ Route::get('watch/{nama}/', 'WatchController@default');
 // Route::get('/master-material', function () {
 //     return view('master.master-material.grid');
 // });
-Route::get('/layout', function () {
-    return view('menu-layout.grid');
-});
+
 // Route::get('/gudang', function () {
 //     return view('gudang.grid');
 // });
