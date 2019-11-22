@@ -10,6 +10,7 @@ use App\Http\Models\Users;
 use App\Http\Models\AktivitasFoto;
 use App\Http\Models\AktivitasGudang;
 use App\Http\Models\AktivitasHarian;
+use App\Http\Models\AktivitasKelayakanFoto;
 use App\Http\Models\AktivitasMasterFoto;
 use App\Http\Models\AlatBerat;
 use App\Http\Models\Area;
@@ -21,6 +22,7 @@ use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
 use App\Http\Models\RencanaTkbm;
 use App\Http\Requests\ApiAktivitasRequest;
+use App\Http\Requests\ApiSaveKelayakanPhotos;
 use App\Http\Requests\ApiSavePhotosRequest;
 use App\Http\Resources\AktivitasResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -475,16 +477,16 @@ class AktivitasController extends Controller
         ], Response::HTTP_CREATED);
     }
 
-    public function storeKelayakanPhotos(Request $req)
+    public function storeKelayakanPhotos(ApiSaveKelayakanPhotos $req)
     {
         $req->validated();
 
         $user = $req->get('my_auth');
 
-        $res_user = Users::find($user->id_user);
+        $res_user = Users::findOrFail($user->id_user);
 
         $id_aktivitas_harian = $req->input('id_aktivitas_harian');
-        $aktivitas = AktivitasHarian::find($id_aktivitas_harian);
+        $aktivitas = AktivitasHarian::findOrFail($id_aktivitas_harian);
 
 
         $ttd = $req->file('ttd');
@@ -499,8 +501,6 @@ class AktivitasController extends Controller
         //simpan foto
         $foto = $req->file('foto');
         $jenis = $req->input('jenis');
-        $lat = $req->input('lat');
-        $lng = $req->input('lng');
         if (!empty($foto)) {
             $panjang = count($foto);
             (new AktivitasFoto)->where('id_aktivitas_harian', '=', $id_aktivitas_harian)->delete();
@@ -510,14 +510,16 @@ class AktivitasController extends Controller
                     $aktivitasFoto = new AktivitasFoto;
 
                     $foto[$i]->storeAs('/public/kelayakan/' . $id_aktivitas_harian, $foto[$i]->getClientOriginalName());
+                    $md5Name = md5_file($foto[$i]->getRealPath());
+                    $guessExtension = $foto[$i]->getClientOriginalExtension();
 
                     $arrayFoto = [
                         'id_aktivitas_harian'       => $id_aktivitas_harian,
                         'jenis'                     => $jenis[$i],
                         'foto'                      => $foto[$i]->getClientOriginalName(),
                         'size'                      => $foto[$i]->getSize(),
-                        'ekstensi'                  => $foto[$i]->getSize(),
-                        'file_enc'                  => $foto[$i]->getSize(),
+                        'ekstensi'                  => $foto[$i]->getClientOriginalExtension(),
+                        'file_enc'                  => $md5Name . '.' . $guessExtension,
                         'created_by'                => $res_user->id_user,
                         'created_at'                => now(),
                     ];
@@ -526,7 +528,7 @@ class AktivitasController extends Controller
                 }
             }
 
-            $foto = AktivitasFoto::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
+            $foto = AktivitasKelayakanFoto::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
         }
 
         return (new AktivitasResource($foto))->additional([

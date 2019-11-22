@@ -348,7 +348,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="pilih_semua" id="pilih_semua" value="1"> Pilih Semua
+                                        <input type="checkbox" name="pilih_semua" id="select_all_alat_berat" value="1"> Pilih Semua
                                         <span></span>
                                     </label>
                                 </div>
@@ -363,7 +363,7 @@
                                         @foreach ($alat_berat as $row)
                                             <div class="col-md-12">
                                                 <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                                    <input type="checkbox" onclick="loadAnggaran({{$row->id}})" name="alat_berat[]" id="alat_berat_{{$row->id}}" value="{{$row->id}}"> {{$row->nama}}
+                                                    <input class="alat_berat_checkbox" type="checkbox" onclick="loadAnggaran({{$row->id}})" name="alat_berat[]" id="alat_berat_{{$row->id}}" value="{{$row->id}}"> {{$row->nama}}
                                                     <span></span>
                                                 </label>
                                                 <div id="tempat_anggaran_{{$row->id}}" class="form-group alat_berat" style="display:none">
@@ -506,12 +506,11 @@
             $('#upload_foto-label').hide();
         }
     });
-    // $('#select_all_photos').change(function() {
-    //     var checkboxes = $(this).closest('form').find(':checkbox');
-    //     checkboxes.prop('checked', $(this).is(':checked'));
-    // });
     $("#select_all_photos").click(function(){
-        $('input:checkbox .upload_foto_checkbox').not(this).prop('checked', this.checked);
+        $('.upload_foto_checkbox').not(this).prop('checked', this.checked);
+    });
+    $("#select_all_alat_berat").click(function(){
+        $('.alat_berat_checkbox').not(this).prop('checked', this.checked);
     });
 
     function showModalUploadFoto(){
