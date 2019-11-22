@@ -586,25 +586,25 @@ class AktivitasController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(Aktivitas $aktivitas)
     {
-        try {
-            $aktivitas = Aktivitas::findOrFail($id);
-            return (new AktivitasResource($aktivitas))->additional([
-                'status' => [
-                    'message' => '',
-                    'code' => Response::HTTP_OK,
-                ]
-            ], Response::HTTP_OK);
-        } catch (ModelNotFoundException $ex) {
-            return response()->json([
-                'data' => null,
-                'status' => [
-                    'message' => 'Data tidak ditemukan!',
-                    'code' => Response::HTTP_NOT_FOUND
-                ]
-            ], Response::HTTP_NOT_FOUND);
-        }
+        // $aktivitas = Aktivitas::findOrFail($id);
+        return (new AktivitasResource($aktivitas))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ]
+        ], Response::HTTP_OK);
+        // try {
+        // } catch (ModelNotFoundException $ex) {
+        //     return response()->json([
+        //         'data' => null,
+        //         'status' => [
+        //             'message' => 'Data tidak ditemukan!',
+        //             'code' => Response::HTTP_NOT_FOUND
+        //         ]
+        //     ], Response::HTTP_NOT_FOUND);
+        // }
     }
 
     public function getJenisFoto(Request $req)
@@ -636,7 +636,7 @@ class AktivitasController extends Controller
             'foto',
             'size',
             'ekstensi',
-            'file_enc',
+            'file_enc'
         )
             ->where('id_aktivitas_harian', $id_aktivitas_harian)->get();
         return (new AktivitasResource($resource))->additional([
