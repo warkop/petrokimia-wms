@@ -243,7 +243,6 @@ class AktivitasController extends Controller
                         for ($i = 0; $i < $jums_list_produk; $i++) {
                             $produk = $list_produk[$i]['produk'];
                             $list_area = $list_produk[$i]['list_area'];
-                            // dump($list_produk);
                             $jums_list_area = count($list_area);
 
                             for ($j = 0; $j < $jums_list_area; $j++) {
@@ -339,6 +338,13 @@ class AktivitasController extends Controller
                     }
                 }
 
+                $list_produk_rusak = $req->input('list_produk_rusak');
+                if (!empty($list_produk_rusak)) {
+                    $jums_list_produk_rusak = count($list_produk_rusak);
+                    for ($i = 0; $i < $jums_list_produk_rusak; $i++) {
+                    }
+                }
+
                 //simpan pallet
                 // $id_produk = $req->input('produk');
                 // if (!empty($id_produk)) {
@@ -352,7 +358,7 @@ class AktivitasController extends Controller
 
                 //     }
                 // }
-                
+
 
                 //simpan produk
                 // $produk = $req->input('produk');
@@ -374,27 +380,42 @@ class AktivitasController extends Controller
                 // }
 
                 //simpan pallet
-                $pallet = $req->input('pallet');
-                $jumlah = $req->input('jumlah');
-                $tipe = $req->input('tipe');
-                if (!empty($pallet)) {
-                    $panjang = count($pallet);
+                $list_pallet = $req->input('list_pallet');
+                
+                
+                if (!empty($list_pallet)) {
+                    $jums_list_pallet = count($list_pallet);
 
-                    for ($i = 0; $i < $panjang; $i++) {
+                    for ($i = 0; $i < $jums_list_pallet; $i++) {
+                        $pallet = $list_pallet[$i]['pallet'];
+                        $jumlah = $list_pallet[$i]['jumlah'];
+                        $tipe = $list_pallet[$i]['tipe'];
+                        $jenis_pallet = $req->input('jenis_pallet');
                         $arr = [
                             'id_aktivitas_harian'       => $aktivitas->id,
-                            'id_material'               => $pallet[$i],
-                            'jumlah'                    => $jumlah[$i],
-                            'tipe'                      => $tipe[$i],
-                            // 'status_pallet'             =>
+                            'id_material'               => $pallet,
+                            'jumlah'                    => $jumlah,
+                            'tipe'                      => $tipe,
+                            'status_pallet'             => $jenis_pallet
                         ];
-                        \DB::table('material_trans')->insert($arr);
+
+                        $materialTrans = new MaterialTrans;
+
+                        $materialTrans->create($arr);
+
+                        $gudangPallet = new GudangPallet;
+
+                        $arr = [
+                            'id_gudang' => '',
+                            'id_material' => $pallet,
+                            'jumlah' => $jumlah,
+                        ];
+                        $gudangPallet->create();
                     }
                 }
 
 
                 return (new AktivitasResource($aktivitas))->additional([
-                    // 'foto' => $foto,
                     'status' => [
                         'message' => '',
                         'code' => Response::HTTP_CREATED,
@@ -597,6 +618,29 @@ class AktivitasController extends Controller
         ->join('foto_jenis', 'id_foto_jenis', '=', 'foto_jenis.id')
         ->where('id_aktivitas', $id_aktivitas)->get();
         return (new AktivitasResource($resource))->additional([
+            'url' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_aktivitas_harian}}&ctg=kelayakan&src={{file_enc}}',
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ]
+        ], Response::HTTP_OK);
+    }
+
+    public function getKelayakanFoto(Request $req)
+    {
+        $id_aktivitas_harian = $req->input('id_aktivitas_harian');
+        $resource = AktivitasKelayakanFoto::select(
+            'id',
+            'jenis',
+            \DB::raw('CASE WHEN jenis = 1 THEN \'Before Kelayakan\' ELSE \'After Kelayakan\' END AS text_jenis'),
+            'foto',
+            'size',
+            'ekstensi',
+            'file_enc',
+        )
+            ->where('id_aktivitas_harian', $id_aktivitas_harian)->get();
+        return (new AktivitasResource($resource))->additional([
+            'url' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_aktivitas_harian}}&ctg=kelayakan&src={{file_enc}}',
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK,
