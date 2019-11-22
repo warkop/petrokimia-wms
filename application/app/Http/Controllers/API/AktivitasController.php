@@ -89,7 +89,7 @@ class AktivitasController extends Controller
     public function getArea(Request $req, $id_aktivitas, $id_material)
     {
         $search = strip_tags($req->input('search'));
-        $aktivitas = Aktivitas::find($id_aktivitas);
+        $aktivitas = Aktivitas::findOrFail($id_aktivitas);
         if ($aktivitas->pengaruh_tgl_produksi != null) {
             $resource = \DB::table('')
             ->select(\DB::raw('DISTINCT  b.id_area as id, b.nama, b.kapasitas, B.tanggal, B.jumlah'))

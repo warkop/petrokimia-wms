@@ -55,6 +55,11 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/', 'API\LayoutController@index');
         Route::get('/{id_area}', 'API\LayoutController@detail')->where('id_area', '[0-9]+');
     });
+
+    Route::group(['prefix' => 'rencana_kerja'], function () {
+        Route::get('/', 'API\RencanaKerjaController@index');
+        Route::put('/{rencanaHarian}', 'API\RencanaKerjaController@store')->where('rencanaHarian', '[0-9]+');
+    });
 });
 
 
