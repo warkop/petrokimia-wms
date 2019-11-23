@@ -13,7 +13,7 @@ class CreateTableMasterKeluhan extends Migration
      */
     public function up()
     {
-        Schema::create('master_keluhan', function (Blueprint $table) {
+        Schema::create('keluhan', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nama');
             $table->date('start_date');
@@ -31,6 +31,6 @@ class CreateTableMasterKeluhan extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('master_keluhan');
+        Schema::dropIfExists('keluhan');
     }
 }
