@@ -213,6 +213,7 @@ class AktivitasController extends Controller
 
             // AktivitasGudang::where('id_aktivitas', $req->input('id_aktivitas'))->where('id_gudang', );
 
+            //simpan aktivitas
             $aktivitas->id_aktivitas      = $req->input('id_aktivitas');
             $aktivitas->id_gudang         = $gudang->id;
             $aktivitas->id_karu           = $gudang->id_karu;
@@ -232,9 +233,10 @@ class AktivitasController extends Controller
             $saved = $aktivitas->save();
 
             if ($saved) {
-                //simpan area
                 $res_aktivitas = Aktivitas::find($req->input('id_aktivitas'));
-                if ($res_aktivitas->pengaruh_tgl_produksi != null) {
+
+                //simpan produk
+                if ($res_aktivitas->pengaruh_tgl_produksi != null) { //jika tidak pengaruh tanggal produksi dicentang
                     $list_produk = $req->input('list_produk');
 
                     if (!empty($list_produk)) {
@@ -242,6 +244,7 @@ class AktivitasController extends Controller
 
                         for ($i = 0; $i < $jums_list_produk; $i++) {
                             $produk = $list_produk[$i]['produk'];
+                            $status_produk = $list_produk[$i]['status_produk'];
                             $list_area = $list_produk[$i]['list_area'];
                             $jums_list_area = count($list_area);
 
@@ -261,9 +264,6 @@ class AktivitasController extends Controller
                                     if (!empty($area_stok)) {
                                         if ($tipe == 1) {
                                             $area_stok->jumlah = $area_stok->jumlah-$list_jumlah[$k]['jumlah'];
-                                        } else if ($tipe == 3) {
-                                            $area_stok->jumlah = $area_stok->jumlah + $list_jumlah[$k]['jumlah'];
-                                            $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
                                         } else {
                                             $area_stok->jumlah = $area_stok->jumlah+$list_jumlah[$k]['jumlah'];
                                         }
@@ -271,15 +271,16 @@ class AktivitasController extends Controller
                                         $area_stok->save();
             
                                         $material_trans = new MaterialTrans;
-            
+                                        
                                         $array = [
                                             'id_material'           => $produk,
                                             'id_aktivitas_harian'   => $aktivitas->id,
                                             'tanggal'               => now(),
                                             'tipe'                  => $tipe,
                                             'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                            'status_produk'         => $status_produk,
                                         ];
-            
+
                                         $material_trans->create($array);
                                     } else {
                                         $this->responseCode = 500;
@@ -291,115 +292,78 @@ class AktivitasController extends Controller
                             }
                         }
                     }
-                } else {
+                } else { //jika tidak pengaruh tanggal produksi tidak dicentang
                     $list_produk = $req->input('list_produk');
 
                     if (!empty($list_produk)) {
-                        $list_produk = count($list_produk);
+                        $jums_list_produk = count($list_produk);
 
-                        for ($i = 0; $i < $list_produk; $i++) {
+                        for ($i = 0; $i < $jums_list_produk; $i++) {
                             $produk = $list_produk[$i]['produk'];
+                            $status_produk = $list_produk[$i]['status_produk'];
+                           
                             $list_area = $list_produk[$i]['list_area'];
-                            $list_area = count($list_area);
+                            if (!empty($list_area)) {
+                                $jums_list_area = count($list_area);
+                                for ($j = 0; $j < $jums_list_area; $j++) {
+                                    $tipe = $list_area[$j]['tipe'];
+                                    $id_area_stok = $list_area[$j]['id_area_stok'];
+                                    $list_jumlah = $list_area[$j]['list_jumlah'];
+                                    $list_jumlah = count($list_jumlah);
+    
+                                    for ($k = 0; $k < $list_jumlah; $k++) {
+                                        // $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                        //     ->where('id_material', $produk)
+                                        //     ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                        //     ->first();
 
-                            for ($j = 0; $j < $list_area; $j++) {
-                                $tipe = $list_area[$j]['tipe'];
-                                $id_area_stok = $list_area[$j]['id_area_stok'];
-                                $list_jumlah = $list_area[$j]['list_jumlah'];
-                                $list_jumlah = count($list_jumlah);
+                                        $area_stok = new AreaStok;
+                                        
+    
+                                        $arr = [
+                                            'id_material'   => $produk,
+                                            'id_area'       => $id_area_stok,
+                                            'jumlah'        => $list_jumlah[$k]['jumlah'],
+                                            'tanggal'       => now(),
+                                        ];
+    
+                                        $area_stok->create($arr);
+    
+                                        $material_trans = new MaterialTrans;
 
-                                for ($k = 0; $k < $list_jumlah; $k++) {
-                                    $area_stok = AreaStok::where('id_area', $id_area_stok)
-                                        ->where('id_material', $produk)
-                                        ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                        ->first();
-                                    
-
-                                    $arr = [
-                                        'id_material'   => $produk,
-                                        'id_area'       => $id_area_stok,
-                                        'jumlah'        => $list_jumlah[$k]['jumlah'],
-                                        'tanggal'       => now(),
-                                    ];
-
-                                    $area_stok->create($arr);
-
-                                    $material_trans = new MaterialTrans;
-
-                                    $array = [
-                                        'id_material'           => $produk,
-                                        'id_aktivitas_harian'   => $aktivitas->id,
-                                        'tanggal'               => now(),
-                                        'tipe'                  => $tipe,
-                                        'jumlah'                => $list_jumlah[$k]['jumlah'],
-                                    ];
-
-                                    $material_trans->create($array);
+                                        $array = [
+                                            'id_material'           => $produk,
+                                            'id_aktivitas_harian'   => $aktivitas->id,
+                                            'tanggal'               => now(),
+                                            'tipe'                  => $tipe,
+                                            'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                            'status_produk'         => $status_produk,
+                                        ];
+                                        $material_trans->create($array);
+                                    }
                                 }
                             }
                         }
                     }
                 }
 
-                $list_produk_rusak = $req->input('list_produk_rusak');
-                if (!empty($list_produk_rusak)) {
-                    $jums_list_produk_rusak = count($list_produk_rusak);
-                    for ($i = 0; $i < $jums_list_produk_rusak; $i++) {
-                    }
-                }
-
-                //simpan pallet
-                // $id_produk = $req->input('produk');
-                // if (!empty($id_produk)) {
-                //     $panjang = count($id_produk);
-                //     for ($i = 0; $i < $panjang; $i++) {
-                //         $res_gudang = GudangPallet::where('id_material', $id_produk[$i])->get();
-
-                //         AreaStok::where('id_material', $id_produk[$i]);
-                //         $material = Material::find($id_produk[$i]);
-
-
-                //     }
-                // }
-
-
-                //simpan produk
-                // $produk = $req->input('produk');
-                // $jumlah = $req->input('jumlah');
-                // $tipe = $req->input('tipe');
-                // if (!empty($produk)) {
-                //     $panjang = count($produk);
-                //     (new MaterialTrans)->where('id_aktivitas_harian', '=', $aktivitas->id)->delete();
-                //     for ($i = 0; $i < $panjang; $i++) {
-                //         $arr = [
-                //             'id_aktivitas_harian'       => $aktivitas->id,
-                //             'id_material'               => $produk[$i],
-                //             'jumlah'                    => $jumlah[$i],
-                //             'tipe'                      => $tipe[$i],
-                //             'tanggal'                   => now(),
-                //         ];
-                //         \DB::table('material_trans')->insert($arr);
-                //     }
-                // }
-
-                //simpan pallet
+                //simpan pallet (stok=1, dipakai=2, kosong=3, rusak=4)
                 $list_pallet = $req->input('list_pallet');
-                
-                
                 if (!empty($list_pallet)) {
                     $jums_list_pallet = count($list_pallet);
 
                     for ($i = 0; $i < $jums_list_pallet; $i++) {
                         $pallet = $list_pallet[$i]['pallet'];
                         $jumlah = $list_pallet[$i]['jumlah'];
+                        $status_pallet = $list_pallet[$i]['status_pallet'];
                         $tipe = $list_pallet[$i]['tipe'];
-                        $jenis_pallet = $req->input('jenis_pallet');
                         $arr = [
                             'id_aktivitas_harian'       => $aktivitas->id,
+                            'tanggal'                   => now(),
                             'id_material'               => $pallet,
                             'jumlah'                    => $jumlah,
                             'tipe'                      => $tipe,
-                            'status_pallet'             => $jenis_pallet
+                            'status_pallet'             => $status_pallet,
                         ];
 
                         $materialTrans = new MaterialTrans;
@@ -409,9 +373,10 @@ class AktivitasController extends Controller
                         $gudangPallet = new GudangPallet;
 
                         $arr = [
-                            'id_gudang' => '',
+                            'id_gudang' => $gudang->id,
                             'id_material' => $pallet,
                             'jumlah' => $jumlah,
+                            'status_pallet' => $status_pallet,
                         ];
                         $gudangPallet->create();
                     }
@@ -419,6 +384,8 @@ class AktivitasController extends Controller
 
 
                 return (new AktivitasResource($aktivitas))->additional([
+                    'produk' => $list_produk,
+                    'pallet' => $gudangPallet,
                     'status' => [
                         'message' => '',
                         'code' => Response::HTTP_CREATED,
