@@ -16,15 +16,13 @@ class KeluhanOperatorResource extends Resource
      */
     public function toArray($request)
     {
-        // $tenaga_kerja = TenagaKerjaNonOrganik::find($this->id_operator);
-        // $keluhan = Keluhan::find($this->id_keluhan);
         return [
             'id'            => $this->id,
             'keterangan'    => $this->keterangan,
             'id_operator'   => $this->id_operator,
-            // 'operator'      => $tenaga_kerja->nama,
+            'operator'      => $this->nama_operator,
             'id_keluhan'    => $this->id_keluhan,
-            // 'keluhan'       => $keluhan->nama,
+            'keluhan'       => $this->nama_keluhan,
             'created_at'    => $this->created_at,
             'created_by'    => $this->created_by,
         ];

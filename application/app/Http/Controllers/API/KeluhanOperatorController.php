@@ -16,7 +16,16 @@ class KeluhanOperatorController extends Controller
     {
         $search = strip_tags($req->input('search'));
 
-        $obj =  KeluhanOperatorResource::collection(KeluhanOperator::where('keterangan', 'ILIKE', '%'.$search.'%')->paginate(10))->additional([
+        $obj =  KeluhanOperatorResource::collection(KeluhanOperator::select(
+            'keluhan_operator.id',
+            'keterangan',
+            \DB::raw('tk.nama as nama_operator'),
+            \DB::raw('k.nama as nama_keluhan'),
+            'keluhan_operator.id',
+        )
+        ->leftJoin('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'id_operator')
+        ->leftJoin('keluhan as k', 'k.id', '=', 'id_keluhan')
+        ->where('keterangan', 'ILIKE', '%'.$search.'%')->paginate(10))->additional([
             'status' => [
                 'message' => '',
                 'code' => 200
