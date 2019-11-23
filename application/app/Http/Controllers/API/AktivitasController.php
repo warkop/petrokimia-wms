@@ -309,9 +309,9 @@ class AktivitasController extends Controller
                                     $tipe = $list_area[$j]['tipe'];
                                     $id_area_stok = $list_area[$j]['id_area_stok'];
                                     $list_jumlah = $list_area[$j]['list_jumlah'];
-                                    $list_jumlah = count($list_jumlah);
+                                    $jums_list_jumlah = count($list_jumlah);
     
-                                    for ($k = 0; $k < $list_jumlah; $k++) {
+                                    for ($k = 0; $k < $jums_list_jumlah; $k++) {
                                         // $area_stok = AreaStok::where('id_area', $id_area_stok)
                                         //     ->where('id_material', $produk)
                                         //     ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
