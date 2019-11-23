@@ -15,11 +15,11 @@ class CreateTableMasterKeluhan extends Migration
     {
         Schema::create('keluhan', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nama');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->integer('created_by');
-            $table->integer('updated_by');
+            $table->string('nama')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
         });
     }

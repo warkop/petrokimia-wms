@@ -15,11 +15,11 @@ class CreateTableKeluhanOperator extends Migration
     {
         Schema::create('keluhan_operator', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_operator');
-            $table->integer('id_keluhan');
-            $table->text('keterangan');
-            $table->integer('created_by');
-            $table->datetime('created_at');
+            $table->integer('id_operator')->nullable();
+            $table->integer('id_keluhan')->nullable();
+            $table->text('keterangan')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->datetime('created_at')->nullable();
         });
     }
 
