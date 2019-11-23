@@ -198,8 +198,7 @@ class AktivitasController extends Controller
         $req->validated();
 
         $user = $req->get('my_auth');
-
-        $res_user = Users::find($user->id);
+        $res_user = Users::findOrFail($user->id_user);
 
         if ($res_user->role_id == 3) {
             
@@ -227,7 +226,7 @@ class AktivitasController extends Controller
             $aktivitas->kelayakan_before  = $req->input('kelayakan_before');
             $aktivitas->kelayakan_after   = $req->input('kelayakan_after');
             $aktivitas->dikembalikan      = $req->input('dikembalikan');
-            $aktivitas->created_by        = $user->id;
+            $aktivitas->created_by        = $res_user->id;
             $aktivitas->created_at        = now();
 
             $saved = $aktivitas->save();
@@ -411,7 +410,7 @@ class AktivitasController extends Controller
 
         $user = $req->get('my_auth');
 
-        $res_user = Users::find($user->id);
+        $res_user = Users::findOrFail($user->id);
 
         $id_aktivitas_harian = $req->input('id_aktivitas_harian');
         $aktivitas = AktivitasHarian::find($id_aktivitas_harian);
@@ -448,7 +447,7 @@ class AktivitasController extends Controller
                         'size'                      => $foto[$i]->getSize(),
                         'lat'                       => $lat[$i],
                         'lng'                       => $lng[$i],
-                        'created_by'                => $user->id,
+                        'created_by'                => $res_user->id,
                         'created_at'                => now(),
                     ];
 
@@ -503,7 +502,7 @@ class AktivitasController extends Controller
                             'size'                      => $foto[$i]->getSize(),
                             'ekstensi'                  => $foto[$i]->getClientOriginalExtension(),
                             'file_enc'                  => $md5Name . '.' . $guessExtension,
-                            'created_by'                => $user->id,
+                            'created_by'                => $res_user->id,
                             'created_at'                => now(),
                         ];
 

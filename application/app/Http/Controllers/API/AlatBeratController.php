@@ -163,7 +163,7 @@ class AlatBeratController extends Controller
 
         $id_laporan = $req->input('id_laporan');
         $user = $req->get('my_auth');
-        $res_user = Users::findOrFail($user->id);
+        $res_user = Users::findOrFail($user->id_user);
 
         if ($id_laporan != null) {
             $laporan = LaporanKerusakan::findOrFail($id_laporan);
