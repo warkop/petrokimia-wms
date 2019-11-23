@@ -227,7 +227,7 @@ class AktivitasController extends Controller
             $aktivitas->kelayakan_before  = $req->input('kelayakan_before');
             $aktivitas->kelayakan_after   = $req->input('kelayakan_after');
             $aktivitas->dikembalikan      = $req->input('dikembalikan');
-            $aktivitas->created_by        = $res_user->id;
+            $aktivitas->created_by        = $user->id;
             $aktivitas->created_at        = now();
 
             $saved = $aktivitas->save();
@@ -448,7 +448,7 @@ class AktivitasController extends Controller
                         'size'                      => $foto[$i]->getSize(),
                         'lat'                       => $lat[$i],
                         'lng'                       => $lng[$i],
-                        'created_by'                => $res_user->id,
+                        'created_by'                => $user->id,
                         'created_at'                => now(),
                     ];
 
@@ -503,7 +503,7 @@ class AktivitasController extends Controller
                             'size'                      => $foto[$i]->getSize(),
                             'ekstensi'                  => $foto[$i]->getClientOriginalExtension(),
                             'file_enc'                  => $md5Name . '.' . $guessExtension,
-                            'created_by'                => $res_user->id,
+                            'created_by'                => $user->id,
                             'created_at'                => now(),
                         ];
 
