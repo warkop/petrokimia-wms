@@ -192,25 +192,18 @@ class AktivitasController extends Controller
 
     public function store(ApiAktivitasRequest $req, AktivitasHarian $aktivitas)
     {
-        // $list_produk = $req->input('list_produk');
-        // return $list_produk[0]['list_area'][0]['list_jumlah'][1];
-
         $req->validated();
 
         $user = $req->get('my_auth');
         $res_user = Users::findOrFail($user->id_user);
 
         if ($res_user->role_id == 3) {
-            
-
             $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
                 ->where('id_tkbm', $user->id_tkbm)
                 ->orderBy('rencana_harian.id', 'desc')
                 ->take(1)->first();
 
             $gudang = Gudang::find($rencana_tkbm->id_gudang)->orderBy('id', 'desc')->first();
-
-            // AktivitasGudang::where('id_aktivitas', $req->input('id_aktivitas'))->where('id_gudang', );
 
             //simpan aktivitas
             $aktivitas->id_aktivitas      = $req->input('id_aktivitas');
@@ -226,6 +219,7 @@ class AktivitasController extends Controller
             $aktivitas->kelayakan_before  = $req->input('kelayakan_before');
             $aktivitas->kelayakan_after   = $req->input('kelayakan_after');
             $aktivitas->dikembalikan      = $req->input('dikembalikan');
+            $aktivitas->alasan            = $req->input('alasan');
             $aktivitas->created_by        = $res_user->id;
             $aktivitas->created_at        = now();
 
