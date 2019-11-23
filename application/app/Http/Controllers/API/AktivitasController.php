@@ -378,7 +378,7 @@ class AktivitasController extends Controller
                             'jumlah' => $jumlah,
                             'status_pallet' => $status_pallet,
                         ];
-                        $gudangPallet->create();
+                        $gudangPallet->create($arr);
                     }
                 }
 
