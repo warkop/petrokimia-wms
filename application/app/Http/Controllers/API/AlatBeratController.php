@@ -163,7 +163,7 @@ class AlatBeratController extends Controller
 
         $id_laporan = $req->input('id_laporan');
         $user = $req->get('my_auth');
-        $res_user = Users::findOrFail($user->id_user);
+        $res_user = Users::findOrFail($user->id);
 
         if ($id_laporan != null) {
             $laporan = LaporanKerusakan::findOrFail($id_laporan);
@@ -208,7 +208,7 @@ class AlatBeratController extends Controller
                     'jenis'         => 1,
                     'jam_rusak'     => $req->input('jam_rusak'),
                     'induk'         => $id_laporan,
-                    'created_by'    => $user->id_user,
+                    'created_by'    => $res_user->id,
                     'created_at'    => now(),
                 ];
 
@@ -292,7 +292,7 @@ class AlatBeratController extends Controller
                 $laporan->keterangan        = $req->input('keterangan');
                 $laporan->jenis             = 2;
                 $laporan->jam_rusak         = $req->input('jam_rusak');
-                $laporan->created_by        = $user->id_user;
+                $laporan->created_by        = $res_user->id;
                 $laporan->created_at        = now();
 
                 $resource = $laporan->save();

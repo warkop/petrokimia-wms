@@ -86,7 +86,7 @@ class KeluhanOperatorController extends Controller
             $keluhanOperator->keterangan    = $req->input('keterangan');
             $keluhanOperator->id_operator   = $req->input('id_operator');
             $keluhanOperator->id_keluhan    = $req->input('id_keluhan');
-            $keluhanOperator->created_by    = $user->id_user;
+            $keluhanOperator->created_by    = $user->id;
             $keluhanOperator->created_at    = now();
 
             $keluhanOperator->save();
