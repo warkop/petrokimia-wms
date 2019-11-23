@@ -52,6 +52,7 @@
                                         <option value="">Pilih jenis</option>
                                         <option value="1">Mengurangi</option>
                                         <option value="2">Menambah</option>
+                                        <option value="3">Menambah & Mengurangi</option>
                                     </select>
                                 </div>
                             </div>
@@ -154,7 +155,7 @@
                                 @endif
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" id="upload_foto" value="1" {{$checked}}> Upload Foto
+                                        <input type="checkbox" id="upload_foto" name="butuh_upload_foto" value="1" {{$checked}}> Upload Foto
                                         <span></span>
                                     </label>
                                 </div>
@@ -368,7 +369,7 @@
                                                 </label>
                                                 <div id="tempat_anggaran_{{$row->id}}" class="form-group alat_berat" style="display:none">
                                                     <small for="idAForklift">Masukkan Anggaran</small>
-                                                    <input type="text" class="form-control" name="anggaran[{{$row->id}}]" id="anggaran_{{$row->id}}" placeholder="Masukkan Anggaran">
+                                                    <input type="text" class="form-control anggaran" name="anggaran[{{$row->id}}]" id="anggaran_{{$row->id}}" placeholder="Masukkan Anggaran">
                                                 </div>
                                             </div>
                                         @php $i++ @endphp
@@ -501,6 +502,7 @@
     $('#upload_foto').on('change', function(e){
         if(e.target.checked){
             $('#modalFoto').modal();
+            $('.upload_foto_checkbox').not(this).prop('checked', false);
             $('#upload_foto-label').show('slow');
         } else {
             $('#upload_foto-label').hide();
@@ -509,8 +511,14 @@
     $("#select_all_photos").click(function(){
         $('.upload_foto_checkbox').not(this).prop('checked', this.checked);
     });
-    $("#select_all_alat_berat").click(function(){
-        $('.alat_berat_checkbox').not(this).prop('checked', this.checked);
+    $("#select_all_alat_berat").click(function(e){
+        if(e.target.checked){
+            $('.alat_berat_checkbox').not(this).prop('checked', this.checked);
+            $('.alat_berat').show('slow');
+        } else {
+            $('.alat_berat_checkbox').not(this).prop('checked', false);
+            $('.alat_berat').hide('slow');
+        }
     });
 
     function showModalUploadFoto(){
@@ -521,7 +529,6 @@
             success:res=>{
                 const obj = res.data;
                 obj.forEach(element => {
-                    console.log(element)
                     $("#upload_foto_"+element.id_foto_jenis).attr('checked', true);
                 });
             },
@@ -535,6 +542,8 @@
     $('#butuh_alat_berat').on('change', function(e){
         if(e.target.checked){
             $('#modalAlatBerat').modal();
+            $('.alat_berat_checkbox').not(this).prop('checked', false);
+            $('.alat_berat').hide();
             $('#butuh_alat_berat-label').show('slow');
         } else {
             $('#butuh_alat_berat-label').hide();
@@ -549,7 +558,6 @@
             success:res=>{
                 const obj = res.data;
                 obj.forEach(element => {
-                    console.log(element)
                     $("#alat_berat_"+element.id_kategori_alat_berat).attr('checked', true);
                     $("#tempat_anggaran_"+element.id_kategori_alat_berat).show();
                     $("#anggaran_"+element.id_kategori_alat_berat).val(element.anggaran);

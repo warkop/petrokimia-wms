@@ -24,7 +24,7 @@ class AktivitasController extends Controller
         $data['title'] = 'Master Tambah Aktivitas';
         $data['foto'] = JenisFoto::get();
         $data['alat_berat'] = KategoriAlatBerat::get();
-        $data['aktivitas_alat_berat'] = null;
+        $data['aktivitas_alat_berat'] = '';
         $data['aktivitas_master_foto'] = null;
         return view('master.master-aktivitas.second', $data);
     }
@@ -93,11 +93,13 @@ class AktivitasController extends Controller
 
         $aktivitas->save();
 
+        $butuh_upload_foto    = $req->input('butuh_upload_foto');
         $upload_foto    = $req->input('upload_foto');
+        $butuh_alat_berat     = $req->input('butuh_alat_berat');
         $alat_berat     = $req->input('alat_berat');
         $anggaran       = $req->input('anggaran');
         
-        if (!empty($upload_foto)) {
+        if (!empty($upload_foto) && !empty($butuh_upload_foto)) {
             AktivitasMasterFoto::where('id_aktivitas', $aktivitas->id)->delete();
             for ($i=0; $i<count($upload_foto); $i++) {
                 $arr = [
@@ -109,7 +111,7 @@ class AktivitasController extends Controller
             }
         }
         
-        if (!empty($alat_berat)) {
+        if (!empty($alat_berat) && !empty($butuh_alat_berat)) {
             AktivitasAlatBerat::where('id_aktivitas', $aktivitas->id)->delete();
             for ($i=0; $i<count($alat_berat); $i++) {
                 $arr = [
@@ -160,6 +162,7 @@ class AktivitasController extends Controller
         $data['alat_berat'] = KategoriAlatBerat::get();
         $data['aktivitas_alat_berat'] = AktivitasAlatBerat::where('id_aktivitas', $id)->get();
         $data['aktivitas_master_foto'] = AktivitasMasterFoto::where('id_aktivitas', $id)->get();
+        // dump($data['aktivitas_alat_berat'] != null);
         return view('master.master-aktivitas.second', $data);
     }
 
