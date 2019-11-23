@@ -21,8 +21,6 @@ class KeluhanOperatorResource extends Resource
             'keterangan'    => $this->keterangan,
             'operator'      => $this->nama_operator,
             'keluhan'       => $this->nama_keluhan,
-            'created_at'    => $this->created_at,
-            'created_by'    => $this->created_by,
         ];
     }
 }
