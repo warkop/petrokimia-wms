@@ -698,24 +698,30 @@ class AktivitasController extends Controller
             'material.id as id_material',
             'material.nama as nama_material',
             'tipe',
+            'status_produk',
+            \DB::raw('CASE WHEN status_produk=1 THEN \'Produk Stok\' ELSE \'Produk Rusak\' END AS text_status_produk'),
             \DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
             'jumlah'
         )
         ->leftJoin('material', 'material_trans.id_material', '=', 'material.id')
         ->where('id_aktivitas_harian', $id)
         ->where('kategori', 1)
+        ->orderBy('status_produk', 'asc')
         ->get();
 
         $res_pallet = MaterialTrans::select(
             'material.id as id_material',
             'material.nama as nama_material',
             'tipe',
+            'status_pallet',
+            \DB::raw('CASE WHEN status_pallet=1 THEN \'Pallet Stok\' WHEN status_pallet=2 THEN \'Pallet Dipakai\' WHEN status_pallet=3 THEN \'Pallet Kosong\' ELSE \'Pallet Rusak\' END AS text_status_pallet'),
             \DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
             'jumlah'
         )
         ->leftJoin('material', 'material_trans.id_material', '=', 'material.id')
         ->where('id_aktivitas_harian', $id)
         ->where('kategori', 2)
+        ->orderBy('status_pallet', 'asc')
         ->get();
 
         $foto = AktivitasFoto::select(
