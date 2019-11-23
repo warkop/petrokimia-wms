@@ -200,7 +200,7 @@
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="fifo" id="fifo" value="1"> Fifo
+                                        <input type="checkbox" name="fifo" id="fifo" value="1"> FIFO
                                         <span></span>
                                     </label>
                                 </div>
@@ -424,6 +424,7 @@
     $("#pallet_rusak").selectpicker('refresh');
     
     $("#butuh_approval").attr('disabled',true);
+    $("#fifo").attr('disabled',true);
 
     @if (!empty($id)) {
         edit({{$id}});
@@ -592,6 +593,15 @@
                 $("#butuh_approval").prop("checked", false);
                 $("#butuh_approval").attr("disabled", true);
             }
+        }
+    });
+
+    $('#pengaruh_tgl_produksi').on('change', function(e){
+        if(e.target.checked){
+            $('#fifo').attr('disabled',false);
+        } else {
+            $('#fifo').prop('checked',false);
+            $('#fifo').attr('disabled',true);
         }
     });
 

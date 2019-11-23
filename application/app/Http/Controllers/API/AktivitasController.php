@@ -254,11 +254,18 @@ class AktivitasController extends Controller
                                 $jums_list_jumlah = count($list_jumlah);
 
                                 for ($k = 0; $k < $jums_list_jumlah; $k++) {
-                                    $area_stok = AreaStok::
-                                    where('id_area', $id_area_stok)
-                                    ->where('id_material', $produk)
-                                    ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                    ->first();
+                                    if ($res_aktivitas->fifo != null) {
+                                        $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                        ->where('id_material', $produk)
+                                        ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                        ->orderBy('tanggal', 'asc')
+                                        ->first();
+                                    } else {
+                                        $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                        ->where('id_material', $produk)
+                                        ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                        ->first();
+                                    }
 
                                     if (!empty($area_stok)) {
                                         if ($tipe == 1) {
