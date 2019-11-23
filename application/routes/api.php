@@ -52,6 +52,12 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/history/{id}', 'API\AlatBeratController@detailHistory')->where('id', '[0-9]+');
     });
 
+    Route::group(['prefix' => 'keluhan-operator'], function () {
+        Route::get('/', 'API\KeluhanOperatorController@index');
+        Route::get('/{keluhanOperator}', 'API\KeluhanOperatorController@show')->where('keluhanOperator', '[0-9]+');
+        Route::put('/{keluhanOperator?}', 'API\KeluhanOperatorController@store')->where('keluhanOperator', '[0-9]+');
+    });
+
     Route::group(['prefix' => 'layout'], function () {
         Route::get('/', 'API\LayoutController@index');
         Route::get('/{id_area}', 'API\LayoutController@detail')->where('id_area', '[0-9]+');
