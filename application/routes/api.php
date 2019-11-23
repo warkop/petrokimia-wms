@@ -59,6 +59,6 @@ Route::group(['middleware' => 'api.auth'], function () {
 
     Route::group(['prefix' => 'rencana_kerja'], function () {
         Route::get('/', 'API\RencanaKerjaController@index');
-        Route::put('/{rencanaHarian}', 'API\RencanaKerjaController@store')->where('rencanaHarian', '[0-9]+');
+        Route::put('/', 'API\RencanaKerjaController@store');
     });
 });

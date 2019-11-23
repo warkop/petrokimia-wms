@@ -63,8 +63,8 @@ class ApiLaporanKerusakanRequest extends FormRequest
         return [
             'required'  => ':attribute wajib diisi!',
             'numeric'   => ':attribute harus berupa angka!',
-            'image '    => ':attribute harus berupa gambar!',
-            'between '  => ':attribute harus tidak valid!',
+            'image'    => ':attribute harus berupa gambar!',
+            'between'  => ':attribute harus tidak valid!',
         ];
     }
 

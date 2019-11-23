@@ -10,6 +10,11 @@ class RencanaTkbm extends Model
     protected $table = 'rencana_tkbm';
     protected $primaryKey = null;
 
+    protected $fillable = [
+        'id_rencana',
+        'id_tkbm',
+        'tipe',
+    ];
 
     protected $hidden = [
         'created_at',

@@ -10,8 +10,10 @@ class RencanaAreaTkbm extends Model
     protected $primaryKey = null;
     
 
-    protected $guarded = [
-        'id',
+    protected $fillable = [
+        'id_rencana',
+        'id_tkbm',
+        'id_area',
     ];
 
     protected $hidden = [
