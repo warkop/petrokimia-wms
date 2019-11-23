@@ -15,9 +15,15 @@ use Illuminate\Http\Response;
 
 class RencanaKerjaController extends Controller
 {
-    public function index()
+    public function index(Request $req)
     {
-        $data = RencanaHarian::get();
+        $user = $req->get('my_auth');
+        $res_user = Users::findOrFail($user->id_user);
+        $res_gudang = Gudang::where('id_karu', $res_user->id_karu)->first();
+
+
+
+        $data = RencanaHarian::where('id_gudang', $res_gudang->id)->get();
 
         return response()->json(['data' => $data,
             'status' => ['message' => '',
