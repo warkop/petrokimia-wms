@@ -62,6 +62,8 @@ class AlatBeratController extends Controller
             'laporan_kerusakan.id', 
             'id_kerusakan', 
             'id_alat_berat', 
+            'id_operator', 
+            \DB::raw('tk.nama as nama_operator'), 
             'id_shift',
             'nomor_lambung',
             'laporan_kerusakan.status',
@@ -74,6 +76,7 @@ class AlatBeratController extends Controller
             ->join('alat_berat_kerusakan as abk', 'laporan_kerusakan.id_kerusakan', '=', 'abk.id')
             ->join('alat_berat as ab', 'laporan_kerusakan.id_alat_berat', '=', 'ab.id')
             ->leftJoin('shift_kerja as s', 'laporan_kerusakan.id_shift', '=', 's.id')
+            ->leftJoin('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'laporan_kerusakan.id_operator')
             ->where(function ($where) use ($search) {
                 $where->where(\DB::raw('LOWER(keterangan)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(\DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
@@ -113,6 +116,8 @@ class AlatBeratController extends Controller
             'laporan_kerusakan.id',
             'id_kerusakan',
             'id_alat_berat',
+            'id_operator',
+            \DB::raw('tk.nama as nama_operator'),
             'id_shift',
             's.nama as nama_shift',
             'jenis',
@@ -126,6 +131,7 @@ class AlatBeratController extends Controller
         ->leftJoin('alat_berat_kerusakan as abk', 'laporan_kerusakan.id_kerusakan', '=', 'abk.id')
         ->leftJoin('alat_berat as ab', 'laporan_kerusakan.id_alat_berat', '=', 'ab.id')
         ->leftJoin('shift_kerja as s', 'laporan_kerusakan.id_shift', '=', 's.id')
+        ->leftJoin('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'laporan_kerusakan.id_operator')
         ->where('laporan_kerusakan.id', $id)->first();
 
         $foto = LaporanKerusakanFoto::where('id_laporan', $id)->get();
@@ -193,9 +199,9 @@ class AlatBeratController extends Controller
                     ->where('id_tkbm', $user->id_tkbm)
                     ->orderBy('rencana_harian.id', 'desc')
                     ->take(1)->first();
-
                 $arr = [
                     'id_kerusakan'  => $req->input('id_kerusakan'),
+                    'id_operator'   => $req->input('id_operator'),
                     'id_alat_berat' => $req->input('id_alat_berat'),
                     'id_shift'      => $laporan->id_shift,
                     'keterangan'    => $req->input('keterangan'),
@@ -281,6 +287,7 @@ class AlatBeratController extends Controller
 
                 $laporan->id_kerusakan      = $req->input('id_kerusakan');
                 $laporan->id_alat_berat     = $req->input('id_alat_berat');
+                $laporan->id_operator       = $req->input('id_operator');
                 $laporan->id_shift          = $rencana_tkbm->id_shift;
                 $laporan->keterangan        = $req->input('keterangan');
                 $laporan->jenis             = 2;

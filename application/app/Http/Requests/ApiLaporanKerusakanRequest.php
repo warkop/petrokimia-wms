@@ -30,6 +30,10 @@ class ApiLaporanKerusakanRequest extends FormRequest
                 'required',
                 'numeric',
             ],
+            'id_operator'     => [
+                'required',
+                'numeric',
+            ],
             // 'jenis'             => 'between:1,2',
             'jam_rusak'         => 'date_format:d-m-Y H:i:s',
             'foto.*'            => 'nullable|image',
@@ -44,6 +48,7 @@ class ApiLaporanKerusakanRequest extends FormRequest
     {
         return [
             'id_kerusakan'      => 'Kerusakan',
+            'id_operator'       => 'Operator',
             'id_alat_berat'     => 'Alat Berat',
             'id_shift'          => 'Shift',
             'keterangan'        => 'Keterangan',
