@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Area;
 use App\Http\Models\Gudang;
+use App\Http\Requests\AreaRequest;
 use App\Scopes\EndDateScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class AreaController extends Controller
 {
@@ -55,50 +57,55 @@ class AreaController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, Area $models, $id_gudang)
+    public function store(AreaRequest $req, Area $models, $id_gudang)
     {
-        $rules = [
-            'nama'              => 'required',
-            'kapasitas'         => 'numeric|between:0,9999.9999',
-            'tipe'              => 'required',
-        ];
+        // $rules = [
+        //     'nama'              => [
+        //         'required',
+        //         Rule::unique('area', 'nama')->ignore(\Request::instance()->id)
+        //     ],
+        //     'kapasitas'         => 'numeric|between:0,9999.9999',
+        //     'tipe'              => 'required',
+        // ];
+
+        $req->validated();
 
         $action = $req->input('action');
         if ($action == 'edit') {
             $rules['id'] = 'required';
         }
 
-        $validator = Validator::make($req->all(), $rules);
-        if ($validator->fails()) {
-            $this->responseCode                 = 400;
-            $this->responseStatus               = 'Missing Param';
-            $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
-            $this->responseData['error_log']    = $validator->errors();
+        // $validator = Validator::make($req->all(), $rules);
+        // if ($validator->fails()) {
+        //     $this->responseCode                 = 422;
+        //     $this->responseStatus               = 'Missing Param';
+        //     $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
+        //     $this->responseData['error_log']    = $validator->errors();
+        // } else {
+        $id = $req->input('id');
+
+        if (!empty($id)) {
+            $models = Area::find($id);
+            $models->updated_by = session('userdata')['id_user'];
         } else {
-            $id = $req->input('id');
-
-            if (!empty($id)) {
-                $models = Area::find($id);
-                $models->updated_by = session('userdata')['id_user'];
-            } else {
-                $models->created_by = session('userdata')['id_user'];
-            }
-
-            $models->id_gudang      = $id_gudang;
-            $models->nama           = strip_tags($req->input('nama'));
-            $models->kapasitas      = strip_tags($req->input('kapasitas'));
-            $models->tipe           = strip_tags($req->input('tipe'));
-            $models->start_date     = date('Y-m-d');
-
-            $saved = $models->save();
-            if (!$saved) {
-                $this->responseCode     = 502;
-                $this->responseMessage  = 'Data gagal disimpan!';
-            } else {
-                $this->responseCode = 200;
-                $this->responseMessage = 'Data berhasil disimpan';
-            }
+            $models->created_by = session('userdata')['id_user'];
         }
+
+        $models->id_gudang      = $id_gudang;
+        $models->nama           = strip_tags($req->input('nama'));
+        $models->kapasitas      = strip_tags($req->input('kapasitas'));
+        $models->tipe           = strip_tags($req->input('tipe'));
+        $models->start_date     = date('Y-m-d');
+
+        $saved = $models->save();
+        if (!$saved) {
+            $this->responseCode     = 502;
+            $this->responseMessage  = 'Data gagal disimpan!';
+        } else {
+            $this->responseCode = 200;
+            $this->responseMessage = 'Data berhasil disimpan';
+        }
+        // }
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);

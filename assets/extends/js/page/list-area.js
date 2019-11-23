@@ -289,7 +289,6 @@ function simpan() {
                             window.onbeforeunload = false;
                             $('.btn_close_modal').removeClass('hide');
                             $('.se-pre-con').hide();
-
                             const temp = Object.values(obj);
                             message = '';
                             temp.forEach(element => {
