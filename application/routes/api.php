@@ -1,10 +1,4 @@
 <?php
-
-use App\Http\Models\Aktivitas;
-use App\Http\Resources\AktivitasResource;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,7 +22,6 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-alat-berat', 'API\AktivitasController@getAlatBerat');
         Route::get('/get-jenis-foto', 'API\AktivitasController@getJenisFoto');
         Route::get('/get-kelayakan-foto', 'API\AktivitasController@getKelayakanFoto');
-        // Route::get('/get-area-stok', 'API\AktivitasController@areaStok');
         Route::get('/get-pindah-area', 'API\AktivitasController@pindahArea');
         Route::get('/history', 'API\AktivitasController@history');
         Route::get('/get-area/{id_aktivitas}/{id_material}', 'API\AktivitasController@getArea')->where('id_aktivitas', '[0-9]+');
@@ -45,7 +38,6 @@ Route::group(['middleware' => 'api.auth'], function () {
     Route::group(['prefix' => 'alat-berat'], function () {
         Route::get('/', 'API\AlatBeratController@index');
         Route::post('/', 'API\AlatBeratController@store')->where('laporan', '[0-9]+');
-        // Route::post('/{laporan}', 'API\AlatBeratController@repairing')->where('laporan', '[0-9]+');
         Route::get('/get-kerusakan', 'API\AlatBeratController@getKerusakan');
         Route::get('/get-shift', 'API\AlatBeratController@getShift');
         Route::get('/history', 'API\AlatBeratController@history');
@@ -56,6 +48,8 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/', 'API\KeluhanOperatorController@index');
         Route::get('/{keluhanOperator}', 'API\KeluhanOperatorController@show')->where('keluhanOperator', '[0-9]+');
         Route::put('/{keluhanOperator?}', 'API\KeluhanOperatorController@store')->where('keluhanOperator', '[0-9]+');
+        Route::get('/get-operator', 'API\KeluhanOperatorController@getOperator');
+        Route::get('/get-keluhan', 'API\KeluhanOperatorController@getKeluhan');
     });
 
     Route::group(['prefix' => 'layout'], function () {
@@ -68,21 +62,3 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::put('/{rencanaHarian}', 'API\RencanaKerjaController@store')->where('rencanaHarian', '[0-9]+');
     });
 });
-
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-// Route::get('aktivitas', function () {
-//     return (new AktivitasResource(Aktivitas::paginate()))->response()->getStatusCode();
-// });
-
-// Route::get('aktivitas/{id}', function ($id) {
-//     // $obj = Aktivitas::find($id);
-//     // if (!empty($obj)) {
-//         // return new AktivitasResource($aktivitas);
-//     // } else {
-//     //     return (new AktivitasResource(new Aktivitas))->response()->getStatusCode();
-//     // }
-// });

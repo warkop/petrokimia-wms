@@ -16,8 +16,8 @@ class KeluhanOperatorResource extends Resource
      */
     public function toArray($request)
     {
-        $tenaga_kerja = TenagaKerjaNonOrganik::find($this->id_operator)->first();
-        $keluhan = Keluhan::find($this->id_keluhan)->first();
+        $tenaga_kerja = TenagaKerjaNonOrganik::findOrFail($this->id_operator);
+        $keluhan = Keluhan::findOrFail($this->id_keluhan);
         return [
             'id'            => $this->id,
             'keterangan'    => $this->keterangan,

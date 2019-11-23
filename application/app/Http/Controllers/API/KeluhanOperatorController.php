@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Models\Keluhan;
 use App\Http\Models\KeluhanOperator;
+use App\Http\Models\TenagaKerjaNonOrganik;
 use App\Http\Requests\KeluhanOperatorRequest;
 use App\Http\Resources\KeluhanOperatorResource;
 
@@ -34,6 +36,36 @@ class KeluhanOperatorController extends Controller
         ], 200);
 
         return $obj;
+    }
+
+    public function getKeluhan()
+    {
+        $res = Keluhan::get();
+
+        $data = [
+            'data' => $res,
+            'status' => [
+                'message' => '',
+                'code' => 200,
+            ],
+        ];
+
+        return response()->json($data, 200);
+    }
+
+    public function getOperator()
+    {
+        $res = TenagaKerjaNonOrganik::operatorAlatBerat()->get();
+
+        $data = [
+            'data' => $res,
+            'status' => [
+                'message' => '',
+                'code' => 200,
+            ],
+        ];
+
+        return response()->json($data, 200);
     }
 
     public function store(KeluhanOperatorRequest $req, KeluhanOperator $keluhanOperator)

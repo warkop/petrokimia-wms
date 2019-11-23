@@ -261,6 +261,9 @@ class AktivitasController extends Controller
                                     if (!empty($area_stok)) {
                                         if ($tipe == 1) {
                                             $area_stok->jumlah = $area_stok->jumlah-$list_jumlah[$k]['jumlah'];
+                                        } else if ($tipe == 3) {
+                                            $area_stok->jumlah = $area_stok->jumlah + $list_jumlah[$k]['jumlah'];
+                                            $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
                                         } else {
                                             $area_stok->jumlah = $area_stok->jumlah+$list_jumlah[$k]['jumlah'];
                                         }
