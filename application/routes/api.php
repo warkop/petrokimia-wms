@@ -57,8 +57,17 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/{id_area}', 'API\LayoutController@detail')->where('id_area', '[0-9]+');
     });
 
-    Route::group(['prefix' => 'rencana_kerja'], function () {
+    Route::group(['prefix' => 'rencana-kerja'], function () {
         Route::get('/', 'API\RencanaKerjaController@index');
+        Route::get('/get-alat-berat', 'API\RencanaKerjaController@getAlatBerat');
+        Route::get('/get-shift', 'API\RencanaKerjaController@getShift');
+        Route::get('/get-tkbm/{id}', 'API\RencanaKerjaController@getTkbm')->where('id', '[0-9]+');
+        Route::get('/get-area/{id?}', 'API\RencanaKerjaController@getArea')->where('id', '[0-9]+');
         Route::put('/', 'API\RencanaKerjaController@store');
+    });
+
+    Route::group(['prefix' => 'realisasi_material'], function () {
+        Route::get('/', 'API\RealisasiMaterialController@index');
+        Route::put('/', 'API\RealisasiMaterialController@store');
     });
 });

@@ -4,11 +4,15 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Models\AlatBerat;
+use App\Http\Models\Area;
 use App\Http\Models\Gudang;
 use App\Http\Models\RencanaAlatBerat;
 use App\Http\Models\RencanaAreaTkbm;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
+use App\Http\Models\ShiftKerja;
+use App\Http\Models\TenagaKerjaNonOrganik;
 use App\Http\Models\Users;
 use App\Http\Requests\ApiRencanaKerjaRequest;
 use App\Http\Resources\AktivitasResource;
@@ -150,5 +154,106 @@ class RencanaKerjaController extends Controller
             $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
             return response()->json($response, $this->responseCode);
         }
+    }
+
+    public function getShift()
+    {
+        $res = ShiftKerja::get();
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $res;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
+    public function getRencanaAlatBerat($id_rencana)
+    {
+        $resource = new RencanaAlatBerat();
+
+        $res = $resource->where('id_rencana', $id_rencana)
+            ->get();
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $res;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
+    public function getTkbm($id_job_desk)
+    {
+        $res = TenagaKerjaNonOrganik::where('job_desk_id', $id_job_desk)->get();
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $res;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
+    public function getAlatBerat()
+    {
+        $alat_berat = new AlatBerat();
+        $res = $alat_berat->getWithRelation();
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $res;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
+    public function getArea(Request $req, $id_gudang = '')
+    {
+        $user = $req->get('my_auth');
+        $users = Users::findOrFail($user->id_user);
+
+        if ($id_gudang == '') {
+            $gudang = Gudang::where('id_karu', $users->id_karu)->first();
+            if (!empty($gudang)) {
+                $res = Area::where('id_gudang', $gudang->id)->get();
+
+                $this->responseCode = 200;
+                $this->responseMessage = 'Data tersedia';
+                $this->responseData = $res;
+            } else {
+                $this->responseCode = 403;
+                $this->responseMessage = 'Anda tidak memiliki gudang! Silahkan daftarkan gudang Anda pada menu Gudang!';
+            }
+        } else {
+            $res = Area::where('id_gudang', $id_gudang)->get();
+
+            $this->responseCode = 200;
+            $this->responseMessage = 'Data tersedia';
+            $this->responseData = $res;
+        }
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
+    public function getHousekeeper($id_rencana)
+    {
+        // $id_rencana = $req->get('id_rencana');
+        if (is_numeric($id_rencana)) {
+            $this->responseData = RencanaAreaTkbm::select('id_tkbm', 'nama')
+                ->where('id_rencana', $id_rencana)
+                ->leftJoin('tenaga_kerja_non_organik', 'id_tkbm', '=', 'id')
+                ->groupBy('id_tkbm', 'nama')
+                ->orderBy('nama', 'asc')
+                ->get();
+            $this->responseCode = 200;
+        } else {
+            $this->responseMessage = 'ID rencana tidak ditemukan';
+            $this->responseCode = 400;
+        }
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 }
