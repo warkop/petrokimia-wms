@@ -21,9 +21,7 @@ class RencanaKerjaController extends Controller
         $res_user = Users::findOrFail($user->id_user);
         $res_gudang = Gudang::where('id_karu', $res_user->id_karu)->first();
 
-
-
-        $data = RencanaHarian::where('id_gudang', $res_gudang->id)->get();
+        $data = RencanaHarian::where('id_gudang', $res_gudang->id)->paginate(10);
 
         return response()->json(['data' => $data,
             'status' => ['message' => '',
