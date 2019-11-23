@@ -11,6 +11,7 @@ use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use App\Http\Models\Users;
 use App\Http\Requests\ApiRencanaKerjaRequest;
+use App\Http\Resources\AktivitasResource;
 use Illuminate\Http\Response;
 
 class RencanaKerjaController extends Controller
