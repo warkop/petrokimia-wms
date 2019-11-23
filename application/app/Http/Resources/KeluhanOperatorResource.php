@@ -19,9 +19,7 @@ class KeluhanOperatorResource extends Resource
         return [
             'id'            => $this->id,
             'keterangan'    => $this->keterangan,
-            'id_operator'   => $this->id_operator,
             'operator'      => $this->nama_operator,
-            'id_keluhan'    => $this->id_keluhan,
             'keluhan'       => $this->nama_keluhan,
             'created_at'    => $this->created_at,
             'created_by'    => $this->created_by,
