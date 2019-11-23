@@ -21,7 +21,7 @@ class KeluhanOperatorController extends Controller
             'keterangan',
             \DB::raw('tk.nama as nama_operator'),
             \DB::raw('k.nama as nama_keluhan'),
-            'keluhan_operator.id',
+            'keluhan_operator.id'
         )
         ->leftJoin('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'id_operator')
         ->leftJoin('keluhan as k', 'k.id', '=', 'id_keluhan')
