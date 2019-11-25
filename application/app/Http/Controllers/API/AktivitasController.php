@@ -411,7 +411,7 @@ class AktivitasController extends Controller
 
         $user = $req->get('my_auth');
 
-        $res_user = Users::findOrFail($user->id);
+        $res_user = Users::findOrFail($user->id_user);
 
         $id_aktivitas_harian = $req->input('id_aktivitas_harian');
         $aktivitas = AktivitasHarian::find($id_aktivitas_harian);
@@ -474,7 +474,7 @@ class AktivitasController extends Controller
 
         $user = $req->get('my_auth');
 
-        $res_user = Users::findOrFail($user->id);
+        $res_user = Users::findOrFail($user->id_user);
 
         $id_aktivitas_harian = $req->input('id_aktivitas_harian');
         $aktivitas = AktivitasHarian::findOrFail($id_aktivitas_harian);
