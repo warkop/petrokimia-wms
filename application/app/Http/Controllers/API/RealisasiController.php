@@ -189,7 +189,7 @@ class RealisasiController extends Controller
 
     public function getRealisasiMaterial()
     {
-        return AktivitasResource::collection(RealisasiMaterial::all())->additional([
+        return AktivitasResource::collection(RealisasiMaterial::paginate(10))->additional([
             'status' => [
                 'message' => '',
                 'code' => 200
