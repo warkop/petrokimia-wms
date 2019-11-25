@@ -29,10 +29,12 @@ class ApiLaporanKerusakanRequest extends FormRequest
             'id_alat_berat'     => [
                 'required',
                 'numeric',
+                'exists:alat_berat,id'
             ],
             'id_operator'     => [
                 'required',
                 'numeric',
+                'exists:tenaga_kerja_non_organik,id'
             ],
             // 'jenis'             => 'between:1,2',
             'jam_rusak'         => 'date_format:d-m-Y H:i:s',
@@ -65,6 +67,7 @@ class ApiLaporanKerusakanRequest extends FormRequest
             'numeric'   => ':attribute harus berupa angka!',
             'image'    => ':attribute harus berupa gambar!',
             'between'  => ':attribute harus tidak valid!',
+            'exists'  => ':attribute yang Anda pilih tidak tersedia!',
         ];
     }
 
