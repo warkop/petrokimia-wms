@@ -41,7 +41,7 @@ class RealisasiController extends Controller
             'realisasi_housekeeper.id_tkbm',
             'realisasi_housekeeper.id_area',
             'tk.nama as nama_housekeeper',
-            'area.nama as nama_area',
+            'area.nama as nama_area'
         )
         ->join('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'realisasi_housekeeper.id_tkbm')
         ->join('area', 'area.id', '=', 'realisasi_housekeeper.id_area')
