@@ -689,9 +689,9 @@ class AktivitasController extends Controller
             'aktivitas_harian.created_at',
             'aktivitas_harian.created_by'
         )
-        ->leftjoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-        ->leftjoin('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
-        ->leftjoin('alat_berat', 'aktivitas_harian.id_gudang', '=', 'alat_berat.id')
+        ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+        ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
+        ->join('alat_berat', 'aktivitas_harian.id_gudang', '=', 'alat_berat.id')
         ->where('aktivitas_harian.id', $id)
         ;
 
@@ -704,7 +704,7 @@ class AktivitasController extends Controller
             \DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
             'jumlah'
         )
-        ->leftJoin('material', 'material_trans.id_material', '=', 'material.id')
+        ->join('material', 'material_trans.id_material', '=', 'material.id')
         ->where('id_aktivitas_harian', $id)
         ->where('kategori', 1)
         ->orderBy('status_produk', 'asc')
@@ -719,7 +719,7 @@ class AktivitasController extends Controller
             \DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
             'jumlah'
         )
-        ->leftJoin('material', 'material_trans.id_material', '=', 'material.id')
+        ->join('material', 'material_trans.id_material', '=', 'material.id')
         ->where('id_aktivitas_harian', $id)
         ->where('kategori', 2)
         ->orderBy('status_pallet', 'asc')
@@ -735,7 +735,7 @@ class AktivitasController extends Controller
             'lat',
             'lng'
         )
-        ->leftJoin('foto_jenis', 'id_foto_jenis', '=', 'foto_jenis.id')
+        ->join('foto_jenis', 'id_foto_jenis', '=', 'foto_jenis.id')
         ->where('id_aktivitas_harian', $id)
         ->orderBy('id_foto_jenis', 'asc')
         ->get();
