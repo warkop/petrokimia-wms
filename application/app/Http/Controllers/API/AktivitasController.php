@@ -646,6 +646,7 @@ class AktivitasController extends Controller
             $where->where(\DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             $where->orWhere(\DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })
+        ->orderBy('created_at', 'desc')
         ;
 
         $obj =  AktivitasResource::collection($res->paginate(10))->additional([
