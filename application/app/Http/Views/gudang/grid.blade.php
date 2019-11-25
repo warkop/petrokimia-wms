@@ -272,7 +272,8 @@
 <script>
 $('#id_karu').select2({
     placeholder: "Pilih Kepala Regu",
-    allowClear: true
+    allowClear: true,
+    dropdownParent:$("#modal_form")
 });
 $('#end_date').datepicker({
     rtl: KTUtil.isRTL(),
