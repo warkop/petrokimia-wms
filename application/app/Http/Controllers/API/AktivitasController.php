@@ -138,23 +138,24 @@ class AktivitasController extends Controller
     {
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
         if ($aktivitas->pengaruh_tgl_produksi != null) {
-            if ($aktivitas->fifo != null) {
-                $detail = \DB::table('')->selectRaw(
-                    '
+            $detail = \DB::table('')->selectRaw(
+                '
                         area_stok.id,
                         area.nama,
                         area.kapasitas,
                         area_stok.tanggal,
                         area_stok.jumlah'
-                )
+            )
                 ->from('area_stok')
                 ->join('area', 'area.id', '=', 'area_stok.id_area')
                 ->where('id_material', $id_material)
-                ->where('area_stok.id_area', $id_area)
-                ->orderBy('nama', 'ASC');
+                ->where('area_stok.id_area', $id_area);
+            if ($aktivitas->fifo != null) {
+                $detail = $detail->orderBy('nama', 'ASC');
             } else {
                 $detail = $detail->orderBy('tanggal', 'ASC');
             }
+            
             return (new AktivitasResource($detail->get()))->additional([
                 'status' => [
                     'message' => '',
