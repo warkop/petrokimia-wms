@@ -9,7 +9,7 @@ class Realisasi extends Model
     protected $table = 'realisasi';
     protected $primaryKey = 'id';
 
-    protected $guard = [
+    protected $guarded = [
         'id',
         'created_at',
         'created_by',

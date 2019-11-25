@@ -9,7 +9,13 @@ class RealisasiHousekeeper extends Model
     protected $table = 'realisasi_housekeeper';
     protected $primaryKey = 'id';
 
-    protected $guard = [
-        'id',
+    protected $fillable = [
+        'id_realisasi',
+        'id_tkbm',
+        'id_area',
     ];
+
+    protected $dates = ['created_at', 'updated_at'];
+
+    public $timestamps  = false;
 }

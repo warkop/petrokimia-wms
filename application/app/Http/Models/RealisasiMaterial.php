@@ -9,10 +9,8 @@ class RealisasiMaterial extends Model
     protected $table = 'realisasi_material';
     protected $primaryKey = 'id';
 
-    protected $guard = [
+    protected $guarded = [
         'id',
-        'created_at',
-        'updated_at',
     ];
 
     protected $dates = ['created_at', 'updated_at'];

@@ -11,6 +11,7 @@ use App\Http\Models\Realisasi;
 use App\Http\Models\RealisasiHousekeeper;
 use App\Http\Models\RealisasiMaterial;
 use App\Http\Models\RencanaAreaTkbm;
+use App\Http\Models\RencanaHarian;
 use App\Http\Models\Users;
 use App\Http\Resources\AktivitasResource;
 
@@ -125,10 +126,28 @@ class RealisasiController extends Controller
     public function store(Request $req, Realisasi $realisasi)
     {
         $id_rencana     = $req->input('id_rencana');
-        $id_material    = $req->input('id_material');
+
+        $rencana = RencanaHarian::find($id_rencana);
+
+        if (empty($rencana)) {
+            return response()->json([
+                'status' => [
+                    'message'   => 'Rencana tidak ditemukan',
+                    'code'      => 403,
+                ]
+            ], 403);
+        }
+
+        $temp_res = (new Realisasi)->where('id_rencana', $id_rencana)->first();
+        (new Realisasi)->where('id_rencana', $id_rencana)->forceDelete();
+
+        if (!empty($temp_res)) {
+            (new RealisasiHousekeeper)->where('id_realisasi', $temp_res->id)->forceDelete();
+            (new RealisasiMaterial)->where('id_realisasi', $temp_res->id)->forceDelete();
+        }
+
         $housekeeper    = $req->input('housekeeper');
-        $housekeeper = array_values($housekeeper);
-        $area           = $req->input('area');
+        $housekeeper    = array_values($housekeeper);
 
         $user = $req->get('my_auth');
 
@@ -144,9 +163,9 @@ class RealisasiController extends Controller
                 if (!empty($temp)) {
                     foreach ($temp as $row => $hey) {
                         $arr = [
-                            'id_realisasi' => $realisasi->id,
-                            'id_tkbm' => $value,
-                            'id_area' => $hey,
+                            'id_realisasi'  => $realisasi->id,
+                            'id_tkbm'       => $value,
+                            'id_area'       => $hey,
                         ];
 
                         (new RealisasiHousekeeper)->create($arr);
@@ -154,6 +173,34 @@ class RealisasiController extends Controller
                 }
             }
         }
+
+        $material = $req->input('material');
+        $material_tambah = $req->input('material_tambah');
+        $material_kurang = $req->input('material_kurang');
+        $panjang = count($material);
+        $material           = array_values($material);
+        $material_tambah    = array_values($material_tambah);
+        $material_kurang    = array_values($material_kurang);
+        for ($i = 0; $i < $panjang; $i++) {
+            $arr = [
+                'id_realisasi'  => $realisasi->id,
+                'id_material'   => $material[$i],
+                'bertambah'     => $material_tambah[$i],
+                'berkurang'     => $material_kurang[$i],
+                'created_at'    => now(),
+            ];
+
+            (new RealisasiMaterial)->create($arr);
+        }
+
+        $housekeeper = RealisasiHousekeeper::where('id_realisasi', $realisasi->id)->get();
+        $material = RealisasiMaterial::where('id_realisasi', $realisasi->id)->get();
+
+        $this->responseData = ['realisasi' => $realisasi, 'material' => $material, 'housekeeper' => $housekeeper, ];
+        $this->responseCode = 200; 
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
 
     }
 }
