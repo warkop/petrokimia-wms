@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class KeluhanOperatorRequest extends FormRequest
 {
@@ -32,8 +33,18 @@ class KeluhanOperatorRequest extends FormRequest
 
         $rules = [
             'keterangan'    => 'required',
-            'id_operator'   => 'required|numeric',
-            'id_keluhan'    => 'required|numeric',
+            'id_operator'   => [
+                'required',
+                'numeric',
+                Rule::exists('tenaga_kerja_non_organik', 'id')->where(function ($query) {
+                    $query->where('job_desk_id', 2);
+                }),
+            ],
+            'id_keluhan'    => [
+                'required',
+                'numeric',
+                'exists:keluhan,id'
+            ]
         ];
 
         return $rules;
@@ -53,6 +64,7 @@ class KeluhanOperatorRequest extends FormRequest
         return [
             'required' => ':attribute harus diisi!',
             'numeric'  => ':attribute tidak valid!',
+            'exists'    => ':attribute yang Anda pilih tidak tersedia!',
         ];
     }
 

@@ -26,25 +26,33 @@ class ApiRencanaKerjaRequest extends FormRequest
         $this->sanitize();
         
         $rules = [
-            'id_shift'                      => 'required|between:1,3',
-            'alat_berat.*.id_alat_berat'    => [
-                'numeric',
-            ],
+            'id_shift'                      => 'required|between:1,3|exists:shift_kerja,id',
+            'alat_berat.*.id_alat_berat'    => 'numeric|exists:alat_berat,id',
             'admin_loket.*.id_tkbm'         => [
                 'numeric',
+                Rule::exists('tenaga_kerja_non_organik', 'id')->where(function ($query) {
+                    $query->where('job_desk_id', 1);
+                }),
             ],
             'operator.*.id_tkbm'            => [
                 'numeric',
+                Rule::exists('tenaga_kerja_non_organik', 'id')->where(function ($query) {
+                    $query->where('job_desk_id', 2);
+                }),
             ],
             'checker.*.id_tkbm'             => [
                 'numeric',
+                Rule::exists('tenaga_kerja_non_organik', 'id')->where(function ($query) {
+                    $query->where('job_desk_id', 3);
+                }),
             ],
             'housekeeper.*.id_tkbm'         => [
                 'numeric',
+                Rule::exists('tenaga_kerja_non_organik', 'id')->where(function ($query) {
+                    $query->where('job_desk_id', 4);
+                }),
             ],
-            'housekeeper.*.area.*.id_area'  => [
-                'numeric',
-            ],
+            'housekeeper.*.area.*.id_area'  => 'numeric|exists:area,id',
         ];
 
         return $rules;

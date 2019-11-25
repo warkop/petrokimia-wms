@@ -26,10 +26,10 @@ class ApiSavePhotosRequest extends FormRequest
         $this->sanitize();
 
         return [
-            'id_aktivitas_harian'       => 'required|numeric',
+            'id_aktivitas_harian'       => 'required|numeric|exists:aktivitas_harian,id',
             'ttd'                       => 'nullable|image',
             'foto.*'                    => 'nullable|image',
-            'id_foto_jenis.*'           => 'nullable|numeric',
+            'id_foto_jenis.*'           => 'nullable|numeric|exists:foto_jenis,id',
         ];
     }
 

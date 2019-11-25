@@ -28,7 +28,7 @@ class ApiRealisasiRequest extends FormRequest
             'material.*'         => 'nullable|numeric',
             'material_kurang.*'  => 'nullable|numeric',
             'material_tambah.*'  => 'nullable|numeric',
-            'housekeeper.*.*'    => 'nullable|numeric',
+            'housekeeper.*'         => 'nullable|numeric',
             'area_housekeeper.*.*'   => 'nullable|numeric',
         ];
 
@@ -44,8 +44,8 @@ class ApiRealisasiRequest extends FormRequest
             'material'          => 'Material',
             'material_kurang'   => 'Mengurangi Material',
             'material_tambah'   => 'Menambah Material',
-            'housekeeper'       => 'Housekeeper',
-            'area_housekeeper'  => 'Area Housekeeper',
+            'housekeeper.*'       => 'Housekeeper',
+            'area_housekeeper.*.*'  => 'Area Housekeeper',
         ];
     }
 
@@ -53,7 +53,7 @@ class ApiRealisasiRequest extends FormRequest
     {
         return [
             'required'  => ':attribute wajib diisi!',
-            'numeric'   => ':attribute harus berupa angka!',
+            'numeric'   => ':attribute tidak valid!',
             'image'     => ':attribute harus berupa gambar!',
         ];
     }

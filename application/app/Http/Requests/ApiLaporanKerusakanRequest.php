@@ -26,17 +26,14 @@ class ApiLaporanKerusakanRequest extends FormRequest
     {
         $rules = [
             'id_kerusakan'      => 'required|numeric',
-            'id_alat_berat'     => [
-                'required',
-                'numeric',
-                'exists:alat_berat,id'
-            ],
+            'id_alat_berat'     => 'required|numeric|exists:alat_berat,id',
             'id_operator'     => [
                 'required',
                 'numeric',
-                'exists:tenaga_kerja_non_organik,id'
+                Rule::exists('tenaga_kerja_non_organik', 'id')->where(function ($query) {
+                    $query->where('job_desk_id', 2);
+                }),
             ],
-            // 'jenis'             => 'between:1,2',
             'jam_rusak'         => 'date_format:d-m-Y H:i:s',
             'foto.*'            => 'nullable|image',
         ];
@@ -65,9 +62,9 @@ class ApiLaporanKerusakanRequest extends FormRequest
         return [
             'required'  => ':attribute wajib diisi!',
             'numeric'   => ':attribute harus berupa angka!',
-            'image'    => ':attribute harus berupa gambar!',
-            'between'  => ':attribute harus tidak valid!',
-            'exists'  => ':attribute yang Anda pilih tidak tersedia!',
+            'image'     => ':attribute harus berupa gambar!',
+            'between'   => ':attribute harus tidak valid!',
+            'exists'    => ':attribute yang Anda pilih tidak tersedia!',
         ];
     }
 

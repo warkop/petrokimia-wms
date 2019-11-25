@@ -25,13 +25,13 @@ class ApiAktivitasRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'id_aktivitas'      => 'required|numeric',
+            'id_aktivitas'      => 'required|numeric|exists:aktivitas,id',
             'id_gudang'         => 'nullable|numeric',
             'id_karu'           => 'nullable|numeric',
             'id_shift'          => 'nullable|numeric',
-            'id_alat_berat'     => 'nullable|numeric',
+            'id_alat_berat'     => 'nullable|numeric|exists:alat_berat,id',
             // 'ref_number'        => '',
-            'id_pindah_area'           => 'nullable|numeric',
+            'id_pindah_area'    => 'nullable|numeric',
             'id_alat_berat'     => 'nullable|numeric',
             // 'ttd'               => 'nullable|image',
             // 'id_produk.*'       => 'unique',
