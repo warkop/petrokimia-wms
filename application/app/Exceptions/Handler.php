@@ -61,7 +61,16 @@ class Handler extends ExceptionHandler
                     'code' => 404,
                 ]
             ], 404);
-          }
+        }
+
+        if ($exception instanceof NotFoundHttpException && $request->wantsJson()) {
+            return response()->json([
+                'status' => [
+                    'message' => 'Data tidak ditemukan!',
+                    'code' => 404,
+                ]
+            ], 404);
+        }
 
         if ($exception instanceof ModelNotFoundException) {
             $exception = new NotFoundHttpException($exception->getMessage(), $exception);
