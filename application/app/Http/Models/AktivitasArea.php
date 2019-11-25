@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AktivitasArea extends Model
 {
-    protected $table = 'aktivitas_area';
+    protected $table = 'aktivitas_harian_area';
     protected $primaryKey = 'id';
 
     protected $guarded = [

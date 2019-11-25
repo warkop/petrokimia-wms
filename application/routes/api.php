@@ -59,6 +59,7 @@ Route::group(['middleware' => 'api.auth'], function () {
 
     Route::group(['prefix' => 'rencana-kerja'], function () {
         Route::get('/', 'API\RencanaKerjaController@index');
+        Route::get('/{id}', 'API\RencanaKerjaController@show')->where('id', '[0-9]+');
         Route::get('/get-alat-berat', 'API\RencanaKerjaController@getAlatBerat');
         Route::get('/get-shift', 'API\RencanaKerjaController@getShift');
         Route::get('/get-tkbm/{id}', 'API\RencanaKerjaController@getTkbm')->where('id', '[0-9]+');

@@ -15,6 +15,8 @@ class RencanaHarian extends Model
     ];
 
     protected $hidden = [
+        'start_date',
+        'end_date',
         'created_at',
         'created_by',
         'updated_at',
@@ -33,7 +35,7 @@ class RencanaHarian extends Model
             $table->updated_by = \Auth::id();
         });
 
-        static::saving(function ($table) {
+        static::creating(function ($table) {
             $table->created_by = \Auth::id();
         });
 

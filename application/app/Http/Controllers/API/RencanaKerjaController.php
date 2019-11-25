@@ -25,6 +25,16 @@ class RencanaKerjaController extends Controller
         $user = $req->get('my_auth');
         $res_user = Users::findOrFail($user->id_user);
         $res_gudang = Gudang::where('id_karu', $res_user->id_karu)->first();
+        if (empty($res_gudang)) {
+            $data = [
+                'status' => [
+                    'message' => 'Karu ini tidak terdaftar pada gudang manapun! Silahkan daftarkan terlebih dahulu',
+                    'code' => 403
+                ],
+            ];    
+
+            return response()->json($data, 403);
+        }
 
         $data = RencanaHarian::where('id_gudang', $res_gudang->id)->paginate(10);
 
@@ -33,6 +43,83 @@ class RencanaKerjaController extends Controller
                 'message' => '',
                 'code' => Response::HTTP_OK],
         ], Response::HTTP_OK);
+    }
+
+    public function show($id)
+    {
+        $rencanaHarian = RencanaHarian::findOrFail($id);
+        
+        $adminLoket = RencanaTkbm::select(
+            'id_rencana',
+            'id_tkbm',
+            'job_desk_id',
+            'nama',
+        )
+        ->join('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'rencana_tkbm.id_tkbm')
+        ->where('id_rencana', $rencanaHarian->id)
+        ->where('job_desk_id', 1)
+        ->get();
+        
+        $operator = RencanaTkbm::select(
+            'id_rencana',
+            'id_tkbm',
+            'job_desk_id',
+            'nama',
+        )
+        ->join('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'rencana_tkbm.id_tkbm')
+        ->where('id_rencana', $rencanaHarian->id)
+        ->where('job_desk_id', 2)
+        ->get();
+        
+        $checker = RencanaTkbm::select(
+            'id_rencana',
+            'id_tkbm',
+            'job_desk_id',
+            'nama',
+        )
+        ->join('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'rencana_tkbm.id_tkbm')
+        ->where('id_rencana', $rencanaHarian->id)
+        ->where('job_desk_id', 3)
+        ->get();
+
+        $rencanaAlatBerat = RencanaAlatBerat::select(
+            'id_rencana',
+            'id_alat_berat',
+            'ab.nomor_lambung',
+            'abk.nama as kategori'
+        )
+        ->join('alat_berat as ab', 'ab.id', '=', 'rencana_alat_berat.id_alat_berat')
+        ->join('alat_berat_kat as abk', 'abk.id', '=', 'ab.id_kategori')
+        ->where('id_rencana', $rencanaHarian->id)
+        ->get();
+
+        $rencanaAreaTkbm = RencanaAreaTkbm::select(
+            'id_rencana',
+            'id_area',
+            'id_tkbm',
+            'tk.nama',
+            'area.nama as nama_area'
+        )
+        ->join('area', 'area.id', '=', 'rencana_area_tkbm.id_area')
+        ->join('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'rencana_area_tkbm.id_tkbm')
+        ->where('id_rencana', $rencanaHarian->id)
+        ->where('job_desk_id', 4)
+        ->get();
+
+        $res = collect($rencanaHarian);
+        $res = $res->merge(['list_admin_loket' => $adminLoket]);
+        $res = $res->merge(['list_operator' => $operator]);
+        $res = $res->merge(['list_checker' => $checker]);
+        $res = $res->merge(['list_alat_berat' => $rencanaAlatBerat]);
+        $res = $res->merge(['list_area_tkbm' => $rencanaAreaTkbm]);
+
+
+        return (new AktivitasResource($res))->additional([
+            'status' => [
+                'message'   => '',
+                'code'      => 200,
+            ]
+        ], 200);
     }
 
     public function store(ApiRencanaKerjaRequest $req)
