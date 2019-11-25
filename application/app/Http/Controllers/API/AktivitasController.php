@@ -136,22 +136,26 @@ class AktivitasController extends Controller
 
     public function getAreaStok($id_aktivitas, $id_material, $id_area)
     {
-        $aktivitas = Aktivitas::find($id_aktivitas);
+        $aktivitas = Aktivitas::findOrFail($id_aktivitas);
         if ($aktivitas->pengaruh_tgl_produksi != null) {
-            $detail = \DB::table('')->selectRaw(
-                '
-                    area_stok.id,
-                    area.nama,
-                    area.kapasitas,
-                    area_stok.tanggal,
-                    area_stok.jumlah'
-            )
-            ->from('area_stok')
-            ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
-            ->where('id_material', $id_material)
-            ->where('area_stok.id_area', $id_area)
-            ->orderBy('nama', 'ASC')->get();
-            return (new AktivitasResource($detail))->additional([
+            if ($aktivitas->fifo != null) {
+                $detail = \DB::table('')->selectRaw(
+                    '
+                        area_stok.id,
+                        area.nama,
+                        area.kapasitas,
+                        area_stok.tanggal,
+                        area_stok.jumlah'
+                )
+                ->from('area_stok')
+                ->join('area', 'area.id', '=', 'area_stok.id_area')
+                ->where('id_material', $id_material)
+                ->where('area_stok.id_area', $id_area)
+                ->orderBy('nama', 'ASC');
+            } else {
+                $detail = $detail->orderBy('tanggal', 'ASC');
+            }
+            return (new AktivitasResource($detail->get()))->additional([
                 'status' => [
                     'message' => '',
                     'code' => Response::HTTP_OK,
