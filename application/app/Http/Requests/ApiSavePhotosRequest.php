@@ -58,7 +58,7 @@ class ApiSavePhotosRequest extends FormRequest
 
         foreach ($input as $key => $value) {
             if ($input[$key] == 'file')
-            $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
+                $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
         }
 
         $this->replace($input);

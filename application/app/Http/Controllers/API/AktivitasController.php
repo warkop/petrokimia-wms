@@ -428,7 +428,7 @@ class AktivitasController extends Controller
 
         //simpan foto
         $foto = $req->file('foto');
-        $foto_jenis = $req->input('foto_jenis');
+        $foto_jenis = $req->input('id_foto_jenis');
         $lat = $req->input('lat');
         $lng = $req->input('lng');
         if (!empty($foto)) {
