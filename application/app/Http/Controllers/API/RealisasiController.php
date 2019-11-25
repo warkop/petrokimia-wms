@@ -7,12 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Area;
 use App\Http\Models\Gudang;
 use App\Http\Models\Material;
+use App\Http\Models\MaterialTrans;
 use App\Http\Models\Realisasi;
 use App\Http\Models\RealisasiHousekeeper;
 use App\Http\Models\RealisasiMaterial;
 use App\Http\Models\RencanaAreaTkbm;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\Users;
+use App\Http\Requests\ApiRealisasiRequest;
 use App\Http\Resources\AktivitasResource;
 
 class RealisasiController extends Controller
@@ -123,7 +125,7 @@ class RealisasiController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
-    public function store(Request $req, Realisasi $realisasi)
+    public function store(ApiRealisasiRequest $req, Realisasi $realisasi)
     {
         $id_rencana     = $req->input('id_rencana');
 
@@ -174,33 +176,74 @@ class RealisasiController extends Controller
             }
         }
 
-        $material = $req->input('material');
-        $material_tambah = $req->input('material_tambah');
-        $material_kurang = $req->input('material_kurang');
-        $panjang = count($material);
-        $material           = array_values($material);
-        $material_tambah    = array_values($material_tambah);
-        $material_kurang    = array_values($material_kurang);
-        for ($i = 0; $i < $panjang; $i++) {
-            $arr = [
-                'id_realisasi'  => $realisasi->id,
-                'id_material'   => $material[$i],
-                'bertambah'     => $material_tambah[$i],
-                'berkurang'     => $material_kurang[$i],
-                'created_at'    => now(),
-            ];
-
-            (new RealisasiMaterial)->create($arr);
-        }
+        
 
         $housekeeper = RealisasiHousekeeper::where('id_realisasi', $realisasi->id)->get();
-        $material = RealisasiMaterial::where('id_realisasi', $realisasi->id)->get();
 
-        $this->responseData = ['realisasi' => $realisasi, 'material' => $material, 'housekeeper' => $housekeeper, ];
+        $this->responseData = ['realisasi' => $realisasi, 'housekeeper' => $housekeeper, ];
         $this->responseCode = 200; 
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
+    }
 
+    public function getRealisasiMaterial()
+    {
+        return AktivitasResource::collection(RealisasiMaterial::all())->additional([
+            'status' => [
+                'message' => '',
+                'code' => 200
+            ],
+        ], 200);
+    }
+
+    public function getShowRealisasiMaterial(RealisasiMaterial $realisasiMaterial)
+    {
+        $detail = MaterialTrans::where('id_realisasi_material', $realisasiMaterial->id)->get();
+
+        $res = collect($realisasiMaterial);
+        $res = $res->merge(['detail' => $detail]);
+
+
+        return (new AktivitasResource($res))->additional([
+            'status' => [
+                'message' => '',
+                'code' => 200
+            ],
+        ], 200);
+    }
+
+    public function storeMaterial(Request $req, RealisasiMaterial $realisasiMaterial)
+    {
+        $tanggal    = $req->input('tanggal');
+        $material   = $req->input('material');
+        $tipe       = $req->input('tipe');
+        $jumlah     = $req->input('jumlah');
+        $panjang    = count($material);
+
+        $realisasiMaterial->tanggal       = $tanggal;
+        $realisasiMaterial->created_at    = now();
+
+        $realisasiMaterial->save();
+
+        for ($i = 0; $i < $panjang; $i++) {
+            $arr = [
+                'id_realisasi_material' => $realisasiMaterial->id,
+                'id_material'           => $material[$i],
+                'tanggal'               => now(),
+                'tipe'                  => $tipe[$i],
+                'jumlah'                => $jumlah[$i],
+            ];
+
+            (new MaterialTrans)->create($arr);
+        }
+
+        $data = MaterialTrans::where('id_realisasi_material', $realisasiMaterial->id)->get();
+
+        $this->responseData = ['realisasi_material' => $realisasiMaterial, 'data' => $data];
+        $this->responseCode = 200;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 }

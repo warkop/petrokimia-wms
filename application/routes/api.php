@@ -75,4 +75,11 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-housekeeper/{id_rencana}', 'API\RealisasiController@getHousekeeper')->where('id_rencana', '[0-9]+');
         Route::post('/', 'API\RealisasiController@store');
     });
+
+    Route::group(['prefix' => 'realisasi-material'], function () {
+        Route::get('/', 'API\RealisasiController@getRealisasiMaterial');
+        Route::get('/{realisasiMaterial}', 'API\RealisasiController@getShowRealisasiMaterial')->where('realisasiMaterial', '[0-9]+');
+        Route::get('/get-material', 'API\RealisasiController@getMaterial');
+        Route::put('/', 'API\RealisasiController@storeMaterial');
+    });
 });
