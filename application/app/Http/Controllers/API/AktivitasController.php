@@ -155,7 +155,7 @@ class AktivitasController extends Controller
             } else {
                 $detail = $detail->orderBy('tanggal', 'ASC');
             }
-            
+
             return (new AktivitasResource($detail->get()))->additional([
                 'status' => [
                     'message' => '',
@@ -483,7 +483,7 @@ class AktivitasController extends Controller
 
         $id_aktivitas_harian = $req->input('id_aktivitas_harian');
         $aktivitas = AktivitasHarian::findOrFail($id_aktivitas_harian);
-        $res_aktivitas = Aktivitas::find($aktivitas->id_aktivitas);
+        $res_aktivitas = Aktivitas::findOrFail($aktivitas->id_aktivitas);
         if ($res_aktivitas->kelayakan != null) {
             //simpan foto
             $foto = $req->file('foto');
