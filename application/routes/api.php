@@ -67,8 +67,12 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::put('/', 'API\RencanaKerjaController@store');
     });
 
-    Route::group(['prefix' => 'realisasi_material'], function () {
-        Route::get('/', 'API\RealisasiMaterialController@index');
-        Route::put('/', 'API\RealisasiMaterialController@store');
+    Route::group(['prefix' => 'realisasi'], function () {
+        Route::get('/', 'API\RealisasiController@index');
+        Route::get('/{id}', 'API\RealisasiController@show')->where('id', '[0-9]+');
+        Route::get('/get-material', 'API\RealisasiController@getMaterial');
+        Route::get('/get-area/{id_gudang?}', 'API\RealisasiController@getArea')->where('id_gudang', '[0-9]+');
+        Route::get('/get-housekeeper/{id_rencana}', 'API\RealisasiController@getHousekeeper')->where('id_rencana', '[0-9]+');
+        Route::post('/', 'API\RealisasiController@store');
     });
 });
