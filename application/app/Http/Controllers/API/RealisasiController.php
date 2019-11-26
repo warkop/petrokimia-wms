@@ -123,7 +123,7 @@ class RealisasiController extends Controller
     {
         $id_rencana     = $req->input('id_rencana');
 
-        $rencana = RencanaHarian::find($id_rencana);
+        $rencana = RencanaHarian::findOrFail($id_rencana);
 
         if (empty($rencana)) {
             return response()->json([
