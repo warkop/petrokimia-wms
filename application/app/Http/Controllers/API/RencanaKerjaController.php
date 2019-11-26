@@ -64,7 +64,7 @@ class RencanaKerjaController extends Controller
             'id_rencana',
             'id_tkbm',
             'job_desk_id',
-            'nama',
+            'nama'
         )
         ->join('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'rencana_tkbm.id_tkbm')
         ->where('id_rencana', $rencanaHarian->id)
@@ -75,7 +75,7 @@ class RencanaKerjaController extends Controller
             'id_rencana',
             'id_tkbm',
             'job_desk_id',
-            'nama',
+            'nama'
         )
         ->join('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'rencana_tkbm.id_tkbm')
         ->where('id_rencana', $rencanaHarian->id)
