@@ -126,9 +126,14 @@ const load_table = function () {
             }, {
                 className: 'text-center',
                 targets: -2,
+                orderable: false,
                 render: function (data, type, full, meta) {
-                    const link = baseUrl + /watch/ + full.foto + '?' + 'un=' + full.id + '&ctg=material&src=' + full.foto;
-                    const image = '<a target="_blank" class="fancybox fancybox-effects-a" data-fancybox="file-' + full.id +'" data-caption="' + full.foto +'" rel="ligthbox" href="' + link + '"><img class="img-responsive" width="100px" src="' + link + '" alt=""></a>';
+                    let link = "";
+                    let image = "Tidak ada gambar";
+                    if (full.foto != null) {
+                        link = baseUrl + /watch/ + full.foto + '?' + 'un=' + full.id + '&ctg=material&src=' + full.foto;
+                        image = '<a target="_blank" class="fancybox fancybox-effects-a" data-fancybox="file-' + full.id +'" data-caption="' + full.foto +'" rel="ligthbox" href="' + link + '"><img class="img-responsive" width="100px" src="' + link + '" alt=""></a>';
+                    }
 
                     return image;
                 },
@@ -162,8 +167,8 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
                     </td>
                     <td>
                         <select class="form-control kt-selectpicker" name="action_produk[]" id="produk-status-${rows}" style="width: 100%;">
-                            <option value="1">Menambah</option>
-                            <option value="2">Mengurangi</option>
+                        <option value="1">Mengurangi</option>
+                        <option value="2">Menambah</option>
                         </select>
                     </td>
                     <td>
@@ -175,7 +180,8 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
                 </tr>`;
     $("#table_produk tbody").append(html);
     $('#produk-' + rows).select2({
-        placeholder: "Pilih Produk"
+        placeholder: "Pilih Produk",
+        dropdownParent: $("#modal_form")
     });
     protectNumber(`#produk-jumlah-${rows}`, 10);
     getProduk(`#produk-${rows}`, rows, id, tipe, jumlah);
@@ -202,8 +208,8 @@ function tambahPallet(id = "", tipe = "", jumlah = "") {
                     </td>
                     <td>
                         <select class="form-control kt-selectpicker" name="action_pallet[]" id="pallet-status-${rows}" style="width: 100%;">
-                            <option value="1">Menambah</option>
-                            <option value="2">Mengurangi</option>
+                        <option value="1">Mengurangi</option>
+                        <option value="2">Menambah</option>
                         </select>
                     </td>
                     <td>

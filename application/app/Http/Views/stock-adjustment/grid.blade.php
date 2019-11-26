@@ -48,7 +48,7 @@ lines {
                     Stock Adjustment
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah data stock adjustment yang terdapat pada <span class="text-ungu kt-font-bolder">Gudang A.</span>
+                    Berikut ini adalah data stock adjustment yang terdapat pada <span class="text-ungu kt-font-bolder">{{$gudang->nama}}.</span>
                 </p>
             </div>
 			<div class="kt-portlet__head-toolbar">

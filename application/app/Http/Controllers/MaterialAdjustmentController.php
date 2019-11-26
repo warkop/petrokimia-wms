@@ -16,8 +16,9 @@ class MaterialAdjustmentController extends Controller
     {
         $data['title'] = 'Stock Adjustment';
         $data['id_gudang'] = $id;
-        $gudang = Gudang::find($id);
+        $gudang = Gudang::findOrFail($id);
         if (!empty($gudang)) {
+            $data['gudang'] = $gudang;
             return view('stock-adjustment.grid', $data);
         } else {
             abort(404);
@@ -62,7 +63,7 @@ class MaterialAdjustmentController extends Controller
 
     public function store($id_gudang='', MaterialAdjusmentRequest $req)
     {
-        $gudang = Gudang::find($id_gudang);
+        $gudang = Gudang::findOrFail($id_gudang);
         if (!empty($gudang)) {
             $req->validate();
 
@@ -108,8 +109,8 @@ class MaterialAdjustmentController extends Controller
                 $pallet_jumlah    = array_values($pallet_jumlah);
                 for ($i = 0; $i < $panjang; $i++) {
                     $materialTrans = new MaterialTrans;
-                    $materialTrans->id_adjustment    = $materialAdjustment->id;
-                    $materialTrans->id_adjustment    = $materialAdjustment->id;
+                    $materialTrans->id_adjustment   = $materialAdjustment->id;
+                    $materialTrans->id_adjustment   = $materialAdjustment->id;
                     $materialTrans->id_material     = $pallet[$i];
                     $materialTrans->tipe            = $action_pallet[$i];
                     $materialTrans->jumlah          = $pallet_jumlah[$i];
