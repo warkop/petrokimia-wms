@@ -47,14 +47,8 @@ class RealisasiController extends Controller
         ->join('area', 'area.id', '=', 'realisasi_housekeeper.id_area')
         ->where('id_realisasi', $realisasi->id)->get();
         
-        $realisasiMaterial = RealisasiMaterial::
-        join('material', 'material.id', '=', 'realisasi_material.id_material')
-        ->where('id_realisasi', $realisasi->id)
-        ->get();
-
         $res = collect($realisasi);
         $res = $res->merge(['list_housekeeper' => $realisasiHousekeeper]);
-        $res = $res->merge(['list_material' => $realisasiMaterial]);
 
 
         return (new AktivitasResource($res))->additional([
