@@ -28,6 +28,36 @@ jQuery(document).ready(function () {
             $("#btn_save").click();
         }
     });
+    
+
+    $("#id_material_sap").select2({
+        allowClear: true,
+        placeholder: 'Ketikkan id material',
+        dropdownParent: $("#modal_form"),
+        // minimumInputLength: 3,
+        delay: 250,
+        ajax: {
+            url: ajaxUrl + '/sap',
+            dataType: 'json',
+            processResults: function (response) {
+                /*Tranforms the top-level key of the response object from 'items' to 'results'*/
+                return {
+                    results: $.map(response.data, function (item) {
+                        // console.log(response.data);
+
+                        return {
+                            text: item.Plant+" - "+item.Material_number,
+                            id: item.Material_number,
+                            id_plant: item.Plant
+                        }
+                    })
+                };
+            }
+        }
+    }).on("select2:select", (q)=>{
+        const id_plant = q.params.data.id_plant;
+        $("#id_plant").val(id_plant);
+    });
 });
 
 let load_table = function () {
@@ -182,7 +212,6 @@ function edit(id = '') {
             $('.se-pre-con').hide();
 
             let obj = response;
-
             if (obj.status == "OK") {
                 $('#id_material_sap').val(obj.data['id_material_sap']);
                 $('#nama').val(obj.data['nama']);
@@ -196,6 +225,19 @@ function edit(id = '') {
                 if (obj.data['end_date'] != null) {
                     $('#end_date').val(helpDateFormat(obj.data['end_date'], 'si'));
                 }
+
+                if (obj.data.sap != null) {
+                    load_selected_id_material(obj.data.sap['Material_number']);
+
+                    if (obj.data.sap['Plant'] != null) {
+                        $('#id_plant').val(obj.data.sap['Plant']);
+                    }
+                    if (obj.data.sap['Material_number'] != null) {
+                        $('#id_material_sap').val(obj.data.sap['Material_number']);
+                        $('#id_material_sap').html(obj.data.sap['Plant'] +" - "+obj.data.sap['Material_number']);
+                    }
+                }
+
             } else {
                 swal.fire('Pemberitahuan', obj.message, 'warning');
             }
@@ -232,6 +274,72 @@ function edit(id = '') {
             }
         }
     });
+}
+
+function load_selected_id_material(id_material_sap = '') {
+    /* Fetch the preselected item, and add to the control */
+    var setJalan = $('#id_material_sap');
+    if (id_material_sap != '') {
+        $.ajax({
+            type: 'GET',
+            url: ajaxUrl + '/get-material-sap/' + id_material_sap,
+            beforeSend: function () {
+                preventLeaving();
+            },
+            success: function (response) {
+                window.onbeforeunload = false;
+
+                var obj = response;
+
+                if (obj.status == "OK") {
+                    /*OK*/
+                } else {
+                    swal.fire('Pemberitahuan', obj.message, 'warning');
+                }
+            },
+            error: function (response) {
+                var head = 'Maaf',
+                    message = 'Terjadi kesalahan koneksi',
+                    type = 'error';
+                window.onbeforeunload = false;
+
+                if (response['status'] == 401 || response['status'] == 419) {
+                    location.reload();
+                } else {
+                    if (response['status'] != 404 && response['status'] != 500) {
+                        var obj = JSON.parse(response['responseText']);
+
+                        if (!$.isEmptyObject(obj.message)) {
+                            if (obj.code > 400) {
+                                head = 'Maaf';
+                                message = obj.message;
+                                type = 'error';
+                            } else {
+                                head = 'Pemberitahuan';
+                                message = obj.message;
+                                type = 'warning';
+                            }
+                        }
+                    }
+
+                    swal.fire(head, message, type);
+                }
+            }
+        }).then(function (response) {
+            var obj = response;
+            /* create the option and append to Select2 */
+            var option = new Option(obj.data.Material_number, obj.data.Material_number, true, true);
+            setJalan.append(option).trigger('change');
+
+            /* manually trigger the `select2:select` event */
+            setJalan.trigger({
+                type: 'select2:select',
+                params: {
+                    data: obj.data
+                }
+            });
+        });
+    }
 }
 
 function simpan() {
@@ -314,6 +422,8 @@ function simpan() {
         }
     });
 }
+
+
 
 function reset_form(method = '') {
     $('#id').val('');

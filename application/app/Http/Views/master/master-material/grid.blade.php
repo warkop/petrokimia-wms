@@ -69,7 +69,8 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>ID Material SAP</label>
-                                <input type="text" class="form-control input-enter" id="id_material_sap" name="id_material_sap" placeholder="Masukkan ID material SAP">
+                                <input type="hidden" name="id_plant" id="id_plant">
+                                <select class="form-control input-enter m-select2" id="id_material_sap" name="id_material_sap" placeholder="Masukkan ID material SAP" style="width: 100%"></select>
                             </div>
                         </div>
                     </div>
@@ -152,9 +153,6 @@
 
 <script src="{{asset('assets/extends/js/page/master-material.js')}}" type="text/javascript"></script>
 <script>
-    $('#kt_select2_1').select2({
-    placeholder: "Select Material"
-});
 $('#end_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
@@ -162,5 +160,8 @@ $('#end_date').datepicker({
     clearBtn:true,
     orientation: "bottom left"
 });
+
+
+
 </script>
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Material;
+use App\Http\Models\Sap;
 use App\Http\Requests\MaterialRequest;
 use Illuminate\Http\Request;
 
@@ -62,6 +63,7 @@ class MaterialController extends Controller
         }
 
         $material->id_material_sap    = $req->input('id_material_sap');
+        $material->id_plant           = $req->input('id_plant');
         $material->nama               = $req->input('nama');
         $material->kategori           = $req->input('kategori');
         $material->berat              = $req->input('berat');
@@ -78,6 +80,17 @@ class MaterialController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
+    public function getMaterialSap($id_material_sap) {
+        $sap = Sap::where('Material_number', $id_material_sap)->first();
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $sap;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
     public function show($id, Material $models, Request $request)
     {
         if (!$request->ajax()) {
@@ -85,10 +98,13 @@ class MaterialController extends Controller
         } else {
             $res = $models::withoutGlobalScopes()->find($id);
 
+            $sap = Sap::where('Material_number', $res->id_material_sap)->where('Plant', $res->id_plant)->first();
+
             if (!empty($res)) {
                 $this->responseCode = 200;
                 $this->responseMessage = 'Data tersedia.';
                 $this->responseData = $res;
+                $this->responseData['sap'] = $sap;
             } else {
                 $this->responseData = [];
                 $this->responseStatus = 'No Data Available';
@@ -98,5 +114,45 @@ class MaterialController extends Controller
             $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
             return response()->json($response, $this->responseCode);
         }
+    }
+
+    public function getSap(Request $request, Sap $sap)
+    {
+        $responseCode = 403;
+        $responseStatus = '';
+        $responseMessage = '';
+        $responseData = [];
+
+        if (!$request->ajax()) {
+            return $this->accessForbidden();
+        } else {
+            $search = $request->input('term');
+            $pattern = '/[^a-zA-Z0-9 !@#$%^&*\/\.\,\(\)-_:;?\+=]/u';
+            $search = preg_replace($pattern, '', $search);
+
+            $res = Sap::select(
+                'Plant',
+                'Material_number'
+            )
+            ->where('Plant', 'LIKE', "%".$search."%")
+            ->orWhere('Material_number', 'LIKE', "%".$search."%")
+            ->groupBy(['Plant','Material_number'])
+            ->get();
+
+            if (!empty($res)) {
+                $responseCode = 200;
+                $responseMessage = 'Data tersedia.';
+                $responseData = $res;
+            } else {
+                $responseData = [];
+                $responseStatus = 'No Data Available';
+                $responseMessage = 'Data Jalan tidak tersedia';
+            }
+
+            $response = helpResponse($responseCode, $responseData, $responseMessage, $responseStatus);
+            return response()->json($response, $responseCode);
+        }
+
+        return response()->json($res, 200);
     }
 }

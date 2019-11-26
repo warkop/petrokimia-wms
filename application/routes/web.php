@@ -54,6 +54,8 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::patch('/{material}', 'MaterialController@store')->where('material', '[0-9]+');
         Route::post('/', 'MaterialController@json');
         Route::get('/{id}', 'MaterialController@show')->where('id', '[0-9]+');
+        Route::get('/sap/{id?}', 'MaterialController@getSap')->where('id', '[0-9]+');
+        Route::get('/get-material-sap/{id}', 'MaterialController@getMaterialSap')->where('id', '[0-9]+');
     });
 
     Route::group(['prefix' => 'master-tenaga-kerja-nonorganik'], function () {

@@ -33,7 +33,6 @@ class MaterialRequest extends FormRequest
 
         $rules = [
             'id_material_sap'   => [
-                'integer', 
                 'required',
                 Rule::unique('material', 'id_material_sap')->ignore(\Request::instance()->id)
             ],
