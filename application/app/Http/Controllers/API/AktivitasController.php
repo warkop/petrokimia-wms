@@ -708,9 +708,9 @@ class AktivitasController extends Controller
             'aktivitas_harian.created_at',
             'aktivitas_harian.created_by'
         )
-        ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-        ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
-        ->join('alat_berat', 'aktivitas_harian.id_gudang', '=', 'alat_berat.id')
+        ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+        ->leftJoin('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
+        ->leftJoin('alat_berat', 'aktivitas_harian.id_gudang', '=', 'alat_berat.id')
         ->where('aktivitas_harian.id', $id)
         ;
 
