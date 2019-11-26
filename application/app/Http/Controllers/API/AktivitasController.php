@@ -683,13 +683,13 @@ class AktivitasController extends Controller
         $res = AktivitasHarian::select(
             'aktivitas_harian.id',
             'aktivitas.nama as nama_aktivitas',
-            \DB::raw('SELECT nama gudang FROM gudang WHERE id = id_gudang_tujuan
+            \DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
                  AS text_gudang'),
             'nomor_lambung',
             'sistro',
             'internal_gudang',
             'id_gudang_tujuan',
-            \DB::raw('SELECT nama gudang FROM gudang WHERE id = id_gudang_tujuan
+            \DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang_tujuan)
                  AS text_gudang_tujuan'),
             'butuh_approval',
             \DB::raw('
