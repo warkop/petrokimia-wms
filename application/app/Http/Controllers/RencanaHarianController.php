@@ -90,7 +90,9 @@ class RencanaHarianController extends Controller
             $rencana_harian = new RencanaHarian();
         }
 
-        $res_gudang = Gudang::where('id_karu', \Auth::id_karu())->first();
+        $users = Users::find(\Auth::id());
+
+        $res_gudang = Gudang::where('id_karu', $users->id_karu)->first();
 
         //rencana harian
         $rencana_harian->tanggal                = date('Y-m-d');
