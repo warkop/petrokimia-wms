@@ -29,8 +29,8 @@ jQuery(document).ready(function () {
         }
     });
 
-    protectNumber("#id_sloc");
-    protectNumber("#id_plant");
+    // protectNumber("#id_sloc");
+    // protectNumber("#id_plant");
 });
 
 var load_table = function () {

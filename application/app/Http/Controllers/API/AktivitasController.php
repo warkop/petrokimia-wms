@@ -208,7 +208,21 @@ class AktivitasController extends Controller
                 ->orderBy('rencana_harian.id', 'desc')
                 ->take(1)->first();
 
+            if (empty($rencana_tkbm)) {
+                $this->responseCode = 500;
+                $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+
             $gudang = Gudang::find($rencana_tkbm->id_gudang)->orderBy('id', 'desc')->first();
+
+            if (empty($gudang)) {
+                $this->responseCode = 500;
+                $this->responseMessage = 'Gudang tidak tersedia!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
 
             //simpan aktivitas
             $aktivitas->id_aktivitas      = $req->input('id_aktivitas');
