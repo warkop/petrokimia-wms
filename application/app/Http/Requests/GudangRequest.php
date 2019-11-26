@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class JenisFotoRequest extends FormRequest
+class GudangRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,18 +24,20 @@ class JenisFotoRequest extends FormRequest
      */
     public function rules()
     {
-        $this->sanitize();
+        $rules = [
+            'nama'              => 'required',
+            'tipe_gudang'       => 'required|numeric|digits_between:1,2',
+            'id_karu'           => [Rule::unique('gudang')->ignore(\Auth::id()),],
+            'start_date'        => 'nullable|date_format:d-m-Y',
+            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
+        ];
 
         $action = \Request::instance()->action;
         if ($action == 'edit') {
             $rules['id'] = 'required';
         }
 
-        $rules = [
-            'nama'              => 'required',
-            'start_date'        => 'nullable|date_format:d-m-Y',
-            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
-        ];
+        $this->sanitize();
 
         return $rules;
     }
@@ -42,19 +45,21 @@ class JenisFotoRequest extends FormRequest
     public function attributes()
     {
         return [
-            'nama'            => 'Nama',
-            'start_date'      => 'Start Date',
-            'end_date'        => 'End Date',
+            'nama'          => 'Nama',
+            'tipe_gudang'   => 'Tipe Gudang',
+            'id_karu'       => 'Karu',
+            'end_date'      => 'End Date',
         ];
     }
 
     public function messages()
     {
         return [
-            'required' => ':attribute wajib diisi!',
-            'start_date.date_format'  => 'Tanggal :attribute harus dengan format tanggal-bulan-tahun',
-            'end_date.date_format'  => 'Tanggal :attribute harus dengan format tanggal-bulan-tahun',
-            'after'  => 'Tanggal :attribute tidak boleh melebihi Start Date!',
+            'required'          => ':attribute wajib diisi!',
+            'unique'            => ':attribute sudah terdaftar pada gudang lain',
+            'digits_between'    => ':attribute tidak valid!',
+            'date_format'       => 'Tanggal :attribute harus dengan format tanggal-bulan-tahun',
+            'after'             => 'Tanggal :attribute tidak boleh melebihi Start Date!',
         ];
     }
 

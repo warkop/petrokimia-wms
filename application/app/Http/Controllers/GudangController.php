@@ -6,8 +6,10 @@ use App\Http\Models\Gudang;
 use App\Http\Models\Material;
 use App\Http\Models\Karu;
 use App\Http\Models\StokMaterial;
+use App\Http\Requests\GudangRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class GudangController extends Controller
 {
@@ -55,65 +57,39 @@ class GudangController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(Request $req, Gudang $models)
+    public function store(GudangRequest $req, Gudang $models)
     {
-        $rules = [
-            'nama'              => 'required',
-            'tipe_gudang'       => 'required|numeric|digits_between:1,2',
-            'start_date'        => 'nullable|date_format:d-m-Y',
-            'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
-        ];
+        $req->validated();
 
-        $action = $req->input('action');
-        if ($action == 'edit') {
-            $rules['id'] = 'required';
+        $id = $req->input('id');
+
+        if (!empty($id)) {
+            $models = Gudang::findOrFail($id);
         }
 
-        $validator = Validator::make($req->all(), $rules);
-        if ($validator->fails()) {
-            $this->responseCode                 = 400;
-            $this->responseStatus               = 'Missing Param';
-            $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
-            $this->responseData['error_log']    = $validator->errors();
+        if (!empty($req->input('id_karu'))) {
+            $models->id_karu        = $req->input('id_karu');
         } else {
-            $id = $req->input('id');
+            $models->id_karu = null;
+        }
 
-            $start_date  = null;
-            if ($req->input('start_date') != '') {
-                $start_date  = date('Y-m-d', strtotime($req->input('start_date')));
-            }
+        $models->nama           = $req->input('nama');
+        $models->id_sloc        = $req->input('id_sloc');
+        $models->id_plant       = $req->input('id_plant');
+        $models->tipe_gudang    = $req->input('tipe_gudang');
+        $models->start_date     = $req->input('start_date');
+        $models->end_date       = $req->input('end_date');
 
-            $end_date   = null;
-            if ($req->input('end_date') != '') {
-                $end_date   = date('Y-m-d', strtotime($req->input('end_date')));
-            }
+        $saved = $models->save();
+        if (!$saved) {
+            $this->responseCode     = 502;
+            $this->responseMessage  = 'Data gagal disimpan!';
 
-            if (!empty($id)) {
-                $models = Gudang::find($id);
-            }
-
-            if (!empty($req->input('id_karu'))) {
-                $models->id_karu        = $req->input('id_karu');
-            } else {
-                $models->id_karu = null;
-            }
-
-            $models->nama           = strip_tags($req->input('nama'));
-            $models->id_sloc        = strip_tags($req->input('id_sloc'));
-            $models->id_plant       = strip_tags($req->input('id_plant'));
-            $models->tipe_gudang    = strip_tags($req->input('tipe_gudang'));
-            $models->start_date     = $start_date;
-            $models->end_date       = $end_date;
-
-            $saved = $models->save();
-            if (!$saved) {
-                $this->responseCode     = 502;
-                $this->responseMessage  = 'Data gagal disimpan!';
-
-                $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
-            } else {
-                $material = $req->input('material');
-                $stok_min = $req->input('stok_min');
+            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        } else {
+            $material = $req->input('material');
+            $stok_min = $req->input('stok_min');
+            if (!empty($material)) {
                 for ($i = 0; $i < count($material); $i++) {
                     $resource = StokMaterial::where('id_gudang', $models->id)->where('id_material', $material[$i])->first();
                     
@@ -125,16 +101,16 @@ class GudangController extends Controller
                         // $resource->save();
                     } else {
                         $stok_material = new StokMaterial();
-
+    
                         $stok_material->id_gudang = $models->id;
                         $stok_material->id_material = $material[$i];
                         $stok_material->stok_min = $stok_min[$i];
                         $stok_material->save();
                     }
                 }
-                $this->responseCode = 200;
-                $this->responseMessage = 'Data berhasil disimpan';
             }
+            $this->responseCode = 200;
+            $this->responseMessage = 'Data berhasil disimpan';
         }
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
