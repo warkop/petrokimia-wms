@@ -59,8 +59,6 @@ class GudangController extends Controller
     {
         $rules = [
             'nama'              => 'required',
-            'id_sloc'           => 'numeric',
-            'id_plant'          => 'numeric',
             'tipe_gudang'       => 'required|numeric|digits_between:1,2',
             'start_date'        => 'nullable|date_format:d-m-Y',
             'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
