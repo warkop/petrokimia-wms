@@ -683,10 +683,14 @@ class AktivitasController extends Controller
         $res = AktivitasHarian::select(
             'aktivitas_harian.id',
             'aktivitas.nama as nama_aktivitas',
-            'gudang.nama as nama_gudang',
+            \DB::raw('SELECT nama gudang FROM gudang WHERE id_gudang = id_gudang_tujuan
+                 AS text_gudang'),
             'nomor_lambung',
             'sistro',
             'internal_gudang',
+            'id_gudang_tujuan',
+            \DB::raw('SELECT nama gudang FROM gudang WHERE id_gudang = id_gudang_tujuan
+                 AS text_gudang_tujuan'),
             'butuh_approval',
             \DB::raw('
                 CASE
@@ -709,7 +713,6 @@ class AktivitasController extends Controller
             'aktivitas_harian.created_by'
         )
         ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-        ->leftJoin('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
         ->leftJoin('alat_berat', 'aktivitas_harian.id_gudang', '=', 'alat_berat.id')
         ->where('aktivitas_harian.id', $id)
         ;
