@@ -39,17 +39,18 @@ const loadMaterial = () => {
         // minimumInputLength: 3,
         delay: 250,
         ajax: {
-            url: ajaxUrl + '/material',
+            url: baseUrl + 'list-pallet' + '/get-material',
             dataType: 'json',
             processResults: function (response) {
                 /*Tranforms the top-level key of the response object from 'items' to 'results'*/
+                console.log(response);
                 return {
                     results: $.map(response.data, function (item) {
-                        console.log(response.data);
+                        
 
                         return {
-                            text: item.id,
-                            id: item.nama
+                            text: item.nama,
+                            id: item.id
                         }
                     })
                 };
@@ -79,13 +80,19 @@ const load_table = function () {
                 "mData": "id"
             },
             {
-                "mData": "tanggal"
+                "mData": null
+            },
+            {
+                "mData": "nama_material"
             },
             {
                 "mData": "jumlah"
             },
             {
-                "mData": "jenis"
+                "mData": "tipe"
+            },
+            {
+                "mData": "status_pallet"
             },
             {
                 "mData": "alasan"
@@ -116,9 +123,53 @@ const load_table = function () {
                 "aTargets": [1],
                 "mData": "tanggal",
                 "mRender": function (data, type, full, draw) {
-                    const t = helpDateFormat(tanggal, 'si');
+                    const t = helpDateFormat(full.tanggal, 'si');
 
                     return t;
+                }
+            },
+            {
+                "aTargets": [4],
+                "mData": null,
+                "mRender": function (data, type, full, draw) {
+                    let text = "";
+                    let klas = "";
+                    if (full.tipe == 1) {
+                        text = "Mengurangi";
+                        klas = "kt-badge kt-badge--warning kt-badge--inline"
+                    } else if (full.tipe == 2) {
+                        text = "Menambah";
+                        klas = "kt-badge kt-badge--danger kt-badge--inline";
+                    }
+
+                    const label = `<span class="${klas}">${text}</span>`;
+
+                    return label;
+                }
+            },
+            {
+                "aTargets": [5],
+                "mRender": function (data, type, full, draw) {
+                    let text = "";
+                    let klas = "";
+                    if (full.status_pallet == 1) {
+                        text = "Stok";
+                        klas = "kt-badge kt-badge--success kt-badge--inline"
+                    } else if (full.status_pallet == 2) {
+                        text = "Dipakai";
+                        klas = "kt-badge kt-badge--warning kt-badge--inline"
+                    } else if (full.status_pallet == 3) {
+                        text = "Kosong";
+                        klas = "kt-badge kt-badge--danger kt-badge--inline"
+                    } else if (full.status_pallet == 4) {
+                        text = "Rusak";
+                        klas = "kt-badge kt-badge--dark kt-badge--inline"
+                        
+                    }
+
+                     const label = `<span class="${klas}">${text}</span>`;
+
+                     return label;
                 }
             },
             {
@@ -128,9 +179,7 @@ const load_table = function () {
                 render: function (data, type, full, meta) {
                     return `
                             <button type="button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
-                            <i class="flaticon-edit-1"></i> </button>
-                        
-                        <button type = "button" onclick="hapus(${full.id})" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i class="flaticon-delete"></i> </button>`;
+                            <i class="flaticon-edit-1"></i> </button>`;
                 },
             }
         ],
@@ -159,7 +208,7 @@ function hapus(id) {
     }).then(function (result) {
         if (result.value) {
             $.ajax({
-                url: ajaxSource + "/" + id,
+                url: baseUrl + 'list-pallet/'+id,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -225,12 +274,24 @@ function edit(id = '') {
             const obj = response;
 
             if (obj.status == "OK") {
-                $('#nama').val(obj.data['nama']);
-                $('#kapasitas').val(obj.data['kapasitas']);
+                $('#tanggal').val(helpDateFormat(obj.data['tanggal'], 'si'));
+                $('#material').val(obj.data['id_material']);
+                $('#jumlah').val(obj.data['jumlah']);
+                $('#alasan').val(obj.data['alasan']);
                 if (obj.data['tipe'] == 1) {
-                    $('#indoor').prop('checked', true);
+                    $('#mengurangi').prop('checked', true);
                 } else if (obj.data['tipe'] == 2) {
-                    $('#outdoor').prop('checked', true);
+                    $('#menambah').prop('checked', true);
+                }
+                
+                if (obj.data['tipe'] == 1) {
+                    $('#stok').prop('checked', true);
+                } else if (obj.data['tipe'] == 2) {
+                    $('#dipakai').prop('checked', true);
+                } else if (obj.data['tipe'] == 3) {
+                     $('#kosong').prop('checked', true);
+                } else if (obj.data['tipe'] == 4) {
+                     $('#rusak').prop('checked', true);
                 }
             } else {
                 swal.fire('Pemberitahuan', obj.message, 'warning');
@@ -268,6 +329,72 @@ function edit(id = '') {
             }
         }
     });
+}
+
+function load_selected_id_material(id_material_sap = '') {
+    /* Fetch the preselected item, and add to the control */
+    var setJalan = $('#material');
+    if (id_material_sap != '') {
+        $.ajax({
+            type: 'GET',
+            url: ajaxUrl + '/get-material/' + id_material_sap,
+            beforeSend: function () {
+                preventLeaving();
+            },
+            success: function (response) {
+                window.onbeforeunload = false;
+
+                var obj = response;
+
+                if (obj.status == "OK") {
+                    /*OK*/
+                } else {
+                    swal.fire('Pemberitahuan', obj.message, 'warning');
+                }
+            },
+            error: function (response) {
+                var head = 'Maaf',
+                    message = 'Terjadi kesalahan koneksi',
+                    type = 'error';
+                window.onbeforeunload = false;
+
+                if (response['status'] == 401 || response['status'] == 419) {
+                    location.reload();
+                } else {
+                    if (response['status'] != 404 && response['status'] != 500) {
+                        var obj = JSON.parse(response['responseText']);
+
+                        if (!$.isEmptyObject(obj.message)) {
+                            if (obj.code > 400) {
+                                head = 'Maaf';
+                                message = obj.message;
+                                type = 'error';
+                            } else {
+                                head = 'Pemberitahuan';
+                                message = obj.message;
+                                type = 'warning';
+                            }
+                        }
+                    }
+
+                    swal.fire(head, message, type);
+                }
+            }
+        }).then(function (response) {
+            var obj = response;
+            /* create the option and append to Select2 */
+            var option = new Option(obj.data.Material_number, obj.data.Material_number, true, true);
+            setJalan.append(option).trigger('change');
+
+            /* manually trigger the `select2:select` event */
+            setJalan.trigger({
+                type: 'select2:select',
+                params: {
+                    data: obj.data
+                }
+            });
+        });
+    }
 }
 
 function simpan() {

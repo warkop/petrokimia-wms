@@ -4,7 +4,7 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GudangPallet extends Model
+class GudangStok extends Model
 {
     protected $table = 'gudang_stok';
     protected $primaryKey = 'id';
@@ -29,19 +29,19 @@ class GudangPallet extends Model
         $result = \DB::table($this->table)
             ->select(
                 'material_trans.id AS id',
-                'nama',
+                'tanggal',
+                'nama as nama_material',
                 'alasan',
-                'jumlah',
-                'tipe',
+                'material_trans.jumlah',
+                'material_trans.tipe',
                 'status_pallet'
             )
-            ->leftJoin('material', 'gudang_pallet.id_material', '=', 'material.id')
-            ->leftJoin('material_trans', 'material_trans.id_material', '=', 'gudang_pallet.material.id')
+            ->Join('material', 'gudang_stok.id_material', '=', 'material.id')
+            ->Join('material_trans', 'material_trans.id_material', '=', 'gudang_stok.id_material')
             ->where('id_gudang', $id_gudang)
             ->where('id_adjustment', null)
             ->where('id_realisasi_material', null)
-            ->where('id_aktivitas_harian', null)
-            ->where('status_pallet', '<>', 2);
+            ->where('id_aktivitas_harian', null);
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Gudang;
-use App\Http\Models\GudangPallet;
+use App\Http\Models\GudangStok;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
+use App\Http\Requests\PalletRequest;
 use Illuminate\Http\Request;
 
 class PalletController extends Controller
@@ -20,7 +21,7 @@ class PalletController extends Controller
 
     public function json(Request $req, $id_gudang)
     {
-        $models = new GudangPallet();
+        $models = new GudangStok();
 
         $numbcol = $req->get('order');
         $columns = $req->get('columns');
@@ -35,7 +36,7 @@ class PalletController extends Controller
         $search  = preg_replace($pattern, '', $search);
 
         $sort = $numbcol[0]['dir'];
-        $field = $columns[$numbcol[0]['column']]['data'];
+        $field = $columns[$numbcol[0]['column']]['data']??'tanggal';
 
         $condition = '';
 
@@ -56,18 +57,52 @@ class PalletController extends Controller
 
     public function getMaterial()
     {
-        $data = Material::pallet();
+        $res = Material::pallet()->get();
 
-        return response()->json($data, 200);
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $res;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 
-    public function store(Request $req)
+    public function store(PalletRequest $req, $id_gudang)
     {
-        # code...
-    }
+        $req->validated();
 
-    public function destroy(GudangPallet $gudangPallet)
-    {
-        $gudangPallet->forceDelete();
+        $gudangStok = GudangStok::where('id_material', $req->input('material'))->get();
+        if (!empty($gudangStok)) {
+            $gudangStok = new GudangStok;
+        }
+        // $arr_stok = [
+        //     'id_gudang'         => $id_gudang,
+        //     'id_material'       => $req->input('material'),
+        //     'jumlah'            => $req->input('jumlah'),
+        //     'status'            => $req->input('tipe'),
+        // ];
+
+        $gudangStok->id_gudang      = $id_gudang;
+        $gudangStok->id_material    = $req->input('material');
+        $gudangStok->jumlah         = $req->input('jumlah');
+        $gudangStok->status         = $req->input('tipe');
+        $gudangStok->save();
+
+        $arr = [
+            'id_material'       => $req->input('material'),
+            'tanggal'           => $req->input('tanggal'),
+            'tipe'              => $req->input('tipe'),
+            'jumlah'            => $req->input('jumlah'),
+            'alasan'            => $req->input('alasan'),
+            'status_pallet'     => $req->input('jenis'),
+        ];
+
+        (new MaterialTrans)->create($arr);
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data berhasil disimpan';
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 }

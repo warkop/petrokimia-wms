@@ -74,7 +74,9 @@
                             <tr>
                                 <th>No</th>
                                 <th>Tanggal</th>
+                                <th>Nama Material</th>
                                 <th>Jumlah</th>
+                                <th>Tipe</th>
                                 <th>Jenis</th>
                                 <th width="30%;">Alasan</th>
                                 <th>Actions</th>
@@ -100,13 +102,13 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>
-            <form action="">
+            <form id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Tanggal</label>
-                                <input type="text" class="form-control" readonly placeholder="Select date" name="tanggal" id="start_date" />
+                                <input type="text" class="form-control" readonly placeholder="Select date" name="tanggal" id="tanggal" />
                             </div>
                         </div>
                     </div>
@@ -123,18 +125,18 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Jumlah</label>
+                                <label>Jumlah (pcs)</label>
                                 <input type="text" class="form-control" name="jumlah" id="jumlah" placeholder="Masukkan jumlah">
                             </div>
                             <div class="form-group">
                                 <label>Tipe</label>
                                 <div class="kt-radio-inline">
                                     <label class="kt-radio kt-radio--success">
-                                        <input type="radio" value="1" checked="checked" name="tipe"> Mengurangi 
+                                        <input type="radio" id="mengurangi" value="1" checked="checked" name="tipe"> Mengurangi 
                                         <span></span>
                                     </label>
                                     <label class="kt-radio kt-radio--success">
-                                        <input type="radio" value="2"  name="tipe"> Menambah
+                                        <input type="radio" id="menambah" value="2" name="tipe"> Menambah
                                         <span></span>
                                     </label>
                                 </div>
@@ -143,19 +145,19 @@
                                 <label>Jenis</label>
                                 <div class="kt-radio-inline">
                                     <label class="kt-radio kt-radio--success">
-                                        <input type="radio" value="1" checked="checked" name="jenis"> Stok
+                                        <input type="radio" id="stok" value="1" checked="checked" name="jenis"> Stok
                                         <span></span>
                                     </label>
                                     <label class="kt-radio kt-radio--success">
-                                        <input type="radio" value="2" name="jenis"> Dipakai
+                                        <input type="radio" id="dipakai" value="2" name="jenis"> Dipakai
                                         <span></span>
                                     </label>
                                     <label class="kt-radio kt-radio--success">
-                                        <input type="radio" value="3" name="jenis"> Kosong
+                                        <input type="radio" id="kosong" value="3" name="jenis"> Kosong
                                         <span></span>
                                     </label>
                                     <label class="kt-radio kt-radio--success">
-                                        <input type="radio" value="4" name="jenis"> Rusak
+                                        <input type="radio" id="rusak" value="4" name="jenis"> Rusak
                                         <span></span>
                                     </label>
                                 </div>
@@ -180,10 +182,12 @@
 
 
 <script>
-    $('#start_date').datepicker({
+    $('#tanggal').datepicker({
         rtl: KTUtil.isRTL(),
         todayHighlight: true,
-        orientation: "bottom left"
+        format:'dd-mm-yyyy',
+        orientation: "bottom left",
+        clearBtn:true,
     });
     
     const id_gudang = "{{ $id_gudang }}";
