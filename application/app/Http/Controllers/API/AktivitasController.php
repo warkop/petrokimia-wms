@@ -16,7 +16,7 @@ use App\Http\Models\AlatBerat;
 use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
-use App\Http\Models\GudangPallet;
+use App\Http\Models\GudangStok;
 use App\Http\Models\JenisFoto;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
@@ -395,15 +395,19 @@ class AktivitasController extends Controller
 
                         $materialTrans->create($arr);
 
-                        $gudangPallet = new GudangPallet;
+                        $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('id_material', $pallet)->get();
+
+                        if (empty($gudangStok)) {
+                            $gudangStok = new GudangStok;
+                        }
 
                         $arr = [
-                            'id_gudang' => $gudang->id,
-                            'id_material' => $pallet,
-                            'jumlah' => $jumlah,
-                            'status' => $status_pallet,
+                            'id_gudang'     => $gudang->id,
+                            'id_material'   => $pallet,
+                            'jumlah'        => $jumlah,
+                            'status'        => $status_pallet,
                         ];
-                        $simpan_pallet = $gudangPallet->create($arr);
+                        $simpan_pallet = $gudangStok->create($arr);
                     }
                 }
 
