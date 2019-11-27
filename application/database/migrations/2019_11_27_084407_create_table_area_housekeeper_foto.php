@@ -15,13 +15,13 @@ class CreateTableAreaHousekeeperFoto extends Migration
     {
         Schema::create('area_housekeeper_foto', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_realisasi_housekeeper');
-            $table->string('foto');
-            $table->integer('size');
-            $table->string('ekstensi');
-            $table->string('file_enc');
-            $table->integer('created_by');
-            $table->datetime('created_at');
+            $table->integer('id_realisasi_housekeeper')->nullable();
+            $table->string('foto')->nullable();
+            $table->integer('size')->nullable();
+            $table->string('ekstensi')->nullable();
+            $table->string('file_enc')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->datetime('created_at')->nullable();
         });
     }
 
