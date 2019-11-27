@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Area;
 use App\Http\Models\AreaHousekeeperFoto;
 use App\Http\Models\Gudang;
+use App\Http\Models\GudangStok;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
 use App\Http\Models\Realisasi;
@@ -251,27 +252,48 @@ class RealisasiController extends Controller
 
     public function storeMaterial(Request $req, RealisasiMaterial $realisasiMaterial)
     {
+        $user = $req->get('my_auth');
+        $gudang = Gudang::where('id_karu', $user->id_karu)->first();
+
         $tanggal    = $req->input('tanggal');
-        $material   = $req->input('material');
+        $list_material   = $req->input('list_material');
+        
         $tipe       = $req->input('tipe');
         $jumlah     = $req->input('jumlah');
-        $panjang    = count($material);
-
+        
         $realisasiMaterial->tanggal       = $tanggal;
         $realisasiMaterial->created_at    = now();
 
         $realisasiMaterial->save();
 
-        for ($i = 0; $i < $panjang; $i++) {
-            $arr = [
-                'id_realisasi_material' => $realisasiMaterial->id,
-                'id_material'           => $material[$i],
-                'tanggal'               => now(),
-                'tipe'                  => $tipe[$i],
-                'jumlah'                => $jumlah[$i],
-            ];
+        if (!empty($list_material)) {
+            $panjang    = count($list_material);
+            for ($i = 0; $i < $panjang; $i++) {
+                $material   = $list_material[$i]['material'];
+                $tipe   = $list_material[$i]['tipe'];
+                $jumlah   = $list_material[$i]['jumlah'];
+                $arr = [
+                    'id_realisasi_material' => $realisasiMaterial->id,
+                    'id_material'           => $material,
+                    'tanggal'               => now(),
+                    'tipe'                  => $tipe,
+                    'jumlah'                => $jumlah,
+                ];
+    
+                (new MaterialTrans)->create($arr);
 
-            (new MaterialTrans)->create($arr);
+                $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('id_material', $material)->first();
+                if (empty($gudangStok)) {
+                    $gudangStok = new GudangStok;
+                }
+
+                $gudangStok->id_gudang      = $gudang->id;
+                $gudangStok->id_material    = $material;
+                $gudangStok->jumlah         = $jumlah;
+                $gudangStok->status         = 0;
+                $gudangStok->save();
+
+            }
         }
 
         $data = MaterialTrans::where('id_realisasi_material', $realisasiMaterial->id)->get();

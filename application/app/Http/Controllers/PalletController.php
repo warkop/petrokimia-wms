@@ -92,7 +92,7 @@ class PalletController extends Controller
         $gudangStok->id_gudang      = $id_gudang;
         $gudangStok->id_material    = $req->input('material');
         $gudangStok->jumlah         = $req->input('jumlah');
-        $gudangStok->status         = $req->input('tipe');
+        $gudangStok->status         = $req->input('jenis');
         $gudangStok->save();
 
         $arr = [
