@@ -331,13 +331,19 @@ class AktivitasController extends Controller
                                     $jums_list_jumlah = count($list_jumlah);
     
                                     for ($k = 0; $k < $jums_list_jumlah; $k++) {
-                                        // $area_stok = AreaStok::where('id_area', $id_area_stok)
-                                        //     ->where('id_material', $produk)
-                                        //     ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                        //     ->first();
+                                        $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                            ->where('id_material', $produk)
+                                            ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                            ->first();
+
+                                        if (!empty($area_stok)) {
+                                            $this->responseCode = 403;
+                                            $this->responseMessage = 'Area, Produk, dan Tanggal yang Anda masukkan sudah dipakai oleh data lain! Silahkan masukkan data yang lain atau hubungi Kepala Regu!';
+                                            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                                            return response()->json($response, $this->responseCode);
+                                        }
 
                                         $area_stok = new AreaStok;
-                                        
     
                                         $arr = [
                                             'id_material'   => $produk,
@@ -395,7 +401,7 @@ class AktivitasController extends Controller
                             'id_gudang' => $gudang->id,
                             'id_material' => $pallet,
                             'jumlah' => $jumlah,
-                            'status_pallet' => $status_pallet,
+                            'status' => $status_pallet,
                         ];
                         $simpan_pallet = $gudangPallet->create($arr);
                     }
