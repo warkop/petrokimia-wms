@@ -78,7 +78,7 @@ lines {
 <!--begin::Modal-->
 <div class="modal fade btn_close_modal" id="modal_form" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog" role="document" style="max-width: 1000px;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Tambah Data</h5>
@@ -90,11 +90,13 @@ lines {
                 <input type="hidden" name="action" id="action" value="add">
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label>Tanggal</label>
                                 <input type="text" class="form-control" name="tanggal" id="tanggal" readonly placeholder="Select date">
                             </div>
+                        </div>
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label>Foto</label>
                                 {{-- <form action="/file-upload" class="kt-dropzone dropzone" id="m-dropzone-one">
@@ -126,11 +128,12 @@ lines {
                         <table class="table" id="table_produk">
                             <thead>
                                 <tr>
-                                    <th width="">No</th>
-                                    <th width="">Nama</th>
-                                    <th width="25%">Jenis</th>
-                                    <th width="25%">Jumlah</th>
-                                    <th width=""><button type="button" class="btn btn-success btn-elevate btn-icon btn-sm" onclick="tambahProduk()"><i class="la la-plus"></i></button></th>
+                                    <th>No</th>
+                                    <th width="20%">Nama</th>
+                                    <th width="20%">Jenis</th>
+                                    <th>Jumlah</th>
+                                    <th>Alasan</th>
+                                    <th><button type="button" class="btn btn-success btn-elevate btn-icon btn-sm" onclick="tambahProduk()"><i class="la la-plus"></i></button></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -143,10 +146,11 @@ lines {
                         <table class="table" id="table_pallet">
                             <thead>
                                 <tr>
-                                    <th width="">No</th>
-                                    <th width="">Nama</th>
-                                    <th width="25%">Jenis</th>
-                                    <th width="25%">Jumlah</th>
+                                    <th>No</th>
+                                    <th width="20%">Nama</th>
+                                    <th width="20%">Jenis</th>
+                                    <th>Jumlah</th>
+                                    <th>Alasan</th>
                                     <th width=""><button type="button" onclick="tambahPallet()" class="btn btn-success btn-elevate btn-icon btn-sm"><i class="la la-plus"></i></button></th>
                                 </tr>
                             </thead>
@@ -203,6 +207,102 @@ lines {
     </div>
 </div>
 <!--end::Modal-->
+
+<!--begin::Modal Detail-->
+<div class="modal fade btn_close_modal" id="modal_detail" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Detail Data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row mb-5">
+                    <div class="col-md-6">
+                        <label for="">Tanggal</label>
+                        <h5>10 Agustus 2019</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="">Foto</label>
+                        <h5><a target="_blank" href="">IMG_20190117_173009.jpg</a></h5>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h5 class="mb-3">List produk</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama produk</th>
+                                    <th>Jenis aktivitas</th>
+                                    <th>Jumlah</th>
+                                    <th>Alasan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Pupuk urea</td>
+                                    <td>Menambah</td>
+                                    <td>10 pcs</td>
+                                    <td>Menambah dhiadhiasidniasdniasi</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Pupuk phonska</td>
+                                    <td>Mengurangi</td>
+                                    <td>10 pcs</td>
+                                    <td>Hehehe</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h5 class="mb-3">List pallet</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama pallet</th>
+                                    <th>Jenis aktivitas</th>
+                                    <th>Jumlah</th>
+                                    <th>Alasan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Pallet A</td>
+                                    <td>Menambah</td>
+                                    <td>10 pcs</td>
+                                    <td>Menambah dhiadhiasidniasdniasi</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Pallet B</td>
+                                    <td>Mengurangi</td>
+                                    <td>10 pcs</td>
+                                    <td>Hehehe</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
