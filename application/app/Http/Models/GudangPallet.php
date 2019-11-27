@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class GudangPallet extends Model
 {
-    protected $table = 'gudang_pallet';
+    protected $table = 'gudang_stok';
     protected $primaryKey = 'id';
 
     protected $guarded = [
@@ -23,4 +23,40 @@ class GudangPallet extends Model
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
     public $timestamps  = false;
+
+    public function gridJson($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition, $id_gudang)
+    {
+        $result = \DB::table($this->table)
+            ->select(
+                'material_trans.id AS id',
+                'nama',
+                'alasan',
+                'jumlah',
+                'tipe',
+                'status_pallet'
+            )
+            ->leftJoin('material', 'gudang_pallet.id_material', '=', 'material.id')
+            ->leftJoin('material_trans', 'material_trans.id_material', '=', 'gudang_pallet.material.id')
+            ->where('id_gudang', $id_gudang)
+            ->where('id_adjustment', null)
+            ->where('id_realisasi_material', null)
+            ->where('id_aktivitas_harian', null)
+            ->where('status_pallet', '<>', 2);
+
+        if (!empty($search)) {
+            $result = $result->where(function ($where) use ($search) {
+                $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere('LOWER(alasan)', 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere('jumlah', 'ILIKE', '%' . strtolower($search) . '%');
+            });
+        }
+
+        if ($count == true) {
+            $result = $result->count();
+        } else {
+            $result  = $result->offset($start)->limit($length)->orderBy($field, $sort)->get();
+        }
+
+        return $result;
+    }
 }

@@ -133,6 +133,11 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::delete('/{id}/{id_area}', 'AreaController@destroy')->where(['id' => '[0-9]+', 'id_area' => '[0-9]+']);
     });
 
+    Route::group(['prefix' => '/list-pallet'], function () {
+        Route::get('/{id_gudang}', 'PalletController@index');
+        Route::post('/{id_gudang}', 'PalletController@json');
+    });
+
     Route::group(['prefix' => 'rencana-harian'], function () {
         Route::get('/', 'RencanaHarianController@index');
         Route::get('/get-area/{id_gudang?}', 'RencanaHarianController@getArea')->where('id_gudang', '[0-9]+');
@@ -188,9 +193,7 @@ Route::get('/sub-gudang', function () {
 Route::get('/list-tenaga-kerja-nonorganik', function () {
     return view('list-tenaga-kerja-nonorganik.grid');
 });
-Route::get('/list-pallet', function () {
-    return view('list-pallet.grid');
-});
+
 Route::get('/list-area', function () {
     return view('list-area.grid');
 });

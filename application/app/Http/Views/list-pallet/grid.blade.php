@@ -59,12 +59,12 @@
                             List Pallet
                         </h4>
                         <p class="sub">
-                            Berikut ini adalah list pallet yang terdapat pada <span class="text-ungu kt-font-bolder">Gudang A.</span>
+                            Berikut ini adalah list pallet yang terdapat pada <span class="text-ungu kt-font-bolder">{{$nama_gudang}}.</span>
                         </p>
                     </div>
                     <div class="kt-portlet__head-toolbar">
                         <div class="kt-portlet__head-group pt-4">
-                            <a href="#" class="btn btn-wms btn-elevate btn-elevate-air" data-toggle="modal" data-target="#kt_modal_1"><i class="la la-plus"></i> Tambah Data</a>
+                            <a href="#" class="btn btn-wms btn-elevate btn-elevate-air" onclick="tambah()"><i class="la la-plus"></i> Tambah Data</a>
                         </div>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
 
 
 <!--begin::Modal-->
-<div class="modal fade" id="kt_modal_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade btn_close_modal" id="modal_form" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -106,7 +106,17 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Tanggal</label>
-                                <input type="text" class="form-control" readonly placeholder="Select date" id="start_date" />
+                                <input type="text" class="form-control" readonly placeholder="Select date" name="tanggal" id="start_date" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Pallet</label>
+                                <select class="form-control input-enter m-select2" readonly placeholder="Select date" name="material" id="material" style="width: 100%"/>
+
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -114,17 +124,38 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Jumlah</label>
-                                <input type="text" class="form-control" placeholder="Masukkan jumlah">
+                                <input type="text" class="form-control" name="jumlah" id="jumlah" placeholder="Masukkan jumlah">
+                            </div>
+                            <div class="form-group">
+                                <label>Tipe</label>
+                                <div class="kt-radio-inline">
+                                    <label class="kt-radio kt-radio--success">
+                                        <input type="radio" value="1" checked="checked" name="tipe"> Mengurangi 
+                                        <span></span>
+                                    </label>
+                                    <label class="kt-radio kt-radio--success">
+                                        <input type="radio" value="2"  name="tipe"> Menambah
+                                        <span></span>
+                                    </label>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>Jenis</label>
                                 <div class="kt-radio-inline">
                                     <label class="kt-radio kt-radio--success">
-                                        <input type="radio" checked="checked" name="radio1"> Mengurangi 
+                                        <input type="radio" value="1" checked="checked" name="jenis"> Stok
                                         <span></span>
                                     </label>
                                     <label class="kt-radio kt-radio--success">
-                                        <input type="radio"  name="radio1"> Menambah
+                                        <input type="radio" value="2" name="jenis"> Dipakai
+                                        <span></span>
+                                    </label>
+                                    <label class="kt-radio kt-radio--success">
+                                        <input type="radio" value="3" name="jenis"> Kosong
+                                        <span></span>
+                                    </label>
+                                    <label class="kt-radio kt-radio--success">
+                                        <input type="radio" value="4" name="jenis"> Rusak
                                         <span></span>
                                     </label>
                                 </div>
@@ -138,7 +169,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-wms">Simpan data</button>
+                    <button type="button" class="btn btn-wms ladda-button" data-style="zoom-in"  id="btn_save">Simpan data</button>
                 </div>
             </form>
         </div>
@@ -148,12 +179,15 @@
 
 
 
-<script src="{{asset('assets/extends/js/page/list-pallet.js')}}" type="text/javascript"></script>
 <script>
-$('#start_date').datepicker({
-    rtl: KTUtil.isRTL(),
-    todayHighlight: true,
-    orientation: "bottom left"
-});
+    $('#start_date').datepicker({
+        rtl: KTUtil.isRTL(),
+        todayHighlight: true,
+        orientation: "bottom left"
+    });
+    
+    const id_gudang = "{{ $id_gudang }}";
+    
 </script>
+<script src="{{asset('assets/extends/js/page/list-pallet.js')}}" type="text/javascript"></script>
 @endsection
