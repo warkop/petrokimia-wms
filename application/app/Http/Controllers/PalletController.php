@@ -14,6 +14,13 @@ class PalletController extends Controller
     public function index($id_gudang)
     {
         $gudang = Gudang::find($id_gudang);
+
+        // $data['dipakai'] = GudangStok::sum('jumlah')->dipakai()->where('id_gudang', $id_gudang)->first();
+        // $data['kosong'] = GudangStok::sum('jumlah')->kosong()->where('id_gudang', $id_gudang)->first();
+        // $data['rusak'] = GudangStok::sum('jumlah')->rusak()->where('id_gudang', $id_gudang)->first();
+        // dump($data['dipakai']);
+        // dump($data['kosong']);
+        // dump($data['rusak']);
         $data['nama_gudang'] = $gudang->nama;
         $data['id_gudang'] = $id_gudang;
         return view('list-pallet.grid', $data);

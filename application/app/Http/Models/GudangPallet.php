@@ -24,6 +24,21 @@ class GudangStok extends Model
 
     public $timestamps  = false;
 
+    public function scopeDipakai($query)
+    {
+        return $query->where('status', 2);
+    }
+
+    public function scopeKosong($query)
+    {
+        return $query->where('status', 3);
+    }
+
+    public function scopeRusak($query)
+    {
+        return $query->where('status', 4);
+    }
+
     public function gridJson($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition, $id_gudang)
     {
         $result = \DB::table($this->table)
