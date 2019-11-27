@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ApiRealisasiRequest extends FormRequest
 {
@@ -24,12 +25,15 @@ class ApiRealisasiRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'id_rencana'         => 'required',
-            'material.*'         => 'nullable|numeric',
-            'material_kurang.*'  => 'nullable|numeric',
-            'material_tambah.*'  => 'nullable|numeric',
-            'housekeeper.*'         => 'nullable|numeric',
-            'area_housekeeper.*.*'   => 'nullable|numeric',
+            'id_rencana'            => 'required|exists:rencana_harian,id',
+            'housekeeper.*'         => [
+                'numeric',
+                Rule::exists('tenaga_kerja_non_organik', 'id')->where(function ($query) {
+                    $query->where('job_desk_id', 4);
+                })
+            ],
+            'area_housekeeper.*.*'  => 'exists:area,id',
+            'foto.*.*.*'            => 'image',
         ];
 
         $this->sanitize();
@@ -40,12 +44,13 @@ class ApiRealisasiRequest extends FormRequest
     public function attributes()
     {
         return [
-            'id_rencana'        => 'ID Rencana',
-            'material'          => 'Material',
-            'material_kurang'   => 'Mengurangi Material',
-            'material_tambah'   => 'Menambah Material',
-            'housekeeper.*'       => 'Housekeeper',
+            'id_rencana'            => 'ID Rencana',
+            'material'              => 'Material',
+            'material_kurang'       => 'Mengurangi Material',
+            'material_tambah'       => 'Menambah Material',
+            'housekeeper.*'         => 'Housekeeper',
             'area_housekeeper.*.*'  => 'Area Housekeeper',
+            'foto.*.*.*'            => 'Foto',
         ];
     }
 
@@ -54,6 +59,7 @@ class ApiRealisasiRequest extends FormRequest
         return [
             'required'  => ':attribute wajib diisi!',
             'numeric'   => ':attribute tidak valid!',
+            'exists'    => ':attribute tidak tersedia!',
             'image'     => ':attribute harus berupa gambar!',
         ];
     }
@@ -63,7 +69,20 @@ class ApiRealisasiRequest extends FormRequest
         $input = $this->all();
 
         foreach ($input as $key => $value) {
-            $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
+            if (is_array($input[$key])) {
+                foreach ($input[$key] as $row1 => $data1) {
+                    if (is_array($input[$key][$row1])) {
+                        foreach ($input[$key] as $row2 => $data2) {
+                            if ($input[$key] == 'file')
+                                $input[$key][$row1][$row2] = filter_var($data2, FILTER_SANITIZE_STRING);
+                        }
+                    } else {
+                        $input[$key][$row1] = filter_var($data1, FILTER_SANITIZE_STRING);
+                    }
+                }
+            } else {
+                $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
+            }
         }
 
         $this->replace($input);

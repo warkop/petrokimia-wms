@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Area;
+use App\Http\Models\AreaHousekeeperFoto;
 use App\Http\Models\Gudang;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
@@ -121,9 +122,11 @@ class RealisasiController extends Controller
 
     public function store(ApiRealisasiRequest $req, Realisasi $realisasi)
     {
-        $id_rencana     = $req->input('id_rencana');
+        $req->validated();
 
-        $rencana = RencanaHarian::findOrFail($id_rencana);
+        $id_rencana     = $req->input('id_rencana');
+        $user           = $req->get('my_auth');
+        $rencana        = RencanaHarian::findOrFail($id_rencana);
 
         if (empty($rencana)) {
             return response()->json([
@@ -138,33 +141,72 @@ class RealisasiController extends Controller
         (new Realisasi)->where('id_rencana', $id_rencana)->forceDelete();
 
         if (!empty($temp_res)) {
+            $realisasiHousekeeper = RealisasiHousekeeper::where('id_realisasi', $temp_res->id)->get();
+
+            foreach ($realisasiHousekeeper as $key) {
+                (new AreaHousekeeperFoto)->where('id_realisasi_housekeeper', $key->id)->forceDelete();
+                \Storage::deleteDirectory('/public/realisasi_housekeeper/' . $key->id);
+            }
             (new RealisasiHousekeeper)->where('id_realisasi', $temp_res->id)->forceDelete();
-            (new RealisasiMaterial)->where('id_realisasi', $temp_res->id)->forceDelete();
         }
 
         $housekeeper    = $req->input('housekeeper');
         $housekeeper    = array_values($housekeeper);
 
-        $user = $req->get('my_auth');
+       
 
         $realisasi->id_rencana  = $id_rencana;
         $realisasi->tanggal     = now();
         $realisasi->created_at  = now();
         $realisasi->created_by  = $user->id_user;
         $realisasi->save();
-
         if (!empty($housekeeper)) {
             foreach ($housekeeper as $key => $value) {
                 $temp = array_values($req->input('area_housekeeper')[$key]);
                 if (!empty($temp)) {
                     foreach ($temp as $row => $hey) {
+                        if (isset($key,$req->input('foto')[$key])) {
+                            if (isset($req->input('foto')[$key][$row])) {
+                                $foto = $req->input('foto')[$key][$row];
+                            } else {
+                                $foto = '';
+                            }
+                        } else {
+                            $foto = '';
+                        }
+                        
                         $arr = [
                             'id_realisasi'  => $realisasi->id,
                             'id_tkbm'       => $value,
                             'id_area'       => $hey,
                         ];
 
-                        (new RealisasiHousekeeper)->create($arr);
+                        $realisasi_housekeeper = (new RealisasiHousekeeper)->create($arr);
+                        if (!empty($foto)) {
+                            $panjang = count($foto);
+                            
+                            for ($i = 0; $i < $panjang; $i++) {
+                                if ($foto[$i]->isValid()) {
+                                    $areaHousekeeperFoto = new AreaHousekeeperFoto();
+
+                                    storage_path('app/public/realisasi_housekeeper/') . $realisasi_housekeeper->id;
+                                    $md5Name = md5_file($foto[$i]->getRealPath());
+                                    $guessExtension = $foto[$i]->getClientOriginalExtension();
+                                    $foto[$i]->storeAs('/public/realisasi_housekeeper/' . $realisasi_housekeeper->id, $md5Name . '.' . $guessExtension);
+                                    $arrayFoto = [
+                                        'id_realisasi_housekeeper'  => $realisasi_housekeeper->id,
+                                        'foto'                      => $foto[$i]->getClientOriginalName(),
+                                        'size'                      => $foto[$i]->getSize(),
+                                        'ekstensi'                  => $foto[$i]->getClientOriginalExtension(),
+                                        'file_enc'                  => $md5Name . '.' . $guessExtension,
+                                        'created_by'                => $user->id_user,
+                                        'created_at'                => now(),
+                                    ];
+
+                                    $areaHousekeeperFoto->create($arrayFoto);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -174,7 +216,7 @@ class RealisasiController extends Controller
 
         $housekeeper = RealisasiHousekeeper::where('id_realisasi', $realisasi->id)->get();
 
-        $this->responseData = ['realisasi' => $realisasi, 'housekeeper' => $housekeeper, ];
+        $this->responseData = ['realisasi' => $realisasi, 'housekeeper' => $housekeeper];
         $this->responseCode = 200; 
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
