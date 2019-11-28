@@ -252,7 +252,7 @@ class RealisasiController extends Controller
     public function getShowRealisasiMaterial(RealisasiMaterial $realisasiMaterial)
     {
         $detail = MaterialTrans::select(
-            'id',
+            'material_trans.id',
             'id_material',
             'tanggal',
             'nama',
