@@ -276,7 +276,13 @@ class RealisasiController extends Controller
         $tipe       = $req->input('tipe');
         $jumlah     = $req->input('jumlah');
 
-        
+        if (count($jumlah) < 1) {
+            $this->responseMessage = 'Harus minimal satu material yang diinputkan!';
+            $this->responseCode = 403;
+
+            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+            return response()->json($response, $this->responseCode);
+        }
 
         $realisasiMaterial->tanggal       = now();
         $realisasiMaterial->created_at    = now();
