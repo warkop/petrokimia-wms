@@ -32,7 +32,6 @@ class RealisasiMaterialRequest extends FormRequest
         }
 
         $rules = [
-            'tanggal'                           => 'nullable|date_format:d-m-Y',
             'list_material.*.material'          => [
                 'required',
                 Rule::exists('material', 'id')->where(function ($query) {
@@ -45,15 +44,12 @@ class RealisasiMaterialRequest extends FormRequest
 
         $this->sanitize();
 
-        dump(\Request::instance()->tanggal);
-
         return $rules;
     }
 
     public function attributes()
     {
         return [
-            'tanggal'         => 'Tanggal',
             'list_material.*.material'        => 'Material',
             'list_material.*.jumlah'          => 'Jumlah',
             'list_material.*.tipe'            => 'Tipe',
@@ -67,7 +63,6 @@ class RealisasiMaterialRequest extends FormRequest
             'integer'        => ':attribute harus berupa angka!',
             'between'        => ':attribute tidak valid!',
             'exists'         => ':attribute tidak tersedia!',
-            'date_format'    => 'Tanggal :attribute harus dengan format tanggal-bulan-tahun',
         ];
     }
 
@@ -89,12 +84,6 @@ class RealisasiMaterialRequest extends FormRequest
             } else {
                 $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
             }
-        }
-
-        if ($input['tanggal'] != '') {
-            $input['tanggal']  = date('Y-m-d', strtotime($input['tanggal']));
-        } else {
-            $input['tanggal'] = null;
         }
 
         $this->replace($input);
