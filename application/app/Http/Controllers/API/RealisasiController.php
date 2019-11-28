@@ -271,15 +271,14 @@ class RealisasiController extends Controller
         $user = $req->get('my_auth');
         $gudang = Gudang::where('id_karu', $user->id_karu)->first();
 
-        $tanggal    = $req->input('tanggal');
         $list_material   = $req->input('list_material');
         
         $tipe       = $req->input('tipe');
         $jumlah     = $req->input('jumlah');
 
-        dump($tanggal);
+        
 
-        $realisasiMaterial->tanggal       = $tanggal;
+        $realisasiMaterial->tanggal       = now();
         $realisasiMaterial->created_at    = now();
 
         $realisasiMaterial->save();
@@ -292,7 +291,7 @@ class RealisasiController extends Controller
                 $arr = [
                     'id_realisasi_material' => $realisasiMaterial->id,
                     'id_material'           => $material,
-                    'tanggal'               => $tanggal,
+                    'tanggal'               => now(),
                     'tipe'                  => $tipe,
                     'jumlah'                => $jumlah,
                 ];
