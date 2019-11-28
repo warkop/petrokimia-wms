@@ -267,7 +267,6 @@ class RealisasiController extends Controller
         $realisasiMaterial->created_at    = now();
 
         $realisasiMaterial->save();
-
         if (!empty($list_material)) {
             $panjang    = count($list_material);
             for ($i = 0; $i < $panjang; $i++) {
@@ -282,16 +281,29 @@ class RealisasiController extends Controller
                     'jumlah'                => $jumlah,
                 ];
     
-                MaterialTrans::create($arr);
+                (new MaterialTrans)->create($arr);
 
                 $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('id_material', $material)->first();
                 if (empty($gudangStok)) {
                     $gudangStok = new GudangStok;
+                    $gudangStok->jumlah         = $jumlah;
+                } else {
+                    if ($tipe == 1) {
+                        if ($gudangStok->jumlah - $jumlah < 0) {
+                            $this->responseMessage = 'Jumlah yang Anda masukkan melebihi stok yang tersedia!';
+                            $this->responseCode = 403;
+
+                            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+                            return response()->json($response, $this->responseCode);
+                        }
+                        $gudangStok->jumlah         = $gudangStok->jumlah - $jumlah;
+                    } else if ($tipe == 2) {
+                        $gudangStok->jumlah         = $gudangStok->jumlah + $jumlah;
+                    }
                 }
 
                 $gudangStok->id_gudang      = $gudang->id;
                 $gudangStok->id_material    = $material;
-                $gudangStok->jumlah         = $jumlah;
                 $gudangStok->status         = 0;
                 $gudangStok->save();
 

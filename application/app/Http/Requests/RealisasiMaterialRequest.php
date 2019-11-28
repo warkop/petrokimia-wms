@@ -24,10 +24,17 @@ class RealisasiMaterialRequest extends FormRequest
     public function rules()
     {
         $this->sanitize();
+
+        $action = \Request::instance()->action;
+        if ($action == 'edit') {
+            $rules['id'] = 'required';
+        }
+
         $rules = [
-            'id_material.*' => 'required',
-            'material_tambah.*' => 'numeric',
-            'material_kurang.*' => 'numeric',
+            'tanggal'                           => 'nullable|date_format:d-m-Y',
+            'list_material.*.material'          => 'required',
+            'list_material.*.jumlah'            => 'integer',
+            'list_material.*.tipe'              => 'between:1,2',
         ];
 
         return $rules;
@@ -36,17 +43,20 @@ class RealisasiMaterialRequest extends FormRequest
     public function attributes()
     {
         return [
-            'id_material'       => 'Material',
-            'material_tambah'   => 'Kolom Material Bertambah',
-            'material_kurang'   => 'Kolom Material Berkurang',
+            'tanggal'         => 'Tanggal',
+            'list_material.*.material'        => 'Material',
+            'list_material.*.jumlah'          => 'Jumlah',
+            'list_material.*.tipe'            => 'Tipe',
         ];
     }
 
     public function messages()
     {
         return [
-            'required'  => ':attribute wajib diisi!',
-            'numeric'   => ':attribute harus berupa angka!',
+            'required'       => ':attribute wajib diisi!',
+            'integer'        => ':attribute harus berupa angka!',
+            'between'        => ':attribute tidak valid!',
+            'date_format'    => 'Tanggal :attribute harus dengan format tanggal-bulan-tahun',
         ];
     }
 
@@ -55,13 +65,19 @@ class RealisasiMaterialRequest extends FormRequest
         $input = $this->all();
 
         foreach ($input as $key => $value) {
-            $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
-        }
-
-        if ($input['tanggal'] != '') {
-            $input['tanggal']   = date('Y-m-d', strtotime($input['tanggal']));
-        } else {
-            $input['tanggal'] = null;
+            if (is_array($input[$key])) {
+                foreach ($input[$key] as $row1 => $data1) {
+                    if (is_array($input[$key][$row1])) {
+                        foreach ($input[$key] as $row2 => $data2) {
+                            $input[$key][$row1][$row2] = filter_var($data2, FILTER_SANITIZE_STRING);
+                        }
+                    } else {
+                        $input[$key][$row1] = filter_var($data1, FILTER_SANITIZE_STRING);
+                    }
+                }
+            } else {
+                $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
+            }
         }
 
         $this->replace($input);
