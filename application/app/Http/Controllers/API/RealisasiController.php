@@ -282,7 +282,7 @@ class RealisasiController extends Controller
                     'jumlah'                => $jumlah,
                 ];
     
-                (new MaterialTrans)->create($arr);
+                MaterialTrans::create($arr);
 
                 $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('id_material', $material)->first();
                 if (empty($gudangStok)) {
