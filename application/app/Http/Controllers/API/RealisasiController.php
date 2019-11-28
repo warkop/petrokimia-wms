@@ -251,7 +251,18 @@ class RealisasiController extends Controller
 
     public function getShowRealisasiMaterial(RealisasiMaterial $realisasiMaterial)
     {
-        $detail = MaterialTrans::where('id_realisasi_material', $realisasiMaterial->id)->get();
+        $detail = MaterialTrans::select(
+            'id',
+            'id_material',
+            'tanggal',
+            'nama',
+            'tipe',
+            'jumlah',
+            'alasan',
+            'id_realisasi_material',
+        )
+        ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
+        ->where('id_realisasi_material', $realisasiMaterial->id)->get();
 
         $res = collect($realisasiMaterial);
         $res = $res->merge(['detail' => $detail]);
