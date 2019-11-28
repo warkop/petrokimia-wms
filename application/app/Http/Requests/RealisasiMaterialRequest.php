@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RealisasiMaterialRequest extends FormRequest
 {
@@ -32,7 +33,12 @@ class RealisasiMaterialRequest extends FormRequest
 
         $rules = [
             'tanggal'                           => 'nullable|date_format:d-m-Y',
-            'list_material.*.material'          => 'required',
+            'list_material.*.material'          => [
+                'required',
+                Rule::exists('material', 'id')->where(function ($query) {
+                    $query->where('kategori', 3);
+                }),
+            ],
             'list_material.*.jumlah'            => 'integer',
             'list_material.*.tipe'              => 'between:1,2',
         ];
@@ -56,6 +62,7 @@ class RealisasiMaterialRequest extends FormRequest
             'required'       => ':attribute wajib diisi!',
             'integer'        => ':attribute harus berupa angka!',
             'between'        => ':attribute tidak valid!',
+            'exists'         => ':attribute tidak tersedia!',
             'date_format'    => 'Tanggal :attribute harus dengan format tanggal-bulan-tahun',
         ];
     }

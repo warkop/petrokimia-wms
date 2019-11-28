@@ -62,9 +62,23 @@ class RealisasiController extends Controller
         ], 200);
     }
 
-    public function getMaterial()
+    public function getMaterial(Request $req)
     {
-        $res = Material::lainlain()->get();
+        $user = $req->get('my_auth');
+        $users = Users::findOrFail($user->id_user);
+        $gudang = Gudang::where('id_karu', $users->id_karu)->first();
+
+        $res = Material::select(
+            'material.id',
+            'id_material_sap',
+            'id_plant',
+            'nama',
+            'jumlah'
+        )
+        ->join('gudang_stok as gs', 'gs.id_material', '=', 'material.id')
+        ->lainlain()
+        ->where('id_gudang', $gudang->id)
+        ->get();
 
         return (new AktivitasResource($res))->additional([
             'status' => [
