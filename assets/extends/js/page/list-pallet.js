@@ -176,9 +176,10 @@ const load_table = function () {
                 "mData": "id",
                 "orderable": false,
                 render: function (data, type, full, meta) {
-                    return `
-                            <button type="button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
-                            <i class="flaticon-edit-1"></i> </button>`;
+                    return "";
+                    // return `
+                    //         <button type="button" onclick="detail(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
+                    //         <i class="flaticon-edit-1"></i> </button>`;
                 },
             }
         ],
@@ -394,6 +395,68 @@ function load_selected_id_material(id_material_sap = '') {
             });
         });
     }
+}
+
+function detail(id) {
+    $.ajax({
+        type: 'GET',
+        url: ajaxUrl + '/' + id,
+        beforeSend: function () {
+            preventLeaving();
+        },
+        success: function (response) {
+            window.onbeforeunload = false;
+
+            var obj = response;
+            // console.log(obj)
+            if (obj.status == "OK") {
+                /*OK*/
+            } else {
+                swal.fire('Pemberitahuan', obj.message, 'warning');
+            }
+        },
+        error: function (response) {
+            var head = 'Maaf',
+                message = 'Terjadi kesalahan koneksi',
+                type = 'error';
+            window.onbeforeunload = false;
+
+            if (response['status'] == 401 || response['status'] == 419) {
+                location.reload();
+            } else {
+                if (response['status'] != 404 && response['status'] != 500) {
+                    var obj = JSON.parse(response['responseText']);
+
+                    if (!$.isEmptyObject(obj.message)) {
+                        if (obj.code > 400) {
+                            head = 'Maaf';
+                            message = obj.message;
+                            type = 'error';
+                        } else {
+                            head = 'Pemberitahuan';
+                            message = obj.message;
+                            type = 'warning';
+                        }
+                    }
+                }
+
+                swal.fire(head, message, type);
+            }
+        }
+    }).then(function (response) {
+        var obj = response;
+        /* create the option and append to Select2 */
+        var option = new Option(obj.data.Material_number, obj.data.Material_number, true, true);
+        setJalan.append(option).trigger('change');
+
+        /* manually trigger the `select2:select` event */
+        setJalan.trigger({
+            type: 'select2:select',
+            params: {
+                data: obj.data
+            }
+        });
+    });
 }
 
 function simpan() {

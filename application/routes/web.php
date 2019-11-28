@@ -136,6 +136,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     Route::group(['prefix' => '/list-pallet'], function () {
         Route::get('/get-material', 'PalletController@getMaterial');
         Route::get('/{id_gudang}', 'PalletController@index');
+        Route::get('/{id_gudang}/{id}', 'PalletController@show');
         Route::post('/{id_gudang}', 'PalletController@json');
         Route::put('/{id_gudang}', 'PalletController@store');
     });

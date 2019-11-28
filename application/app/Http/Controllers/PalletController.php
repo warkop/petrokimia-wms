@@ -144,4 +144,40 @@ class PalletController extends Controller
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
     }
+
+    public function show($id_gudang, $id, GudangStok $models, Request $request)
+    {
+        // if (!$request->ajax()) {
+        //     return $this->accessForbidden();
+        // } else {
+            $gudang = Gudang::find($id_gudang);
+            if (!empty($gudang)) {
+                $res = MaterialTrans::find($id);
+
+                if (!empty($res)) {
+                    $resProduk = \DB::table('gudang_stok as ma')
+                        ->leftJoin('material_trans as mt', 'mt.id_gudang_stok', '=', 'ma.id')
+                        ->leftJoin('material as m', 'mt.id_material', '=', 'm.id')
+                        ->where('mt.id', $id)
+                        ->where('kategori', 2)
+                        ->first();
+
+                    $this->responseCode = 200;
+                    $this->responseMessage = 'Data tersedia.';
+                    // $this->responseData['gudang_stok'] = $res;
+                    $this->responseData = $resProduk;
+                } else {
+                    $this->responseData = [];
+                    $this->responseStatus = 'No Data Available';
+                    $this->responseMessage = 'Data tidak tersedia';
+                }
+            } else {
+                $this->responseCode = 400;
+                $this->responseMessage = 'ID gudang tidak valid';
+            }
+
+            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+            return response()->json($response, $this->responseCode);
+        }
+    // }
 }
