@@ -24,6 +24,7 @@ class RencanaHarianController extends Controller
 {
     public function index()
     {
+        $this->authorize('view', RencanaHarian::class);
         $data['title'] = 'Rencana Harian';
         return view('rencana-harian.grid', $data);
     }

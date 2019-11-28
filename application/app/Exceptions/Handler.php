@@ -72,8 +72,9 @@ class Handler extends ExceptionHandler
             ], 404);
         }
 
-        if ($exception instanceof ModelNotFoundException) {
-            $exception = new NotFoundHttpException($exception->getMessage(), $exception);
+        if ($exception instanceof AuthorizationException) {
+            $exception = new HttpException(419, $exception->getMessage(), $exception);
+            return $exception;
         }
 
         return parent::render($request, $exception);
