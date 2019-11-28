@@ -15,10 +15,27 @@ class PalletController extends Controller
     {
         $gudang = Gudang::find($id_gudang);
 
-        // $data['dipakai'] = GudangStok::sum('jumlah')->dipakai()->where('id_gudang', $id_gudang)->first();
-        // $data['kosong'] = GudangStok::sum('jumlah')->kosong()->where('id_gudang', $id_gudang)->first();
-        // $data['rusak'] = GudangStok::sum('jumlah')->rusak()->where('id_gudang', $id_gudang)->first();
-        // dump($data['dipakai']);
+        $data['dipakai'] = GudangStok::select(
+            \DB::raw('SUM(jumlah) as total')
+        )
+        ->where('id_gudang', $id_gudang)
+        ->where('status', 2)
+        ->first();
+        
+        $data['kosong'] = GudangStok::select(
+            \DB::raw('SUM(jumlah) as total')
+        )
+        ->where('status', 3)
+        ->where('id_gudang', $id_gudang)
+        ->first();
+        
+        $data['rusak'] = GudangStok::select(
+            \DB::raw('SUM(jumlah) as total')
+        )
+        ->where('status', 4)
+        ->where('id_gudang', $id_gudang)
+        ->first();
+        // dump($data['dipakai']->total);
         // dump($data['kosong']);
         // dump($data['rusak']);
         $data['nama_gudang'] = $gudang->nama;

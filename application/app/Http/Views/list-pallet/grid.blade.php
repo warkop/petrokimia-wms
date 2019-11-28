@@ -14,7 +14,7 @@
                 <div class="kt-portlet__body kt-portlet__body--fluid">
                     <div class="kt-widget26">
                         <div class="kt-widget26__content">
-                            <span class="kt-widget26__number">20</span>
+                            <span class="kt-widget26__number">{{$dipakai->total??0}}</span>
                             <span class="kt-widget26__desc" style="color: white;">Pallet Dipakai</span>
                         </div>
                     </div>
@@ -26,7 +26,7 @@
                 <div class="kt-portlet__body kt-portlet__body--fluid">
                     <div class="kt-widget26">
                         <div class="kt-widget26__content">
-                            <span class="kt-widget26__number">20</span>
+                            <span class="kt-widget26__number">{{$kosong->total??0}}</span>
                             <span class="kt-widget26__desc">Pallet Kosong</span>
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                 <div class="kt-portlet__body kt-portlet__body--fluid">
                     <div class="kt-widget26">
                         <div class="kt-widget26__content">
-                            <span class="kt-widget26__number">1</span>
+                            <span class="kt-widget26__number">{{$rusak->total??0}}</span>
                             <span class="kt-widget26__desc">Pallet Rusak</span>
                         </div>
                     </div>
