@@ -24,7 +24,7 @@ class RealisasiMaterialRequest extends FormRequest
      */
     public function rules()
     {
-        $this->sanitize();
+       
 
         $action = \Request::instance()->action;
         if ($action == 'edit') {
@@ -42,6 +42,8 @@ class RealisasiMaterialRequest extends FormRequest
             'list_material.*.jumlah'            => 'integer',
             'list_material.*.tipe'              => 'between:1,2',
         ];
+
+        $this->sanitize();
 
         return $rules;
     }
