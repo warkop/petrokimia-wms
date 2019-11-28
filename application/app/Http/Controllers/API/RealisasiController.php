@@ -276,7 +276,7 @@ class RealisasiController extends Controller
         $tipe       = $req->input('tipe');
         $jumlah     = $req->input('jumlah');
 
-        if (count($jumlah) < 1) {
+        if (count($list_material) < 1) {
             $this->responseMessage = 'Harus minimal satu material yang diinputkan!';
             $this->responseCode = 403;
 
