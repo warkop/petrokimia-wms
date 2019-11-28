@@ -117,7 +117,7 @@ const load_table = function() {
         orderable: false,
         render: function(data, type, full, meta) {
           return `
-                <button type = "button" class="btn btn-primary btn-elevate btn-icon" data-toggle="modal" data-target="#modal_detail" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Detail">
+                <button type = "button" onclick="detail(${full.id})" class="btn btn-primary btn-elevate btn-icon" data-toggle="modal" data-target="#modal_detail" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Detail">
                     <i class="flaticon-medical"></i></button>`;
 
           // <button type = "button" class="btn btn-orens btn-elevate btn-icon" onclick="edit(${full.id})" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
@@ -203,7 +203,7 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
                         <input type="text" name="produk_jumlah[]" id="produk-jumlah-${rows}" class="form-control" placeholder="Masukkan jumlah">
                     </td>
                     <td>
-                        <input type="text" name="alasan[]" id="produk-alasan-${rows}" class="form-control" placeholder="Masukkan alasan">
+                        <input type="text" name="produk_alasan[]" id="produk-alasan-${rows}" class="form-control" placeholder="Masukkan alasan">
                     </td>
                     <td>
                         <button class="btn btn-danger btn-elevate btn-icon btn-sm" onclick="hapusProduk(${rows})"><i class="la la-trash"></i></button>
@@ -474,6 +474,136 @@ function edit(id = "") {
   });
 }
 
+function detail(id) {
+    $("#modal_detail").modal(
+    {
+      backdrop: "static",
+      keyboard: false
+    },
+    "show"
+  );
+
+  $.ajax({
+    type: "GET",
+    url: ajaxUrl + "/stock-adjustment/" + id_gudang + "/" + id,
+    beforeSend: function () {
+      preventLeaving();
+      $(".btn_close_modal").addClass("hide");
+      $(".se-pre-con").show();
+    },
+    success: function (response) {
+      window.onbeforeunload = false;
+      $(".btn_close_modal").removeClass("hide");
+      $(".se-pre-con").hide();
+
+      let obj_adjustment = response.data.material_adjustment;
+      let obj_produk = response.data.produk;
+      let obj_pallet = response.data.pallet;
+
+      if (obj_adjustment.tanggal != null) {
+        $("#tempat_tanggal").html(helpDateFormat(obj_adjustment.tanggal, "si"));
+      }
+
+      if (obj_adjustment.foto != null) {
+        let html =
+          '<a target="_blank" href="' +
+          baseUrl +
+          /watch/ +
+          obj_adjustment.foto +
+          "?" +
+          "un=" +
+          obj_adjustment.id +
+          "&ctg=material&src=" +
+          obj_adjustment.foto +
+          '">' +
+          obj_adjustment.foto +
+          "</a>";
+
+          const link = baseUrl + /watch/ + obj_adjustment.foto + "?" + "un=" + obj_adjustment.id + "&ctg=material&src=" + obj_adjustment.foto
+
+          $("#tempat_link_gambar").prop("href", link);
+          $("#tempat_muncul_gambar").prop("src", link);
+
+        $("#list").html(html);
+      }
+
+        let text = "";
+        let i=1;
+        obj_produk.forEach(element => {
+            let text_tipe = "";
+            if (element.tipe == 1) {
+                text_tipe = "Mengurangi";
+            } else if (element.tipe == 2) {
+                text_tipe = "Menambah";
+            }
+            text += `
+                <tr>
+                    <td>${i}</td>
+                    <td>${element.nama}</td>
+                    <td>${text_tipe}</td>
+                    <td>${element.jumlah} pcs</td>
+                    <td>${element.alasan ? element.alasan : ''}</td>
+                </tr>
+            `;
+            i++;
+        });
+        $("#tubuh_produk").html(text);
+        text = "";
+        i=1;
+        obj_pallet.forEach(element => {
+            let text_tipe = "";
+            if (element.tipe == 1) {
+                text_tipe = "Mengurangi";
+            } else if (element.tipe == 2) {
+                text_tipe = "Menambah";
+            }
+            text += `
+                <tr>
+                    <td>${i}</td>
+                    <td>${element.nama}</td>
+                    <td>${text_tipe}</td>
+                    <td>${element.jumlah} pcs</td>
+                    <td>${element.alasan ? element.alasan:''}</td>
+                </tr>
+            `;
+            i++;
+        });
+        $("#tubuh_pallet").html(text);
+        
+    },
+    error: function (response) {
+      let head = "Maaf",
+        message = "Terjadi kesalahan koneksi",
+        type = "error";
+      window.onbeforeunload = false;
+      $(".btn_close_modal").removeClass("hide");
+      $(".se-pre-con").hide();
+
+      if (response["status"] == 401 || response["status"] == 419) {
+        location.reload();
+      } else {
+        if (response["status"] != 404 && response["status"] != 500) {
+          let obj = JSON.parse(response["responseText"]);
+
+          if (!$.isEmptyObject(obj.message)) {
+            if (obj.code > 400) {
+              head = "Maaf";
+              message = obj.message;
+              type = "error";
+            } else {
+              head = "Pemberitahuan";
+              message = obj.message;
+              type = "warning";
+            }
+          }
+        }
+
+        swal.fire(head, message, type);
+      }
+    }
+  });
+}
+
 function simpan() {
   let data = $("#form1").serializeArray();
 
@@ -576,12 +706,13 @@ function tambah() {
 }
 
 function reset_form(method = "") {
-  $("#id").val("");
-  $("#id").change();
-  $("#tanggal").val("");
-  $("#table_produk tbody").html("");
-  $("#table_pallet tbody").html("");
-  myDropzone.removeAllFiles();
+    $("#id").val("");
+    $("#id").change();
+    $("#tanggal").val("");
+    $("#table_produk tbody").html("");
+    $("#table_pallet tbody").html("");
+    $("#list").html("");
+    myDropzone.removeAllFiles();
 }
 
 function hapus(id) {

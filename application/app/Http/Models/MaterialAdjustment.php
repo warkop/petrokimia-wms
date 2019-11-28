@@ -65,7 +65,7 @@ class MaterialAdjustment extends Model
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table($this->table)
-            ->select('id', 'foto', DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\') AS tanggal'));
+            ->select('id', 'foto', DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\') AS tanggal', 'alasan'));
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {

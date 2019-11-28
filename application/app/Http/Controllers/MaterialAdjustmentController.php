@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Gudang;
+use App\Http\Models\GudangStok;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialAdjustment;
 use App\Http\Models\MaterialTrans;
@@ -84,29 +85,53 @@ class MaterialAdjustmentController extends Controller
             $produk = $req->input('produk');
             $action_produk = $req->input('action_produk');
             $produk_jumlah = $req->input('produk_jumlah');
+            $produk_alasan = $req->input('produk_alasan');
             if (!empty($produk)) {
                 $panjang          = count($produk);
                 $produk           = array_values($produk);
                 $action_produk    = array_values($action_produk);
                 $produk_jumlah    = array_values($produk_jumlah);
+                $produk_alasan    = array_values($produk_alasan);
                 for ($i = 0; $i < $panjang; $i++) {
                     $materialTrans = new MaterialTrans;
-                    $materialTrans->id_adjustment    = $materialAdjustment->id;
+                    $materialTrans->id_adjustment   = $materialAdjustment->id;
                     $materialTrans->id_material     = $produk[$i];
                     $materialTrans->tipe            = $action_produk[$i];
                     $materialTrans->jumlah          = $produk_jumlah[$i];
+                    $materialTrans->alasan          = $produk_alasan[$i];
                     $materialTrans->save();
+
+                    $gudangStok = GudangStok::where('id_material', $produk[$i])->first();
+                    if (empty($gudangStok)) {
+                        $gudangStok = new GudangStok;
+                        $gudangStok->jumlah = $produk_jumlah[$i];
+                    } else {
+                        if ($action_produk[$i] == 1) {
+                            if ($gudangStok->jumlah - $produk_jumlah[$i] < 0) {
+                                $this->responseMessage = 'Jumlah yang Anda masukkan melebihi stok yang tersedia!';
+                                $this->responseCode = 403;
+
+                                $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+                                return response()->json($response, $this->responseCode);
+                            }
+                            $gudangStok->jumlah         = $gudangStok->jumlah - $produk_jumlah[$i];
+                        } else if ($action_produk[$i] == 2) {
+                            $gudangStok->jumlah         = $gudangStok->jumlah + $produk_jumlah[$i];
+                        }
+                    }
                 }
             }
 
             $pallet = $req->input('pallet');
             $action_pallet = $req->input('action_pallet');
             $pallet_jumlah = $req->input('pallet_jumlah');
+            $pallet_alasan = $req->input('pallet_alasan');
             if (!empty($pallet)) {
                 $panjang          = count($pallet);
                 $pallet           = array_values($pallet);
                 $action_pallet    = array_values($action_pallet);
                 $pallet_jumlah    = array_values($pallet_jumlah);
+                $pallet_alasan    = array_values($pallet_alasan);
                 for ($i = 0; $i < $panjang; $i++) {
                     $materialTrans = new MaterialTrans;
                     $materialTrans->id_adjustment   = $materialAdjustment->id;
@@ -114,7 +139,28 @@ class MaterialAdjustmentController extends Controller
                     $materialTrans->id_material     = $pallet[$i];
                     $materialTrans->tipe            = $action_pallet[$i];
                     $materialTrans->jumlah          = $pallet_jumlah[$i];
+                    $materialTrans->alasan          = $pallet_alasan[$i];
                     $materialTrans->save();
+
+                    $gudangStok = GudangStok::where('id_material', $pallet[$i])->first();
+                    if (empty($gudangStok)) {
+                        $gudangStok = new GudangStok;
+                        $gudangStok->jumlah = $pallet_jumlah[$i];
+                    } else {
+                        if ($action_pallet[$i] == 1) {
+                            if ($gudangStok->jumlah - $pallet_jumlah[$i] < 0) {
+                                $this->responseMessage = 'Jumlah yang Anda masukkan melebihi stok yang tersedia!';
+                                $this->responseCode = 403;
+
+                                $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+                                return response()->json($response, $this->responseCode);
+                            }
+                            $gudangStok->jumlah         = $gudangStok->jumlah - $pallet_jumlah[$i];
+                        } else if ($action_pallet[$i] == 2) {
+                            $gudangStok->jumlah         = $gudangStok->jumlah + $pallet_jumlah[$i];
+                        }
+                    }
+
                 }
             }
 

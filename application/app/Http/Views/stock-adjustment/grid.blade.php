@@ -223,11 +223,11 @@ lines {
                 <div class="row mb-5">
                     <div class="col-md-6">
                         <label for="">Tanggal</label>
-                        <h5>10 Agustus 2019</h5>
+                        <h5 id="tempat_tanggal"></h5>
                     </div>
                     <div class="col-md-6">
                         <label for="">Foto</label>
-                        <h5><a target="_blank" href="">IMG_20190117_173009.jpg</a></h5>
+                        <h5 id="tempat_gambar"><a id="tempat_link_gambar" target="_blank" href=""><img id="tempat_muncul_gambar" src="" alt="" width="50%"></a></h5>
                     </div>
                 </div>
                 <div class="row mb-4">
@@ -243,21 +243,7 @@ lines {
                                     <th>Alasan</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Pupuk urea</td>
-                                    <td>Menambah</td>
-                                    <td>10 pcs</td>
-                                    <td>Menambah dhiadhiasidniasdniasi</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Pupuk phonska</td>
-                                    <td>Mengurangi</td>
-                                    <td>10 pcs</td>
-                                    <td>Hehehe</td>
-                                </tr>
+                            <tbody id="tubuh_produk">
                             </tbody>
                         </table>
                     </div>
@@ -275,21 +261,7 @@ lines {
                                     <th>Alasan</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Pallet A</td>
-                                    <td>Menambah</td>
-                                    <td>10 pcs</td>
-                                    <td>Menambah dhiadhiasidniasdniasi</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Pallet B</td>
-                                    <td>Mengurangi</td>
-                                    <td>10 pcs</td>
-                                    <td>Hehehe</td>
-                                </tr>
+                            <tbody id="tubuh_pallet">
                             </tbody>
                         </table>
                     </div>
