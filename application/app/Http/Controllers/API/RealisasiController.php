@@ -259,7 +259,7 @@ class RealisasiController extends Controller
             'tipe',
             'jumlah',
             'alasan',
-            'id_realisasi_material',
+            'id_realisasi_material'
         )
         ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
         ->where('id_realisasi_material', $realisasiMaterial->id)->get();
