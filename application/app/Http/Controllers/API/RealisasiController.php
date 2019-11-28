@@ -261,6 +261,8 @@ class RealisasiController extends Controller
         
         $tipe       = $req->input('tipe');
         $jumlah     = $req->input('jumlah');
+
+        dump($tanggal);
         
         $realisasiMaterial->tanggal       = $tanggal;
         $realisasiMaterial->created_at    = now();
@@ -276,7 +278,7 @@ class RealisasiController extends Controller
                 $arr = [
                     'id_realisasi_material' => $realisasiMaterial->id,
                     'id_material'           => $material,
-                    'tanggal'               => now(),
+                    'tanggal'               => $tanggal,
                     'tipe'                  => $tipe,
                     'jumlah'                => $jumlah,
                 ];
