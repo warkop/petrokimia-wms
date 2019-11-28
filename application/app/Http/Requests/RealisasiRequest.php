@@ -23,6 +23,7 @@ class RealisasiRequest extends FormRequest
      */
     public function rules()
     {
+        $this->sanitize();
         $rules = [
             'id_material.*' => 'required',
             'housekeeper.*' => 'numeric',
