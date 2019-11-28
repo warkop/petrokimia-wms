@@ -103,6 +103,13 @@ class MaterialAdjustmentController extends Controller
 
                     $gudangStok = GudangStok::where('id_material', $produk[$i])->first();
                     if (empty($gudangStok)) {
+                        if ($action_produk[$i] == 1) {
+                            $this->responseMessage = 'Stok belum tersedia jadi Anda hanya diizinkan untuk menambah untuk material ini!';
+                            $this->responseCode = 403;
+
+                            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+                            return response()->json($response, $this->responseCode);
+                        }
                         $gudangStok = new GudangStok;
                         $gudangStok->jumlah = $produk_jumlah[$i];
                     } else {
@@ -144,6 +151,13 @@ class MaterialAdjustmentController extends Controller
 
                     $gudangStok = GudangStok::where('id_material', $pallet[$i])->first();
                     if (empty($gudangStok)) {
+                        if ($action_pallet[$i] == 1) {
+                            $this->responseMessage = 'Stok belum tersedia jadi Anda hanya diizinkan untuk menambah untuk material ini!';
+                            $this->responseCode = 403;
+
+                            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+                            return response()->json($response, $this->responseCode);
+                        }
                         $gudangStok = new GudangStok;
                         $gudangStok->jumlah = $pallet_jumlah[$i];
                     } else {
