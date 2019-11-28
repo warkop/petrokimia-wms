@@ -17,6 +17,7 @@ use App\Http\Models\RencanaAreaTkbm;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\Users;
 use App\Http\Requests\ApiRealisasiRequest;
+use App\Http\Requests\RealisasiMaterialRequest;
 use App\Http\Resources\AktivitasResource;
 
 class RealisasiController extends Controller
@@ -250,7 +251,7 @@ class RealisasiController extends Controller
         ], 200);
     }
 
-    public function storeMaterial(Request $req, RealisasiMaterial $realisasiMaterial)
+    public function storeMaterial(RealisasiMaterialRequest $req, RealisasiMaterial $realisasiMaterial)
     {
         $user = $req->get('my_auth');
         $gudang = Gudang::where('id_karu', $user->id_karu)->first();

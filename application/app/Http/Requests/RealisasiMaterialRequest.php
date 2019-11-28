@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RealisasiRequest extends FormRequest
+class RealisasiMaterialRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,8 @@ class RealisasiRequest extends FormRequest
     {
         $rules = [
             'id_material.*' => 'required',
-            'housekeeper.*' => 'numeric',
-            'area_housekeeper.*.*' => 'numeric',
+            'material_tambah.*' => 'numeric',
+            'material_kurang.*' => 'numeric',
         ];
 
         return $rules;
@@ -35,9 +35,9 @@ class RealisasiRequest extends FormRequest
     public function attributes()
     {
         return [
-            'tanggal'       => 'Material',
-            'housekeeper.*'   => 'Kolom Material Bertambah',
-            'area_housekeeper.*.*'   => 'Kolom Material Berkurang',
+            'id_material'       => 'Material',
+            'material_tambah'   => 'Kolom Material Bertambah',
+            'material_kurang'   => 'Kolom Material Berkurang',
         ];
     }
 
@@ -45,7 +45,7 @@ class RealisasiRequest extends FormRequest
     {
         return [
             'required'  => ':attribute wajib diisi!',
-            'numeric'   => ':attribute tidak valid!',
+            'numeric'   => ':attribute harus berupa angka!',
         ];
     }
 

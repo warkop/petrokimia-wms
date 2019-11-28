@@ -360,26 +360,26 @@ class RencanaHarianController extends Controller
         }
 
         
-        $material = $req->input('material');
-        $material_tambah = $req->input('material_tambah');
-        $material_kurang = $req->input('material_kurang');
-        $panjang = count($material);
-        $material           = array_values($material);
-        $material_tambah    = array_values($material_tambah);
-        $material_kurang    = array_values($material_kurang);
-        for($i=0; $i<$panjang; $i++) {
-            $arr = [
-                'id_realisasi' => $realisasi->id,
-                'id_material' => $material[$i],
-                'bertambah' => $material_tambah[$i],
-                'berkurang' => $material_kurang[$i],
-                'created_at' => now(),
-            ];
+        // $material = $req->input('material');
+        // $material_tambah = $req->input('material_tambah');
+        // $material_kurang = $req->input('material_kurang');
+        // $panjang = count($material);
+        // $material           = array_values($material);
+        // $material_tambah    = array_values($material_tambah);
+        // $material_kurang    = array_values($material_kurang);
+        // for($i=0; $i<$panjang; $i++) {
+        //     $arr = [
+        //         'id_realisasi' => $realisasi->id,
+        //         'id_material' => $material[$i],
+        //         'bertambah' => $material_tambah[$i],
+        //         'berkurang' => $material_kurang[$i],
+        //         'created_at' => now(),
+        //     ];
 
-            \DB::table('realisasi_material')->insert(
-                $arr
-            );
-        }
+        //     \DB::table('realisasi_material')->insert(
+        //         $arr
+        //     );
+        // }
 
         $this->responseCode = 200;
 
