@@ -45,6 +45,8 @@ class RealisasiMaterialRequest extends FormRequest
 
         $this->sanitize();
 
+        dump(\Request::instance()->tanggal);
+
         return $rules;
     }
 
