@@ -78,6 +78,11 @@ class Users extends Authenticatable
         static::addGlobalScope(new EndDateScope);
     }
 
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+
     public function scopeEndDate($query)
     {
         return $query->where('end_date', null)->orWhere('end_date', '>', date('Y-m-d'));
