@@ -43,7 +43,6 @@ const loadMaterial = () => {
             dataType: 'json',
             processResults: function (response) {
                 /*Tranforms the top-level key of the response object from 'items' to 'results'*/
-                console.log(response);
                 return {
                     results: $.map(response.data, function (item) {
                         
@@ -453,19 +452,27 @@ function simpan() {
                         } else {
                             head = 'Pemberitahuan';
                             type = 'warning';
-
                             obj = response.responseJSON.errors;
+                            message = '';
+                            if (obj == null) {
+                                message = response.responseJSON.message;
+                            } else {
+                                const temp = Object.values(obj);
+                                
+                                temp.forEach(element => {
+                                    element.forEach(row => {
+                                        message += row + "<br>"
+                                    });
+                                });
+                            }
+
                             laddaButton.stop();
                             window.onbeforeunload = false;
                             $('.btn_close_modal').removeClass('hide');
                             $('.se-pre-con').hide();
-                            const temp = Object.values(obj);
-                            message = '';
-                            temp.forEach(element => {
-                                element.forEach(row => {
-                                    message += row + "<br>"
-                                });
-                            });
+                            
+
+                            
                         }
                     }
                 }
@@ -478,10 +485,11 @@ function simpan() {
 
 function reset_form(method = '') {
     $('#id').val('');
+    $('#material').select2("val", "");
     $('#jumlah').val('');
     $('#alasan').val('');
-    $('input[name=tipe]').val(1);
-    $('input[name=jenis]').val(1);
+    // $('input[name=tipe]').val(1);
+    // $('input[name=jenis]').val(1);
 }
 
 var KTDatatablesDataSourceHtml = function () {

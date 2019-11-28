@@ -80,23 +80,38 @@ class PalletController extends Controller
 
         $gudangStok = GudangStok::where('id_material', $req->input('material'))->get();
         if (!empty($gudangStok)) {
+            if ($req->input('tipe') == 1) {
+                $this->responseMessage = 'Stok belum tersedia jadi Anda hanya diizinkan untuk menambah untuk material ini!';
+                $this->responseCode = 403;
+
+                $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+                return response()->json($response, $this->responseCode);
+            }
             $gudangStok = new GudangStok;
+            $gudangStok->jumlah = $req->input('jumlah');
+        } else {
+            if ($req->input('tipe') == 1) {
+                if ($gudangStok->jumlah - $req->input('jumlah') < 0) {
+                    $this->responseMessage = 'Jumlah yang Anda masukkan melebihi stok yang tersedia!';
+                    $this->responseCode = 403;
+
+                    $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+                    return response()->json($response, $this->responseCode);
+                }
+                $gudangStok->jumlah         = $gudangStok->jumlah - $req->input('jumlah');
+            } else if ($req->input('tipe') == 2) {
+                $gudangStok->jumlah         = $gudangStok->jumlah + $req->input('jumlah');
+            }
         }
-        // $arr_stok = [
-        //     'id_gudang'         => $id_gudang,
-        //     'id_material'       => $req->input('material'),
-        //     'jumlah'            => $req->input('jumlah'),
-        //     'status'            => $req->input('tipe'),
-        // ];
 
         $gudangStok->id_gudang      = $id_gudang;
         $gudangStok->id_material    = $req->input('material');
-        $gudangStok->jumlah         = $req->input('jumlah');
         $gudangStok->status         = $req->input('jenis');
         $gudangStok->save();
 
         $arr = [
             'id_material'       => $req->input('material'),
+            'id_gudang_stok'    => $gudangStok->id,
             'tanggal'           => $req->input('tanggal'),
             'tipe'              => $req->input('tipe'),
             'jumlah'            => $req->input('jumlah'),

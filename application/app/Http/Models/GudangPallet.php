@@ -52,7 +52,7 @@ class GudangStok extends Model
                 'status_pallet'
             )
             ->Join('material', 'gudang_stok.id_material', '=', 'material.id')
-            ->Join('material_trans', 'material_trans.id_material', '=', 'gudang_stok.id_material')
+            ->Join('material_trans', 'gudang_stok.id', '=', 'material_trans.id_gudang_stok')
             ->where('id_gudang', $id_gudang)
             ->where('id_adjustment', null)
             ->where('id_realisasi_material', null)

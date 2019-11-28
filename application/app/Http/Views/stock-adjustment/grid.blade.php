@@ -93,7 +93,7 @@ lines {
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Tanggal</label>
-                                <input type="text" class="form-control" name="tanggal" id="tanggal" readonly placeholder="Select date">
+                                <input type="text" class="form-control" name="tanggal" id="tanggal" readonly placeholder="Select date" value="{{date('d-m-Y')}}">
                             </div>
                         </div>
                         <div class="col-md-12">
