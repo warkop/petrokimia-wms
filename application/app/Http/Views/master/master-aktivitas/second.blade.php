@@ -262,11 +262,25 @@
                                 </div>
                             </div>
                             <div class="row form-group mb-0 mb2">
+                                @if (!empty($anggaran_tkbm))
+                                    @php 
+                                        $show_anggaran_tkbm = 'display:block'; 
+                                        $checked = 'checked'; 
+                                    @endphp
+                                @else
+                                    @php 
+                                        $show_anggaran_tkbm = 'display:none'; 
+                                        $checked = ''; 
+                                    @endphp
+                                @endif
                                 <div class="col-12 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                         <input type="checkbox" name="butuh_tkbm" id="butuh_tkbm" value="1"> Butuh TKBM
                                         <span></span>
                                     </label>
+                                </div>
+                                <div class="col-3">
+                                    <span id="butuh_tkbm-label" onclick="showModalTkbm()" class="pull-right pointer kt-font-success kt-font-bold undelinehov" style="{{$show_anggaran_tkbm}}">Lihat</span>
                                 </div>
                             </div>
                             <div class="row form-group mb-0 mb2">
@@ -375,6 +389,31 @@
                                         @php $i++ @endphp
                                         @endforeach
                                         
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modalTkbm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Anggaran TKBM</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="tempat_anggaran" class="form-group">
+                                        <small for="idAForklift">Masukkan Anggaran</small>
+                                        <input type="text" class="form-control anggaran" name="anggaran_tkbm" id="anggaran_tkbm" value="{{$anggaran_tkbm}}" placeholder="Masukkan Anggaran TKBM">
                                     </div>
                                 </div>
                             </div>
@@ -551,6 +590,16 @@
         }
     });
 
+    $('#butuh_tkbm').on('change', function(e){
+        if(e.target.checked){
+            $('#modalTkbm').modal();
+            $('#butuh_tkbm-label').show('slow');
+        } else {
+            $('#anggaran_tkbm').val('');
+            $('#butuh_tkbm-label').hide();
+        }
+    });
+
     function showModalAlatBerat(){
         $('#modalAlatBerat').modal();
         const id = $("#id").val();
@@ -568,6 +617,12 @@
 
             }
         });
+    }
+
+    function showModalTkbm(){
+        $('#modalTkbm').modal();
+        // const id = $("#id").val();
+        
     }
 
     function loadAnggaran(id) {

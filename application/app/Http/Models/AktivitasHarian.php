@@ -18,5 +18,66 @@ class AktivitasHarian extends Model
         // 'created_by',
     ];
 
+    protected $dates = ['created_at'];
+
     public $timestamps  = false;
+
+    public function aktivitas()
+    {
+        return $this->hasOne(Aktivitas::class, 'id', 'id_aktivitas');
+    }
+
+    public function gudang()
+    {
+        return $this->hasOne(Gudang::class, 'id', 'id_gudang');
+    }
+    
+    public function gudangTujuan()
+    {
+        return $this->hasOne(Gudang::class, 'id', 'id_gudang_tujuan');
+    }
+    
+    public function shift()
+    {
+        return $this->hasOne(ShiftKerja::class, 'id', 'id_shift');
+    }
+
+    public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
+    {
+        $result = \DB::table($this->table)
+            ->select(
+                'aktivitas_harian.id AS id', 
+                'aktivitas.nama as nama_aktivitas',
+                'aktivitas_harian.created_at as tanggal', 
+                'gudang.nama as nama_gudang', 
+                'shift_kerja.nama as nama_shift'
+            )
+            ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+            ->join('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
+            ->join('shift_kerja', 'shift_kerja.id', '=', 'aktivitas_harian.id_shift')
+            ;
+
+        if (!empty($search)) {
+            $result = $result->where(function ($where) use ($search) {
+                $where->where(\DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere('gudang.nama', 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere('shift_kerja.nama', 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(\DB::raw("TO_CHAR(aktivitas_harian.created_at, 'DD/MM/YYYY')"), 'ILIKE', '%' . strtolower($search) . '%');
+            });
+        }
+
+        if (!$condition) {
+            foreach ($condition as $key => $value) {
+                $result = $result->where($key, $value);
+            }
+        }
+
+        if ($count == true) {
+            $result = $result->count();
+        } else {
+            $result  = $result->offset($start)->limit($length)->orderBy($field, $sort)->get();
+        }
+
+        return $result;
+    }
 }

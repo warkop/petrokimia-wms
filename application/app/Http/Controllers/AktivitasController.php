@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Models\Aktivitas;
 use App\Http\Models\AktivitasAlatBerat;
 use App\Http\Models\AktivitasMasterFoto;
-use App\Http\Models\AlatBerat;
 use App\Http\Models\JenisFoto;
 use App\Http\Models\KategoriAlatBerat;
 use App\Http\Requests\AktivitasRequest;
@@ -88,16 +87,17 @@ class AktivitasController extends Controller
         $aktivitas->tanda_tangan               = $req->input('tanda_tangan');
         $aktivitas->butuh_approval             = $req->input('butuh_approval');
         $aktivitas->pindah_area                = $req->input('pindah_area');
+        $aktivitas->anggaran_tkbm              = $req->input('anggaran_tkbm');
         $aktivitas->start_date                 = $req->input('start_date');
         $aktivitas->end_date                   = $req->input('end_date');
 
         $aktivitas->save();
 
-        $butuh_upload_foto    = $req->input('butuh_upload_foto');
-        $upload_foto    = $req->input('upload_foto');
-        $butuh_alat_berat     = $req->input('butuh_alat_berat');
-        $alat_berat     = $req->input('alat_berat');
-        $anggaran       = $req->input('anggaran');
+        $butuh_upload_foto      = $req->input('butuh_upload_foto');
+        $upload_foto            = $req->input('upload_foto');
+        $butuh_alat_berat       = $req->input('butuh_alat_berat');
+        $alat_berat             = $req->input('alat_berat');
+        $anggaran               = $req->input('anggaran');
         
         if (!empty($upload_foto) && !empty($butuh_upload_foto)) {
             AktivitasMasterFoto::where('id_aktivitas', $aktivitas->id)->delete();
@@ -115,9 +115,9 @@ class AktivitasController extends Controller
             AktivitasAlatBerat::where('id_aktivitas', $aktivitas->id)->delete();
             for ($i=0; $i<count($alat_berat); $i++) {
                 $arr = [
-                    'id_aktivitas'  => $aktivitas->id,
-                    'id_kategori_alat_berat' => $alat_berat[$i],
-                    'anggaran' => $anggaran[$alat_berat[$i]],
+                    'id_aktivitas'              => $aktivitas->id,
+                    'id_kategori_alat_berat'    => $alat_berat[$i],
+                    'anggaran'                  => $anggaran[$alat_berat[$i]],
                 ];
     
                 AktivitasAlatBerat::create($arr);
@@ -156,13 +156,13 @@ class AktivitasController extends Controller
 
     public function edit($id)
     {
-        Aktivitas::findOrFail($id);
+        $aktivitas = Aktivitas::findOrFail($id);
         $data['id'] = $id;
+        $data['anggaran_tkbm'] = $aktivitas->anggaran_tkbm;
         $data['foto'] = JenisFoto::get();
         $data['alat_berat'] = KategoriAlatBerat::get();
         $data['aktivitas_alat_berat'] = AktivitasAlatBerat::where('id_aktivitas', $id)->get();
         $data['aktivitas_master_foto'] = AktivitasMasterFoto::where('id_aktivitas', $id)->get();
-        // dump($data['aktivitas_alat_berat'] != null);
         return view('master.master-aktivitas.second', $data);
     }
 
