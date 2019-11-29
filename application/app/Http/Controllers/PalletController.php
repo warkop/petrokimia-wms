@@ -79,9 +79,10 @@ class PalletController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function getMaterial()
+    public function getMaterial(Request $req)
     {
-        $res = Material::pallet()->get();
+        $search = $req->input('q');
+        $res = Material::pallet()->where('nama', 'ILIKE', '%' . strtolower($search) . '%')->get();
 
         $this->responseCode = 200;
         $this->responseMessage = 'Data tersedia.';
@@ -95,8 +96,8 @@ class PalletController extends Controller
     {
         $req->validated();
 
-        $gudangStok = GudangStok::where('id_material', $req->input('material'))->get();
-        if (!empty($gudangStok)) {
+        $gudangStok = GudangStok::where('id_material', $req->input('material'))->first();
+        if (empty($gudangStok)) {
             if ($req->input('tipe') == 1) {
                 $this->responseMessage = 'Stok belum tersedia jadi Anda hanya diizinkan untuk menambah untuk material ini!';
                 $this->responseCode = 403;
@@ -104,7 +105,7 @@ class PalletController extends Controller
                 $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
                 return response()->json($response, $this->responseCode);
             }
-            $gudangStok = new GudangStok;
+            $gudangStok = new GudangStok();
             $gudangStok->jumlah = $req->input('jumlah');
         } else {
             if ($req->input('tipe') == 1) {
