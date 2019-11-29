@@ -38,9 +38,10 @@
                     <div class="form-group row">
                         <label class="col-form-label col-lg-3 col-sm-12">Pilih Gudang</label>
                         <div class="col-lg-7 col-md-9 col-sm-12">
-                            <select class="form-control" id="gudang">
-                                <option>Gudang 1</option>
-                                <option>Gudang 2</option>
+                            <select class="form-control m-select2" id="gudang">
+                                @foreach ($gudang as $key)
+                                    <option value="{{$key->id}}">{{$key->nama}}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -51,9 +52,9 @@
                         <label class="col-form-label col-lg-3 col-sm-12">Pilih Shift</label>
                         <div class="col-lg-7 col-md-9 col-sm-12">
                             <select class="form-control" id="shift">
-                                <option>Shift 1</option>
-                                <option>Shift 2</option>
-                                <option>Shift 3</option>
+                                @foreach ($shift as $key)
+                                <option value="{{$key->id}}">{{$key->nama}}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -168,7 +169,12 @@
 <!--end::Modal-->
 
 
-
+<script>
+    $("#gudang").select2({
+        placeholder: "Pilih Gudang",
+        allowClear: true
+    })
+</script>
 
 
 
