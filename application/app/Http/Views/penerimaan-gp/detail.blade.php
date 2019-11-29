@@ -23,7 +23,7 @@
                 </p>
             </div>
             <div class="kt-portlet__head-toolbar">
-                <a href="{{url('aktivitas')}}" class="pointer"><span class="pull-right color-dodolo"><i
+                <a href="{{url('penerimaan-gp')}}" class="pointer"><span class="pull-right color-dodolo"><i
                             class="la la-arrow-left"></i>kembali</span></a>
             </div>
         </div>
@@ -33,25 +33,31 @@
                     <div class="row mb1">
                         <div class="col-12">
                             <label>Jenis Aktivitas</label>
-                            <h5 class="boldd"> Pengiriman Pupuk ZA-X001</h5>
+                            <h5 class="boldd"> {{$aktivitasHarian->aktivitas->nama}}</h5>
+                        </div>
+                    </div>
+                    <div class="row mb1">
+                        <div class="col-12">
+                            <label>Shift Kerja</label>
+                            <h5 class="boldd"> {{$aktivitasHarian->shift->nama??'-'}}</h5>
                         </div>
                     </div>
                     <div class="row mb1">
                         <div class="col-12">
                             <label>Gudang Tujuan</label>
-                            <h5 class="boldd"> Gudang A</h5>
+                            <h5 class="boldd"> {{$aktivitasHarian->gudangTujuan->nama??'-'}}</h5>
                         </div>
                     </div>
                     <div class="row mb1">
                         <div class="col-12">
                             <label>Paket Alat Berat</label>
-                            <h5 class="boldd"> Paket A</h5>
+                            <h5 class="boldd"> {{$$aktivitasHarian->alatBerat->nomor_lambung??'-'}}</h5>
                         </div>
                     </div>
                     <div class="row mb1">
                         <div class="col-12">
                             <label>Sistro</label>
-                            <h5 class="boldd"> ABC6633224</h5>
+                            <h5 class="boldd"> {{$aktivitasHarian->sistro??'-'}}</h5>
                         </div>
                     </div>
                     <div class="row mb1">
@@ -68,11 +74,27 @@
                         <div class="kt-widget4 col-12 kel">
                             <div class="kt-widget4__item border-bottom-dash">
                                 <div class="kt-widget4__info">
-                                    <p class="kt-widget4__username">
-                                        Pupuk Urea - <span class="boldd">100 Ton</span>
-                                    </p>
+                                    @php 
+                                    $total = 0;
+                                    $temp_material = '';
+                                    @endphp
+                                    @foreach ($produk as $item)
+
+                                        {{-- @if ($temp_material != $item->material->nama) --}}
+                                        @php 
+                                            // $total += $item->jumlah;
+                                        @endphp
+                                        <p class="kt-widget4__username">
+                                            {{$item->material->nama??'-'}} - <span class="boldd">{{$total}} Ton</span>
+                                        </p>
+                                        @php
+                                            // $temp_material = $item->material->nama
+                                        @endphp
+                                        {{-- @endif --}}
+
+                                    @endforeach
                                     <p class="kt-widget4__text color-oren boldd">
-                                        Menambah
+                                        {{-- {{$item->material->tipe==1?'Mengurangi':'Menambah'}} --}}
                                     </p>
                                 </div>
                                 <a href="#" class="btn btn-sm btn-brand btn-bold" data-toggle="modal"
@@ -261,16 +283,18 @@
                 <div class="modal-body">
                     <div class="kt-scroll" data-scroll="true" data-height="400">
                         <div class="row mb2">
-                            <div class="col-4">
-                                <label class="boldd">Foto Atas</label>
-                                <a class="fancybox" rel="ligthbox"
-                                    href="{{asset('assets/main/metronic/media/products/product1.jpg')}}">
-                                    <img class="img-fluid"
-                                        src="{{asset('assets/main/metronic/media/products/product1.jpg')}}" alt=""
-                                        srcset="">
-                                </a>
-                            </div>
-                            <div class="col-4">
+                            @foreach ($aktivitasFoto as $item)
+                                <div class="col-4">
+                                    <label class="boldd">Foto {{$item->fotoJenis->nama}}</label>
+                                    <a class="fancybox" rel="ligthbox"
+                                        href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}">
+                                        <img class="img-fluid"
+                                            src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}" alt=""
+                                            srcset="">
+                                    </a>
+                                </div>
+                            @endforeach
+                            {{-- <div class="col-4">
                                 <label class="boldd">Foto Bawah</label>
                                 <a class="fancybox" rel="ligthbox"
                                     href="{{asset('assets/main/metronic/media/products/product2.jpg')}}">
@@ -287,9 +311,9 @@
                                         src="{{asset('assets/main/metronic/media/products/product4.jpg')}}" alt=""
                                         srcset="">
                                 </a>
-                            </div>
+                            </div> --}}
                         </div>
-                        <div class="row mb2">
+                        {{-- <div class="row mb2">
                             <div class="col-4">
                                 <label class="boldd">Foto Belakang</label>
                                 <a class="fancybox" rel="ligthbox"
@@ -317,7 +341,7 @@
                                         srcset="">
                                 </a>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="modal-footer">

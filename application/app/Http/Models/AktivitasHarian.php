@@ -42,6 +42,16 @@ class AktivitasHarian extends Model
         return $this->hasOne(ShiftKerja::class, 'id', 'id_shift');
     }
 
+    public function alatBerat()
+    {
+        return $this->hasOne(AlatBerat::class, 'id', 'id_alat_berat');
+    }
+
+    public function aktivitasFoto()
+    {
+        return $this->hasManyThrough(AktivitasFoto::class, JenisFoto::class, 'id_aktivitas_harian', 'id_foto_jenis', 'id', 'id');
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = \DB::table($this->table)

@@ -67,4 +67,9 @@ class MaterialTrans extends Model
             // $table->created_at = now();
         });
     }
+
+    public function material()
+    {
+        return $this->belongsTo(Material::class, 'id_material', 'id');
+    }
 }

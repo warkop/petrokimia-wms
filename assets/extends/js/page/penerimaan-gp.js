@@ -1,4 +1,107 @@
 "use strict";
+
+let datatable,
+    tableTarget = "#kt_table_1",
+    ajaxUrl = baseUrl + "penerimaan-gp",
+    ajaxSource = ajaxUrl,
+    totalFiles = 0,
+    completeFiles = 0,
+    laddaButton;
+
+$(document).ready(function () {
+    load_table();
+    KTSelect2.init();
+});
+
+const load_table = function () {
+    datatable = $(tableTarget);
+    // begin first table
+    datatable.dataTable({
+        bDestroy: true,
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: ajaxSource,
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            }
+        },
+        sPaginationType: "full_numbers",
+        aoColumns: [{
+                mData: "id"
+            },
+            {
+                mData: "tanggal"
+            },
+            {
+                mData: "nama_aktivitas"
+            },
+            {
+                mData: "id"
+            }
+        ],
+        aaSorting: [
+            [1, "asc"]
+        ],
+        lengthMenu: [10, 25, 50, 75, 100],
+        pageLength: 10,
+        aoColumnDefs: [{
+                aTargets: [0],
+                mData: "id",
+                mRender: function (data, type, full, draw) {
+                    let row = draw.row;
+                    let start = draw.settings._iDisplayStart;
+                    let length = draw.settings._iDisplayLength;
+
+                    let counter = start + 1 + row;
+
+                    return counter;
+                }
+            },
+            {
+                aTargets: [1],
+                mData: "tanggal",
+                mRender: function (data, type, full, draw) {
+                    return helpDateFormat(full.tanggal, "si");
+                }
+            },
+            {
+                className: "text-center",
+                targets: -1,
+                title: "Actions",
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return `<a href="` + ajaxSource + "/" + full.id + `">
+                            <button type = "button" class="btn btn-primary btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Detail Penerimaan GP">
+                            <i class="flaticon2-zig-zag-line-sign"></i> </button>
+                        </a>`;
+                }
+            }
+        ],
+        fnHeaderCallback: function (nHead, aData, iStart, iEnd, aiDisplay) {
+            $(nHead)
+                .children("th:nth-child(1), th:nth-child(2), th:nth-child(3)")
+                .addClass("text-center");
+        },
+        fnFooterCallback: function (nFoot, aData, iStart, iEnd, aiDisplay) {
+            $(nFoot)
+                .children("th:nth-child(1), th:nth-child(2), th:nth-child(3)")
+                .addClass("text-center");
+        },
+        fnRowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            $(nRow)
+                .children(
+                    "td:nth-child(1),td:nth-child(2),td:nth-child(3),td:nth-child(4)"
+                )
+                .addClass("text-center");
+        },
+        fnDrawCallback: function (settings) {
+            $('[data-toggle="kt-tooltip"]').tooltip();
+        }
+    });
+};
+
 var KTDatatablesDataSourceHtml = function () {
     var dataJSONArray = JSON.parse(
         '[[1,"12/09/2019", "Pengiriman Pupuk ZA-X001"]]');
@@ -179,9 +282,3 @@ var KTSelect2 = function () {
         }
     };
 }();
-
-
-jQuery(document).ready(function () {
-    KTDatatablesDataSourceHtml.init();
-    KTSelect2.init();
-});

@@ -33,4 +33,9 @@ class AktivitasFoto extends Model
             $table->created_at = now();
         });
     }
+
+    public function fotoJenis()
+    {
+        return $this->belongsTo(JenisFoto::class, 'id_foto_jenis', 'id');
+    }
 }
