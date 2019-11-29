@@ -169,6 +169,10 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/layout', function () {
         return view('menu-layout.grid');
     });
+
+    Route::group(['prefix' => 'log-aktivitas'], function () {
+        Route::get('/', 'LogAktivitasController@index');
+    });
 });
 
 Route::get('watch/{nama}/', 'WatchController@default');
@@ -217,24 +221,24 @@ Route::get('/add-rencana-harian', function () {
 // Route::get('/realisasi', function () {
 //     return view('rencana-harian.realisasi');
 // });
-Route::get('/log-aktivitas', function () {
-    return view('aktivitas.grid');
-});
-Route::get('/log-aktivitas/detail', function () {
-    return view('aktivitas.detail');
-});
-Route::get('/log-aktivitas/tambah', function () {
-    return view('log-aktivitas.add');
-});
+// Route::get('/log-aktivitas', function () {
+//     return view('aktivitas.grid');
+// });
+// Route::get('/log-aktivitas/detail', function () {
+//     return view('aktivitas.detail');
+// });
+// Route::get('/log-aktivitas/tambah', function () {
+//     return view('log-aktivitas.add');
+// });
 
 
 
-Route::get('/log-aktivitas', function () {
-    return view('log-aktivitas.grid');
-});
-Route::get('/log-aktivitas/detail', function () {
-    return view('log-aktivitas.detail');
-});
+// Route::get('/log-aktivitas', function () {
+//     return view('log-aktivitas.grid');
+// });
+// Route::get('/log-aktivitas/detail', function () {
+//     return view('log-aktivitas.detail');
+// });
 
 
 
