@@ -395,19 +395,17 @@ class AktivitasController extends Controller
 
                         $materialTrans->create($arr);
 
-                        $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('id_material', $pallet)->get();
+                        $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('id_material', $pallet)->first();
 
                         if (empty($gudangStok)) {
                             $gudangStok = new GudangStok;
                         }
 
-                        $arr = [
-                            'id_gudang'     => $gudang->id,
-                            'id_material'   => $pallet,
-                            'jumlah'        => $jumlah,
-                            'status'        => $status_pallet,
-                        ];
-                        $simpan_pallet = $gudangStok->create($arr);
+                        $gudangStok->id_gudang     = $gudang->id;
+                        $gudangStok->id_material   = $pallet;
+                        $gudangStok->jumlah        = $jumlah;
+                        $gudangStok->status        = $status_pallet;
+                        $gudangStok->save();
                     }
                 }
 
