@@ -32,13 +32,19 @@
                 <div class="row mb1">
                     <div class="col-12">
                         <label>Jenis Aktivitas</label>
-                        <h5 class="boldd"> Pengiriman Pupuk ZA-X001</h5>
+                        <h5 class="boldd"> {{$aktivitasHarian->aktivitas->nama}}</h5>
+                    </div>
+                </div>
+                <div class="row mb1">
+                    <div class="col-12">
+                        <label>Shift Kerja</label>
+                        <h5 class="boldd"> {{$aktivitasHarian->shift->nama??'-'}}</h5>
                     </div>
                 </div>
                 <div class="row mb1">
                     <div class="col-12">
                         <label>Gudang Tujuan</label>
-                        <h5 class="boldd"> Gudang A</h5>
+                        <h5 class="boldd"> {{$aktivitasHarian->gudangTujuan->nama??'-'}}</h5>
                     </div>
                 </div>
                 <div class="row mb1">
@@ -50,7 +56,7 @@
                 <div class="row mb1">
                     <div class="col-12">
                         <label>Sistro</label>
-                        <h5 class="boldd"> ABC6633224</h5>
+                        <h5 class="boldd"> {{$aktivitasHarian->sistro}}</h5>
                     </div>
                 </div>
                 <div class="row mb1">

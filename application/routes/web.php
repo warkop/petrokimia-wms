@@ -170,8 +170,24 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         return view('menu-layout.grid');
     });
 
+    Route::group(['prefix' => 'penerimaan-gp'], function () {
+        Route::get('/', 'PenerimaanGpController@index');
+        Route::get('/{aktivitasHarian}', 'PenerimaanGpController@show')->where('aktivitasHarian', '[0-9]+');
+        Route::post('/', 'PenerimaanGpController@json');
+        Route::patch('/{aktivitasHarian}', 'PenerimaanGpController@store')->where('aktivitasHarian', '[0-9]+');
+    });
+
+    // Route::get('/penerimaan-gp', function () {
+    //     return view('penerimaan-gp.grid');
+    // });
+    // Route::get('/penerimaan-gp/detail', function () {
+    //     return view('penerimaan-gp.detail');
+    // });
+
     Route::group(['prefix' => 'log-aktivitas'], function () {
         Route::get('/', 'LogAktivitasController@index');
+        Route::post('/', 'LogAktivitasController@json');
+        Route::get('/{aktivitasHarian}', 'LogAktivitasController@show')->where('aktivitasHarian', '[0-9]+');
     });
 });
 
@@ -242,12 +258,7 @@ Route::get('/add-rencana-harian', function () {
 
 
 
-Route::get('/penerimaan-gp', function () {
-    return view('penerimaan-gp.grid');
-});
-Route::get('/penerimaan-gp/detail', function () {
-    return view('penerimaan-gp.detail');
-});
+
 
 
 
