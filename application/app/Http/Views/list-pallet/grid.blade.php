@@ -79,7 +79,7 @@
                                 <th>Tipe</th>
                                 <th>Jenis</th>
                                 <th width="30%;">Alasan</th>
-                                <th>Actions</th>
+                                {{-- <th>Actions</th> --}}
                             </tr>
                         </thead>
                     </table>					
@@ -108,7 +108,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Tanggal</label>
-                                <input type="text" class="form-control" readonly placeholder="Select date" name="tanggal" id="tanggal" />
+                            <input type="text" class="form-control" readonly placeholder="Select date" name="tanggal" id="tanggal" readonly value="{{date('d-m-Y')}}"/>
                             </div>
                         </div>
                     </div>
@@ -182,13 +182,13 @@
 
 
 <script>
-    $('#tanggal').datepicker({
-        rtl: KTUtil.isRTL(),
-        todayHighlight: true,
-        format:'dd-mm-yyyy',
-        orientation: "bottom left",
-        clearBtn:true,
-    });
+    // $('#tanggal').datepicker({
+    //     rtl: KTUtil.isRTL(),
+    //     todayHighlight: true,
+    //     format:'dd-mm-yyyy',
+    //     orientation: "bottom left",
+    //     clearBtn:true,
+    // });
     
     const id_gudang = "{{ $id_gudang }}";
     

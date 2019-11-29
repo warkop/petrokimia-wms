@@ -95,10 +95,10 @@ const load_table = function () {
             },
             {
                 "mData": "alasan"
-            },
-            {
-                "mData": "id"
             }
+            // {
+            //     "mData": "id"
+            // }
         ],
         "aaSorting": [
             [1, 'asc']
@@ -170,18 +170,18 @@ const load_table = function () {
 
                      return label;
                 }
-            },
-            {
-                "aTargets": -1,
-                "mData": "id",
-                "orderable": false,
-                render: function (data, type, full, meta) {
-                    return "";
-                    // return `
-                    //         <button type="button" onclick="detail(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
-                    //         <i class="flaticon-edit-1"></i> </button>`;
-                },
             }
+            // {
+            //     "aTargets": -1,
+            //     "mData": "id",
+            //     "orderable": false,
+            //     render: function (data, type, full, meta) {
+            //         return "";
+            //         // return `
+            //         //         <button type="button" onclick="detail(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
+            //         //         <i class="flaticon-edit-1"></i> </button>`;
+            //     },
+            // }
         ],
         "fnHeaderCallback": function (nHead, aData, iStart, iEnd, aiDisplay) {
             $(nHead).children('th:nth-child(1), th:nth-child(2), th:nth-child(3)').addClass('text-center');

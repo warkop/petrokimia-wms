@@ -61,8 +61,9 @@ class GudangStok extends Model
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
                 $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere('LOWER(alasan)', 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere('jumlah', 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(\DB::raw('LOWER(alasan)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(\DB::raw('material_trans.jumlah::varchar(255)'), 'ILIKE', '%'.strtolower($search).'%');
+                $where->orWhere(\DB::raw("TO_CHAR(material_trans.tanggal, 'DD-MM-YYYY')"), 'ILIKE', '%' . strtolower($search) . '%');
             });
         }
 

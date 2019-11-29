@@ -67,8 +67,8 @@ class PalletController extends Controller
         $page = ($start / $perpage) + 1;
 
         if ($page >= 0) {
-            $result = $models->gridJson($start, $perpage, $search, false, $sort, $field, $condition, $id_gudang);
-            $total  = $models->gridJson($start, $perpage, $search, true, $sort, $field, $condition, $id_gudang);
+            $result = $models->gridJson($start, $perpage, trim($search), false, $sort, $field, $condition, $id_gudang);
+            $total  = $models->gridJson($start, $perpage, trim($search), true, $sort, $field, $condition, $id_gudang);
         } else {
             $result = $models::orderBy($field, $sort)->get();
             $total  = $models::all()->count();
