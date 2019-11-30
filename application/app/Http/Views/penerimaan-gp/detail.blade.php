@@ -116,7 +116,7 @@
                         </div>
                     </div>
                     <div class="row listterplas mt2">
-                        <label class="boldd mb1">List Terplas</label>
+                        <label class="boldd mb1">List Pallet</label>
                         <div class="kt-widget4 col-12 kel">
                             <div class="kt-widget4__item border-bottom-dash">
                                 <div class="kt-widget4__info">
@@ -353,7 +353,7 @@
 </div>
 <!--end::Modal-->
 
-<div class="modal fade" id="kt_keluhan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="kt_keluhan" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -362,6 +362,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>
+            <form id="form1">
             <div class="modal-body">
                 <div class="row mb2">
                     <div class="col-8">
@@ -372,7 +373,7 @@
                             Tambah</p>
                     </div>
                 </div>
-                <div id="inputAdjsts" style="border-bottom: 2px solid #F2F3F8">
+                <div id="table_produk" style="border-bottom: 2px solid #F2F3F8">
                     <div id="belumada" class="row kel">
                         <div class="belum col-12 text-center">
                             <label class="boldd dashed">Belum ada daftar produk</label>
@@ -381,9 +382,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-clean" data-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Simpan</button>
+                <button type="button" class="btn btn-clean" data-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-primary ladda-button" data-style="zoom-in" id="btn_save">Simpan</button>
             </div>
+            </form>
         </div>
     </div>
 </div>
@@ -391,52 +393,202 @@
 
 <script src="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.js')}}"></script>
 <script type="text/javascript">
+let datatable,
+    tableTarget = "#kt_table_1",
+    ajaxUrl = baseUrl + "penerimaan-gp",
+    ajaxSource = ajaxUrl,
+    totalFiles = 0,
+    completeFiles = 0,
+    laddaButton;
+    const id_aktivitas_harian = "{{$aktivitasHarian->id}}";
+
+    $(document).ready(()=>{
+        $("#btn_save").on("click", function(e) {
+            e.preventDefault();
+            laddaButton = Ladda.create(this);
+            laddaButton.start();
+            simpan();
+        });
+    })
+
+
     $(".fancybox").fancybox({
         openEffect: "none",
         closeEffect: "none"
     });
     $("#addBtnM").click(function () {
-        $("#inputAdjsts").append(`
-        <div class="row mb2">
+        const tableId = "table_produk";
+        const rows = document.getElementById(tableId).getElementsByTagName("div").length;
+        console.log(rows);
+        $("#table_produk").append(`
+        <div class="row mb2 produk_baris" id="baris-produk-${rows}">
             <div class="col-3">
                 <label class="boldd-500">Pilih Produk</label>
-                <select class="form-control select2Custom m-select2"  name="param"
-                    aria-placeholder="Pilih Produk" style="width: 100%;">
+                <select class="form-control select2Custom m-select2" id="produk-${rows}" name="produk[]" aria-placeholder="Pilih Produk" style="width: 100%;">
                     <option disabled selected>Pilih Produk</option>
-                    <option value="AK">Urea</option>
-                    <option value="HI">ZA</option>
                 </select>
             </div>
             <div class="col-2">
                 <label class="boldd-500">Jumlah</label><br>
-                <input type="text" class="form-control" placeholder="Jumlah">
+                <input type="text" id="jumlah-${rows}" name="jumlah[]" class="form-control" placeholder="Jumlah">
             </div>
             <div class="col-5">
                 <label class="boldd-500">Keluhan</label>
-                <textarea class="form-control" id="exampleTextarea" rows="2"></textarea>
+                <textarea class="form-control" id="exampleTextarea" id="keluhan-${rows}" name="keluhan[]" rows="2"></textarea>
             </div>
             <div class="col-2">
                 <label class="visibility-hide">Area</label><br>
-                <button href="javascript:void(0)" type="button" class="btn btn-danger cursor pointer btn-elevate btn-icon button_hapus" data-container="body"
-                    data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="Hapus"><i
-                        class="flaticon-delete"></i> </button>
+                <button href="javascript:void(0)" type="button" class="btn btn-danger cursor pointer btn-elevate btn-icon button_hapus" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="Hapus"><i class="flaticon-delete"></i> </button>
             </div>
         </div>
         `);
 
+        loadProduk(rows, `#produk-${rows}`)
+
+        // $('.select2Custom').select2({
+        //     placeholder: "Pilih Id "
+        // });
+
         $('.select2Custom').select2({
-            placeholder: "Pilih Id "
+            placeholder: "Pilih Produk",
+            dropdownParent:$("#kt_keluhan")
         });
         document.getElementById("belumada").remove();
+
     });
 
     $("body").on('click', '.button_hapus', function (e) {
         $(this).parent().parent().remove();
     });
 
-    $('.select2Custom').select2({
-        placeholder: "Pilih Produk"
-    });
+    function loadProduk(no, target) {
+        $.ajax({
+            url:  baseUrl + "penerimaan-gp" + "/" + "get-produk",
+            success: res => {
+                const obj = res.data;
+                console.log(obj);
+                let html = `<option value="">Pilih Produk</option>`;
+                obj.forEach((item, index) => {
+                    html += `<option value="${item.id}">${item.nama}</option>`;
+                });
+
+                $(target).html(html);
+                // $(target).val(id);
+                // $("#produk-" + no).val(tipe);
+                // $("#keluhan-" + no).val(tipe);
+                // $("#jumlah-" + no).val(jumlah);
+            },
+            error: () => {}
+        });
+
+        // let text = "";
+        // let i=1;
+        // obj_produk.forEach(element => {
+        //     let text_tipe = "";
+        //     if (element.tipe == 1) {
+        //         text_tipe = "Mengurangi";
+        //     } else if (element.tipe == 2) {
+        //         text_tipe = "Menambah";
+        //     }
+        //     text += `
+        //         <tr>
+        //             <td>${i}</td>
+        //             <td>${element.nama}</td>
+        //             <td>${text_tipe}</td>
+        //             <td>${element.jumlah} pcs</td>
+        //             <td>${element.alasan ? element.alasan : ''}</td>
+        //         </tr>
+        //     `;
+        //     i++;
+        // });
+        // $("#tubuh_produk").html(text);
+    }
+
+    function simpan() {
+        let data = $("#form1").serializeArray();
+        
+        $.ajax({
+            type: "PUT",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: ajaxUrl + "/" + id_aktivitas_harian,
+            data: data,
+            beforeSend: function () {
+                preventLeaving();
+                $('.btn_close_modal').addClass('hide');
+                $('.se-pre-con').show();
+            },
+            success: function (response) {
+                laddaButton.stop();
+                window.onbeforeunload = false;
+                $('.btn_close_modal').removeClass('hide');
+                $('.se-pre-con').hide();
+
+                let obj = response;
+
+                $('#kt_keluhan').modal('hide');
+                swal.fire('Ok', obj.message, 'success');
+            },
+            error: function (response) {
+                $("#btn_save").prop("disabled", false);
+                let head = 'Maaf',
+                    message = 'Terjadi kesalahan koneksi',
+                    type = 'error';
+                laddaButton.stop();
+                window.onbeforeunload = false;
+                $('.btn_close_modal').removeClass('hide');
+                $('.se-pre-con').hide();
+
+                if (response['status'] == 401 || response['status'] == 419) {
+                    location.reload();
+                } else {
+                    if (response['status'] != 404 && response['status'] != 500) {
+                        let obj = JSON.parse(response['responseText']);
+
+                        if (!$.isEmptyObject(obj.message)) {
+                            if (obj.code > 450) {
+                                head = 'Maaf';
+                                message = obj.message;
+                                type = 'error';
+                            } else {
+                                head = 'Pemberitahuan';
+                                type = 'warning';
+
+                                obj = response.responseJSON.errors;
+                                laddaButton.stop();
+                                window.onbeforeunload = false;
+                                $('.btn_close_modal').removeClass('hide');
+                                $('.se-pre-con').hide();
+
+                                const temp = Object.values(obj);
+                                message = '';
+                                temp.forEach(element => {
+                                    element.forEach(row => {
+                                        message += row + "<br>"
+                                    });
+                                });
+                            }
+                        }
+                    }
+
+                    swal.fire(head, message, type);
+                }
+            }
+        });
+    }
+
+    function loadKeluhan(){
+        $.ajax({
+            url: "{{ url('penerimaan-gp') }}/get-produk/"+id_aktivitas_harian,
+            success:res=>{
+                
+            },
+            error:()=>{
+
+            }
+        });
+    }
 </script>
 
 @stop

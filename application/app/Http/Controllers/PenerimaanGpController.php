@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\AktivitasFoto;
 use App\Http\Models\AktivitasHarian;
+use App\Http\Models\AktivitasKeluhanGp;
 use App\Http\Models\AreaStok;
+use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
+use App\Http\Requests\AktivitasKeluhanGpRequest;
 use Illuminate\Http\Request;
 
 class PenerimaanGpController extends Controller
@@ -56,9 +59,22 @@ class PenerimaanGpController extends Controller
             $total  = $models::all()->count();
         }
         $this->responseCode = 200;
-        $this->responseData = array("sEcho" => $echo, "iTotalRecords" => $total, "iTotalDisplayRecords" => $total, "aaData" => $result);
+        $this->responseData = array('sEcho' => $echo, 'iTotalRecords' => $total, 'iTotalDisplayRecords' => $total, 'aaData' => $result);
 
         return response()->json($this->responseData, $this->responseCode);
+    }
+
+    public function getProduk(Request $req, $id_aktivitas_harian=false)
+    {
+        $search = $req->input('q');
+        if ($id_aktivitas_harian) {
+            $data = Material::where('nama', 'ILIKE', '%'.strtolower($search).'%')->where('kategori', 1)->orderBy('nama', 'asc')->get();
+        } else {
+            $data = AktivitasKeluhanGp::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
+        }
+
+        
+        return response()->json(['data' => $data], 200);
     }
 
     /**
@@ -77,9 +93,31 @@ class PenerimaanGpController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AktivitasKeluhanGpRequest $req, AktivitasHarian $aktivitasHarian)
     {
-        
+        $req->validated();
+
+        if (!empty($req->input('produk'))) {
+            $produk = $req->input('produk');
+            foreach ($produk as $key => $value) {
+                $arr = [
+                    'id_aktivitas_harian'   => $aktivitasHarian->id,
+                    'id_material'           => $req->input('produk')[$key],
+                    'jumlah'                => $req->input('jumlah')[$key],
+                    'keluhan'               => $req->input('keluhan')[$key],
+                ];
+            }
+    
+            (new AktivitasKeluhanGp)->create($arr);
+        }
+
+        return response()->json($req->all(), 200);
+    }
+
+    public function approve(AktivitasHarian $aktivitasHarian)
+    {
+        $aktivitasHarian->approve = 1;
+        $aktivitasHarian->save();
     }
 
     /**
@@ -106,6 +144,10 @@ class PenerimaanGpController extends Controller
         // ->where('')
         // ->get(); 
         $data['produk'] = MaterialTrans::where('id_aktivitas_harian', $aktivitasHarian->id)->where('status_produk', 1)->get();
+
+
+        $data['list_produk'] = Material::produk()->get();
+
         return view('penerimaan-gp.detail', $data);
     }
 

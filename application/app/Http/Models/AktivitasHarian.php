@@ -65,6 +65,7 @@ class AktivitasHarian extends Model
             ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
             ->join('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
             ->join('shift_kerja', 'shift_kerja.id', '=', 'aktivitas_harian.id_shift')
+            ->whereNotNull('pengiriman')
             ;
 
         if (!empty($search)) {

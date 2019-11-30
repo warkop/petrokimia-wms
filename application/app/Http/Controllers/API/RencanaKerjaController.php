@@ -36,7 +36,10 @@ class RencanaKerjaController extends Controller
             return response()->json($data, 403);
         }
 
-        $data = RencanaHarian::where('id_gudang', $res_gudang->id)->paginate(10);
+        $data = RencanaHarian::select(
+            '*'
+        )
+        ->where('id_gudang', $res_gudang->id)->paginate(10);
 
         return AktivitasResource::collection($data)->additional([
             'status' => [
