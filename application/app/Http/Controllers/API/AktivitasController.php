@@ -26,7 +26,6 @@ use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Requests\ApiSaveKelayakanPhotos;
 use App\Http\Requests\ApiSavePhotosRequest;
 use App\Http\Resources\AktivitasResource;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 
 class AktivitasController extends Controller
@@ -174,8 +173,6 @@ class AktivitasController extends Controller
                 ]
             ];
         }
-
-        
     }
 
     public function getAlatBerat(Request $req)
@@ -267,51 +264,8 @@ class AktivitasController extends Controller
                                 $list_jumlah = $list_area[$j]['list_jumlah'];
                                 $jums_list_jumlah = count($list_jumlah);
 
-                                // for ($k = 0; $k < $jums_list_jumlah; $k++) {
-                                //     if ($res_aktivitas->fifo != null) {
-                                //         $area_stok = AreaStok::where('id_area', $id_area_stok)
-                                //             ->where('id_material', $produk)
-                                //             ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                //             ->orderBy('tanggal', 'asc')
-                                //             ->first();
-                                //     } else {
-                                //         $area_stok = AreaStok::where('id_area', $id_area_stok)
-                                //             ->where('id_material', $produk)
-                                //             ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                //             ->first();
-                                //     }
-
-                                //     $res_akt = Aktivitas::find($req->input('id_aktivitas'));
-                                //     if ($res_akt->produk_stok == 3) {
-                                //         $area_stok = new AreaStok;
-                                //     }
-
-                                //     if (empty($area_stok)) {
-
-                                //         if ($tipe == 1) {
-                                //             $text_tipe = 'Mengurangi';
-                                //         } else if ($tipe == 2) {
-                                //             $text_tipe = 'Menambah';
-                                //         }
-
-
-                                //         $this->responseCode = 500;
-                                //         $this->responseMessage = 'Gagal menyimpan aktivitas tipe ' . $text_tipe . '! Tidak ada area dengan produk yang cocok';
-                                //         $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                                //         return response()->json($response, $this->responseCode);
-                                //     } else if ($res_akt->produk_stok != 3) {
-                                //         if ($area_stok->jumlah - $list_jumlah[$k]['jumlah'] < 0) {
-                                //             $this->responseMessage = 'Jumlah yang Anda masukkan melebihi stok yang tersedia!';
-                                //             $this->responseCode = 403;
-
-                                //             $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
-                                //             return response()->json($response, $this->responseCode);
-                                //         }
-                                //     }
-                                // }
-
                                 for ($k = 0; $k < $jums_list_jumlah; $k++) {
-                                    if ($res_aktivitas->fifo != null) {
+                                    if ($res_aktivitas->fifo != null) { //jika FIFO
                                         $area_stok = AreaStok::where('id_area', $id_area_stok)
                                         ->where('id_material', $produk)
                                         ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
@@ -575,7 +529,6 @@ class AktivitasController extends Controller
         }
 
         return (new AktivitasResource($foto))->additional([
-            // 'foto' => $foto,
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_CREATED,
@@ -630,7 +583,6 @@ class AktivitasController extends Controller
             }
 
             return (new AktivitasResource($foto))->additional([
-                // 'foto' => $foto,
                 'status' => [
                     'message' => '',
                     'code' => Response::HTTP_CREATED,
@@ -673,23 +625,12 @@ class AktivitasController extends Controller
 
     public function show(Aktivitas $aktivitas)
     {
-        // $aktivitas = Aktivitas::findOrFail($id);
         return (new AktivitasResource($aktivitas))->additional([
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK,
             ]
         ], Response::HTTP_OK);
-        // try {
-        // } catch (ModelNotFoundException $ex) {
-        //     return response()->json([
-        //         'data' => null,
-        //         'status' => [
-        //             'message' => 'Data tidak ditemukan!',
-        //             'code' => Response::HTTP_NOT_FOUND
-        //         ]
-        //     ], Response::HTTP_NOT_FOUND);
-        // }
     }
 
     public function getJenisFoto(Request $req)

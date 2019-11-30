@@ -30,15 +30,16 @@ class ApiAktivitasRequest extends FormRequest
             'id_karu'           => 'nullable|numeric',
             'id_shift'          => 'nullable|numeric',
             'id_alat_berat'     => 'nullable|numeric|exists:alat_berat,id',
-            // 'ref_number'        => '',
             'id_pindah_area'    => 'nullable|numeric',
             'id_alat_berat'     => 'nullable|numeric',
-            // 'ttd'               => 'nullable|image',
-            // 'id_produk.*'       => 'unique',
+            'list_produk.*.produk'       => [
+                Rule::exists('material', 'id')->where(function ($query) {
+                    $query->where('kategori', 1);
+                })
+            ],
+            
             // 'sistro'            => 'Sistro',
             // 'approve'           => 'Approve',
-            // 'kelayakan_before'  => 'Kelayakan Before',
-            // 'kelayakan_after'   => 'Kelayakan After',
             // 'dikembalikan'      => 'Dikembalikan',
         ];
         
