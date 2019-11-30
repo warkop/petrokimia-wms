@@ -120,12 +120,17 @@ class RealisasiController extends Controller
     public function getHousekeeper($id_rencana)
     {
         if (is_numeric($id_rencana)) {
-            $this->responseData = RencanaAreaTkbm::select('id_tkbm', 'nama')
-                ->where('id_rencana', $id_rencana)
-                ->leftJoin('tenaga_kerja_non_organik', 'id_tkbm', '=', 'id')
-                ->groupBy('id_tkbm', 'nama')
-                ->orderBy('nama', 'asc')
-                ->get();
+            $this->responseData = RencanaAreaTkbm::select(
+                'id_tkbm', 
+                'id_area', 
+                'area.nama as nama_area',
+                'tenaga_kerja_non_organik.nama as nama_tkbm'
+            )
+            ->where('id_rencana', $id_rencana)
+            ->join('area', 'id_area', '=', 'area.id')
+            ->join('tenaga_kerja_non_organik', 'id_tkbm', '=', 'tenaga_kerja_non_organik.id')
+            ->orderBy('tenaga_kerja_non_organik.nama', 'asc')
+            ->get();
             $this->responseCode = 200;
         } else {
             $this->responseMessage = 'ID rencana tidak ditemukan';
