@@ -286,6 +286,16 @@ class RealisasiController extends Controller
         $req->validate();
         $user = $req->get('my_auth');
         $gudang = Gudang::where('id_karu', $user->id_karu)->first();
+        $rencana_harian = RencanaHarian::where('id_gudang', $gudang->id)->orderBy('id', 'desc')->first();
+
+        if (empty($rencana_harian)) {
+            return response()->json([
+                'status' => [
+                    'message'   => 'Rencana tidak ditemukan',
+                    'code'      => 403,
+                ]
+            ], 403);
+        }
 
         $list_material   = $req->input('list_material');
         
@@ -301,6 +311,7 @@ class RealisasiController extends Controller
         }
 
         $realisasiMaterial->tanggal       = now();
+        $realisasiMaterial->id_shift      = $rencana_harian->id_shift;
         $realisasiMaterial->created_at    = now();
 
         $realisasiMaterial->save();
