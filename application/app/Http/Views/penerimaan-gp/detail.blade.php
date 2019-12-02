@@ -463,7 +463,7 @@ let datatable,
 
     function loadProduk(no, target) {
         $.ajax({
-            url:  baseUrl + "penerimaan-gp" + "/" + "get-produk",
+            url:  baseUrl + "penerimaan-gp" + "/" + "get-produk/"+id_aktivitas_harian,
             success: res => {
                 const obj = res.data;
                 console.log(obj);
