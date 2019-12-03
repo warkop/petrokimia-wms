@@ -26,6 +26,8 @@ use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Requests\ApiSaveKelayakanPhotos;
 use App\Http\Requests\ApiSavePhotosRequest;
 use App\Http\Resources\AktivitasResource;
+use App\Http\Resources\AlatBeratKatResource;
+use App\Http\Resources\AlatBeratResource;
 use Illuminate\Http\Response;
 
 class AktivitasController extends Controller
@@ -831,5 +833,19 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
 
         return $obj;
+    }
+
+    public function getAlat()
+    {
+        $data = (new AlatBerat)->with('kategori')->get();
+
+        return AlatBeratResource::collection($data);
+    }
+
+    public function kategoriAlat()
+    {
+        $data = (new AlatBeratKat)->kategori()->get();
+
+        return AlatBeratKatResource::collection($data);
     }
 }
