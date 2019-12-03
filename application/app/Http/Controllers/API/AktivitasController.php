@@ -815,8 +815,9 @@ class AktivitasController extends Controller
         return $obj;
     }
 
-    public function historyMaterialArea($id_material)
+    public function historyMaterialArea($id_aktivitas_harian, $id_material)
     {
+        // $res = AktivitasHarianArea::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
         $res = AreaStok::select(
             'id_area',
             'nama',
@@ -838,14 +839,7 @@ class AktivitasController extends Controller
     public function getAlat()
     {
         $data = (new AlatBerat)->with('kategori')->get();
-
+        // return $data;
         return AlatBeratResource::collection($data);
-    }
-
-    public function kategoriAlat()
-    {
-        $data = (new AlatBeratKat)->kategori()->get();
-
-        return AlatBeratKatResource::collection($data);
     }
 }

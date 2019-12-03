@@ -15,9 +15,10 @@ class AlatBeratResource extends Resource
     public function toArray($request)
     {
         return [
+            // 'data'  => $this->collection,
             'id'                => $this->id,
             'nomor_lambung'     => $this->nomor_lambung,
-            // 'kategori'          => AlatBeratKatResource::collection($this->whenLoaded('alat_berat_kat')),
+            'kategori'          => $this->kategori->nama,
         ];
     }
 }

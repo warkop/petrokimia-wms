@@ -157,6 +157,8 @@ class PenerimaanGpController extends Controller
         )
         ->leftJoin('area', 'area.id', '=', 'area_stok.id_area');
 
+        $res = AreaStok::with('area')->get();
+
         // MaterialTrans::select(
         //     'jumlah'
         // )   
@@ -167,7 +169,7 @@ class PenerimaanGpController extends Controller
 
 
         $data['list_produk'] = Material::produk()->get();
-
+        // dd($res->toArray());
         return view('penerimaan-gp.detail', $data);
     }
 
