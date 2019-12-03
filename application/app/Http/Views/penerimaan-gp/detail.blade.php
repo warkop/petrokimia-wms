@@ -148,9 +148,9 @@
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="col-10">
-                        <button type="button" class="btn btn-wms btn-lg">Approve</button>
+                        <button type="button" class="btn btn-wms btn-lg" onclick="approve()">Approve</button>
                         <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
-                            data-target="#kt_keluhan">Keluhan</button>
+                            data-target="#kt_keluhan" onclick="loadKeluhan()">Keluhan</button>
                     </div>
                 </div>
             </div>
@@ -369,7 +369,7 @@
                         <h5 class="boldd">List Produk</h5>
                     </div>
                     <div class="col-4">
-                        <p class="btn btn-outline-success pull-right cursor pointer" id="addBtnM"><i class="la la-plus"></i>
+                        <p class="btn btn-outline-success pull-right cursor pointer" onclick="tambah()"><i class="la la-plus"></i>
                             Tambah</p>
                     </div>
                 </div>
@@ -416,10 +416,10 @@ let datatable,
         openEffect: "none",
         closeEffect: "none"
     });
-    $("#addBtnM").click(function () {
+
+    function tambah(obj='') {
         const tableId = "table_produk";
         const rows = document.getElementById(tableId).getElementsByTagName("div").length;
-        console.log(rows);
         $("#table_produk").append(`
         <div class="row mb2 produk_baris" id="baris-produk-${rows}">
             <div class="col-3">
@@ -434,7 +434,7 @@ let datatable,
             </div>
             <div class="col-5">
                 <label class="boldd-500">Keluhan</label>
-                <textarea class="form-control" id="exampleTextarea" id="keluhan-${rows}" name="keluhan[]" rows="2"></textarea>
+                <textarea class="form-control" id="keluhan-${rows}" name="keluhan[]" rows="2"></textarea>
             </div>
             <div class="col-2">
                 <label class="visibility-hide">Area</label><br>
@@ -443,7 +443,7 @@ let datatable,
         </div>
         `);
 
-        loadProduk(rows, `#produk-${rows}`)
+        loadProduk(rows, `#produk-${rows}`, obj)
 
         // $('.select2Custom').select2({
         //     placeholder: "Pilih Id "
@@ -453,15 +453,14 @@ let datatable,
             placeholder: "Pilih Produk",
             dropdownParent:$("#kt_keluhan")
         });
-        document.getElementById("belumada").remove();
-
-    });
+        
+    }
 
     $("body").on('click', '.button_hapus', function (e) {
         $(this).parent().parent().remove();
     });
 
-    function loadProduk(no, target) {
+    function loadProduk(no, target, produk='') {
         $.ajax({
             url:  baseUrl + "penerimaan-gp" + "/" + "get-produk/"+id_aktivitas_harian,
             success: res => {
@@ -473,6 +472,9 @@ let datatable,
                 });
 
                 $(target).html(html);
+                $("#produk-"+no).val(produk.id_material);
+                $("#jumlah-"+no).val(produk.jumlah);
+                $("#keluhan-"+no).html(produk.keluhan);
                 // $(target).val(id);
                 // $("#produk-" + no).val(tipe);
                 // $("#keluhan-" + no).val(tipe);
@@ -583,9 +585,47 @@ let datatable,
             url: "{{ url('penerimaan-gp') }}/get-produk/"+id_aktivitas_harian,
             success:res=>{
                 
+                if (res.keluhan !== '') {
+                    $("#table_produk").html('');
+                    // console.log(res.keluhan);
+                    const obj = res.keluhan;
+                    obj.forEach(element => {
+                        // console.log(element);
+                        tambah(element)
+                    });
+                } else {
+                    document.getElementById("belumada").remove();
+                }
             },
             error:()=>{
 
+            }
+        });
+    }
+
+    function approve() {
+         swal.fire({
+            title: 'Apakah Anda yakin ingin menyetujui keluhan ini?',
+            text: "Data yang sudah disetujui tidak bisa dibatalkan.",
+            type: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Tidak',
+            confirmButtonText: 'Ya!'
+        }).then(function (result) {
+            if (result.value) {
+                $.ajax({
+                    url: "{{ url('penerimaan-gp') }}/"+id_aktivitas_harian,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    method:"PATCH",
+                    success:res=>{
+                        swal.fire('Ok', "Data berhasil disimpan", 'success');
+                    },
+                    error:()=>{
+
+                    }
+                });
             }
         });
     }
