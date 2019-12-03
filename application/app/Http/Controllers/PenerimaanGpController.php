@@ -67,14 +67,21 @@ class PenerimaanGpController extends Controller
     public function getProduk(Request $req, $id_aktivitas_harian=false)
     {
         $search = $req->input('q');
+        $keluhan = '';
         if ($id_aktivitas_harian) {
-            $data = Material::where('nama', 'ILIKE', '%'.strtolower($search).'%')->where('kategori', 1)->orderBy('nama', 'asc')->get();
-        } else {
-            $data = AktivitasKeluhanGp::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
+            $keluhan = AktivitasKeluhanGp::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
         }
-
+        $data = Material::where('nama', 'ILIKE', '%'.strtolower($search).'%')->where('kategori', 1)->orderBy('nama', 'asc')->get();
         
-        return response()->json(['data' => $data], 200);
+        
+        return response()->json(['data' => $data, 'keluhan' => $keluhan], 200);
+    }
+
+    public function dataKeluhan(Request $req, $id_aktivitas_harian)
+    {
+        $res = AktivitasKeluhanGp::where('id_aktivitas_harian', $id_aktivitas_harian);
+
+        return response()->json(['data' => $res], 200);
     }
 
     /**
@@ -116,8 +123,21 @@ class PenerimaanGpController extends Controller
 
     public function approve(AktivitasHarian $aktivitasHarian)
     {
-        $aktivitasHarian->approve = 1;
-        $aktivitasHarian->save();
+        if ($aktivitasHarian->approve == null) {
+            $aktivitasHarian->approve =date('Y-m-d H:i:s');
+            $aktivitasHarian->save();
+            $this->responseCode = 200;
+            $this->responseMessage = 'Data berhasil disimpan';
+
+            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+            return response()->json($response, $this->responseCode);
+        } else {
+            $this->responseCode = 403;
+            $this->responseMessage = 'Data sudah disetujui!';
+
+            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+            return response()->json($response, $this->responseCode);
+        }
     }
 
     /**

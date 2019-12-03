@@ -246,7 +246,15 @@ class RealisasiController extends Controller
 
     public function getRealisasiMaterial()
     {
-        return AktivitasResource::collection(RealisasiMaterial::paginate(10))->additional([
+        $res = RealisasiMaterial::select(
+            'realisasi_material.id',
+            'id_material',
+            'tanggal',
+            'nama'
+        )
+        ->leftJoin('shift_kerja', 'realisasi_material.id_shift', '=', 'shift_kerja.id')
+        ->paginate(10);
+        return AktivitasResource::collection($res)->additional([
             'status' => [
                 'message' => '',
                 'code' => 200

@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Http\Models\AktivitasHarian;
 use App\Http\Models\Karu;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\Users;
+use App\Policies\AktivitasHarianPolicy;
 use App\Policies\KaruPolicy;
 use App\Policies\RencanaHarianPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -19,7 +21,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Model' => 'App\Policies\ModelPolicy',
-        RencanaHarian::class => RencanaHarianPolicy::class
+        RencanaHarian::class => RencanaHarianPolicy::class,
     ];
 
     /**

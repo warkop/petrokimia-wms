@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
@@ -70,6 +71,15 @@ class Handler extends ExceptionHandler
                     'code' => 404,
                 ]
             ], 404);
+        }
+
+        if ($exception instanceof AccessDeniedHttpException  && $request->wantsJson()) {
+            return response()->json([
+                'status' => [
+                    'message' => 'Hanya Checker yang diizinkan untuk menambah aktivitas harian!',
+                    'code' => 403,
+                ]
+            ], 403);
         }
 
         if ($exception instanceof AuthorizationException) {
