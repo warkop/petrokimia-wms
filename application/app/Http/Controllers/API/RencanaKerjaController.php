@@ -37,7 +37,11 @@ class RencanaKerjaController extends Controller
         }
 
         $data = RencanaHarian::select(
-            '*'
+            '*',
+            \DB::raw("
+            CASE WHEN (SELECT id FROM realisasi where id_rencana = rencana_harian.id) IS NOT NULL
+            THEN 'Done' ELSE 'Progress'
+            END AS status")
         )
         ->where('id_gudang', $res_gudang->id)->paginate(10);
 
