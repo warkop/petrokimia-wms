@@ -8,8 +8,6 @@ use App\Http\Models\Karu;
 use App\Http\Models\StokMaterial;
 use App\Http\Requests\GudangRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class GudangController extends Controller
 {
