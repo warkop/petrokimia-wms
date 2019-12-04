@@ -5,10 +5,8 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Aktivitas;
-use App\Http\Models\AktivitasArea;
 use App\Http\Models\Users;
 use App\Http\Models\AktivitasFoto;
-use App\Http\Models\AktivitasGudang;
 use App\Http\Models\AktivitasHarian;
 use App\Http\Models\AktivitasHarianArea;
 use App\Http\Models\AktivitasKelayakanFoto;
@@ -18,7 +16,6 @@ use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
-use App\Http\Models\JenisFoto;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
 use App\Http\Models\RencanaTkbm;
@@ -26,7 +23,6 @@ use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Requests\ApiSaveKelayakanPhotos;
 use App\Http\Requests\ApiSavePhotosRequest;
 use App\Http\Resources\AktivitasResource;
-use App\Http\Resources\AlatBeratKatResource;
 use App\Http\Resources\AlatBeratResource;
 use Illuminate\Http\Response;
 
@@ -817,14 +813,14 @@ class AktivitasController extends Controller
 
     public function historyMaterialArea($id_aktivitas_harian, $id_material)
     {
-        // $res = AktivitasHarianArea::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
-        $res = AreaStok::select(
-            'id_area',
-            'nama',
-            'jumlah'
-        )
-        ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
-        ->where('id_material', $id_material);
+        $res = AktivitasHarianArea::where('id_aktivitas_harian', $id_aktivitas_harian);
+        // $res = AreaStok::select(
+        //     'id_area',
+        //     'nama',
+        //     'jumlah'
+        // )
+        // ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
+        // ->where('id_material', $id_material);
 
         $obj = (new AktivitasResource($res->get()))->additional([
             'status' => [
