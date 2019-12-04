@@ -72,13 +72,13 @@
                     <div class="row listproduk">
                         <label class="boldd mb1">List Produk</label>
                         <div class="kt-widget4 col-12 kel">
+                            @php 
+                            $total = 0;
+                            $temp_material = '';
+                            @endphp
+                            @foreach ($produk as $item)
                             <div class="kt-widget4__item border-bottom-dash">
                                 <div class="kt-widget4__info">
-                                    @php 
-                                    $total = 0;
-                                    $temp_material = '';
-                                    @endphp
-                                    @foreach ($produk as $item)
 
                                         {{-- @if ($temp_material != $item->material->nama) --}}
                                         @php 
@@ -92,15 +92,16 @@
                                         @endphp
                                         {{-- @endif --}}
 
-                                    @endforeach
-                                    <p class="kt-widget4__text color-oren boldd">
-                                        {{-- {{$item->material->tipe==1?'Mengurangi':'Menambah'}} --}}
-                                    </p>
+                                        <p class="kt-widget4__text color-oren boldd">
+                                            {{$item->text_tipe}}
+                                        </p>
                                 </div>
-                                <a href="#" class="btn btn-sm btn-brand btn-bold" data-toggle="modal"
-                                    data-target="#kt_modal">Area</a>
-                            </div>
-                            <div class="kt-widget4__item border-bottom-dash ">
+                                    <a href="#" class="btn btn-sm btn-brand btn-bold" data-toggle="modal"
+                                    data-target="#kt_modal" onclick="loadArea({{$item->id_gudang_stok}})">Area</a>
+                                </div>
+                                    @endforeach
+                                <div class="border-pembatas mb1"></div>
+                            {{-- <div class="kt-widget4__item border-bottom-dash ">
                                 <div class="kt-widget4__info">
                                     <p class="kt-widget4__username">
                                         Pupuk ZE - <span class="boldd">20 Ton</span>
@@ -111,8 +112,8 @@
                                 </div>
                                 <a href="#" class="btn btn-sm btn-brand btn-bold" data-toggle="modal"
                                     data-target="#kt_modal">Area</a>
-                            </div>
-                            <div class="border-pembatas mb1"></div>
+                            </div> --}}
+                            
                         </div>
                     </div>
                     <div class="row listterplas mt2">
@@ -444,11 +445,6 @@ let datatable,
         `);
 
         loadProduk(rows, `#produk-${rows}`, obj)
-
-        // $('.select2Custom').select2({
-        //     placeholder: "Pilih Id "
-        // });
-
         $('.select2Custom').select2({
             placeholder: "Pilih Produk",
             dropdownParent:$("#kt_keluhan")
@@ -475,35 +471,9 @@ let datatable,
                 $("#produk-"+no).val(produk.id_material);
                 $("#jumlah-"+no).val(produk.jumlah);
                 $("#keluhan-"+no).html(produk.keluhan);
-                // $(target).val(id);
-                // $("#produk-" + no).val(tipe);
-                // $("#keluhan-" + no).val(tipe);
-                // $("#jumlah-" + no).val(jumlah);
             },
             error: () => {}
         });
-
-        // let text = "";
-        // let i=1;
-        // obj_produk.forEach(element => {
-        //     let text_tipe = "";
-        //     if (element.tipe == 1) {
-        //         text_tipe = "Mengurangi";
-        //     } else if (element.tipe == 2) {
-        //         text_tipe = "Menambah";
-        //     }
-        //     text += `
-        //         <tr>
-        //             <td>${i}</td>
-        //             <td>${element.nama}</td>
-        //             <td>${text_tipe}</td>
-        //             <td>${element.jumlah} pcs</td>
-        //             <td>${element.alasan ? element.alasan : ''}</td>
-        //         </tr>
-        //     `;
-        //     i++;
-        // });
-        // $("#tubuh_produk").html(text);
     }
 
     function simpan() {
@@ -587,10 +557,8 @@ let datatable,
                 
                 if (res.keluhan !== '') {
                     $("#table_produk").html('');
-                    // console.log(res.keluhan);
                     const obj = res.keluhan;
                     obj.forEach(element => {
-                        // console.log(element);
                         tambah(element)
                     });
                 } else {

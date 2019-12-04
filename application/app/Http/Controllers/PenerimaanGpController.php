@@ -9,6 +9,7 @@ use App\Http\Models\AreaStok;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
 use App\Http\Requests\AktivitasKeluhanGpRequest;
+use App\Http\Resources\MaterialTransResource;
 use Illuminate\Http\Request;
 
 class PenerimaanGpController extends Controller
@@ -159,17 +160,11 @@ class PenerimaanGpController extends Controller
 
         $res = AreaStok::with('area')->get();
 
-        // MaterialTrans::select(
-        //     'jumlah'
-        // )   
-        // ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
-        // ->where('')
-        // ->get(); 
-        $data['produk'] = MaterialTrans::where('id_aktivitas_harian', $aktivitasHarian->id)->where('status_produk', 1)->get();
-
+        $produk = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->where('status_produk', 1)->get();
+        $data['produk'] = MaterialTransResource::collection($produk);
+        // return ($data['produk']);
 
         $data['list_produk'] = Material::produk()->get();
-        // dd($res->toArray());
         return view('penerimaan-gp.detail', $data);
     }
 
