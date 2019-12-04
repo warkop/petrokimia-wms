@@ -48,28 +48,38 @@ class MaterialTrans extends Model
                     (new LogActivity)->log($arr);
                 }
             }
-
-            // $table->updated_by = \Auth::id();
-            // $table->updated_at = now();
         });
 
         static::creating(function ($table) {
             $arr = [
                 'modul' => ucwords(str_replace('_', ' ', $table->table)),
                 'action' => 1,
-                'aktivitas' => 'Menambah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' dengan nama ' . ($table->nama),
+                'aktivitas' => 'Menambah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' dengan tipe ' . ($table->tipe==1?' mengurangi':'menambah').' yang berjumlah '.($table->jumlah),
                 'created_at' => now(),
                 'created_by' => \Auth::id(),
             ];
             (new LogActivity)->log($arr);
-
-            // $table->created_by = \Auth::id();
-            // $table->created_at = now();
         });
     }
 
     public function material()
     {
         return $this->belongsTo(Material::class, 'id_material', 'id');
+    }
+    public function adjustment()
+    {
+        return $this->belongsTo(MaterialAdjustment::class, 'id_adjustment', 'id');
+    }
+    public function realisasiMaterial()
+    {
+        return $this->belongsTo(RealisasiMaterial::class, 'id_realisasi_material', 'id');
+    }
+    public function aktivitasHarian()
+    {
+        return $this->belongsTo(AktivitasHarian::class, 'id_aktivitas_harian', 'id');
+    }
+    public function gudangStok()
+    {
+        return $this->belongsTo(GudangStok::class, 'id_gudang_stok', 'id');
     }
 }

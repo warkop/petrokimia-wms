@@ -85,6 +85,22 @@ class CustomModel extends Model
                 $res = Karu::withoutGlobalScopes()->find($value);
                 return $res->nama;
                 break;
+            case 'id_gudang':
+                if ($value == '') {
+                    return 'kosong';
+                }
+
+                $res = Gudang::withoutGlobalScopes()->find($value);
+                return $res->nama;
+                break;
+            case 'id_material':
+                if ($value == '') {
+                    return 'kosong';
+                }
+
+                $res = Material::withoutGlobalScopes()->find($value);
+                return $res->nama;
+                break;
             default:
                 return $value;
                 break;
