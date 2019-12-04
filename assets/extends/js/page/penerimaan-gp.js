@@ -38,6 +38,9 @@ const loadTable = function () {
                 mData: "nama_aktivitas"
             },
             {
+                mData: "approve"
+            },
+            {
                 mData: "id"
             }
         ],
@@ -64,6 +67,19 @@ const loadTable = function () {
                 mData: "tanggal",
                 mRender: function (data, type, full, draw) {
                     return helpDateFormat(full.tanggal, "si");
+                }
+            },
+            {
+                className: "text-center",
+                targets: -2,
+                title: "Status",
+                // orderable: false,
+                render: function (data, type, full, meta) {
+                    if (full.approve == null) {
+                        return `<span class="badge badge-warning">Belum Approve</span>`;
+                    } else {
+                        return `<span class="badge badge-success">Sudah Approve</span>`
+                    }
                 }
             },
             {

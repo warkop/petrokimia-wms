@@ -60,7 +60,8 @@ class AktivitasHarian extends Model
                 'aktivitas.nama as nama_aktivitas',
                 'aktivitas_harian.created_at as tanggal', 
                 'gudang.nama as nama_gudang', 
-                'shift_kerja.nama as nama_shift'
+                'shift_kerja.nama as nama_shift',
+                'approve'
             )
             ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
             ->join('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')

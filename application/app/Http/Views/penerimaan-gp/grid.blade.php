@@ -38,6 +38,7 @@
                         <th>No</th>
                         <th>Tanggal</th>
                         <th>Aktivitas</th>
+                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>

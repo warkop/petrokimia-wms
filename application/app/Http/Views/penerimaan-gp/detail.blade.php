@@ -149,9 +149,11 @@
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="col-10">
+                        @if ($aktivitasHarian->approve == null)
                         <button type="button" class="btn btn-wms btn-lg" onclick="approve()">Approve</button>
                         <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
                             data-target="#kt_keluhan" onclick="loadKeluhan()">Keluhan</button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -588,10 +590,62 @@ let datatable,
                     },
                     method:"PATCH",
                     success:res=>{
-                        swal.fire('Ok', "Data berhasil disimpan", 'success');
+                        swal.fire('Ok', "Data berhasil disimpan", 'success').then(()=>{
+                            location.href = ajaxSource;
+                        });
                     },
-                    error:()=>{
+                    error:(response)=>{
+                        $("#btn_save").prop("disabled", false);
+                        let head = 'Maaf',
+                            message = 'Terjadi kesalahan koneksi',
+                            type = 'error';
+                        // laddaButton.stop();
+                        window.onbeforeunload = false;
+                        $('.btn_close_modal').removeClass('hide');
+                        $('.se-pre-con').hide();
 
+                        if (response['status'] == 401 || response['status'] == 419) {
+                            location.reload();
+                        } else {
+                            if (response['status'] != 404 && response['status'] != 500) {
+                                let obj = JSON.parse(response['responseText']);
+
+                                if (!$.isEmptyObject(obj.message)) {
+                                    if (obj.code > 450) {
+                                        head = 'Maaf';
+                                        message = obj.message;
+                                        type = 'error';
+                                    } else {
+                                        head = 'Pemberitahuan';
+                                        type = 'warning';
+                                        obj = response.responseJSON.errors;
+                                        message = '';
+                                        // console.log(obj)
+                                        if (obj == null) {
+                                            message = response.responseJSON.message;
+                                        } else {
+                                            const temp = Object.values(obj);
+                                            
+                                            temp.forEach(element => {
+                                                element.forEach(row => {
+                                                    message += row + "<br>"
+                                                });
+                                            });
+                                        }
+
+                                        // laddaButton.stop();
+                                        window.onbeforeunload = false;
+                                        $('.btn_close_modal').removeClass('hide');
+                                        $('.se-pre-con').hide();
+                                        
+
+                                        
+                                    }
+                                }
+                            }
+
+                            swal.fire(head, message, type);
+                        }
                     }
                 });
             }
