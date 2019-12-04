@@ -13,6 +13,8 @@ class LogActivity extends Model
         'id',
     ];
 
+    public $timestamps  = false;
+
     public function log($arr)
     {
         \DB::table('log_activity')->insert(

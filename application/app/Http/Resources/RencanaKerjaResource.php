@@ -14,6 +14,11 @@ class RencanaKerjaResource extends Resource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'id_shift' => $this->id_shift,
+            'tanggal' => $this->tanggal,
+            'status' => $this->id,
+        ];
     }
 }
