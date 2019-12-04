@@ -300,3 +300,9 @@ Route::get('/laporan-keluhan-alat-berat', function () {
 Route::get('/laporan-keluhan-gp', function () {
     return view('report.keluhan-gp.grid');
 });
+Route::get('/gudang/layout-gudang', function () {
+    return view('gudang.layoutGudang');
+});
+Route::get('/log-aktivitas-user', function () {
+    return view('log-aktivitas-user.grid');
+});
