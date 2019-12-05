@@ -1,4 +1,95 @@
 "use strict";
+
+let datatable,
+	tableTarget = "#kt_table_1",
+	ajaxUrl = baseUrl + "log-aktivitas-user",
+	ajaxSource = ajaxUrl,
+	totalFiles = 0,
+	completeFiles = 0,
+	laddaButton;
+
+$(document).ready(function () {
+	load_table();
+});
+
+const load_table = function () {
+	datatable = $(tableTarget);
+	// begin first table
+	datatable.dataTable({
+		bDestroy: true,
+		processing: true,
+		serverSide: true,
+		ajax: {
+			url: ajaxSource,
+			method: "POST",
+			headers: {
+				"X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+			}
+		},
+		sPaginationType: "full_numbers",
+		aoColumns: [{
+			mData: "id"
+		},
+		{
+			mData: 'username'
+		},
+		{
+			mData: "aktivitas"
+		},
+		{
+			mData: "created_at"
+		},
+		],
+		aaSorting: [
+			[3, "asc"]
+		],
+		lengthMenu: [10, 25, 50, 75, 100],
+		pageLength: 10,
+		aoColumnDefs: [{
+			aTargets: [0],
+			mData: "id",
+			mRender: function (data, type, full, draw) {
+				let row = draw.row;
+				let start = draw.settings._iDisplayStart;
+				let length = draw.settings._iDisplayLength;
+
+				let counter = start + 1 + row;
+
+				return counter;
+			}
+		}, {
+				aTargets: [0],
+				mData: "created",
+				mRender: function (data, type, full, draw) {
+					const temp = '';
+
+					return counter;
+				}
+			}
+		],
+		fnHeaderCallback: function (nHead, aData, iStart, iEnd, aiDisplay) {
+			$(nHead)
+				.children("th:nth-child(1), th:nth-child(2), th:nth-child(3)")
+				.addClass("text-center");
+		},
+		fnFooterCallback: function (nFoot, aData, iStart, iEnd, aiDisplay) {
+			$(nFoot)
+				.children("th:nth-child(1), th:nth-child(2), th:nth-child(3)")
+				.addClass("text-center");
+		},
+		fnRowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+			$(nRow)
+				.children(
+					"td:nth-child(1),td:nth-child(2),td:nth-child(3),td:nth-child(4)"
+				)
+				.addClass("text-center");
+		},
+		fnDrawCallback: function (settings) {
+			$('[data-toggle="kt-tooltip"]').tooltip();
+		}
+	});
+};
+
 var KTDatatablesBasicPaginations = function() {
 
     var dataJSONArray = JSON.parse(
@@ -28,6 +119,6 @@ var KTDatatablesBasicPaginations = function() {
 
 }();
 
-jQuery(document).ready(function() {
-	KTDatatablesBasicPaginations.init();
-});
+// jQuery(document).ready(function() {
+// 	KTDatatablesBasicPaginations.init();
+// });

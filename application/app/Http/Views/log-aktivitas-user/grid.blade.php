@@ -36,7 +36,7 @@
             </div> --}}
         </div>
         <div class="kt-portlet__body">
-            <table class="table table-striped- table-bordered table-hover table-checkable" id="logAktivUser">
+            <table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
                 <thead>
                     <tr class="text-center">
                         <th>No</th>
