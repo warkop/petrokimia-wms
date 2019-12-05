@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Models\Users;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Models\Gudang;
+use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -34,7 +36,6 @@ class AuthController extends Controller
                 if (Hash::check($password, $cek_user['password'])) {
                     if ($cek_user['role_id'] == 3) {
                         $rencanaTkbm = RencanaTkbm::where('id_tkbm', $cek_user['id_tkbm'])->get();
-                        // dump($rencanaTkbm);
                         if (!$rencanaTkbm->isEmpty()) {
                             $m_user = Users::withoutGlobalScopes()->find($cek_user['id']);
 
@@ -59,6 +60,13 @@ class AuthController extends Controller
                                 'id_karu'       => $m_user->id_karu,
                                 'gcid'          => $m_user->user_gcid,
                             ];
+                            if ($m_user->id_tkbm != null) {
+                                $rencanaTkbm        = RencanaTkbm::where('id_tkbm', $m_user->id_tkbm)->orderBy('id_rencana', 'desc')->first();
+                                $rencanaHarian  = RencanaHarian::findOrFail($rencanaTkbm->id_rencana);
+                                $gudang         = Gudang::findOrFail($rencanaHarian->id_gudang);
+                                
+                                $arr['nama_gudang'] = $gudang->nama;
+                            }
 
                             $this->responseCode = 200;
                             $this->responseData = $arr;
@@ -80,6 +88,7 @@ class AuthController extends Controller
 
                         $m_user->device = $device_id;
                         $m_user->save();
+                        
 
                         $arr = [
                             'access_token'  => $access_token,
@@ -91,6 +100,12 @@ class AuthController extends Controller
                             'id_karu'       => $m_user->id_karu,
                             'gcid'          => $m_user->user_gcid,
                         ];
+
+                        $arr['nama_gudang'] = '';
+                        if ($m_user->id_karu != null) {
+                            $gudang = Gudang::where('id_karu', $m_user->id_karu)->first();
+                            $arr['nama_gudang'] = $gudang->nama;
+                        }
 
                         $this->responseCode = 200;
                         $this->responseData = $arr;
