@@ -490,6 +490,7 @@ class AktivitasController extends Controller
                 \Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
                 $ttd->storeAs('/public/aktivitas_harian/' . $id_aktivitas_harian, $ttd->getClientOriginalName());
                 $aktivitas->ttd = $ttd->getClientOriginalName();
+                $aktivitas->save();
             }
         }
 
