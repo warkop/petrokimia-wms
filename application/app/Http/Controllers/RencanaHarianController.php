@@ -82,7 +82,7 @@ class RencanaHarianController extends Controller
         $req->validated();
         $id = $req->input('id');
         if (!empty($id)) {
-            $rencana_harian = RencanaHarian::find($req->input('id'));
+            $rencana_harian = RencanaHarian::findOrFail($req->input('id'));
 
             RencanaAlatBerat::where('id_rencana', $rencana_harian->id)->forceDelete();
             RencanaTkbm::where('id_rencana', $rencana_harian->id)->forceDelete();
@@ -91,15 +91,15 @@ class RencanaHarianController extends Controller
             $rencana_harian = new RencanaHarian();
         }
 
-        $users = Users::find(\Auth::id());
+        $users = Users::findOrFail(\Auth::id());
 
         $res_gudang = Gudang::where('id_karu', $users->id_karu)->first();
 
         //rencana harian
         $rencana_harian->tanggal                = date('Y-m-d');
         $rencana_harian->id_shift               = $req->input('id_shift');
-        $rencana_harian->start_date             = date('Y-m-d');
-        $rencana_harian->created_at             = date('Y-m-d H:i:s');
+        $rencana_harian->start_date             = now();
+        // $rencana_harian->created_at             = date('Y-m-d H:i:s');
         $rencana_harian->id_gudang              = $res_gudang->id;
         $rencana_harian->save();
 

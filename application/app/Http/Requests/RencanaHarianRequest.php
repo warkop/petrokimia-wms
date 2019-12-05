@@ -29,10 +29,10 @@ class RencanaHarianRequest extends FormRequest
             'id_shift'          => [
                 'required'
             ],
-            'alat_berat'        => 'required',
-            'op_alat_berat'     => 'required',
-            'admin_loket'       => 'required',
-            'checker'           => 'required',
+            'alat_berat.*'      => 'required',
+            'op_alat_berat.*'   => 'required',
+            'admin_loket.*'     => 'required',
+            'checker.*'         => 'required',
             'area'              => 'required|array',
             'area.*.*'          => 'required',
             'housekeeper'       => 'required|array',
