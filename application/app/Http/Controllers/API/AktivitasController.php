@@ -22,8 +22,10 @@ use App\Http\Models\RencanaTkbm;
 use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Requests\ApiSaveKelayakanPhotos;
 use App\Http\Requests\ApiSavePhotosRequest;
+use App\Http\Resources\AktivitasHarianResource;
 use App\Http\Resources\AktivitasResource;
 use App\Http\Resources\AlatBeratResource;
+use App\Http\Resources\AreaStokResource;
 use Illuminate\Http\Response;
 
 class AktivitasController extends Controller
@@ -98,6 +100,16 @@ class AktivitasController extends Controller
             ->groupBy(\DB::raw('b.id_area, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
             ->orderBy(\DB::raw('nama'))
             ->get();
+
+            // $resource = AreaStok::where('id_material', $id_material)->map(function ($user) {
+            //     return $user->name;
+            // })->get();
+            // return AreaStokResource::collection($resource)->additional([
+            //     'status' => [
+            //         'message' => '',
+            //         'code' => Response::HTTP_OK,
+            //     ]
+            // ], Response::HTTP_OK);
         } else {
             $resource = Area::select(
                 'area.id',
@@ -188,6 +200,15 @@ class AktivitasController extends Controller
                 'message' => '',
                 'code' => Response::HTTP_OK,
             ]
+        ], Response::HTTP_OK);
+    }
+
+    public function getPenerimaan(AktivitasHarian $aktivitasHarian)
+    {
+        $data = AktivitasHarianArea::where('id_aktivitas_harian', $aktivitasHarian->id)->with('area_stok')->get();
+        return (new AktivitasResource($data))->additional([
+            'status' => ['message' => '',
+            'code' => Response::HTTP_OK],
         ], Response::HTTP_OK);
     }
 
@@ -291,6 +312,7 @@ class AktivitasController extends Controller
                                         $area_stok->save();
                                     } else {
                                         $area_stok = new AreaStok;
+                                        $area_stok->id_area = $id_area_stok;
                                         $area_stok->id_material = $produk;
                                         $area_stok->tanggal = date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']));
                                         $area_stok->jumlah = $list_jumlah[$k]['jumlah'];
