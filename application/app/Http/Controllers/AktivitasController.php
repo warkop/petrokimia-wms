@@ -23,6 +23,7 @@ class AktivitasController extends Controller
         $data['title'] = 'Master Tambah Aktivitas';
         $data['foto'] = JenisFoto::get();
         $data['alat_berat'] = KategoriAlatBerat::get();
+        $data['anggaran_tkbm'] = '';
         $data['aktivitas_alat_berat'] = '';
         $data['aktivitas_master_foto'] = null;
         return view('master.master-aktivitas.second', $data);
