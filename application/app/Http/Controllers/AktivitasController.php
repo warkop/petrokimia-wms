@@ -141,13 +141,13 @@ class AktivitasController extends Controller
             $res = $models::withoutGlobalScopes()->find($id);
 
             if (!empty($res)) {
-                $this->responseCode = 200;
-                $this->responseMessage = 'Data tersedia.';
-                $this->responseData = $res;
+                $this->responseCode     = 200;
+                $this->responseMessage  = 'Data tersedia.';
+                $this->responseData     = $res;
             } else {
-                $this->responseData = [];
-                $this->responseStatus = 'No Data Available';
-                $this->responseMessage = 'Data tidak tersedia';
+                $this->responseData     = [];
+                $this->responseStatus   = 'No Data Available';
+                $this->responseMessage  = 'Data tidak tersedia';
             }
 
             $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
@@ -157,13 +157,13 @@ class AktivitasController extends Controller
 
     public function edit($id)
     {
-        $aktivitas = Aktivitas::findOrFail($id);
-        $data['id'] = $id;
-        $data['anggaran_tkbm'] = $aktivitas->anggaran_tkbm;
-        $data['foto'] = JenisFoto::get();
-        $data['alat_berat'] = KategoriAlatBerat::get();
-        $data['aktivitas_alat_berat'] = AktivitasAlatBerat::where('id_aktivitas', $id)->get();
-        $data['aktivitas_master_foto'] = AktivitasMasterFoto::where('id_aktivitas', $id)->get();
+        $aktivitas                      = Aktivitas::withoutGlobalScopes()->findOrFail($id);
+        $data['id']                     = $id;
+        $data['anggaran_tkbm']          = $aktivitas->anggaran_tkbm;
+        $data['foto']                   = JenisFoto::get();
+        $data['alat_berat']             = KategoriAlatBerat::get();
+        $data['aktivitas_alat_berat']   = AktivitasAlatBerat::where('id_aktivitas', $id)->get();
+        $data['aktivitas_master_foto']  = AktivitasMasterFoto::where('id_aktivitas', $id)->get();
         return view('master.master-aktivitas.second', $data);
     }
 
