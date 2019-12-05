@@ -444,31 +444,31 @@
 <script src="{{asset('assets/extends/js/page/master-aktivitas.js')}}" type="text/javascript"></script>
 <script>
     $(document).ready(()=>{
-    $("#produk_stok").attr('disabled',true);
-    $("#produk_stok").selectpicker('refresh');
+        $("#produk_stok").attr('disabled',true);
+        $("#produk_stok").selectpicker('refresh');
 
-    $("#produk_rusak").attr('disabled',true);
-    $("#produk_rusak").selectpicker('refresh');
+        $("#produk_rusak").attr('disabled',true);
+        $("#produk_rusak").selectpicker('refresh');
 
-    $("#pallet_stok").attr('disabled',true);
-    $("#pallet_stok").selectpicker('refresh');
+        $("#pallet_stok").attr('disabled',true);
+        $("#pallet_stok").selectpicker('refresh');
 
-    $("#pallet_dipakai").attr('disabled',true);
-    $("#pallet_dipakai").selectpicker('refresh');
+        $("#pallet_dipakai").attr('disabled',true);
+        $("#pallet_dipakai").selectpicker('refresh');
 
-    $("#pallet_kosong").attr('disabled',true);
-    $("#pallet_kosong").selectpicker('refresh');
+        $("#pallet_kosong").attr('disabled',true);
+        $("#pallet_kosong").selectpicker('refresh');
 
-    $("#pallet_rusak").attr('disabled',true);
-    $("#pallet_rusak").selectpicker('refresh');
-    
-    $("#butuh_approval").attr('disabled',true);
-    $("#fifo").attr('disabled',true);
+        $("#pallet_rusak").attr('disabled',true);
+        $("#pallet_rusak").selectpicker('refresh');
+        
+        $("#butuh_approval").attr('disabled',true);
+        $("#fifo").attr('disabled',true);
 
-    @if (!empty($id)) {
-        edit({{$id}});
-    }
-    @endif
+        @if (!empty($id)) {
+            edit({{$id}});
+        }
+        @endif
     });
     $('.kt-selectpicker').selectpicker();
     $('#end_date').datepicker({
