@@ -289,41 +289,35 @@ class AktivitasController extends Controller
                                         }
                                         
                                         $area_stok->save();
-            
-                                        $material_trans = new MaterialTrans;
-                                        
-                                        $array = [
-                                            'id_material'           => $produk,
-                                            'id_aktivitas_harian'   => $aktivitas->id,
-                                            'tanggal'               => now(),
-                                            'tipe'                  => $tipe,
-                                            'jumlah'                => $list_jumlah[$k]['jumlah'],
-                                            'status_produk'         => $status_produk,
-                                        ];
-
-                                        $material_trans->create($array);
-
-                                        (new AktivitasHarianArea)->create([
-                                            'id_aktivitas_harian'   => $aktivitas->id,
-                                            'id_area_stok'          => $area_stok->id,
-                                            'jumlah'                => $list_jumlah[$k]['jumlah'],
-                                            'tipe'                  => $tipe,
-                                            'created_at'            => now(),
-                                            'created_by'            => $res_user->id,
-                                        ]);
                                     } else {
-                                        $this->responseCode = 500;
-
-                                        if ($tipe == 1) {
-                                            $text_tipe = 'Mengurangi';
-                                        } else {
-                                            $text_tipe = 'Menambah';
-                                        }
-
-                                        $this->responseMessage = 'Gagal menyimpan aktivitas dengan tipe '.$text_tipe.'! Tidak ada area dengan produk yang cocok';
-                                        $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                                        return response()->json($response, $this->responseCode);
+                                        $area_stok = new AreaStok;
+                                        $area_stok->id_material = $produk;
+                                        $area_stok->tanggal = date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']));
+                                        $area_stok->jumlah = $list_jumlah[$k]['jumlah'];
+                                        $area_stok->save();
                                     }
+
+                                    $material_trans = new MaterialTrans;
+
+                                    $array = [
+                                        'id_material'           => $produk,
+                                        'id_aktivitas_harian'   => $aktivitas->id,
+                                        'tanggal'               => now(),
+                                        'tipe'                  => $tipe,
+                                        'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                        'status_produk'         => $status_produk,
+                                    ];
+
+                                    $material_trans->create($array);
+
+                                    (new AktivitasHarianArea)->create([
+                                        'id_aktivitas_harian'   => $aktivitas->id,
+                                        'id_area_stok'          => $area_stok->id,
+                                        'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                        'tipe'                  => $tipe,
+                                        'created_at'            => now(),
+                                        'created_by'            => $res_user->id,
+                                    ]);
                                 }
                             }
                         }
