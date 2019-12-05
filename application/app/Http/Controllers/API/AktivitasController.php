@@ -481,7 +481,7 @@ class AktivitasController extends Controller
         $res_user = Users::findOrFail($user->id_user);
 
         $id_aktivitas_harian = $req->input('id_aktivitas_harian');
-        $aktivitas = AktivitasHarian::find($id_aktivitas_harian);
+        $aktivitas = AktivitasHarian::findOrFail($id_aktivitas_harian);
 
 
         $ttd = $req->file('ttd');
