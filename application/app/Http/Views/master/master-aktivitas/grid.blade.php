@@ -116,6 +116,7 @@
 				<thead>
 					<tr>
 						<th>No</th>
+                        <th>Kode Aktivitas</th>
                         <th>Nama Aktivitas</th>
                         <th>Start Date</th>
                         <th>End Date</th>

@@ -55,6 +55,9 @@ let load_table = function () {
                 "mData": "id"
             },
             {
+                "mData": "kode_aktivitas"
+            },
+            {
                 "mData": "nama"
             },
             {
@@ -86,7 +89,7 @@ let load_table = function () {
                 }
             },
             {
-                "aTargets": [4],
+                "aTargets": -1,
                 "mData": "id",
                 render: function (data, type, full, meta) {
                     return `
@@ -147,6 +150,7 @@ function edit(id = '') {
 
             let obj = response;
 
+            $('#kode_aktivitas').val(obj.data['kode_aktivitas']);
             $('#nama').val(obj.data['nama']);
             if (obj.data['produk_stok'] != null) {
                 $("#produk_rusak").attr('disabled', true);

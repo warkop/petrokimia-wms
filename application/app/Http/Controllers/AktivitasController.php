@@ -89,6 +89,7 @@ class AktivitasController extends Controller
         $aktivitas->butuh_approval             = $req->input('butuh_approval');
         $aktivitas->pindah_area                = $req->input('pindah_area');
         $aktivitas->anggaran_tkbm              = $req->input('anggaran_tkbm');
+        $aktivitas->kode_aktivitas             = $req->input('kode_aktivitas');
         $aktivitas->start_date                 = $req->input('start_date');
         $aktivitas->end_date                   = $req->input('end_date');
 
@@ -138,7 +139,7 @@ class AktivitasController extends Controller
         if (!$request->ajax()) {
             return $this->accessForbidden();
         } else {
-            $res = $models::withoutGlobalScopes()->find($id);
+            $res = $models::withoutGlobalScopes()->findOrFail($id);
 
             if (!empty($res)) {
                 $this->responseCode     = 200;
