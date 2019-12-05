@@ -34,7 +34,7 @@ class AktivitasController extends Controller
 
         $obj =  AktivitasResource::collection(Aktivitas::where(function ($where) use ($search) {
             $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-        })->paginate(10))->additional([
+        })->orderBy('id', 'desc')->paginate(10))->additional([
             'status' => ['message' => '',
             'code' => Response::HTTP_OK],
         ], Response::HTTP_OK);
@@ -750,6 +750,7 @@ class AktivitasController extends Controller
         ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
         ->leftJoin('alat_berat', 'aktivitas_harian.id_gudang', '=', 'alat_berat.id')
         ->where('aktivitas_harian.id', $id)
+        ->orderBy('aktivitas_harian.id', 'desc')
         ;
 
         $res_produk = MaterialTrans::select(

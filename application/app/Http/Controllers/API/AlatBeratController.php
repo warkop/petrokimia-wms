@@ -40,7 +40,7 @@ class AlatBeratController extends Controller
                 $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(\DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
             })
-            ->orderBy('alat_berat.created_at', 'asc')
+            ->orderBy('alat_berat.id', 'desc')
             ->paginate(10);
 
         $obj =  AktivitasResource::collection($res)->additional([

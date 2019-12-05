@@ -24,7 +24,7 @@ class KeluhanOperatorController extends Controller
         )
         ->leftJoin('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'id_operator')
         ->leftJoin('keluhan as k', 'k.id', '=', 'id_keluhan')
-        ->where('keterangan', 'ILIKE', '%'.$search.'%')->paginate(10))->additional([
+        ->where('keterangan', 'ILIKE', '%'.$search.'%')->orderBy('keluhan_operator.id', 'desc')->paginate(10))->additional([
             'status' => [
                 'message' => '',
                 'code' => 200

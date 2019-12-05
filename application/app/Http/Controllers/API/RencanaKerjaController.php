@@ -43,7 +43,7 @@ class RencanaKerjaController extends Controller
             THEN 'Done' ELSE 'Progress'
             END AS status")
         )
-        ->where('id_gudang', $res_gudang->id)->orderBy('id')->paginate(10);
+        ->where('id_gudang', $res_gudang->id)->orderBy('id', 'desc')->paginate(10);
 
         return AktivitasResource::collection($data)->additional([
             'status' => [
