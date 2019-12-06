@@ -543,12 +543,18 @@ class AktivitasController extends Controller
             $foto = AktivitasFoto::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
         }
 
-        return (new AktivitasResource($foto))->additional([
+        // return (new AktivitasResource($foto))->additional([
+        //     'status' => [
+        //         'message' => '',
+        //         'code' => Response::HTTP_CREATED,
+        //     ]
+        // ], Response::HTTP_CREATED);
+
+        return response()->json([
             'status' => [
-                'message' => '',
+                'message' => 'Berhasil disimpan',
                 'code' => Response::HTTP_CREATED,
-            ]
-        ], Response::HTTP_CREATED);
+            ]], 200);
     }
 
     public function storeKelayakanPhotos(ApiSaveKelayakanPhotos $req)
