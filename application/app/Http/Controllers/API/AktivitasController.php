@@ -25,6 +25,7 @@ use App\Http\Requests\ApiSavePhotosRequest;
 use App\Http\Resources\AktivitasHarianResource;
 use App\Http\Resources\AktivitasResource;
 use App\Http\Resources\AlatBeratResource;
+use App\Http\Resources\AreaPenerimaanGiResource;
 use App\Http\Resources\AreaStokResource;
 use Illuminate\Http\Response;
 
@@ -91,14 +92,23 @@ class AktivitasController extends Controller
         $search = strip_tags($req->input('search'));
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
         if ($aktivitas->pengaruh_tgl_produksi != null) {
-            $resource = \DB::table('')
-            ->select(\DB::raw('DISTINCT  b.id_area as id, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
-            ->from(\DB::raw('(SELECT area_stok.id_area, area.nama, area.kapasitas, area_stok.tanggal, area_stok.jumlah FROM area_stok JOIN area ON area_stok.id_area = area.id WHERE area_stok.id_material = '.$id_material.' ORDER BY id_area ) AS b'))
-            ->where(function ($where) use ($search) {
-                $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-            })
-            ->groupBy(\DB::raw('b.id_area, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
-            ->orderBy(\DB::raw('nama'))
+            // $resource = \DB::table('')
+            // ->select(\DB::raw('DISTINCT  b.id_area as id, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
+            // ->from(\DB::raw('(SELECT area_stok.id_area, area.nama, area.kapasitas, area_stok.tanggal, area_stok.jumlah FROM area_stok JOIN area ON area_stok.id_area = area.id WHERE area_stok.id_material = '.$id_material.' ORDER BY id_area ) AS b'))
+            // ->where(function ($where) use ($search) {
+            //     $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            // })
+            // ->groupBy(\DB::raw('b.id_area, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
+            // ->orderBy(\DB::raw('nama'))
+            // ->get();
+
+            $resource = Area::
+            select(
+                '*',
+                \DB::raw('(SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.') as total')
+            )
+            ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
+            ->where('id_material', $id_material)
             ->get();
 
             // $resource = AreaStok::where('id_material', $id_material)->map(function ($user) {
@@ -618,6 +628,58 @@ class AktivitasController extends Controller
                 ]
             ], Response::HTTP_FORBIDDEN);
         }
+    }
+
+
+    public function loadPenerimaan($id)
+    {
+        $materialTrans = MaterialTrans::select(
+            'id_material',
+            'jumlah'
+        )
+            ->where('id_aktivitas_harian', $id)
+            ->whereNotNull('status_produk')
+            ->get();
+        return response()->json([
+            'data' => $materialTrans,
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ]
+        ], Response::HTTP_OK);
+    }
+
+    public function getAreaPenerimaan($id)
+    {
+        $aktivitasHarian = AktivitasHarian::find($id);
+        $data = [];
+        if (!empty($aktivitasHarian)) {
+            $aktivitas = Aktivitas::whereNotNull('penerimaan_gi')->first();
+
+            $aktivitasHarianArea = AktivitasHarianArea::where('id_aktivitas_harian', $aktivitasHarian->id)->get();
+
+            $data = AreaPenerimaanGiResource::collection($aktivitasHarianArea);
+        }
+
+        return response()->json([
+            'data' => $data,
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ]
+        ], Response::HTTP_OK);
+    }
+
+    public function listTanggalFromAreaStok($idArea)
+    {
+        $data = AreaStok::where('id_area', $idArea)->get();
+        return response()->json([
+            'data' => $data,
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ]
+        ], Response::HTTP_OK);
     }
 
     public function approve(AktivitasHarian $aktivitas)

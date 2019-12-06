@@ -233,6 +233,11 @@ function edit(id = '') {
             if (obj.data['butuh_approval'] != null) {
                 $('#butuh_approval').prop('checked', true);
             }
+
+            if (obj.data['internal_gudang'] != null || obj.data['pengiriman'] != null) {
+                $('#butuh_approval').prop('disabled', false);
+            }
+
             if (obj.data['butuh_biaya'] != null) {
                 $('#butuh_biaya').prop('checked', true);
             }
@@ -245,6 +250,10 @@ function edit(id = '') {
 
             if (obj.data['pindah_area'] != null) {
                 $('#pindah_area').prop('checked', true);
+            }
+
+            if (obj.data['penerimaan_gi'] != null) {
+                $('#penerimaan_gi').prop('checked', true);
             }
             
             if (obj.data['start_date'] != null) {

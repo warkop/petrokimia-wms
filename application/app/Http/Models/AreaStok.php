@@ -20,12 +20,17 @@ class AreaStok extends Model
         'updated_by',
     ];
 
-    protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
+    protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at', 'tanggal'];
 
     public $timestamps  = false;
 
     public function area()
     {
         return $this->belongsTo('App\Http\Models\Area', 'id_area');
+    }
+
+    public function material()
+    {
+        return $this->belongsTo('App\Http\Models\Material', 'id_material');
     }
 }
