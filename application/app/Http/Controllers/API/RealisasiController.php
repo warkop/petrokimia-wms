@@ -19,6 +19,7 @@ use App\Http\Models\Users;
 use App\Http\Requests\ApiRealisasiRequest;
 use App\Http\Requests\RealisasiMaterialRequest;
 use App\Http\Resources\AktivitasResource;
+use Illuminate\Support\Facades\Storage;
 
 class RealisasiController extends Controller
 {
@@ -166,7 +167,7 @@ class RealisasiController extends Controller
 
             foreach ($realisasiHousekeeper as $key) {
                 (new AreaHousekeeperFoto)->where('id_realisasi_housekeeper', $key->id)->forceDelete();
-                \Storage::deleteDirectory('/public/realisasi_housekeeper/' . $key->id);
+                Storage::deleteDirectory('/public/realisasi_housekeeper/' . $key->id);
             }
             (new RealisasiHousekeeper)->where('id_realisasi', $temp_res->id)->forceDelete();
         }

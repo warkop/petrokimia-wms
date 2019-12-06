@@ -28,6 +28,8 @@ use App\Http\Resources\AlatBeratResource;
 use App\Http\Resources\AreaPenerimaanGiResource;
 use App\Http\Resources\AreaStokResource;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AktivitasController extends Controller
 {
@@ -36,7 +38,7 @@ class AktivitasController extends Controller
         $search = strip_tags($req->input('search'));
 
         $obj =  AktivitasResource::collection(Aktivitas::where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })->orderBy('id', 'desc')->paginate(10))->additional([
             'status' => ['message' => '',
             'code' => Response::HTTP_OK],
@@ -49,7 +51,7 @@ class AktivitasController extends Controller
     {
         $search = strip_tags($req->input('search'));
         $resource = Material::produk()->where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
@@ -63,7 +65,7 @@ class AktivitasController extends Controller
     {
         $search = strip_tags($req->input('search'));
         $resource = Material::pallet()->where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
@@ -77,7 +79,7 @@ class AktivitasController extends Controller
     {
         $search = strip_tags($req->input('search'));
         $resource = Gudang::where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
@@ -92,20 +94,20 @@ class AktivitasController extends Controller
         $search = strip_tags($req->input('search'));
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
         if ($aktivitas->pengaruh_tgl_produksi != null) {
-            // $resource = \DB::table('')
-            // ->select(\DB::raw('DISTINCT  b.id_area as id, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
-            // ->from(\DB::raw('(SELECT area_stok.id_area, area.nama, area.kapasitas, area_stok.tanggal, area_stok.jumlah FROM area_stok JOIN area ON area_stok.id_area = area.id WHERE area_stok.id_material = '.$id_material.' ORDER BY id_area ) AS b'))
+            // $resource = DB::table('')
+            // ->select(DB::raw('DISTINCT  b.id_area as id, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
+            // ->from(DB::raw('(SELECT area_stok.id_area, area.nama, area.kapasitas, area_stok.tanggal, area_stok.jumlah FROM area_stok JOIN area ON area_stok.id_area = area.id WHERE area_stok.id_material = '.$id_material.' ORDER BY id_area ) AS b'))
             // ->where(function ($where) use ($search) {
-            //     $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            //     $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             // })
-            // ->groupBy(\DB::raw('b.id_area, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
-            // ->orderBy(\DB::raw('nama'))
+            // ->groupBy(DB::raw('b.id_area, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
+            // ->orderBy(DB::raw('nama'))
             // ->get();
 
             $resource = Area::
             select(
                 '*',
-                \DB::raw('(SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.') as total')
+                DB::raw('(SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.') as total')
             )
             ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
             ->where('id_material', $id_material)
@@ -125,11 +127,11 @@ class AktivitasController extends Controller
                 'area.id',
                 'area.nama',
                 'area.kapasitas',
-                \DB::raw('null as tanggal'),
-                \DB::raw('null as jumlah')
+                DB::raw('null as tanggal'),
+                DB::raw('null as jumlah')
             )
             ->where(function ($where) use ($search) {
-                $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             })->get();
         }
         return (new AktivitasResource($resource))->additional([
@@ -144,7 +146,7 @@ class AktivitasController extends Controller
     {
         $search = strip_tags($req->input('search'));
         $resource = Area::where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
@@ -158,7 +160,7 @@ class AktivitasController extends Controller
     {
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
         if ($aktivitas->pengaruh_tgl_produksi != null) {
-            $detail = \DB::table('')->selectRaw(
+            $detail = DB::table('')->selectRaw(
                 '
                         area_stok.id,
                         area.nama,
@@ -202,8 +204,8 @@ class AktivitasController extends Controller
         leftJoin('alat_berat_kat as abk', 'alat_berat.id_kategori', '=', 'abk.id')
         ->where('status', 1)
         ->where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-            $where->orWhere(\DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->orWhere(DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
         })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
@@ -513,7 +515,7 @@ class AktivitasController extends Controller
         $ttd = $req->file('ttd');
         if (!empty($ttd)) {
             if ($ttd->isValid()) {
-                \Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
+                Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
                 $ttd->storeAs('/public/aktivitas_harian/' . $id_aktivitas_harian, $ttd->getClientOriginalName());
                 $aktivitas->ttd = $ttd->getClientOriginalName();
                 $aktivitas->save();
@@ -528,7 +530,7 @@ class AktivitasController extends Controller
         if (!empty($foto)) {
             $panjang = count($foto);
             (new AktivitasFoto)->where('id_aktivitas_harian', '=', $id_aktivitas_harian)->delete();
-            \Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
+            Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
             for ($i = 0; $i < $panjang; $i++) {
                 if ($foto[$i]->isValid()) {
                     $aktivitasFoto = new AktivitasFoto;
@@ -585,7 +587,7 @@ class AktivitasController extends Controller
             if (!empty($foto)) {
                 $panjang = count($foto);
                 (new AktivitasKelayakanFoto)->where('id_aktivitas_harian', '=', $id_aktivitas_harian)->delete();
-                \Storage::deleteDirectory('/public/kelayakan/' . $id_aktivitas_harian);
+                Storage::deleteDirectory('/public/kelayakan/' . $id_aktivitas_harian);
                 for ($i = 0; $i < $panjang; $i++) {
                     if ($foto[$i]->isValid()) {
                         $aktivitasKelayakanFoto = new AktivitasKelayakanFoto;
@@ -741,7 +743,7 @@ class AktivitasController extends Controller
         $resource = AktivitasKelayakanFoto::select(
             'id',
             'jenis',
-            \DB::raw('CASE WHEN jenis = 1 THEN \'Before Kelayakan\' ELSE \'After Kelayakan\' END AS text_jenis'),
+            DB::raw('CASE WHEN jenis = 1 THEN \'Before Kelayakan\' ELSE \'After Kelayakan\' END AS text_jenis'),
             'foto',
             'size',
             'ekstensi',
@@ -775,15 +777,15 @@ class AktivitasController extends Controller
             'aktivitas_harian.id',
             'aktivitas.nama as nama_aktivitas',
             'gudang.nama as nama_gudang',
-            \DB::raw('CASE WHEN approve IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
+            DB::raw('CASE WHEN approve IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
             'aktivitas_harian.created_at',
             'aktivitas_harian.created_by'
         )
         ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
         ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
         ->where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-            $where->orWhere(\DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->orWhere(DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })
         ->orderBy('created_at', 'desc')
         ;
@@ -803,21 +805,21 @@ class AktivitasController extends Controller
         $res = AktivitasHarian::select(
             'aktivitas_harian.id',
             'aktivitas.nama as nama_aktivitas',
-            \DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
+            DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
                  AS text_gudang'),
             'nomor_lambung',
             'sistro',
             'internal_gudang',
             'id_gudang_tujuan',
-            \DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang_tujuan)
+            DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang_tujuan)
                  AS text_gudang_tujuan'),
             'butuh_approval',
-            \DB::raw('
+            DB::raw('
                 CASE
                     WHEN internal_gudang IS NOT NULL AND butuh_approval IS NOT NULL THEN true
                 ELSE false
             END AS tombol_approval'),
-            \DB::raw('
+            DB::raw('
                 CASE 
                 WHEN pindah_area IS NOT NULL AND internal_gudang IS NOT NULL THEN
                     \'Pindah Area\'
@@ -828,7 +830,7 @@ class AktivitasController extends Controller
                 WHEN peminjaman IS NOT NULL THEN
                     \'Peminjaman\'
             END AS jenis_aktivitas'),
-            \DB::raw('CASE WHEN approve IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
+            DB::raw('CASE WHEN approve IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
             'aktivitas_harian.created_at',
             'aktivitas_harian.created_by'
         )
@@ -843,8 +845,8 @@ class AktivitasController extends Controller
             'material.nama as nama_material',
             'tipe',
             'status_produk',
-            \DB::raw('CASE WHEN status_produk=1 THEN \'Produk Stok\' ELSE \'Produk Rusak\' END AS text_status_produk'),
-            \DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
+            DB::raw('CASE WHEN status_produk=1 THEN \'Produk Stok\' ELSE \'Produk Rusak\' END AS text_status_produk'),
+            DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
             'jumlah'
         )
         ->join('material', 'material_trans.id_material', '=', 'material.id')
@@ -858,8 +860,8 @@ class AktivitasController extends Controller
             'material.nama as nama_material',
             'tipe',
             'status_pallet',
-            \DB::raw('CASE WHEN status_pallet=1 THEN \'Pallet Stok\' WHEN status_pallet=2 THEN \'Pallet Dipakai\' WHEN status_pallet=3 THEN \'Pallet Kosong\' ELSE \'Pallet Rusak\' END AS text_status_pallet'),
-            \DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
+            DB::raw('CASE WHEN status_pallet=1 THEN \'Pallet Stok\' WHEN status_pallet=2 THEN \'Pallet Dipakai\' WHEN status_pallet=3 THEN \'Pallet Kosong\' ELSE \'Pallet Rusak\' END AS text_status_pallet'),
+            DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
             'jumlah'
         )
         ->join('material', 'material_trans.id_material', '=', 'material.id')

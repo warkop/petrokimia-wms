@@ -6,9 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\AktivitasFoto;
 use App\Http\Models\AktivitasHarian;
 use Illuminate\Http\Request;
-use App\Http\Models\Users;
-use App\Http\Models\Transactions;
-use App\Http\Models\Assets;
 use App\Http\Models\LaporanKerusakan;
 use App\Http\Models\MaterialAdjustment;
 

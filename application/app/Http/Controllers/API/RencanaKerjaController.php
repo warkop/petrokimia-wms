@@ -18,6 +18,7 @@ use App\Http\Requests\ApiRencanaKerjaRequest;
 use App\Http\Resources\AktivitasResource;
 use DateTime;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class RencanaKerjaController extends Controller
 {
@@ -39,7 +40,7 @@ class RencanaKerjaController extends Controller
 
         $data = RencanaHarian::select(
             '*',
-            \DB::raw("
+            DB::raw("
             CASE WHEN (SELECT id FROM realisasi where id_rencana = rencana_harian.id) IS NOT NULL
             THEN 'Done' ELSE 'Progress'
             END AS status")
