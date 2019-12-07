@@ -178,9 +178,9 @@ class AktivitasController extends Controller
                 ->where('id_material', $id_material)
                 ->where('area_stok.id_area', $id_area);
             if ($aktivitas->fifo != null) {
-                $detail = $detail->orderBy('nama', 'ASC');
-            } else {
                 $detail = $detail->orderBy('tanggal', 'ASC');
+            } else {
+                $detail = $detail->orderBy('nama', 'ASC');
             }
 
             return (new AktivitasResource($detail->get()))->additional([
