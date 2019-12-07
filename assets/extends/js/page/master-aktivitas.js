@@ -238,6 +238,10 @@ function edit(id = '') {
                 $('#butuh_approval').prop('disabled', false);
             }
 
+            if (obj.data['pengaruh_tgl_produksi'] != null) {
+                $('#fifo').prop('disabled', false);
+            }
+
             if (obj.data['butuh_biaya'] != null) {
                 $('#butuh_biaya').prop('checked', true);
             }
