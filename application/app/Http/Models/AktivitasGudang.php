@@ -25,6 +25,45 @@ class AktivitasGudang extends Model
     public $timestamps  = false;
     public $incrementing = false;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($table) {
+            $changes = $table->isDirty() ? $table->getDirty() : false;
+
+            if ($changes) {
+                foreach ($changes as $attr => $value) {
+                    $old = (new CustomModel)->specialColumn($attr, $table->getOriginal($attr));
+                    $new = (new CustomModel)->specialColumn($attr, $table->$attr);
+
+                    $arr = [
+                        'modul' => ucwords(str_replace('_', ' ', $table->table)),
+                        'action' => 2,
+                        'aktivitas' => 'Mengubah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' pada ' . $attr . ' dari ' . $old . ' menjadi ' . $new,
+                        'created_at' => now(),
+                        'created_by' => \Auth::id(),
+                    ];
+                    (new LogActivity)->log($arr);
+                }
+            }
+        });
+
+        static::creating(function ($table) {
+            $arr = [
+                'modul' => ucwords(str_replace('_', ' ', $table->table)),
+                'action' => 1,
+                'aktivitas' => 'Mendaftarkan aktivitas ' . $table->aktivitas->nama . ' pada gudang ' . $table->gudang->nama,
+                'created_at' => now(),
+                'created_by' => \Auth::id(),
+            ];
+            (new LogActivity)->log($arr);
+
+            $table->created_by = \Auth::id();
+            $table->created_at = now();
+        });
+    }
+
     public function aktivitas()
     {
         return $this->belongsTo(Aktivitas::class, 'id_aktivitas');
