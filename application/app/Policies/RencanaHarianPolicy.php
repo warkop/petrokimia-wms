@@ -42,7 +42,7 @@ class RencanaHarianPolicy
      */
     public function update(Users $user, RencanaHarian $rencanaHarian)
     {
-        //
+        return $user->role_id === 5 && $rencanaHarian->created_by === $user->id;
     }
 
     /**

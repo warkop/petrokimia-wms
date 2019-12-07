@@ -311,6 +311,7 @@ class RencanaHarianController extends Controller
 
     public function realisasi(RencanaHarian $rencanaHarian)
     {
+        $this->authorize('update', $rencanaHarian);
         $data['tkbm_rencana']    = RencanaAreaTkbm::select('id_rencana', 'id_tkbm')->where('id_rencana', $rencanaHarian->id)->groupBy('id_tkbm', 'id_rencana')->get();
         $data['material']    = Material::where('kategori', 3)->get();
         $data['id_rencana'] = $rencanaHarian->id;
