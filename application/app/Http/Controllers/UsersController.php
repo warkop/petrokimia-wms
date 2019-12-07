@@ -110,7 +110,7 @@ class UsersController extends Controller
         if ($kategori == 5) {
             $peg = Karu::all();
         } else {
-            $peg = TenagaKerjaNonOrganik::all();
+            $peg = TenagaKerjaNonOrganik::where('job_desk_id', $kategori)->get();
         }
 
         $this->responseCode     = 200;
