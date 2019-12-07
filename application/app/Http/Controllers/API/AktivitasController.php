@@ -705,8 +705,20 @@ class AktivitasController extends Controller
     public function loadPenerimaan($id) //memuat nama material apa saja yang telah dikirim oleh gudang sebalah
     {
         $aktivitasHarian = AktivitasHarian::findOrFail($id);
-        $aktivitas = Aktivitas::findOrFail($aktivitasHarian->id_aktivitas);
-        if ($aktivitas->internal_gudang != null) {
+        $aktivitasGudang = AktivitasGudang::where('id_aktivitas', $aktivitasHarian->id_aktivitas)->get();
+        foreach ($aktivitasGudang as $key => $value) {
+            $aktivitas = Aktivitas::findOrFail($aktivitasHarian->id_aktivitas);
+            if ($aktivitas->internal_gudang == null) {
+                return response()->json([
+                    'data' => [],
+                    'status' => [
+                        'message' => 'Aktivitas tidak valid!',
+                        'code' => Response::HTTP_FORBIDDEN
+                    ]
+                ], Response::HTTP_FORBIDDEN);
+            }
+        }
+        // if ($aktivitas->internal_gudang != null) {
             $materialTrans = MaterialTrans::select(
                 'id_material',
                 'jumlah'
@@ -722,15 +734,15 @@ class AktivitasController extends Controller
                 'code' => Response::HTTP_OK
             ]
             ], Response::HTTP_OK);
-        } else {
-            return response()->json([
-                'data' => [],
-                'status' => [
-                    'message' => 'Aktivitas tidak valid!',
-                    'code' => Response::HTTP_FORBIDDEN
-                ]
-            ], Response::HTTP_FORBIDDEN);
-        }
+        // } else {
+        //     return response()->json([
+        //         'data' => [],
+        //         'status' => [
+        //             'message' => 'Aktivitas tidak valid!',
+        //             'code' => Response::HTTP_FORBIDDEN
+        //         ]
+        //     ], Response::HTTP_FORBIDDEN);
+        // }
     }
 
     public function getAreaFromPengirim($id) //memuat area apa saja dan jumlahnya berapa dari si pengirim
