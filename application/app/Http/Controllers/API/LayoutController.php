@@ -8,6 +8,7 @@ use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
 use App\Http\Resources\AktivitasResource;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class LayoutController extends Controller
 {
@@ -22,13 +23,13 @@ class LayoutController extends Controller
                 'tipe_gudang',
                 'kapasitas',
                 'tipe as tipe_area',
-                \DB::raw('(SELECT SUM(jumlah) FROM area_stok WHERE area_stok.id_area = area.id) AS total'),
-                \DB::raw('
+                DB::raw('(SELECT SUM(jumlah) FROM area_stok WHERE area_stok.id_area = area.id) AS total'),
+                DB::raw('
                     CASE
                         WHEN tipe_gudang=1 THEN \'Internal\'
                     ELSE \'Eksternal\'
                 END AS text_tipe_gudang'),
-                \DB::raw('
+                DB::raw('
                     CASE
                         WHEN tipe=1 THEN \'Indoor\'
                     ELSE \'Outdoor\'
@@ -36,8 +37,8 @@ class LayoutController extends Controller
             )
             ->join('gudang as g', 'area.id_gudang', '=', 'g.id')
             ->where(function ($where) use ($search) {
-                $where->where(\DB::raw('LOWER(area.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(\DB::raw('LOWER(g.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->where(DB::raw('LOWER(area.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw('LOWER(g.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             })
             ->orderBy('area.created_at', 'asc')            
             ->withoutGlobalScopes()

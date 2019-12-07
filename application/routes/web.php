@@ -191,6 +191,11 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::post('/', 'LogAktivitasController@json');
         Route::get('/{aktivitasHarian}', 'LogAktivitasController@show')->where('aktivitasHarian', '[0-9]+');
     });
+
+    Route::group(['prefix' => 'log-aktivitas-user'], function () {
+        Route::get('/', 'LogAktivitasUserController@index');
+        Route::post('/', 'LogAktivitasUserController@json');
+    });
 });
 
 Route::get('watch/{nama}/', 'WatchController@default');

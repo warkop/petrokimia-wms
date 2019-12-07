@@ -32,6 +32,14 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
+                            <label>Kode Aktivitas</label>
+                            <input type="text" class="form-control" name="kode_aktivitas" id="kode_aktivitas" placeholder="Masukkan kode aktivitas">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
                             <label>Nama Aktivitas</label>
                             <input type="text" class="form-control" name="nama" id="nama" placeholder="Masukkan nama aktivitas">
                         </div>
@@ -142,7 +150,7 @@
                     <div class="row">
                         <div class="col-md-4 col-lg-4">
                             <div class="row form-group mb-0 mb2">
-                                @if (!empty($aktivitas_master_foto))
+                                @if (!empty($aktivitas->upload_foto))
                                     @php 
                                         $show_upload_foto = 'display:block'; 
                                         $checked = 'checked'; 
@@ -237,10 +245,11 @@
                                     </label>
                                 </div>
                             </div>
+                            
                         </div>
                         <div class="col-md-4 col-lg-4">
                             <div class="row form-group mb-0 mb2">
-                                @if (!empty($aktivitas_alat_berat))
+                                @if (!empty($aktivitas->butuh_alat_berat))
                                     @php 
                                         $show_alat_berat = 'display:block'; 
                                         $checked = 'checked'; 
@@ -295,6 +304,14 @@
                                 <div class="col-12 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                         <input type="checkbox" name="butuh_biaya" id="butuh_biaya" value="1"> Butuh Biaya Alat Berat
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row form-group mb-0 mb2">
+                                <div class="col-6 offset-col-2">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox" name="penerimaan_gi" id="penerimaan_gi" value="1"> Penerimaan GI
                                         <span></span>
                                     </label>
                                 </div>
@@ -444,31 +461,36 @@
 <script src="{{asset('assets/extends/js/page/master-aktivitas.js')}}" type="text/javascript"></script>
 <script>
     $(document).ready(()=>{
-    $("#produk_stok").attr('disabled',true);
-    $("#produk_stok").selectpicker('refresh');
+        $("#produk_stok").attr('disabled',true);
+        $("#produk_stok").selectpicker('refresh');
 
-    $("#produk_rusak").attr('disabled',true);
-    $("#produk_rusak").selectpicker('refresh');
+        $("#produk_rusak").attr('disabled',true);
+        $("#produk_rusak").selectpicker('refresh');
 
-    $("#pallet_stok").attr('disabled',true);
-    $("#pallet_stok").selectpicker('refresh');
+        $("#pallet_stok").attr('disabled',true);
+        $("#pallet_stok").selectpicker('refresh');
 
-    $("#pallet_dipakai").attr('disabled',true);
-    $("#pallet_dipakai").selectpicker('refresh');
+        $("#pallet_dipakai").attr('disabled',true);
+        $("#pallet_dipakai").selectpicker('refresh');
 
-    $("#pallet_kosong").attr('disabled',true);
-    $("#pallet_kosong").selectpicker('refresh');
+        $("#pallet_kosong").attr('disabled',true);
+        $("#pallet_kosong").selectpicker('refresh');
 
-    $("#pallet_rusak").attr('disabled',true);
-    $("#pallet_rusak").selectpicker('refresh');
-    
-    $("#butuh_approval").attr('disabled',true);
-    $("#fifo").attr('disabled',true);
+        $("#pallet_rusak").attr('disabled',true);
+        $("#pallet_rusak").selectpicker('refresh');
+        
+        if ($('#internal_gudang').checked || $('#pengiriman').checked) {
+            $("#butuh_approval").attr('disabled', false);
+        } else {
+            $("#butuh_approval").attr('disabled', true);
+        }
 
-    @if (!empty($id)) {
-        edit({{$id}});
-    }
-    @endif
+        $("#fifo").attr('disabled',true);
+
+        @if (!empty($id)) {
+            edit({{$id}});
+        }
+        @endif
     });
     $('.kt-selectpicker').selectpicker();
     $('#end_date').datepicker({
@@ -637,6 +659,7 @@
 
     $('#pengiriman').on('change', function(e){
         if(e.target.checked){
+            $('#internal_gudang').prop('checked', false);
             $('#internal_gudang').attr('disabled',true);
             $('#butuh_approval').attr('disabled',false);
         } else {
@@ -661,7 +684,10 @@
     });
 
     $('#internal_gudang').on('change', function(e){
+        // console.log(e);
+        // console.log($('#internal_gudang'));
         if(e.target.checked){
+            $('#pengiriman').prop('checked', false);
             $('#pengiriman').attr('disabled',true);
             $('#butuh_approval').attr('disabled',false);
         } else {

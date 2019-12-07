@@ -79,6 +79,11 @@ class Gudang extends Model
         static::addGlobalScope(new EndDateScope);
     }
 
+    public function karu()
+    {
+        return $this->belongsTo(Karu::class, 'id_karu');
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $user = \Auth::user();

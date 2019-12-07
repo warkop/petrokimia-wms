@@ -22,19 +22,24 @@ use App\Http\Models\RencanaTkbm;
 use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Requests\ApiSaveKelayakanPhotos;
 use App\Http\Requests\ApiSavePhotosRequest;
+use App\Http\Resources\AktivitasHarianResource;
 use App\Http\Resources\AktivitasResource;
 use App\Http\Resources\AlatBeratResource;
+use App\Http\Resources\AreaPenerimaanGiResource;
+use App\Http\Resources\AreaStokResource;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AktivitasController extends Controller
 {
-    public function index(Request $req)
+    public function index(Request $req) //memuat daftar aktivitas
     {
         $search = strip_tags($req->input('search'));
 
         $obj =  AktivitasResource::collection(Aktivitas::where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-        })->paginate(10))->additional([
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        })->orderBy('id', 'desc')->paginate(10))->additional([
             'status' => ['message' => '',
             'code' => Response::HTTP_OK],
         ], Response::HTTP_OK);
@@ -42,11 +47,11 @@ class AktivitasController extends Controller
         return $obj;
     }
 
-    public function getMaterial(Request $req)
+    public function getMaterial(Request $req) //memuat produk
     {
         $search = strip_tags($req->input('search'));
         $resource = Material::produk()->where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
@@ -56,11 +61,11 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
     
-    public function getPallet(Request $req)
+    public function getPallet(Request $req) //memuat pallet
     {
         $search = strip_tags($req->input('search'));
         $resource = Material::pallet()->where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
@@ -70,11 +75,11 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function getGudang(Request $req)
+    public function getGudang(Request $req) //memuat gudang tujuan
     {
         $search = strip_tags($req->input('search'));
         $resource = Gudang::where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
@@ -84,30 +89,49 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function getArea(Request $req, $id_aktivitas, $id_material)
+    public function getArea(Request $req, $id_aktivitas, $id_material) //memuat area
     {
         $search = strip_tags($req->input('search'));
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
         if ($aktivitas->pengaruh_tgl_produksi != null) {
-            $resource = \DB::table('')
-            ->select(\DB::raw('DISTINCT  b.id_area as id, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
-            ->from(\DB::raw('(SELECT area_stok.id_area, area.nama, area.kapasitas, area_stok.tanggal, area_stok.jumlah FROM area_stok JOIN area ON area_stok.id_area = area.id WHERE area_stok.id_material = '.$id_material.' ORDER BY id_area ) AS b'))
-            ->where(function ($where) use ($search) {
-                $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-            })
-            ->groupBy(\DB::raw('b.id_area, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
-            ->orderBy(\DB::raw('nama'))
+            // $resource = DB::table('')
+            // ->select(DB::raw('DISTINCT  b.id_area as id, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
+            // ->from(DB::raw('(SELECT area_stok.id_area, area.nama, area.kapasitas, area_stok.tanggal, area_stok.jumlah FROM area_stok JOIN area ON area_stok.id_area = area.id WHERE area_stok.id_material = '.$id_material.' ORDER BY id_area ) AS b'))
+            // ->where(function ($where) use ($search) {
+            //     $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            // })
+            // ->groupBy(DB::raw('b.id_area, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
+            // ->orderBy(DB::raw('nama'))
+            // ->get();
+
+            $resource = Area::
+            select(
+                '*',
+                DB::raw('(SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.') as total')
+            )
+            ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
+            ->where('id_material', $id_material)
             ->get();
+
+            // $resource = AreaStok::where('id_material', $id_material)->map(function ($user) {
+            //     return $user->name;
+            // })->get();
+            // return AreaStokResource::collection($resource)->additional([
+            //     'status' => [
+            //         'message' => '',
+            //         'code' => Response::HTTP_OK,
+            //     ]
+            // ], Response::HTTP_OK);
         } else {
             $resource = Area::select(
                 'area.id',
                 'area.nama',
                 'area.kapasitas',
-                \DB::raw('null as tanggal'),
-                \DB::raw('null as jumlah')
+                DB::raw('null as tanggal'),
+                DB::raw('null as jumlah')
             )
             ->where(function ($where) use ($search) {
-                $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             })->get();
         }
         return (new AktivitasResource($resource))->additional([
@@ -118,11 +142,11 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function pindahArea(Request $req)
+    public function pindahArea(Request $req) //memuat area untuk keperluan pindah area
     {
         $search = strip_tags($req->input('search'));
         $resource = Area::where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
@@ -132,11 +156,11 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function getAreaStok($id_aktivitas, $id_material, $id_area)
+    public function getAreaStok($id_aktivitas, $id_material, $id_area) //memuat list tanggal apa saja yang tersedia pada gudang ini
     {
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
         if ($aktivitas->pengaruh_tgl_produksi != null) {
-            $detail = \DB::table('')->selectRaw(
+            $detail = DB::table('')->selectRaw(
                 '
                         area_stok.id,
                         area.nama,
@@ -173,15 +197,15 @@ class AktivitasController extends Controller
         }
     }
 
-    public function getAlatBerat(Request $req)
+    public function getAlatBerat(Request $req) //memuat alat berat
     {
         $search = strip_tags($req->input('search'));
         $resource = AlatBerat::
         leftJoin('alat_berat_kat as abk', 'alat_berat.id_kategori', '=', 'abk.id')
         ->where('status', 1)
         ->where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-            $where->orWhere(\DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->orWhere(DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
         })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
@@ -191,14 +215,23 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function store(ApiAktivitasRequest $req, AktivitasHarian $aktivitas)
+    public function getPenerimaan(AktivitasHarian $aktivitasHarian)
+    {
+        $data = AktivitasHarianArea::where('id_aktivitas_harian', $aktivitasHarian->id)->with('area_stok')->get();
+        return (new AktivitasResource($data))->additional([
+            'status' => ['message' => '',
+            'code' => Response::HTTP_OK],
+        ], Response::HTTP_OK);
+    }
+
+    public function store(ApiAktivitasRequest $req, AktivitasHarian $aktivitasHarian) //menyimpan aktivitas harian secara reguler
     {
         $req->validated();
 
         $user = $req->get('my_auth');
         $res_user = Users::findOrFail($user->id_user);
 
-        if ($res_user->role_id == 3) {
+        if ($res_user->role_id == 3) { //hanya checker yang diizinkan untuk menambah aktivitas harian
             $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
                 ->where('id_tkbm', $user->id_tkbm)
                 ->orderBy('rencana_harian.id', 'desc')
@@ -221,24 +254,24 @@ class AktivitasController extends Controller
             }
 
             //simpan aktivitas
-            $aktivitas->id_aktivitas      = $req->input('id_aktivitas');
-            $aktivitas->id_gudang         = $gudang->id;
-            $aktivitas->id_karu           = $gudang->id_karu;
-            $aktivitas->id_shift          = $rencana_tkbm->id_shift;
-            $aktivitas->id_gudang_tujuan  = $req->input('id_gudang_tujuan');
-            $aktivitas->ref_number        = $req->input('ref_number');
-            $aktivitas->id_area           = $req->input('id_pindah_area');
-            $aktivitas->id_alat_berat     = $req->input('id_alat_berat');
-            $aktivitas->sistro            = $req->input('sistro');
-            $aktivitas->approve           = $req->input('approve');
-            $aktivitas->kelayakan_before  = $req->input('kelayakan_before');
-            $aktivitas->kelayakan_after   = $req->input('kelayakan_after');
-            $aktivitas->dikembalikan      = $req->input('dikembalikan');
-            $aktivitas->alasan            = $req->input('alasan');
-            $aktivitas->created_by        = $res_user->id;
-            $aktivitas->created_at        = now();
+            $aktivitasHarian->id_aktivitas      = $req->input('id_aktivitas');
+            $aktivitasHarian->id_gudang         = $gudang->id;
+            $aktivitasHarian->id_karu           = $gudang->id_karu;
+            $aktivitasHarian->id_shift          = $rencana_tkbm->id_shift;
+            $aktivitasHarian->id_gudang_tujuan  = $req->input('id_gudang_tujuan');
+            $aktivitasHarian->ref_number        = $req->input('ref_number');
+            $aktivitasHarian->id_area           = $req->input('id_pindah_area');
+            $aktivitasHarian->id_alat_berat     = $req->input('id_alat_berat');
+            $aktivitasHarian->sistro            = $req->input('sistro');
+            $aktivitasHarian->approve           = $req->input('approve');
+            $aktivitasHarian->kelayakan_before  = $req->input('kelayakan_before');
+            $aktivitasHarian->kelayakan_after   = $req->input('kelayakan_after');
+            $aktivitasHarian->dikembalikan      = $req->input('dikembalikan');
+            $aktivitasHarian->alasan            = $req->input('alasan');
+            $aktivitasHarian->created_by        = $res_user->id;
+            $aktivitasHarian->created_at        = now();
 
-            $saved = $aktivitas->save();
+            $saved = $aktivitasHarian->save();
 
             if ($saved) {
                 $res_aktivitas = Aktivitas::find($req->input('id_aktivitas'));
@@ -289,41 +322,36 @@ class AktivitasController extends Controller
                                         }
                                         
                                         $area_stok->save();
-            
-                                        $material_trans = new MaterialTrans;
-                                        
-                                        $array = [
-                                            'id_material'           => $produk,
-                                            'id_aktivitas_harian'   => $aktivitas->id,
-                                            'tanggal'               => now(),
-                                            'tipe'                  => $tipe,
-                                            'jumlah'                => $list_jumlah[$k]['jumlah'],
-                                            'status_produk'         => $status_produk,
-                                        ];
-
-                                        $material_trans->create($array);
-
-                                        (new AktivitasHarianArea)->create([
-                                            'id_aktivitas_harian'   => $aktivitas->id,
-                                            'id_area_stok'          => $area_stok->id,
-                                            'jumlah'                => $list_jumlah[$k]['jumlah'],
-                                            'tipe'                  => $tipe,
-                                            'created_at'            => now(),
-                                            'created_by'            => $res_user->id,
-                                        ]);
                                     } else {
-                                        $this->responseCode = 500;
-
-                                        if ($tipe == 1) {
-                                            $text_tipe = 'Mengurangi';
-                                        } else {
-                                            $text_tipe = 'Menambah';
-                                        }
-
-                                        $this->responseMessage = 'Gagal menyimpan aktivitas dengan tipe '.$text_tipe.'! Tidak ada area dengan produk yang cocok';
-                                        $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                                        return response()->json($response, $this->responseCode);
+                                        $area_stok = new AreaStok;
+                                        $area_stok->id_area = $id_area_stok;
+                                        $area_stok->id_material = $produk;
+                                        $area_stok->tanggal = date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']));
+                                        $area_stok->jumlah = $list_jumlah[$k]['jumlah'];
+                                        $area_stok->save();
                                     }
+
+                                    $material_trans = new MaterialTrans;
+
+                                    $array = [
+                                        'id_material'           => $produk,
+                                        'id_aktivitas_harian'   => $aktivitasHarian->id,
+                                        'tanggal'               => now(),
+                                        'tipe'                  => $tipe,
+                                        'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                        'status_produk'         => $status_produk,
+                                    ];
+
+                                    $material_trans->create($array);
+
+                                    (new AktivitasHarianArea)->create([
+                                        'id_aktivitas_harian'   => $aktivitasHarian->id,
+                                        'id_area_stok'          => $area_stok->id,
+                                        'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                        'tipe'                  => $tipe,
+                                        'created_at'            => now(),
+                                        'created_by'            => $res_user->id,
+                                    ]);
                                 }
                             }
                         }
@@ -389,7 +417,7 @@ class AktivitasController extends Controller
 
                                         $array = [
                                             'id_material'           => $produk,
-                                            'id_aktivitas_harian'   => $aktivitas->id,
+                                            'id_aktivitas_harian'   => $aktivitasHarian->id,
                                             'tanggal'               => now(),
                                             'tipe'                  => $tipe,
                                             'jumlah'                => $list_jumlah[$k]['jumlah'],
@@ -398,7 +426,7 @@ class AktivitasController extends Controller
                                         $material_trans->create($array);
                                         
                                         (new AktivitasHarianArea)->create([
-                                            'id_aktivitas_harian'   => $aktivitas->id,
+                                            'id_aktivitas_harian'   => $aktivitasHarian->id,
                                             'id_area_stok'          => $saved_area_stok->id,
                                             'jumlah'                => $list_jumlah[$k]['jumlah'],
                                             'tipe'                  => $tipe,
@@ -423,7 +451,7 @@ class AktivitasController extends Controller
                         $status_pallet = $list_pallet[$i]['status_pallet'];
                         $tipe = $list_pallet[$i]['tipe'];
                         $arr = [
-                            'id_aktivitas_harian'       => $aktivitas->id,
+                            'id_aktivitas_harian'       => $aktivitasHarian->id,
                             'tanggal'                   => now(),
                             'id_material'               => $pallet,
                             'jumlah'                    => $jumlah,
@@ -450,7 +478,7 @@ class AktivitasController extends Controller
                 }
 
 
-                return (new AktivitasResource($aktivitas))->additional([
+                return (new AktivitasResource($aktivitasHarian))->additional([
                     'produk' => $list_produk,
                     'pallet' => $list_pallet,
                     'status' => [
@@ -472,7 +500,66 @@ class AktivitasController extends Controller
         }
     }
 
-    public function storePhotos(ApiSavePhotosRequest $req, AktivitasHarian $aktivitas) 
+    public function storePenerimaan(ApiAktivitasRequest $req) //menyimpan aktivitas harian untuk keperluan penerimaan GI
+    {
+        $user = $req->get('my_auth');
+        $res_user = Users::findOrFail($user->id_user);
+        $aktivitas = Aktivitas::findOrFail($req->input('id_aktivitas'));
+        $aktivitasHarian = AktivitasHarian::findOrFail($req->input('id_aktivitas_harian'));
+
+        if ($aktivitas->penerimaan_gi != null) {
+            $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+                ->where('id_tkbm', $user->id_tkbm)
+                ->orderBy('rencana_harian.id', 'desc')
+                ->take(1)->first();
+
+            if (empty($rencana_tkbm)) {
+                $this->responseCode = 500;
+                $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+
+            $gudang = Gudang::find($rencana_tkbm->id_gudang)->orderBy('id', 'desc')->first();
+
+            if (empty($gudang)) {
+                $this->responseCode = 500;
+                $this->responseMessage = 'Gudang tidak tersedia!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+
+            $wannaSave = new AktivitasHarian;
+            $wannaSave->ref_number        = $aktivitasHarian->id;
+            $wannaSave->id_aktivitas      = $req->input('id_aktivitas');
+            $wannaSave->id_gudang         = $gudang->id;
+            $wannaSave->id_karu           = $gudang->id_karu;
+            $wannaSave->id_shift          = $rencana_tkbm->id_shift;
+            $wannaSave->id_area           = $req->input('id_pindah_area');
+            $wannaSave->id_alat_berat     = $req->input('id_alat_berat');
+            $wannaSave->sistro            = $req->input('sistro');
+            $wannaSave->alasan            = $req->input('alasan');
+            $wannaSave->created_by        = $res_user->id;
+            $wannaSave->created_at        = now();
+
+            $wannaSave->save();
+
+            $aktivitasHarian->approve = now();
+            $aktivitasHarian->save();
+
+            $this->responseCode = 200;
+            $this->responseMessage = 'Gudang tidak tersedia!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        } else {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Gudang tidak tersedia!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+    }
+
+    public function storePhotos(ApiSavePhotosRequest $req, AktivitasHarian $aktivitas) //menyimpan ttd dan foto jenis
     {
         $req->validated();
 
@@ -481,15 +568,16 @@ class AktivitasController extends Controller
         $res_user = Users::findOrFail($user->id_user);
 
         $id_aktivitas_harian = $req->input('id_aktivitas_harian');
-        $aktivitas = AktivitasHarian::find($id_aktivitas_harian);
+        $aktivitas = AktivitasHarian::findOrFail($id_aktivitas_harian);
 
 
         $ttd = $req->file('ttd');
         if (!empty($ttd)) {
             if ($ttd->isValid()) {
-                \Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
+                Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
                 $ttd->storeAs('/public/aktivitas_harian/' . $id_aktivitas_harian, $ttd->getClientOriginalName());
                 $aktivitas->ttd = $ttd->getClientOriginalName();
+                $aktivitas->save();
             }
         }
 
@@ -501,7 +589,7 @@ class AktivitasController extends Controller
         if (!empty($foto)) {
             $panjang = count($foto);
             (new AktivitasFoto)->where('id_aktivitas_harian', '=', $id_aktivitas_harian)->delete();
-            \Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
+            Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
             for ($i = 0; $i < $panjang; $i++) {
                 if ($foto[$i]->isValid()) {
                     $aktivitasFoto = new AktivitasFoto;
@@ -526,15 +614,21 @@ class AktivitasController extends Controller
             $foto = AktivitasFoto::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
         }
 
-        return (new AktivitasResource($foto))->additional([
+        // return (new AktivitasResource($foto))->additional([
+        //     'status' => [
+        //         'message' => '',
+        //         'code' => Response::HTTP_CREATED,
+        //     ]
+        // ], Response::HTTP_CREATED);
+
+        return response()->json([
             'status' => [
-                'message' => '',
+                'message' => 'Berhasil disimpan',
                 'code' => Response::HTTP_CREATED,
-            ]
-        ], Response::HTTP_CREATED);
+            ]], 200);
     }
 
-    public function storeKelayakanPhotos(ApiSaveKelayakanPhotos $req)
+    public function storeKelayakanPhotos(ApiSaveKelayakanPhotos $req) //menyimpan foto kelayakan
     {
         $req->validated();
 
@@ -552,7 +646,7 @@ class AktivitasController extends Controller
             if (!empty($foto)) {
                 $panjang = count($foto);
                 (new AktivitasKelayakanFoto)->where('id_aktivitas_harian', '=', $id_aktivitas_harian)->delete();
-                \Storage::deleteDirectory('/public/kelayakan/' . $id_aktivitas_harian);
+                Storage::deleteDirectory('/public/kelayakan/' . $id_aktivitas_harian);
                 for ($i = 0; $i < $panjang; $i++) {
                     if ($foto[$i]->isValid()) {
                         $aktivitasKelayakanFoto = new AktivitasKelayakanFoto;
@@ -597,6 +691,71 @@ class AktivitasController extends Controller
         }
     }
 
+
+    public function loadPenerimaan($id) //memuat nama material apa saja yang telah dikirim oleh gudang sebalah
+    {
+        $aktivitasHarian = AktivitasHarian::findOrFail($id);
+        $aktivitas = Aktivitas::findOrFail($aktivitasHarian->id_aktivitas);
+        if ($aktivitas->internal_gudang != null) {
+            $materialTrans = MaterialTrans::select(
+                'id_material',
+                'jumlah'
+            )
+                ->where('id_aktivitas_harian', $id)
+                ->whereNotNull('status_produk')
+                ->get();
+            
+            return response()->json([
+            'data' => $materialTrans,
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ]
+            ], Response::HTTP_OK);
+        } else {
+            return response()->json([
+                'data' => [],
+                'status' => [
+                    'message' => 'Aktivitas tidak valid!',
+                    'code' => Response::HTTP_FORBIDDEN
+                ]
+            ], Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function getAreaPenerimaan($id) //memuat area apa saja yang tersedia pada gudang ini pada mode penerimaan GI
+    {
+        $aktivitasHarian = AktivitasHarian::find($id);
+        $data = [];
+        if (!empty($aktivitasHarian)) {
+            $aktivitas = Aktivitas::whereNotNull('penerimaan_gi')->first();
+
+            $aktivitasHarianArea = AktivitasHarianArea::where('id_aktivitas_harian', $aktivitasHarian->id)->get();
+
+            $data = AreaPenerimaanGiResource::collection($aktivitasHarianArea);
+        }
+
+        return response()->json([
+            'data' => $data,
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ]
+        ], Response::HTTP_OK);
+    }
+
+    public function listTanggalFromAreaStok($idArea) //memuat daftar tanggal yang tersedia pada gudang ini pada mode penerimaan GI
+    {
+        $data = AreaStok::where('id_area', $idArea)->orderBy('tanggal', 'asc')->get();
+        return response()->json([
+            'data' => $data,
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ]
+        ], Response::HTTP_OK);
+    }
+
     public function approve(AktivitasHarian $aktivitas)
     {
         $aktivitas->approve = date('Y-m-d H:i:s');
@@ -621,7 +780,7 @@ class AktivitasController extends Controller
         }
     }
 
-    public function show(Aktivitas $aktivitas)
+    public function show(Aktivitas $aktivitas) //menampilkan detail aktivitas
     {
         return (new AktivitasResource($aktivitas))->additional([
             'status' => [
@@ -631,7 +790,7 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function getJenisFoto(Request $req)
+    public function getJenisFoto(Request $req) //memuat jenis foto yang tersedia pada aktivitas bersangkutan
     {
         $id_aktivitas = $req->input('id_aktivitas');
         $resource = AktivitasMasterFoto::select(
@@ -650,13 +809,13 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function getKelayakanFoto(Request $req)
+    public function getKelayakanFoto(Request $req) //memuat kelayakan foto
     {
         $id_aktivitas_harian = $req->input('id_aktivitas_harian');
         $resource = AktivitasKelayakanFoto::select(
             'id',
             'jenis',
-            \DB::raw('CASE WHEN jenis = 1 THEN \'Before Kelayakan\' ELSE \'After Kelayakan\' END AS text_jenis'),
+            DB::raw('CASE WHEN jenis = 1 THEN \'Before Kelayakan\' ELSE \'After Kelayakan\' END AS text_jenis'),
             'foto',
             'size',
             'ekstensi',
@@ -672,7 +831,7 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function areaStok()
+    public function areaStok() //memuat area stok 
     {
         $area = Area::join('area_stok', 'area.id', '=', 'area_stok.id_area')->orderBy('area_stok.tanggal', 'asc')
             ->get();
@@ -682,7 +841,7 @@ class AktivitasController extends Controller
         return $area->toArray();
     }
 
-    public function history(Request $req)
+    public function history(Request $req) //memuat history
     {
         $search = $req->input('search');
 
@@ -690,15 +849,15 @@ class AktivitasController extends Controller
             'aktivitas_harian.id',
             'aktivitas.nama as nama_aktivitas',
             'gudang.nama as nama_gudang',
-            \DB::raw('CASE WHEN approve IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
+            DB::raw('CASE WHEN approve IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
             'aktivitas_harian.created_at',
             'aktivitas_harian.created_by'
         )
         ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
         ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
         ->where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-            $where->orWhere(\DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->orWhere(DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })
         ->orderBy('created_at', 'desc')
         ;
@@ -713,26 +872,26 @@ class AktivitasController extends Controller
         return $obj;
     }
 
-    public function detailHistory($id)
+    public function detailHistory($id) //memuat detail history
     {
         $res = AktivitasHarian::select(
             'aktivitas_harian.id',
             'aktivitas.nama as nama_aktivitas',
-            \DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
+            DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
                  AS text_gudang'),
             'nomor_lambung',
             'sistro',
             'internal_gudang',
             'id_gudang_tujuan',
-            \DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang_tujuan)
+            DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang_tujuan)
                  AS text_gudang_tujuan'),
             'butuh_approval',
-            \DB::raw('
+            DB::raw('
                 CASE
                     WHEN internal_gudang IS NOT NULL AND butuh_approval IS NOT NULL THEN true
                 ELSE false
             END AS tombol_approval'),
-            \DB::raw('
+            DB::raw('
                 CASE 
                 WHEN pindah_area IS NOT NULL AND internal_gudang IS NOT NULL THEN
                     \'Pindah Area\'
@@ -743,13 +902,14 @@ class AktivitasController extends Controller
                 WHEN peminjaman IS NOT NULL THEN
                     \'Peminjaman\'
             END AS jenis_aktivitas'),
-            \DB::raw('CASE WHEN approve IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
+            DB::raw('CASE WHEN approve IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
             'aktivitas_harian.created_at',
             'aktivitas_harian.created_by'
         )
         ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
         ->leftJoin('alat_berat', 'aktivitas_harian.id_gudang', '=', 'alat_berat.id')
         ->where('aktivitas_harian.id', $id)
+        ->orderBy('aktivitas_harian.id', 'desc')
         ;
 
         $res_produk = MaterialTrans::select(
@@ -757,8 +917,8 @@ class AktivitasController extends Controller
             'material.nama as nama_material',
             'tipe',
             'status_produk',
-            \DB::raw('CASE WHEN status_produk=1 THEN \'Produk Stok\' ELSE \'Produk Rusak\' END AS text_status_produk'),
-            \DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
+            DB::raw('CASE WHEN status_produk=1 THEN \'Produk Stok\' ELSE \'Produk Rusak\' END AS text_status_produk'),
+            DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
             'jumlah'
         )
         ->join('material', 'material_trans.id_material', '=', 'material.id')
@@ -772,8 +932,8 @@ class AktivitasController extends Controller
             'material.nama as nama_material',
             'tipe',
             'status_pallet',
-            \DB::raw('CASE WHEN status_pallet=1 THEN \'Pallet Stok\' WHEN status_pallet=2 THEN \'Pallet Dipakai\' WHEN status_pallet=3 THEN \'Pallet Kosong\' ELSE \'Pallet Rusak\' END AS text_status_pallet'),
-            \DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
+            DB::raw('CASE WHEN status_pallet=1 THEN \'Pallet Stok\' WHEN status_pallet=2 THEN \'Pallet Dipakai\' WHEN status_pallet=3 THEN \'Pallet Kosong\' ELSE \'Pallet Rusak\' END AS text_status_pallet'),
+            DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
             'jumlah'
         )
         ->join('material', 'material_trans.id_material', '=', 'material.id')

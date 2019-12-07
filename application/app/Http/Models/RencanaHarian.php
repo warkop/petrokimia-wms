@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use App\Scopes\EndDateScope;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
@@ -25,21 +26,27 @@ class RencanaHarian extends Model
 
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
-    public $timestamps  = false;
+    public $timestamps  = true;
 
     protected static function boot()
     {
         parent::boot();
 
         static::updating(function ($table) {
-            $table->updated_by = \Auth::id();
+            if (\Auth::id() != null) {
+                $table->updated_by = \Auth::id();
+            }
         });
 
         static::creating(function ($table) {
-            $table->created_by = \Auth::id();
+            if (\Auth::id() != null) {
+                $table->created_by = \Auth::id();
+            }
+            // ShiftKerja::whereBetween('mulai', ['']);
+            
         });
 
-        // static::addGlobalScope(new EndDateScope);
+        static::addGlobalScope(new EndDateScope);
     }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)

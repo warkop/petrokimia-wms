@@ -14,6 +14,8 @@ use App\Http\Models\Users;
 use App\Http\Requests\ApiLaporanKerusakanRequest;
 use App\Http\Resources\AktivitasResource;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AlatBeratController extends Controller
 {
@@ -27,7 +29,7 @@ class AlatBeratController extends Controller
                 'nomor_lambung', 
                 'nama', 
                 'status',
-                \DB::raw('
+                DB::raw('
                     CASE
                         WHEN status=\'1\' THEN \'Aktif\'
                     ELSE \'Rusak\'
@@ -37,10 +39,10 @@ class AlatBeratController extends Controller
             ->join('alat_berat_kat as abk', 'alat_berat.id_kategori', '=', 'abk.id')
             ->join('rencana_alat_berat as rab', 'alat_berat.id', '=', 'rab.id_alat_berat')
             ->where(function ($where) use ($search) {
-                $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(\DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
             })
-            ->orderBy('alat_berat.created_at', 'asc')
+            ->orderBy('alat_berat.id', 'desc')
             ->paginate(10);
 
         $obj =  AktivitasResource::collection($res)->additional([
@@ -63,14 +65,14 @@ class AlatBeratController extends Controller
             'id_kerusakan', 
             'id_alat_berat', 
             'id_operator', 
-            \DB::raw('tk.nama as nama_operator'), 
+            DB::raw('tk.nama as nama_operator'), 
             'id_shift',
             'nomor_lambung',
             'laporan_kerusakan.status',
             'laporan_kerusakan.jenis',
-            \DB::raw('CASE WHEN jenis=1 THEN \'Perbaikan\' ELSE \'Keluhan\' END AS jenis_pelaporan'),
-            \DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\') as tanggal'), 
-            \DB::raw('TO_CHAR(jam_rusak, \'HH24:MI:SS\') as pukul'), 
+            DB::raw('CASE WHEN jenis=1 THEN \'Perbaikan\' ELSE \'Keluhan\' END AS jenis_pelaporan'),
+            DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\') as tanggal'), 
+            DB::raw('TO_CHAR(jam_rusak, \'HH24:MI:SS\') as pukul'), 
             'keterangan')
             
             ->join('alat_berat_kerusakan as abk', 'laporan_kerusakan.id_kerusakan', '=', 'abk.id')
@@ -78,9 +80,9 @@ class AlatBeratController extends Controller
             ->leftJoin('shift_kerja as s', 'laporan_kerusakan.id_shift', '=', 's.id')
             ->leftJoin('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'laporan_kerusakan.id_operator')
             ->where(function ($where) use ($search) {
-                $where->where(\DB::raw('LOWER(keterangan)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(\DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
-                $where->orWhere(\DB::raw('TO_CHAR(jam_rusak, \'HH24:MI:SS\')'), 'ILIKE', '%' . $search . '%');
+                $where->where(DB::raw('LOWER(keterangan)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
+                $where->orWhere(DB::raw('TO_CHAR(jam_rusak, \'HH24:MI:SS\')'), 'ILIKE', '%' . $search . '%');
             })
             ->orderBy('laporan_kerusakan.created_at', 'desc')
             ;
@@ -117,15 +119,15 @@ class AlatBeratController extends Controller
             'id_kerusakan',
             'id_alat_berat',
             'id_operator',
-            \DB::raw('tk.nama as nama_operator'),
+            DB::raw('tk.nama as nama_operator'),
             'id_shift',
             's.nama as nama_shift',
             'jenis',
             'ab.status',
-            \DB::raw('CASE WHEN jenis=1 THEN \'Perbaikan\' ELSE \'Keluhan\' END AS jenis_pelaporan'),
+            DB::raw('CASE WHEN jenis=1 THEN \'Perbaikan\' ELSE \'Keluhan\' END AS jenis_pelaporan'),
             'abk.nama as nama_kerusakan',
-            \DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\') as tanggal'),
-            \DB::raw('TO_CHAR(jam_rusak, \'HH24:MI:SS\') as pukul'),
+            DB::raw('TO_CHAR(jam_rusak, \'dd-mm-yyyy\') as tanggal'),
+            DB::raw('TO_CHAR(jam_rusak, \'HH24:MI:SS\') as pukul'),
             'keterangan'
         )
         ->leftJoin('alat_berat_kerusakan as abk', 'laporan_kerusakan.id_kerusakan', '=', 'abk.id')
@@ -228,7 +230,7 @@ class AlatBeratController extends Controller
                 if ($resource) {
                     $foto = $req->file('foto');
                     (new LaporanKerusakanFoto)->where('id_laporan', '=', $laporan->id)->delete();
-                    \Storage::deleteDirectory('/public/history/' . $laporan->id);
+                    Storage::deleteDirectory('/public/history/' . $laporan->id);
                     if (!empty($foto)) {
                         foreach ($foto as $key => $value) {
                             if ($value->isValid()) {
@@ -306,7 +308,7 @@ class AlatBeratController extends Controller
                 if ($resource) {
                     $foto = $req->file('foto');
                     (new LaporanKerusakanFoto)->where('id_laporan', '=', $laporan->id)->delete();
-                    \Storage::deleteDirectory('/public/history/' . $laporan->id);
+                    Storage::deleteDirectory('/public/history/' . $laporan->id);
                     if (!empty($foto)) {
                         foreach ($foto as $key => $value) {
                             if ($value->isValid()) {
@@ -361,7 +363,7 @@ class AlatBeratController extends Controller
     {
         $search = strip_tags($req->input('search'));
         $resource = AlatBeratKerusakan::where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
@@ -375,7 +377,7 @@ class AlatBeratController extends Controller
     {
         $search = strip_tags($req->input('search'));
         $resource = ShiftKerja::where(function ($where) use ($search) {
-            $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [

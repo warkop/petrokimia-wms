@@ -9,6 +9,7 @@ use App\Http\Models\KeluhanOperator;
 use App\Http\Models\TenagaKerjaNonOrganik;
 use App\Http\Requests\KeluhanOperatorRequest;
 use App\Http\Resources\KeluhanOperatorResource;
+use Illuminate\Support\Facades\DB;
 
 class KeluhanOperatorController extends Controller
 {
@@ -19,12 +20,12 @@ class KeluhanOperatorController extends Controller
         $obj =  KeluhanOperatorResource::collection(KeluhanOperator::select(
             'keluhan_operator.id',
             'keterangan',
-            \DB::raw('tk.nama as nama_operator'),
-            \DB::raw('k.nama as nama_keluhan')
+            DB::raw('tk.nama as nama_operator'),
+            DB::raw('k.nama as nama_keluhan')
         )
         ->leftJoin('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'id_operator')
         ->leftJoin('keluhan as k', 'k.id', '=', 'id_keluhan')
-        ->where('keterangan', 'ILIKE', '%'.$search.'%')->paginate(10))->additional([
+        ->where('keterangan', 'ILIKE', '%'.$search.'%')->orderBy('keluhan_operator.id', 'desc')->paginate(10))->additional([
             'status' => [
                 'message' => '',
                 'code' => 200

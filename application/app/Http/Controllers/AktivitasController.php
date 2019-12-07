@@ -20,11 +20,13 @@ class AktivitasController extends Controller
 
     public function create()
     {
-        $data['title'] = 'Master Tambah Aktivitas';
-        $data['foto'] = JenisFoto::get();
-        $data['alat_berat'] = KategoriAlatBerat::get();
-        $data['aktivitas_alat_berat'] = '';
-        $data['aktivitas_master_foto'] = null;
+        $data['title']                  = 'Master Tambah Aktivitas';
+        $data['foto']                   = JenisFoto::get();
+        $data['alat_berat']             = KategoriAlatBerat::get();
+        $data['anggaran_tkbm']          = '';
+        $data['aktivitas_alat_berat']   = '';
+        $data['aktivitas_master_foto']  = null;
+        $data['aktivitas']              = '';
         return view('master.master-aktivitas.second', $data);
     }
 
@@ -77,6 +79,8 @@ class AktivitasController extends Controller
         $aktivitas->pallet_rusak               = $req->input('pallet_rusak');
         $aktivitas->connect_sistro             = $req->input('connect_sistro');
         $aktivitas->pengiriman                 = $req->input('pengiriman');
+        $aktivitas->upload_foto                = $req->input('butuh_upload_foto');
+        $aktivitas->butuh_alat_berat           = $req->input('butuh_alat_berat');
         $aktivitas->fifo                       = $req->input('fifo');
         $aktivitas->kelayakan                  = $req->input('kelayakan');
         $aktivitas->butuh_biaya                = $req->input('butuh_biaya');
@@ -88,6 +92,8 @@ class AktivitasController extends Controller
         $aktivitas->butuh_approval             = $req->input('butuh_approval');
         $aktivitas->pindah_area                = $req->input('pindah_area');
         $aktivitas->anggaran_tkbm              = $req->input('anggaran_tkbm');
+        $aktivitas->kode_aktivitas             = $req->input('kode_aktivitas');
+        $aktivitas->penerimaan_gi              = $req->input('penerimaan_gi');
         $aktivitas->start_date                 = $req->input('start_date');
         $aktivitas->end_date                   = $req->input('end_date');
 
@@ -137,16 +143,16 @@ class AktivitasController extends Controller
         if (!$request->ajax()) {
             return $this->accessForbidden();
         } else {
-            $res = $models::withoutGlobalScopes()->find($id);
+            $res = $models::withoutGlobalScopes()->findOrFail($id);
 
             if (!empty($res)) {
-                $this->responseCode = 200;
-                $this->responseMessage = 'Data tersedia.';
-                $this->responseData = $res;
+                $this->responseCode     = 200;
+                $this->responseMessage  = 'Data tersedia.';
+                $this->responseData     = $res;
             } else {
-                $this->responseData = [];
-                $this->responseStatus = 'No Data Available';
-                $this->responseMessage = 'Data tidak tersedia';
+                $this->responseData     = [];
+                $this->responseStatus   = 'No Data Available';
+                $this->responseMessage  = 'Data tidak tersedia';
             }
 
             $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
@@ -156,13 +162,14 @@ class AktivitasController extends Controller
 
     public function edit($id)
     {
-        $aktivitas = Aktivitas::findOrFail($id);
-        $data['id'] = $id;
-        $data['anggaran_tkbm'] = $aktivitas->anggaran_tkbm;
-        $data['foto'] = JenisFoto::get();
-        $data['alat_berat'] = KategoriAlatBerat::get();
-        $data['aktivitas_alat_berat'] = AktivitasAlatBerat::where('id_aktivitas', $id)->get();
-        $data['aktivitas_master_foto'] = AktivitasMasterFoto::where('id_aktivitas', $id)->get();
+        $aktivitas                      = Aktivitas::withoutGlobalScopes()->findOrFail($id);
+        $data['id']                     = $id;
+        $data['anggaran_tkbm']          = $aktivitas->anggaran_tkbm;
+        $data['foto']                   = JenisFoto::get();
+        $data['alat_berat']             = KategoriAlatBerat::get();
+        $data['aktivitas_alat_berat']   = AktivitasAlatBerat::where('id_aktivitas', $id)->get();
+        $data['aktivitas_master_foto']  = AktivitasMasterFoto::where('id_aktivitas', $id)->get();
+        $data['aktivitas']              = Aktivitas::withoutGlobalScopes()->find($id);
         return view('master.master-aktivitas.second', $data);
     }
 

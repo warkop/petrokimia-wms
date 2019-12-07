@@ -16,7 +16,9 @@ use App\Http\Models\TenagaKerjaNonOrganik;
 use App\Http\Models\Users;
 use App\Http\Requests\ApiRencanaKerjaRequest;
 use App\Http\Resources\AktivitasResource;
+use DateTime;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class RencanaKerjaController extends Controller
 {
@@ -38,12 +40,12 @@ class RencanaKerjaController extends Controller
 
         $data = RencanaHarian::select(
             '*',
-            \DB::raw("
+            DB::raw("
             CASE WHEN (SELECT id FROM realisasi where id_rencana = rencana_harian.id) IS NOT NULL
             THEN 'Done' ELSE 'Progress'
             END AS status")
         )
-        ->where('id_gudang', $res_gudang->id)->orderBy('id')->paginate(10);
+        ->where('id_gudang', $res_gudang->id)->orderBy('id', 'desc')->paginate(10);
 
         return AktivitasResource::collection($data)->additional([
             'status' => [
@@ -140,12 +142,14 @@ class RencanaKerjaController extends Controller
         if ($res_user->role_id == 5) {
             if (!empty($id)) {
                 $rencana_harian = RencanaHarian::find($req->input('id'));
+                $rencana_harian->updated_by = $user->id_user;
 
                 RencanaAlatBerat::where('id_rencana', $rencana_harian->id)->forceDelete();
                 RencanaTkbm::where('id_rencana', $rencana_harian->id)->forceDelete();
                 RencanaAreaTkbm::where('id_rencana', $rencana_harian->id)->forceDelete();
             } else {
                 $rencana_harian = new RencanaHarian();
+                $rencana_harian->created_by             = $user->id_user;
             }
 
             $res_gudang = Gudang::where('id_karu', $res_user->id_karu)->first();
@@ -155,12 +159,20 @@ class RencanaKerjaController extends Controller
                 $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                 return response()->json($response, $this->responseCode);
             }
+
+            $shift = ShiftKerja::findOrFail($req->input('id_shift'));
+            if ($shift->mulai>$shift->akhir) {
+                $rencana_harian->end_date   = date('Y-m-d H:i:s', strtotime($shift->akhir . '+1 day'));
+            } else {
+                $rencana_harian->end_date   = date('Y-m-d H:i:s', strtotime($shift->akhir));
+            }
+
             //rencana harian
             $rencana_harian->tanggal                = date('Y-m-d');
             $rencana_harian->id_shift               = $req->input('id_shift');
-            $rencana_harian->start_date             = date('Y-m-d');
-            $rencana_harian->created_at             = date('Y-m-d H:i:s');
             $rencana_harian->id_gudang              = $res_gudang->id;
+            $rencana_harian->start_date             = date("Y-m-d H:i:s");
+            
             $rencana_harian->save();
 
             //rencana alat berat
@@ -248,6 +260,28 @@ class RencanaKerjaController extends Controller
             $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
             return response()->json($response, $this->responseCode);
         }
+    }
+
+    public function jam()
+    {
+        // dd(new DateTime());
+        $shift = ShiftKerja::find(3);
+        $date1 = new DateTime($shift->mulai);
+        $date2 = new DateTime($shift->akhir);
+
+        $diff = $date2->diff($date1);
+
+        $hours = $diff->h;
+        $hours = $hours + ($diff->days * 24);
+
+        if ($shift->mulai > $shift->akhir) {
+            echo date('Y-m-d H:i:s', strtotime($shift->akhir. '+1 day'));
+        } else {
+            echo date('Y-m-d H:i:s', strtotime($shift->akhir));
+        }
+
+        // dd($shift->mulai> $shift->akhir);
+        // echo date("Y-m-d H:i:s", strtotime('+'.$hours.' hours'));
     }
 
     public function getShift()

@@ -82,7 +82,7 @@ class RencanaHarianController extends Controller
         $req->validated();
         $id = $req->input('id');
         if (!empty($id)) {
-            $rencana_harian = RencanaHarian::find($req->input('id'));
+            $rencana_harian = RencanaHarian::findOrFail($req->input('id'));
 
             RencanaAlatBerat::where('id_rencana', $rencana_harian->id)->forceDelete();
             RencanaTkbm::where('id_rencana', $rencana_harian->id)->forceDelete();
@@ -91,15 +91,15 @@ class RencanaHarianController extends Controller
             $rencana_harian = new RencanaHarian();
         }
 
-        $users = Users::find(\Auth::id());
+        $users = Users::findOrFail(\Auth::id());
 
         $res_gudang = Gudang::where('id_karu', $users->id_karu)->first();
 
         //rencana harian
         $rencana_harian->tanggal                = date('Y-m-d');
         $rencana_harian->id_shift               = $req->input('id_shift');
-        $rencana_harian->start_date             = date('Y-m-d');
-        $rencana_harian->created_at             = date('Y-m-d H:i:s');
+        $rencana_harian->start_date             = now();
+        // $rencana_harian->created_at             = date('Y-m-d H:i:s');
         $rencana_harian->id_gudang              = $res_gudang->id;
         $rencana_harian->save();
 
@@ -315,10 +315,10 @@ class RencanaHarianController extends Controller
         $data['material']    = Material::where('kategori', 3)->get();
         $data['id_rencana'] = $rencanaHarian->id;
 
-        $temp_realisasi = Realisasi::where('id_rencana', $rencanaHarian->id)->first();
-        $data['store_material'] = (new RealisasiMaterial)->where('id_realisasi', $temp_realisasi->id)->get();
-        $data['store_housekeeper'] = (new RealisasiHousekeeper)->select('id_tkbm')->where('id_realisasi', $temp_realisasi->id)->groupBy('id_tkbm')->get();
-        $data['store_area_housekeeper'] = (new RealisasiHousekeeper)->select('id_area', 'id_tkbm', 'nama')->leftJoin('area', 'area.id', '=', 'realisasi_housekeeper.id_area')->where('id_realisasi', $temp_realisasi->id)->get();
+        // $temp_realisasi = Realisasi::where('id_rencana', $rencanaHarian->id)->first();
+        // $data['store_material'] = (new RealisasiMaterial)->where('id_realisasi', $temp_realisasi->id)->get();
+        // $data['store_housekeeper'] = (new RealisasiHousekeeper)->select('id_tkbm')->where('id_realisasi', $temp_realisasi->id)->groupBy('id_tkbm')->get();
+        // $data['store_area_housekeeper'] = (new RealisasiHousekeeper)->select('id_area', 'id_tkbm', 'nama')->leftJoin('area', 'area.id', '=', 'realisasi_housekeeper.id_area')->where('id_realisasi', $temp_realisasi->id)->get();
         return view('rencana-harian.realisasi', $data);
     }
 

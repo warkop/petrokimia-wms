@@ -73,7 +73,7 @@ class LoginController extends Controller
                 $session['userdata']['role_name'] = $role->nama;
 
                 session($session);
-                $this->writeLog('Auth', 3, 'User dengan username '.$user->username.' yang mempunyai role '.$role->nama.' berhasil login');
+                $this->writeLog('Login', 3, 'User dengan username '.$user->username.' yang mempunyai role '.$role->nama.' berhasil login');
                 return $request->expectsJson() ? response()->json(helpResponse(200, ['user' => $user], 'Selamat Anda berhasil login'), 200) : redirect()->intended('home');
             }else{
                 $alerts[] = array('warning', 'Username atau Password Anda salah', 'Pemberitahuan');
@@ -86,7 +86,7 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         if(Auth::check()){
-            $this->writeLog('Auth', 4, 'User dengan username ' . \Auth::user()->username. ' berhasil logout');
+            $this->writeLog('Logout', 4, 'User dengan username ' . \Auth::user()->username. ' berhasil logout');
             Auth::logout();
             $request->session()->invalidate();
         }

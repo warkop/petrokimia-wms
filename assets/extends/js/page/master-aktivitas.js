@@ -55,6 +55,9 @@ let load_table = function () {
                 "mData": "id"
             },
             {
+                "mData": "kode_aktivitas"
+            },
+            {
                 "mData": "nama"
             },
             {
@@ -86,7 +89,7 @@ let load_table = function () {
                 }
             },
             {
-                "aTargets": [4],
+                "aTargets": -1,
                 "mData": "id",
                 render: function (data, type, full, meta) {
                     return `
@@ -147,6 +150,7 @@ function edit(id = '') {
 
             let obj = response;
 
+            $('#kode_aktivitas').val(obj.data['kode_aktivitas']);
             $('#nama').val(obj.data['nama']);
             if (obj.data['produk_stok'] != null) {
                 $("#produk_rusak").attr('disabled', true);
@@ -229,6 +233,11 @@ function edit(id = '') {
             if (obj.data['butuh_approval'] != null) {
                 $('#butuh_approval').prop('checked', true);
             }
+
+            if (obj.data['internal_gudang'] != null || obj.data['pengiriman'] != null) {
+                $('#butuh_approval').prop('disabled', false);
+            }
+
             if (obj.data['butuh_biaya'] != null) {
                 $('#butuh_biaya').prop('checked', true);
             }
@@ -241,6 +250,10 @@ function edit(id = '') {
 
             if (obj.data['pindah_area'] != null) {
                 $('#pindah_area').prop('checked', true);
+            }
+
+            if (obj.data['penerimaan_gi'] != null) {
+                $('#penerimaan_gi').prop('checked', true);
             }
             
             if (obj.data['start_date'] != null) {

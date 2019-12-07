@@ -27,4 +27,9 @@ class AktivitasHarianArea extends Model
 
     public $timestamps  = false;
     public $incrementing = false;
+
+    public function areaStok()
+    {
+        return $this->belongsTo(AreaStok::class, 'id_area_stok');
+    }
 }

@@ -27,4 +27,14 @@ class RencanaTkbm extends Model
 
     public $timestamps  = false;
     public $incrementing = false;
+
+    public function tkbm()
+    {
+        return $this->belongsTo(TenagaKerjaNonOrganik::class, 'id_tkbm');
+    }
+
+    public function rencanaHarian()
+    {
+        return $this->belongsTo(RencanaHarian::class, 'id_rencana');
+    }
 }
