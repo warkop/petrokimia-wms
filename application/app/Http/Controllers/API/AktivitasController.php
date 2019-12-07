@@ -19,6 +19,7 @@ use App\Http\Models\GudangStok;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
 use App\Http\Models\RencanaTkbm;
+use App\Http\Requests\ApiAktivitasPenerimaanGiRequest;
 use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Requests\ApiSaveKelayakanPhotos;
 use App\Http\Requests\ApiSavePhotosRequest;
@@ -500,7 +501,7 @@ class AktivitasController extends Controller
         }
     }
 
-    public function storePenerimaan(ApiAktivitasRequest $req) //menyimpan aktivitas harian untuk keperluan penerimaan GI
+    public function storePenerimaan(ApiAktivitasPenerimaanGiRequest $req) //menyimpan aktivitas harian untuk keperluan penerimaan GI
     {
         $user = $req->get('my_auth');
         $res_user = Users::findOrFail($user->id_user);
@@ -520,7 +521,7 @@ class AktivitasController extends Controller
                 return response()->json($response, $this->responseCode);
             }
 
-            $gudang = Gudang::find($rencana_tkbm->id_gudang)->orderBy('id', 'desc')->first();
+            $gudang = Gudang::find($aktivitasHarian->id_gudang_tujuan)->orderBy('id', 'desc')->first();
 
             if (empty($gudang)) {
                 $this->responseCode = 500;
