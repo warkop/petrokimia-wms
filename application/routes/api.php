@@ -38,7 +38,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::put('/{aktivitas?}', 'API\AktivitasController@store')->where('aktivitas', '[0-9]+');
         Route::post('/{aktivitas?}', 'API\AktivitasController@storePhotos')->where('aktivitas', '[0-9]+');
         Route::post('/kelayakan', 'API\AktivitasController@storeKelayakanPhotos');
-        Route::patch('/{aktivitas}', 'API\AktivitasController@approve')->where('aktivitas', '[0-9]+');
+        Route::patch('/{aktivitas}', 'API\AktivitasController@storePenerimaan')->where('aktivitas', '[0-9]+');
     });
     
     Route::group(['prefix' => 'alat-berat'], function () {
