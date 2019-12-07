@@ -504,7 +504,7 @@ class AktivitasController extends Controller
     {
         $user = $req->get('my_auth');
         $res_user = Users::findOrFail($user->id_user);
-        $aktivitas = Aktivitas::findOrFail($req->input('id_aktivitas'));
+        $aktivitas = Aktivitas::whereNotNull('penerimaan_gi')->first();
         $aktivitasHarian = AktivitasHarian::findOrFail($req->input('id_aktivitas_harian'));
 
         if ($aktivitas->penerimaan_gi != null) {
@@ -531,7 +531,7 @@ class AktivitasController extends Controller
 
             $wannaSave = new AktivitasHarian;
             $wannaSave->ref_number        = $aktivitasHarian->id;
-            $wannaSave->id_aktivitas      = $req->input('id_aktivitas');
+            $wannaSave->id_aktivitas      = $aktivitas->id;
             $wannaSave->id_gudang         = $gudang->id;
             $wannaSave->id_karu           = $gudang->id_karu;
             $wannaSave->id_shift          = $rencana_tkbm->id_shift;
