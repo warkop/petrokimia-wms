@@ -248,9 +248,9 @@ class AktivitasController extends Controller
                 $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                 return response()->json($response, $this->responseCode);
             }
-
-            $gudang = Gudang::find($rencana_tkbm->id_gudang)->orderBy('id', 'desc')->first();
-
+            $rencana_harian = RencanaHarian::find($rencana_tkbm->id_rencana);
+            $gudang = Gudang::find($rencana_harian->id_gudang)->first();
+            // dd($gudang->id);
             if (empty($gudang)) {
                 $this->responseCode = 500;
                 $this->responseMessage = 'Gudang tidak tersedia!';
@@ -512,6 +512,13 @@ class AktivitasController extends Controller
         $aktivitas = Aktivitas::whereNotNull('penerimaan_gi')->first();
         $aktivitasHarian = AktivitasHarian::findOrFail($req->input('id_aktivitas_harian'));
 
+        if ($aktivitasHarian->approve != null) {
+            $this->responseCode = 403;
+            $this->responseMessage = 'Aktivitas harian sudah disetujui!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+
         if ($aktivitas->penerimaan_gi != null) {
             $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
                 ->where('id_tkbm', $user->id_tkbm)
@@ -728,7 +735,7 @@ class AktivitasController extends Controller
         }
     }
 
-    public function getAreaPenerimaan($id) //memuat area apa saja yang tersedia pada gudang ini pada mode penerimaan GI
+    public function getAreaFromPengirim($id) //memuat area apa saja dan jumlahnya berapa dari si pengirim
     {
         $aktivitasHarian = AktivitasHarian::find($id);
         $data = [];
@@ -749,9 +756,54 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function listTanggalFromAreaStok($idArea) //memuat daftar tanggal yang tersedia pada gudang ini pada mode penerimaan GI
+    public function listTanggalFromAreaStok(Request $req, $idArea) //memuat daftar tanggal yang tersedia pada gudang ini pada mode penerimaan GI
     {
-        $data = AreaStok::where('id_area', $idArea)->orderBy('tanggal', 'asc')->get();
+        $user = $req->get('my_auth');
+        $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+            ->where('id_tkbm', $user->id_tkbm)
+            ->orderBy('rencana_harian.id', 'desc')
+            ->take(1)->first();
+
+        if (empty($rencana_tkbm)) {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+        $rencana_harian = RencanaHarian::find($rencana_tkbm->id_rencana);
+        $gudang = Gudang::find($rencana_harian->id_gudang)->orderBy('id', 'desc')->first();
+
+        $data = AreaStok::
+        leftJoin('area', 'area.id', '=', 'area_stok.id_area')
+        ->where('id_gudang', $gudang->id)
+        ->where('id_area', $idArea)->orderBy('tanggal', 'asc')->get();
+        return response()->json([
+            'data' => $data,
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ]
+        ], Response::HTTP_OK);
+    }
+
+    public function getAreaFromPenerima(Request $req)
+    {
+        $user = $req->get('my_auth');
+        $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+            ->where('id_tkbm', $user->id_tkbm)
+            ->orderBy('rencana_harian.id', 'desc')
+            ->take(1)->first();
+
+        if (empty($rencana_tkbm)) {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+        $rencana_harian = RencanaHarian::find($rencana_tkbm->id_rencana);
+        $gudang = Gudang::findOrFail($rencana_harian->id_gudang)->orderBy('id', 'desc')->first();
+
+        $data = Area::where('id_gudang', $gudang->id)->get();
         return response()->json([
             'data' => $data,
             'status' => [
@@ -859,13 +911,14 @@ class AktivitasController extends Controller
             'aktivitas_harian.id',
             'aktivitas.nama as nama_aktivitas',
             'gudang.nama as nama_gudang',
-            DB::raw('CASE WHEN approve IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
+            DB::raw('CASE WHEN approve IS NOT NULL OR internal_gudang IS NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
             'aktivitas_harian.created_at',
             'aktivitas_harian.created_by'
         )
         ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
         ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
         ->where('id_gudang', $gudang->id)
+        ->orWhere('id_gudang_tujuan', $gudang->id)
         ->where(function ($where) use ($search) {
             $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             $where->orWhere(DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');

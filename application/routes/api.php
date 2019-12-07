@@ -27,7 +27,8 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-pindah-area', 'API\AktivitasController@pindahArea');
         Route::get('/history', 'API\AktivitasController@history');
         Route::get('/load-penerimaan/{id}', 'API\AktivitasController@loadPenerimaan')->where('id', '[0-9]+');
-        Route::get('/get-area-penerimaan/{id}', 'API\AktivitasController@getAreaPenerimaan')->where('id', '[0-9]+');
+        Route::get('/get-area-from-pengirim/{id}', 'API\AktivitasController@getAreaFromPengirim')->where('id', '[0-9]+');
+        Route::get('/get-area-from-penerima', 'API\AktivitasController@getAreaFromPenerima');
         Route::get('/get-list-tanggal/{id}', 'API\AktivitasController@listTanggalFromAreaStok')->where('id', '[0-9]+');
         
         Route::get('/get-area/{id_aktivitas}/{id_material}', 'API\AktivitasController@getArea')->where('id_aktivitas', '[0-9]+');
