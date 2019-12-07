@@ -25,6 +25,7 @@ class ApiAktivitasPenerimaanGiRequest extends FormRequest
     public function rules()
     {
         $rules = [
+            'id_aktivitas_harian'   => 'required|numeric|exists:aktivitas_harian,id',
             'id_gudang'         => 'nullable|numeric',
             'id_karu'           => 'nullable|numeric',
             'id_alat_berat'     => 'nullable|numeric|exists:alat_berat,id',
@@ -70,6 +71,7 @@ class ApiAktivitasPenerimaanGiRequest extends FormRequest
     {
         return [
             'required'  => ':attribute wajib diisi!',
+            'exists'    => ':attribute tidak tersedia!',
             'numeric'   => ':attribute harus berupa angka!',
             'image'     => ':attribute harus berupa gambar!',
         ];

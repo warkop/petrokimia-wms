@@ -504,72 +504,6 @@ class AktivitasController extends Controller
         }
     }
 
-    public function storePenerimaan(ApiAktivitasPenerimaanGiRequest $req) //menyimpan aktivitas harian untuk keperluan penerimaan GI
-    {
-        $user = $req->get('my_auth');
-        $res_user = Users::findOrFail($user->id_user);
-        $aktivitas = Aktivitas::whereNotNull('penerimaan_gi')->first();
-        $aktivitasHarian = AktivitasHarian::findOrFail($req->input('id_aktivitas_harian'));
-
-        if ($aktivitasHarian->approve != null) {
-            $this->responseCode = 403;
-            $this->responseMessage = 'Aktivitas harian sudah disetujui!';
-            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-            return response()->json($response, $this->responseCode);
-        }
-
-        if ($aktivitas->penerimaan_gi != null) {
-            $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
-                ->where('id_tkbm', $user->id_tkbm)
-                ->orderBy('rencana_harian.id', 'desc')
-                ->take(1)->first();
-
-            if (empty($rencana_tkbm)) {
-                $this->responseCode = 500;
-                $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
-                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                return response()->json($response, $this->responseCode);
-            }
-
-            $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
-
-            if (empty($gudang)) {
-                $this->responseCode = 500;
-                $this->responseMessage = 'Gudang tidak tersedia!';
-                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                return response()->json($response, $this->responseCode);
-            }
-
-            $wannaSave = new AktivitasHarian;
-            $wannaSave->ref_number        = $aktivitasHarian->id;
-            $wannaSave->id_aktivitas      = $aktivitas->id;
-            $wannaSave->id_gudang         = $gudang->id;
-            $wannaSave->id_karu           = $gudang->id_karu;
-            $wannaSave->id_shift          = $rencana_tkbm->id_shift;
-            $wannaSave->id_area           = $req->input('id_pindah_area');
-            $wannaSave->id_alat_berat     = $req->input('id_alat_berat');
-            $wannaSave->sistro            = $req->input('sistro');
-            $wannaSave->alasan            = $req->input('alasan');
-            $wannaSave->created_by        = $res_user->id;
-            $wannaSave->created_at        = now();
-
-            $wannaSave->save();
-
-            $aktivitasHarian->approve = now();
-            $aktivitasHarian->save();
-
-            $this->responseCode = 200;
-            $this->responseMessage = 'Gudang tidak tersedia!';
-            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-            return response()->json($response, $this->responseCode);
-        } else {
-            $this->responseCode = 500;
-            $this->responseMessage = 'Gudang tidak tersedia!';
-            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-            return response()->json($response, $this->responseCode);
-        }
-    }
-
     public function storePhotos(ApiSavePhotosRequest $req, AktivitasHarian $aktivitas) //menyimpan ttd dan foto jenis
     {
         $req->validated();
@@ -702,6 +636,71 @@ class AktivitasController extends Controller
         }
     }
 
+    public function storePenerimaan(ApiAktivitasPenerimaanGiRequest $req) //menyimpan aktivitas harian untuk keperluan penerimaan GI
+    {
+        $user = $req->get('my_auth');
+        $res_user = Users::findOrFail($user->id_user);
+        $aktivitas = Aktivitas::whereNotNull('penerimaan_gi')->first();
+        $aktivitasHarian = AktivitasHarian::findOrFail($req->input('id_aktivitas_harian'));
+
+        if ($aktivitasHarian->approve != null) {
+            $this->responseCode = 403;
+            $this->responseMessage = 'Aktivitas harian sudah disetujui!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+
+        if ($aktivitas->penerimaan_gi != null) {
+            $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+                ->where('id_tkbm', $user->id_tkbm)
+                ->orderBy('rencana_harian.id', 'desc')
+                ->take(1)->first();
+
+            if (empty($rencana_tkbm)) {
+                $this->responseCode = 500;
+                $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+
+            $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
+
+            if (empty($gudang)) {
+                $this->responseCode = 500;
+                $this->responseMessage = 'Gudang tidak tersedia!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+
+            $wannaSave = new AktivitasHarian;
+            $wannaSave->ref_number        = $aktivitasHarian->id;
+            $wannaSave->id_aktivitas      = $aktivitas->id;
+            $wannaSave->id_gudang         = $gudang->id;
+            $wannaSave->id_karu           = $gudang->id_karu;
+            $wannaSave->id_shift          = $rencana_tkbm->id_shift;
+            $wannaSave->id_area           = $req->input('id_pindah_area');
+            $wannaSave->id_alat_berat     = $req->input('id_alat_berat');
+            $wannaSave->sistro            = $req->input('sistro');
+            $wannaSave->alasan            = $req->input('alasan');
+            $wannaSave->created_by        = $res_user->id;
+            $wannaSave->created_at        = now();
+
+            $wannaSave->save();
+
+            $aktivitasHarian->approve = now();
+            $aktivitasHarian->save();
+
+            $this->responseCode = 200;
+            $this->responseMessage = 'Data berhasil disimpan!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        } else {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Gudang tidak tersedia!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+    }
 
     public function loadPenerimaan($id) //memuat nama material apa saja yang telah dikirim oleh gudang sebalah
     {
@@ -915,8 +914,11 @@ class AktivitasController extends Controller
         )
         ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
         ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
-        ->where('id_gudang', $gudang->id)
-        ->orWhere('id_gudang_tujuan', $gudang->id)
+        ->where(function ($where) use ($gudang) {
+            $where->where('id_gudang', $gudang->id);
+            $where->orWhere('id_gudang_tujuan', $gudang->id);
+        })
+        ->whereNull('ref_number')
         ->where(function ($where) use ($search) {
             $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             $where->orWhere(DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
