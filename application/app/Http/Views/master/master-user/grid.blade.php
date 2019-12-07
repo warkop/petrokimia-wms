@@ -140,7 +140,8 @@ $('#end_date').datepicker({
 });
 
 $('#pilih').select2({
-    placeholder: "Pilih Pegawai"
+    placeholder: "Pilih Pegawai",
+    dropdownParent:$("#modal_form")
 });
 
 $(".reveal").on('click',function() {
