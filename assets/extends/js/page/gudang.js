@@ -118,6 +118,7 @@ var load_table = function () {
                             <a class="dropdown-item" href="${baseUrl+'list-pallet/'+full.id}"><i class="flaticon-layers"></i> List pallet</a>
                             <button class="dropdown-item" onclick="edit(${full.id})" data-toggle="modal" data-target="#kt_modal_1"><i class="flaticon-edit-1"></i> Edit data</button>
                             <a class="dropdown-item" href="` + baseUrl + `gudang/layout-gudang"><i class="flaticon-app"></i> Layout Gudang</a>
+                            <a class="dropdown-item" href="javascript:;" onclick="showModalAktivitasGudang()"><i class="flaticon-list"></i> Aktivitas Gudang</a>
                         </div>`;
                 },
             }

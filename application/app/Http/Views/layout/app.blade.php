@@ -119,7 +119,7 @@ License: You must have a valid license purchased only from themeforest(the above
 								@endif
 								<li id="pGP-nav" class="kt-menu__item aktivitas-nav" aria-haspopup="true"><a href="{{url('/penerimaan-gp')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-columns"></span><span class="kt-menu__link-text">Penerimaan GP</span></a></li>
 								<li id="log-aktivitas-nav" class="kt-menu__item pGP-nav" aria-haspopup="true"><a href="{{url('/log-aktivitas')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-line-chart"></span><span class="kt-menu__link-text">Log Aktivitas</span></a></li>
-								<li id="log-aktivitas-user-nav" class="kt-menu__item pGP-nav" aria-haspopup="true"><a href="{{url('/log-aktivitas-user')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-line-chart"></span><span class="kt-menu__link-text">Log Aktivitas User</span></a></li>
+								<li id="log-aktivitas-user-nav" class="kt-menu__item pGP-nav" aria-haspopup="true"><a href="{{url('/log-aktivitas-user')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-list"></span><span class="kt-menu__link-text">Log Aktivitas User</span></a></li>
 								<li class="kt-menu__section ">
 									<h4 class="kt-menu__section-text">DATA MASTER</h4>
 									<i class="kt-menu__section-icon flaticon-more-v2"></i>

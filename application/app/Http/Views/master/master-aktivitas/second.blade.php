@@ -260,13 +260,13 @@
                                         $checked = ''; 
                                     @endphp
                                 @endif
-                                <div class="col-6 offset-col-2">
+                                <div class="col-9 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                         <input type="checkbox" name="butuh_alat_berat" id="butuh_alat_berat" value="1" {{$checked}}> Butuh alat berat
                                         <span></span>
                                     </label>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-2">
                                     <span id="butuh_alat_berat-label" onclick="showModalAlatBerat()" class="pull-right pointer kt-font-success kt-font-bold undelinehov" style="{{$show_alat_berat}}">Lihat</span>
                                 </div>
                             </div>
@@ -336,7 +336,7 @@
             </div>
 
             <div class="modal fade" id="modalFoto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Upload Foto</h5>
@@ -345,14 +345,14 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-12 mb1">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                         <input type="checkbox" id="select_all_photos"> Pilih Semua
                                         <span></span>
                                     </label>
                                 </div>
                                 @foreach ($foto as $row)
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                             <input class="upload_foto_checkbox" type="checkbox" name="upload_foto[]" id="upload_foto_{{$row->id}}" value="{{$row->id}}"> {{$row->nama}}
                                             <span></span>

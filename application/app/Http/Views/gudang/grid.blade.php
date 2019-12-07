@@ -265,6 +265,83 @@
 <!--end::Modal-->
 
 
+<!--begin::Modal jaktivitas gudang -->
+<div class="modal fade" id="modalAktivitasGudang" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Aktivitas Gudang</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form action="">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="exampleSelect1">Pilih Aktivitas</label>
+                                <select class="form-control m-select2" id="aktivitas_gudang" name="aktivitas_gudang" style="width:100%">
+                                    <option value="1">Pengiriman Gudang Internal</option>
+                                    <option value="2">Pengiriman GP</option>
+                                    <option value="2">Pengiriman Pemindahan</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="offset-1 col-md-3">
+                            <div class="form-group">
+                                <label for="exampleSelect1" style="visibility:hidden;">ini tidak berpengaruh</label>
+                                <div class="">
+                                    <button onclick="_tambahAktivitas()"  type="button" class="btn btn-success" style="width: 120px">Tambah</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="_listAktivitasGudang" class="row mt2" style="display:none">
+                        <label class="col-12 boldd">List aktivitas gudang</label>
+                        <div class="col-12 kel-min">
+                            <table class="table table-striped table-bordered dttb-hargaPupukInternasional table-hover table-checkable" id="dttb-hargaPupukInternasional">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>Aktivitas</th>
+                                        <th style="width: 20%">Action</th>
+                                    </tr>     
+                                </thead>
+                                <tbody class="text-center">
+                                    <tr>
+                                        <td class="text-left">Pengiriman Gudang Internal</td>
+                                        <td>
+                                            <a href="#" class="btn btn-danger btn-sm _btnHapus" ><i class="fa fa-trash"></i> Hapus</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left">Pengiriman GP</td>
+                                        <td>
+                                            <a href="#" class="btn btn-danger btn-sm _btnHapus"" ><i class="fa fa-trash"></i> Hapus</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left">Pengiriman Pemindahan</td>
+                                        <td>
+                                            <a href="#" class="btn btn-danger btn-sm _btnHapus"" ><i class="fa fa-trash"></i> Hapus</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-wms ladda-button" id="btn_save_a_gudang">Simpan Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--end::Modal-->
+
+
 
 
 
@@ -281,6 +358,21 @@ $('#end_date').datepicker({
     format:'dd-mm-yyyy',
     clearBtn:true,
     orientation: "bottom left"
+});
+
+$('#aktivitas_gudang').select2({
+    placeholder: "Pilih Aktivitas",
+    allowClear: true,
+});
+
+function showModalAktivitasGudang() { $('#modalAktivitasGudang').modal();}
+
+function _tambahAktivitas() {
+    $('#_listAktivitasGudang').show();
+} 
+
+$("body").on('click', '._btnHapus', function (e) {
+    $(this).parent().parent().remove();
 });
 </script>
 @endsection

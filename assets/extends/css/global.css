@@ -152,3 +152,6 @@
 .undelinehov:hover {
     text-decoration: underline !important;
 }
+[disabled=""]{
+	cursor: not-allowed !important;
+}
