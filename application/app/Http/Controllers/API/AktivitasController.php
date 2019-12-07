@@ -224,7 +224,7 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function store(ApiAktivitasRequest $req, AktivitasHarian $aktivitas)
+    public function store(ApiAktivitasRequest $req, AktivitasHarian $aktivitasHarian)
     {
         $req->validated();
 
@@ -254,24 +254,24 @@ class AktivitasController extends Controller
             }
 
             //simpan aktivitas
-            $aktivitas->id_aktivitas      = $req->input('id_aktivitas');
-            $aktivitas->id_gudang         = $gudang->id;
-            $aktivitas->id_karu           = $gudang->id_karu;
-            $aktivitas->id_shift          = $rencana_tkbm->id_shift;
-            $aktivitas->id_gudang_tujuan  = $req->input('id_gudang_tujuan');
-            $aktivitas->ref_number        = $req->input('ref_number');
-            $aktivitas->id_area           = $req->input('id_pindah_area');
-            $aktivitas->id_alat_berat     = $req->input('id_alat_berat');
-            $aktivitas->sistro            = $req->input('sistro');
-            $aktivitas->approve           = $req->input('approve');
-            $aktivitas->kelayakan_before  = $req->input('kelayakan_before');
-            $aktivitas->kelayakan_after   = $req->input('kelayakan_after');
-            $aktivitas->dikembalikan      = $req->input('dikembalikan');
-            $aktivitas->alasan            = $req->input('alasan');
-            $aktivitas->created_by        = $res_user->id;
-            $aktivitas->created_at        = now();
+            $aktivitasHarian->id_aktivitas      = $req->input('id_aktivitas');
+            $aktivitasHarian->id_gudang         = $gudang->id;
+            $aktivitasHarian->id_karu           = $gudang->id_karu;
+            $aktivitasHarian->id_shift          = $rencana_tkbm->id_shift;
+            $aktivitasHarian->id_gudang_tujuan  = $req->input('id_gudang_tujuan');
+            $aktivitasHarian->ref_number        = $req->input('ref_number');
+            $aktivitasHarian->id_area           = $req->input('id_pindah_area');
+            $aktivitasHarian->id_alat_berat     = $req->input('id_alat_berat');
+            $aktivitasHarian->sistro            = $req->input('sistro');
+            $aktivitasHarian->approve           = $req->input('approve');
+            $aktivitasHarian->kelayakan_before  = $req->input('kelayakan_before');
+            $aktivitasHarian->kelayakan_after   = $req->input('kelayakan_after');
+            $aktivitasHarian->dikembalikan      = $req->input('dikembalikan');
+            $aktivitasHarian->alasan            = $req->input('alasan');
+            $aktivitasHarian->created_by        = $res_user->id;
+            $aktivitasHarian->created_at        = now();
 
-            $saved = $aktivitas->save();
+            $saved = $aktivitasHarian->save();
 
             if ($saved) {
                 $res_aktivitas = Aktivitas::find($req->input('id_aktivitas'));
@@ -335,7 +335,7 @@ class AktivitasController extends Controller
 
                                     $array = [
                                         'id_material'           => $produk,
-                                        'id_aktivitas_harian'   => $aktivitas->id,
+                                        'id_aktivitas_harian'   => $aktivitasHarian->id,
                                         'tanggal'               => now(),
                                         'tipe'                  => $tipe,
                                         'jumlah'                => $list_jumlah[$k]['jumlah'],
@@ -345,7 +345,7 @@ class AktivitasController extends Controller
                                     $material_trans->create($array);
 
                                     (new AktivitasHarianArea)->create([
-                                        'id_aktivitas_harian'   => $aktivitas->id,
+                                        'id_aktivitas_harian'   => $aktivitasHarian->id,
                                         'id_area_stok'          => $area_stok->id,
                                         'jumlah'                => $list_jumlah[$k]['jumlah'],
                                         'tipe'                  => $tipe,
@@ -417,7 +417,7 @@ class AktivitasController extends Controller
 
                                         $array = [
                                             'id_material'           => $produk,
-                                            'id_aktivitas_harian'   => $aktivitas->id,
+                                            'id_aktivitas_harian'   => $aktivitasHarian->id,
                                             'tanggal'               => now(),
                                             'tipe'                  => $tipe,
                                             'jumlah'                => $list_jumlah[$k]['jumlah'],
@@ -426,7 +426,7 @@ class AktivitasController extends Controller
                                         $material_trans->create($array);
                                         
                                         (new AktivitasHarianArea)->create([
-                                            'id_aktivitas_harian'   => $aktivitas->id,
+                                            'id_aktivitas_harian'   => $aktivitasHarian->id,
                                             'id_area_stok'          => $saved_area_stok->id,
                                             'jumlah'                => $list_jumlah[$k]['jumlah'],
                                             'tipe'                  => $tipe,
@@ -451,7 +451,7 @@ class AktivitasController extends Controller
                         $status_pallet = $list_pallet[$i]['status_pallet'];
                         $tipe = $list_pallet[$i]['tipe'];
                         $arr = [
-                            'id_aktivitas_harian'       => $aktivitas->id,
+                            'id_aktivitas_harian'       => $aktivitasHarian->id,
                             'tanggal'                   => now(),
                             'id_material'               => $pallet,
                             'jumlah'                    => $jumlah,
@@ -478,7 +478,7 @@ class AktivitasController extends Controller
                 }
 
 
-                return (new AktivitasResource($aktivitas))->additional([
+                return (new AktivitasResource($aktivitasHarian))->additional([
                     'produk' => $list_produk,
                     'pallet' => $list_pallet,
                     'status' => [
@@ -674,7 +674,7 @@ class AktivitasController extends Controller
 
     public function listTanggalFromAreaStok($idArea)
     {
-        $data = AreaStok::where('id_area', $idArea)->get();
+        $data = AreaStok::where('id_area', $idArea)->orderBy('tanggal', 'asc')->get();
         return response()->json([
             'data' => $data,
             'status' => [
