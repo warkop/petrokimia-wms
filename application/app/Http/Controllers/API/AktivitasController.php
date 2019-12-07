@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Aktivitas;
 use App\Http\Models\Users;
 use App\Http\Models\AktivitasFoto;
+use App\Http\Models\AktivitasGudang;
 use App\Http\Models\AktivitasHarian;
 use App\Http\Models\AktivitasHarianArea;
 use App\Http\Models\AktivitasKelayakanFoto;
@@ -18,6 +19,7 @@ use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
+use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use App\Http\Requests\ApiAktivitasPenerimaanGiRequest;
 use App\Http\Requests\ApiAktivitasRequest;
@@ -38,8 +40,10 @@ class AktivitasController extends Controller
     {
         $search = strip_tags($req->input('search'));
 
-        $obj =  AktivitasResource::collection(Aktivitas::where(function ($where) use ($search) {
-            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        $obj =  AktivitasResource::collection(AktivitasGudang::
+        leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_gudang.id_aktivitas')
+        ->where(function ($where) use ($search) {
+            $where->where(DB::raw('nama'), 'ILIKE', '%' . strtolower($search) . '%');
         })->orderBy('id', 'desc')->paginate(10))->additional([
             'status' => ['message' => '',
             'code' => Response::HTTP_OK],
@@ -844,6 +848,11 @@ class AktivitasController extends Controller
 
     public function history(Request $req) //memuat history
     {
+        $user = $req->get('my_auth');
+        $res_user = Users::findOrFail($user->id_user);
+        $rencanaTkbm = RencanaTkbm::where('id_tkbm', $res_user->id_tkbm)->orderBy('id_rencana')->first();
+        $rencanaHarian = RencanaHarian::find($rencanaTkbm->id_rencana);
+        $gudang = Gudang::find($rencanaHarian->id_gudang);
         $search = $req->input('search');
 
         $res = AktivitasHarian::select(
@@ -856,6 +865,7 @@ class AktivitasController extends Controller
         )
         ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
         ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
+        ->where('id_gudang', $gudang->id)
         ->where(function ($where) use ($search) {
             $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             $where->orWhere(DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
