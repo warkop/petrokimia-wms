@@ -248,9 +248,8 @@ class AktivitasController extends Controller
                 $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                 return response()->json($response, $this->responseCode);
             }
-            $rencana_harian = RencanaHarian::find($rencana_tkbm->id_rencana);
-            $gudang = Gudang::find($rencana_harian->id_gudang)->first();
-            // dd($gudang->id);
+            $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
+            $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
             if (empty($gudang)) {
                 $this->responseCode = 500;
                 $this->responseMessage = 'Gudang tidak tersedia!';
@@ -532,7 +531,7 @@ class AktivitasController extends Controller
                 return response()->json($response, $this->responseCode);
             }
 
-            $gudang = Gudang::find($aktivitasHarian->id_gudang_tujuan)->orderBy('id', 'desc')->first();
+            $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
 
             if (empty($gudang)) {
                 $this->responseCode = 500;
@@ -770,8 +769,8 @@ class AktivitasController extends Controller
             $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
             return response()->json($response, $this->responseCode);
         }
-        $rencana_harian = RencanaHarian::find($rencana_tkbm->id_rencana);
-        $gudang = Gudang::find($rencana_harian->id_gudang)->orderBy('id', 'desc')->first();
+        $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
+        $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
 
         $data = AreaStok::
         leftJoin('area', 'area.id', '=', 'area_stok.id_area')
@@ -800,9 +799,8 @@ class AktivitasController extends Controller
             $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
             return response()->json($response, $this->responseCode);
         }
-        $rencana_harian = RencanaHarian::find($rencana_tkbm->id_rencana);
-        $gudang = Gudang::findOrFail($rencana_harian->id_gudang)->orderBy('id', 'desc')->first();
-
+        $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
+        $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
         $data = Area::where('id_gudang', $gudang->id)->get();
         return response()->json([
             'data' => $data,
@@ -904,7 +902,7 @@ class AktivitasController extends Controller
         $res_user = Users::findOrFail($user->id_user);
         $rencanaTkbm = RencanaTkbm::where('id_tkbm', $res_user->id_tkbm)->orderBy('id_rencana')->first();
         $rencanaHarian = RencanaHarian::find($rencanaTkbm->id_rencana);
-        $gudang = Gudang::find($rencanaHarian->id_gudang);
+        $gudang = Gudang::findOrFail($rencanaHarian->id_gudang);
         $search = $req->input('search');
 
         $res = AktivitasHarian::select(
