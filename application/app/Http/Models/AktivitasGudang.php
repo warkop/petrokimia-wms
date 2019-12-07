@@ -24,4 +24,14 @@ class AktivitasGudang extends Model
     
     public $timestamps  = false;
     public $incrementing = false;
+
+    public function aktivitas()
+    {
+        return $this->belongsTo(Aktivitas::class, 'id_aktivitas');
+    }
+
+    public function gudang()
+    {
+        return $this->belongsTo(Gudang::class, 'id_gudang');
+    }
 }
