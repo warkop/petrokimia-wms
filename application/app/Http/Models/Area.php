@@ -30,6 +30,11 @@ class Area extends CustomModel
         return $this->belongsTo(Gudang::class, 'id_gudang');
     }
 
+    public function areaStok()
+    {
+        return $this->hasOne(AreaStok::class, 'id', 'id_area');
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition, $id_gudang)
     {
         $result = DB::table($this->table)

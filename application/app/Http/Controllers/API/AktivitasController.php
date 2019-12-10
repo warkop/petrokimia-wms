@@ -31,6 +31,7 @@ use App\Http\Resources\AktivitasResource;
 use App\Http\Resources\AlatBeratResource;
 use App\Http\Resources\AreaPenerimaanGiResource;
 use App\Http\Resources\AreaStokResource;
+use App\Http\Resources\getAreaFromPenerimaResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -1010,7 +1011,15 @@ class AktivitasController extends Controller
         }
         $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
         $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
-        $data = Area::where('id_gudang', $gudang->id)->get();
+        $data = Area::select(
+            'area.id',
+            'id_gudang',
+            'nama',
+            'kapasitas',
+            'jumlah'
+        )
+        ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
+        ->where('id_gudang', $gudang->id)->get();
         return response()->json([
             'data' => $data,
             'status' => [
