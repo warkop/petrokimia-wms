@@ -721,11 +721,13 @@ class AktivitasController extends Controller
         // if ($aktivitas->internal_gudang != null) {
             $materialTrans = MaterialTrans::select(
                 'id_material',
+                'nama as nama_material',
                 'jumlah'
             )
-                ->where('id_aktivitas_harian', $id)
-                ->whereNotNull('status_produk')
-                ->get();
+            ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
+            ->where('id_aktivitas_harian', $id)
+            ->whereNotNull('status_produk')
+            ->get();
             
             return response()->json([
             'data' => $materialTrans,
