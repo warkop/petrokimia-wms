@@ -16,6 +16,8 @@ Route::post('/logout', 'API\AuthController@logout');
 Route::group(['middleware' => 'api.auth'], function () {
     Route::group(['prefix' => 'aktivitas'], function () {
         Route::get('/', 'API\AktivitasController@index');
+        Route::get('/get-data-sistro', 'API\AktivitasController@getDataSistro');
+        Route::get('/get-sistro', 'API\AktivitasController@getSistro');
         Route::get('/get-alat', 'API\AktivitasController@getAlat');
         Route::get('/get-kategori-alat', 'API\AktivitasController@kategoriAlat');
         Route::get('/get-gudang', 'API\AktivitasController@getGudang');

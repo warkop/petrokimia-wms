@@ -21,6 +21,7 @@ use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
+use App\Http\Models\Sistro;
 use App\Http\Requests\ApiAktivitasPenerimaanGiRequest;
 use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Requests\ApiSaveKelayakanPhotos;
@@ -1270,5 +1271,28 @@ class AktivitasController extends Controller
         $data = (new AlatBerat)->with('kategori')->get();
         // return $data;
         return AlatBeratResource::collection($data);
+    }
+
+    public function getDataSistro()
+    {
+        $res = Sistro::take(100)->get();
+
+        return $res;
+    }
+    
+    public function getSistro(Request $req)
+    {
+        $tiketnumber = $req->input('tiketnumber');
+        $sistro = Sistro::where('tiketno', $tiketnumber)->first();
+        $res = Material::where('id_material_sap', $sistro->idproduk)->get();
+
+        $obj = (new AktivitasResource($res))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ],
+        ], Response::HTTP_OK);
+
+        return $obj;
     }
 }
