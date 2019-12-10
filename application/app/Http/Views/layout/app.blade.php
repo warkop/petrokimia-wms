@@ -164,6 +164,7 @@ License: You must have a valid license purchased only from themeforest(the above
 											<li id="report-realisasi-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/laporan-realisasi')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Realisasi</span></a></li>
 											<li id="report-keluhan-alat-berat-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/laporan-keluhan-alat-berat')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Keluhan Alat Berat</span></a></li>
 											<li id="report-keluhan-gp-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/laporan-keluhan-gp')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Keluhan GP</span></a></li>
+											<li id="report-aktivitas-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/laporan-aktivitas')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Aktivitas</span></a></li>
 										</ul>
 									</div>
 								</li>

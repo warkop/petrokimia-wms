@@ -311,3 +311,6 @@ Route::get('/gudang/layout-gudang', function () {
 Route::get('/log-aktivitas-user', function () {
     return view('log-aktivitas-user.grid');
 });
+Route::get('/laporan-aktivitas', function () {
+    return view('report.aktivitas.grid');
+});
