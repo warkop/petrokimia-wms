@@ -16,6 +16,8 @@ Route::post('/logout', 'API\AuthController@logout');
 Route::group(['middleware' => 'api.auth'], function () {
     Route::group(['prefix' => 'aktivitas'], function () {
         Route::get('/', 'API\AktivitasController@index');
+        Route::get('/get-data-sistro', 'API\AktivitasController@getDataSistro');
+        Route::get('/get-sistro', 'API\AktivitasController@getSistro');
         Route::get('/get-alat', 'API\AktivitasController@getAlat');
         Route::get('/get-kategori-alat', 'API\AktivitasController@kategoriAlat');
         Route::get('/get-gudang', 'API\AktivitasController@getGudang');
@@ -27,7 +29,8 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-pindah-area', 'API\AktivitasController@pindahArea');
         Route::get('/history', 'API\AktivitasController@history');
         Route::get('/load-penerimaan/{id}', 'API\AktivitasController@loadPenerimaan')->where('id', '[0-9]+');
-        Route::get('/get-area-penerimaan/{id}', 'API\AktivitasController@getAreaPenerimaan')->where('id', '[0-9]+');
+        Route::get('/get-area-from-pengirim/{id}', 'API\AktivitasController@getAreaFromPengirim')->where('id', '[0-9]+');
+        Route::get('/get-area-from-penerima', 'API\AktivitasController@getAreaFromPenerima');
         Route::get('/get-list-tanggal/{id}', 'API\AktivitasController@listTanggalFromAreaStok')->where('id', '[0-9]+');
         
         Route::get('/get-area/{id_aktivitas}/{id_material}', 'API\AktivitasController@getArea')->where('id_aktivitas', '[0-9]+');
@@ -38,7 +41,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::put('/{aktivitas?}', 'API\AktivitasController@store')->where('aktivitas', '[0-9]+');
         Route::post('/{aktivitas?}', 'API\AktivitasController@storePhotos')->where('aktivitas', '[0-9]+');
         Route::post('/kelayakan', 'API\AktivitasController@storeKelayakanPhotos');
-        Route::patch('/{aktivitas}', 'API\AktivitasController@approve')->where('aktivitas', '[0-9]+');
+        Route::patch('/', 'API\AktivitasController@storePenerimaan');
     });
     
     Route::group(['prefix' => 'alat-berat'], function () {

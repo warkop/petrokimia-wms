@@ -355,7 +355,7 @@ function getAlatBerat(id_rencana, target) {
 
             let html = ``;
             obj.forEach((item, index) => {
-                html += `<option value="${item.id}">${item.nomor_polisi}</option>`;
+                html += `<option value="${item.id}">${item.nomor_lambung}</option>`;
             });
 
             $(target).html(html);

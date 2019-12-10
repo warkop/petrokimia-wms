@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Aktivitas;
 use App\Http\Models\Users;
 use App\Http\Models\AktivitasFoto;
+use App\Http\Models\AktivitasGudang;
 use App\Http\Models\AktivitasHarian;
 use App\Http\Models\AktivitasHarianArea;
 use App\Http\Models\AktivitasKelayakanFoto;
@@ -18,7 +19,10 @@ use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
+use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
+use App\Http\Models\Sistro;
+use App\Http\Requests\ApiAktivitasPenerimaanGiRequest;
 use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Requests\ApiSaveKelayakanPhotos;
 use App\Http\Requests\ApiSavePhotosRequest;
@@ -27,6 +31,7 @@ use App\Http\Resources\AktivitasResource;
 use App\Http\Resources\AlatBeratResource;
 use App\Http\Resources\AreaPenerimaanGiResource;
 use App\Http\Resources\AreaStokResource;
+use App\Http\Resources\getAreaFromPenerimaResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -37,8 +42,10 @@ class AktivitasController extends Controller
     {
         $search = strip_tags($req->input('search'));
 
-        $obj =  AktivitasResource::collection(Aktivitas::where(function ($where) use ($search) {
-            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        $obj =  AktivitasResource::collection(AktivitasGudang::
+        leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_gudang.id_aktivitas')
+        ->where(function ($where) use ($search) {
+            $where->where(DB::raw('nama'), 'ILIKE', '%' . strtolower($search) . '%');
         })->orderBy('id', 'desc')->paginate(10))->additional([
             'status' => ['message' => '',
             'code' => Response::HTTP_OK],
@@ -173,9 +180,9 @@ class AktivitasController extends Controller
                 ->where('id_material', $id_material)
                 ->where('area_stok.id_area', $id_area);
             if ($aktivitas->fifo != null) {
-                $detail = $detail->orderBy('nama', 'ASC');
-            } else {
                 $detail = $detail->orderBy('tanggal', 'ASC');
+            } else {
+                $detail = $detail->orderBy('nama', 'ASC');
             }
 
             return (new AktivitasResource($detail->get()))->additional([
@@ -243,9 +250,8 @@ class AktivitasController extends Controller
                 $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                 return response()->json($response, $this->responseCode);
             }
-
-            $gudang = Gudang::find($rencana_tkbm->id_gudang)->orderBy('id', 'desc')->first();
-
+            $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
+            $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
             if (empty($gudang)) {
                 $this->responseCode = 500;
                 $this->responseMessage = 'Gudang tidak tersedia!';
@@ -308,11 +314,6 @@ class AktivitasController extends Controller
                                         ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
                                         ->first();
                                     }
-
-                                    // $res_akt = Aktivitas::find($req->input('id_aktivitas'));
-                                    // if ($res_akt->produk_stok == 3) {
-                                    //     $area_stok = new AreaStok;
-                                    // }
 
                                     if (!empty($area_stok)) {
                                         if ($tipe == 1) {
@@ -500,65 +501,6 @@ class AktivitasController extends Controller
         }
     }
 
-    public function storePenerimaan(ApiAktivitasRequest $req) //menyimpan aktivitas harian untuk keperluan penerimaan GI
-    {
-        $user = $req->get('my_auth');
-        $res_user = Users::findOrFail($user->id_user);
-        $aktivitas = Aktivitas::findOrFail($req->input('id_aktivitas'));
-        $aktivitasHarian = AktivitasHarian::findOrFail($req->input('id_aktivitas_harian'));
-
-        if ($aktivitas->penerimaan_gi != null) {
-            $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
-                ->where('id_tkbm', $user->id_tkbm)
-                ->orderBy('rencana_harian.id', 'desc')
-                ->take(1)->first();
-
-            if (empty($rencana_tkbm)) {
-                $this->responseCode = 500;
-                $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
-                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                return response()->json($response, $this->responseCode);
-            }
-
-            $gudang = Gudang::find($rencana_tkbm->id_gudang)->orderBy('id', 'desc')->first();
-
-            if (empty($gudang)) {
-                $this->responseCode = 500;
-                $this->responseMessage = 'Gudang tidak tersedia!';
-                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                return response()->json($response, $this->responseCode);
-            }
-
-            $wannaSave = new AktivitasHarian;
-            $wannaSave->ref_number        = $aktivitasHarian->id;
-            $wannaSave->id_aktivitas      = $req->input('id_aktivitas');
-            $wannaSave->id_gudang         = $gudang->id;
-            $wannaSave->id_karu           = $gudang->id_karu;
-            $wannaSave->id_shift          = $rencana_tkbm->id_shift;
-            $wannaSave->id_area           = $req->input('id_pindah_area');
-            $wannaSave->id_alat_berat     = $req->input('id_alat_berat');
-            $wannaSave->sistro            = $req->input('sistro');
-            $wannaSave->alasan            = $req->input('alasan');
-            $wannaSave->created_by        = $res_user->id;
-            $wannaSave->created_at        = now();
-
-            $wannaSave->save();
-
-            $aktivitasHarian->approve = now();
-            $aktivitasHarian->save();
-
-            $this->responseCode = 200;
-            $this->responseMessage = 'Gudang tidak tersedia!';
-            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-            return response()->json($response, $this->responseCode);
-        } else {
-            $this->responseCode = 500;
-            $this->responseMessage = 'Gudang tidak tersedia!';
-            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-            return response()->json($response, $this->responseCode);
-        }
-    }
-
     public function storePhotos(ApiSavePhotosRequest $req, AktivitasHarian $aktivitas) //menyimpan ttd dan foto jenis
     {
         $req->validated();
@@ -691,19 +633,298 @@ class AktivitasController extends Controller
         }
     }
 
+    public function storePenerimaan(ApiAktivitasPenerimaanGiRequest $req) //menyimpan aktivitas harian untuk keperluan penerimaan GI
+    {
+        $user = $req->get('my_auth');
+        $res_user = Users::findOrFail($user->id_user);
+        $aktivitas = Aktivitas::whereNotNull('penerimaan_gi')->first();
+        $aktivitasHarian = AktivitasHarian::findOrFail($req->input('id_aktivitas_harian'));
+
+        if ($aktivitasHarian->approve != null) {
+            $this->responseCode = 403;
+            $this->responseMessage = 'Aktivitas harian sudah disetujui!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+
+        if ($aktivitas->penerimaan_gi != null) {
+            $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+                ->where('id_tkbm', $user->id_tkbm)
+                ->orderBy('rencana_harian.id', 'desc')
+                ->take(1)->first();
+
+            if (empty($rencana_tkbm)) {
+                $this->responseCode = 500;
+                $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+
+            $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
+
+            if (empty($gudang)) {
+                $this->responseCode = 500;
+                $this->responseMessage = 'Gudang tidak tersedia!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+
+            $wannaSave = new AktivitasHarian;
+            $wannaSave->ref_number        = $aktivitasHarian->id;
+            $wannaSave->id_aktivitas      = $aktivitas->id;
+            $wannaSave->id_gudang         = $gudang->id;
+            $wannaSave->id_karu           = $gudang->id_karu;
+            $wannaSave->id_shift          = $rencana_tkbm->id_shift;
+            $wannaSave->id_area           = $req->input('id_pindah_area');
+            $wannaSave->id_alat_berat     = $req->input('id_alat_berat');
+            $wannaSave->sistro            = $req->input('sistro');
+            $wannaSave->alasan            = $req->input('alasan');
+            $wannaSave->created_by        = $res_user->id;
+            $wannaSave->created_at        = now();
+
+            $wannaSave->save();
+
+            $aktivitasHarian->approve = now();
+            $aktivitasHarian->save();
+
+            if ($aktivitas->pengaruh_tgl_produksi != null) { //jika tidak pengaruh tanggal produksi dicentang
+                $list_produk = $req->input('list_produk');
+
+                if (!empty($list_produk)) {
+                    $jums_list_produk = count($list_produk);
+
+                    for ($i = 0; $i < $jums_list_produk; $i++) {
+                        $produk = $list_produk[$i]['produk'];
+                        $status_produk = $list_produk[$i]['status_produk'];
+                        $list_area = $list_produk[$i]['list_area'];
+                        $jums_list_area = count($list_area);
+
+                        for ($j = 0; $j < $jums_list_area; $j++) {
+                            $tipe = $list_area[$j]['tipe'];
+                            $id_area_stok = $list_area[$j]['id_area_stok'];
+                            $list_jumlah = $list_area[$j]['list_jumlah'];
+                            $jums_list_jumlah = count($list_jumlah);
+
+                            for ($k = 0; $k < $jums_list_jumlah; $k++) {
+                                if ($aktivitas->fifo != null) { //jika FIFO
+                                    $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                        ->where('id_material', $produk)
+                                        ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                        ->orderBy('tanggal', 'asc')
+                                        ->first();
+                                } else {
+                                    $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                        ->where('id_material', $produk)
+                                        ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                        ->first();
+                                }
+
+                                if (!empty($area_stok)) {
+                                    if ($tipe == 1) {
+                                        $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
+                                    } else {
+                                        $area_stok->jumlah = $area_stok->jumlah + $list_jumlah[$k]['jumlah'];
+                                    }
+
+                                    $area_stok->save();
+                                } else {
+                                    $area_stok = new AreaStok;
+                                    $area_stok->id_area = $id_area_stok;
+                                    $area_stok->id_material = $produk;
+                                    $area_stok->tanggal = date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']));
+                                    $area_stok->jumlah = $list_jumlah[$k]['jumlah'];
+                                    $area_stok->save();
+                                }
+
+                                $material_trans = new MaterialTrans;
+
+                                $array = [
+                                    'id_material'           => $produk,
+                                    'id_aktivitas_harian'   => $aktivitasHarian->id,
+                                    'tanggal'               => now(),
+                                    'tipe'                  => $tipe,
+                                    'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                    'status_produk'         => $status_produk,
+                                ];
+
+                                $material_trans->create($array);
+
+                                (new AktivitasHarianArea)->create([
+                                    'id_aktivitas_harian'   => $aktivitasHarian->id,
+                                    'id_area_stok'          => $area_stok->id,
+                                    'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                    'tipe'                  => $tipe,
+                                    'created_at'            => now(),
+                                    'created_by'            => $res_user->id,
+                                ]);
+                            }
+                        }
+                    }
+                }
+            } else { //jika tidak pengaruh tanggal produksi tidak dicentang
+                $list_produk = $req->input('list_produk');
+
+                if (!empty($list_produk)) {
+                    $jums_list_produk = count($list_produk);
+
+                    for ($i = 0; $i < $jums_list_produk; $i++) {
+                        $produk = $list_produk[$i]['produk'];
+                        $status_produk = $list_produk[$i]['status_produk'];
+
+                        $list_area = $list_produk[$i]['list_area'];
+                        if (!empty($list_area)) {
+                            $jums_list_area = count($list_area);
+                            for ($j = 0; $j < $jums_list_area; $j++) {
+                                $tipe = $list_area[$j]['tipe'];
+                                $id_area_stok = $list_area[$j]['id_area_stok'];
+                                $list_jumlah = $list_area[$j]['list_jumlah'];
+                                $jums_list_jumlah = count($list_jumlah);
+                                for ($k = 0; $k < $jums_list_jumlah; $k++) {
+                                    // dd($list_jumlah[$k]['tanggal']);
+                                    $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                        ->where('id_material', $produk)
+                                        ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                        ->first();
+
+                                    if (!empty($area_stok)) {
+                                        $this->responseCode = 403;
+                                        $this->responseMessage = 'Area, Produk, dan Tanggal yang Anda masukkan sudah dipakai oleh data lain! Silahkan masukkan data yang lain atau hubungi Kepala Regu!';
+                                        $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                                        return response()->json($response, $this->responseCode);
+                                    }
+                                }
+
+                                for ($k = 0; $k < $jums_list_jumlah; $k++) {
+                                    $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                        ->where('id_material', $produk)
+                                        ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                        ->first();
+
+                                    if (!empty($area_stok)) {
+                                        $this->responseCode = 403;
+                                        $this->responseMessage = 'Area, Produk, dan Tanggal yang Anda masukkan sudah dipakai oleh data lain! Silahkan masukkan data yang lain atau hubungi Kepala Regu!';
+                                        $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                                        return response()->json($response, $this->responseCode);
+                                    }
+
+                                    $area_stok = new AreaStok;
+
+                                    $arr = [
+                                        'id_material'   => $produk,
+                                        'id_area'       => $id_area_stok,
+                                        'jumlah'        => $list_jumlah[$k]['jumlah'],
+                                        'tanggal'       => date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])),
+                                    ];
+
+                                    $saved_area_stok = $area_stok->create($arr);
+
+                                    $material_trans = new MaterialTrans;
+
+                                    $array = [
+                                        'id_material'           => $produk,
+                                        'id_aktivitas_harian'   => $aktivitasHarian->id,
+                                        'tanggal'               => now(),
+                                        'tipe'                  => $tipe,
+                                        'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                        'status_produk'         => $status_produk,
+                                    ];
+                                    $material_trans->create($array);
+
+                                    (new AktivitasHarianArea)->create([
+                                        'id_aktivitas_harian'   => $aktivitasHarian->id,
+                                        'id_area_stok'          => $saved_area_stok->id,
+                                        'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                        'tipe'                  => $tipe,
+                                        'created_at'            => now(),
+                                        'created_by'            => $res_user->id,
+                                    ]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            //simpan pallet (stok=1, dipakai=2, kosong=3, rusak=4)
+            $list_pallet = $req->input('list_pallet');
+            if (!empty($list_pallet)) {
+                $jums_list_pallet = count($list_pallet);
+
+                for ($i = 0; $i < $jums_list_pallet; $i++) {
+                    $pallet = $list_pallet[$i]['pallet'];
+                    $jumlah = $list_pallet[$i]['jumlah'];
+                    $status_pallet = $list_pallet[$i]['status_pallet'];
+                    $tipe = $list_pallet[$i]['tipe'];
+                    $arr = [
+                        'id_aktivitas_harian'       => $aktivitasHarian->id,
+                        'tanggal'                   => now(),
+                        'id_material'               => $pallet,
+                        'jumlah'                    => $jumlah,
+                        'tipe'                      => $tipe,
+                        'status_pallet'             => $status_pallet,
+                    ];
+
+                    $materialTrans = new MaterialTrans;
+
+                    $materialTrans->create($arr);
+
+                    $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('id_material', $pallet)->first();
+
+                    if (empty($gudangStok)) {
+                        $gudangStok = new GudangStok;
+                    }
+
+                    $gudangStok->id_gudang     = $gudang->id;
+                    $gudangStok->id_material   = $pallet;
+                    $gudangStok->jumlah        = $jumlah;
+                    $gudangStok->status        = $status_pallet;
+                    $gudangStok->save();
+                }
+            }
+
+            $this->responseCode = 200;
+            $this->responseData = [
+                'data' => $wannaSave, 
+                'produk' => $produk, 
+                'pallet' => $pallet, 
+            ];
+            $this->responseMessage = 'Data berhasil disimpan!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        } else {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Gudang tidak tersedia!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+    }
 
     public function loadPenerimaan($id) //memuat nama material apa saja yang telah dikirim oleh gudang sebalah
     {
         $aktivitasHarian = AktivitasHarian::findOrFail($id);
-        $aktivitas = Aktivitas::findOrFail($aktivitasHarian->id_aktivitas);
-        if ($aktivitas->internal_gudang != null) {
+        $aktivitasGudang = AktivitasGudang::where('id_aktivitas', $aktivitasHarian->id_aktivitas)->get();
+        foreach ($aktivitasGudang as $key => $value) {
+            $aktivitas = Aktivitas::findOrFail($aktivitasHarian->id_aktivitas);
+            if ($aktivitas->internal_gudang == null) {
+                return response()->json([
+                    'data' => [],
+                    'status' => [
+                        'message' => 'Aktivitas tidak valid!',
+                        'code' => Response::HTTP_FORBIDDEN
+                    ]
+                ], Response::HTTP_FORBIDDEN);
+            }
+        }
+        // if ($aktivitas->internal_gudang != null) {
             $materialTrans = MaterialTrans::select(
                 'id_material',
+                'nama as nama_material',
                 'jumlah'
             )
-                ->where('id_aktivitas_harian', $id)
-                ->whereNotNull('status_produk')
-                ->get();
+            ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
+            ->where('id_aktivitas_harian', $id)
+            ->whereNotNull('status_produk')
+            ->get();
             
             return response()->json([
             'data' => $materialTrans,
@@ -712,18 +933,18 @@ class AktivitasController extends Controller
                 'code' => Response::HTTP_OK
             ]
             ], Response::HTTP_OK);
-        } else {
-            return response()->json([
-                'data' => [],
-                'status' => [
-                    'message' => 'Aktivitas tidak valid!',
-                    'code' => Response::HTTP_FORBIDDEN
-                ]
-            ], Response::HTTP_FORBIDDEN);
-        }
+        // } else {
+        //     return response()->json([
+        //         'data' => [],
+        //         'status' => [
+        //             'message' => 'Aktivitas tidak valid!',
+        //             'code' => Response::HTTP_FORBIDDEN
+        //         ]
+        //     ], Response::HTTP_FORBIDDEN);
+        // }
     }
 
-    public function getAreaPenerimaan($id) //memuat area apa saja yang tersedia pada gudang ini pada mode penerimaan GI
+    public function getAreaFromPengirim($id) //memuat area apa saja dan jumlahnya berapa dari si pengirim
     {
         $aktivitasHarian = AktivitasHarian::find($id);
         $data = [];
@@ -744,9 +965,61 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function listTanggalFromAreaStok($idArea) //memuat daftar tanggal yang tersedia pada gudang ini pada mode penerimaan GI
+    public function listTanggalFromAreaStok(Request $req, $idArea) //memuat daftar tanggal yang tersedia pada gudang ini pada mode penerimaan GI
     {
-        $data = AreaStok::where('id_area', $idArea)->orderBy('tanggal', 'asc')->get();
+        $user = $req->get('my_auth');
+        $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+            ->where('id_tkbm', $user->id_tkbm)
+            ->orderBy('rencana_harian.id', 'desc')
+            ->take(1)->first();
+
+        if (empty($rencana_tkbm)) {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+        $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
+        $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
+
+        $data = AreaStok::
+        leftJoin('area', 'area.id', '=', 'area_stok.id_area')
+        ->where('id_gudang', $gudang->id)
+        ->where('id_area', $idArea)->orderBy('tanggal', 'asc')->get();
+        return response()->json([
+            'data' => $data,
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ]
+        ], Response::HTTP_OK);
+    }
+
+    public function getAreaFromPenerima(Request $req)
+    {
+        $user = $req->get('my_auth');
+        $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+            ->where('id_tkbm', $user->id_tkbm)
+            ->orderBy('rencana_harian.id', 'desc')
+            ->take(1)->first();
+
+        if (empty($rencana_tkbm)) {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+        $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
+        $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
+        $data = Area::select(
+            'area.id',
+            'id_gudang',
+            'nama',
+            'kapasitas',
+            'jumlah'
+        )
+        ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
+        ->where('id_gudang', $gudang->id)->get();
         return response()->json([
             'data' => $data,
             'status' => [
@@ -843,18 +1116,28 @@ class AktivitasController extends Controller
 
     public function history(Request $req) //memuat history
     {
+        $user = $req->get('my_auth');
+        $res_user = Users::findOrFail($user->id_user);
+        $rencanaTkbm = RencanaTkbm::where('id_tkbm', $res_user->id_tkbm)->orderBy('id_rencana')->first();
+        $rencanaHarian = RencanaHarian::find($rencanaTkbm->id_rencana);
+        $gudang = Gudang::findOrFail($rencanaHarian->id_gudang);
         $search = $req->input('search');
 
         $res = AktivitasHarian::select(
             'aktivitas_harian.id',
             'aktivitas.nama as nama_aktivitas',
             'gudang.nama as nama_gudang',
-            DB::raw('CASE WHEN approve IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
+            DB::raw('CASE WHEN approve IS NOT NULL OR internal_gudang IS NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
             'aktivitas_harian.created_at',
             'aktivitas_harian.created_by'
         )
         ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
         ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
+        ->where(function ($where) use ($gudang) {
+            $where->where('id_gudang', $gudang->id);
+            $where->orWhere('id_gudang_tujuan', $gudang->id);
+        })
+        ->whereNull('ref_number')
         ->where(function ($where) use ($search) {
             $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             $where->orWhere(DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
@@ -997,5 +1280,28 @@ class AktivitasController extends Controller
         $data = (new AlatBerat)->with('kategori')->get();
         // return $data;
         return AlatBeratResource::collection($data);
+    }
+
+    public function getDataSistro()
+    {
+        $res = Sistro::take(100)->get();
+
+        return $res;
+    }
+    
+    public function getSistro(Request $req)
+    {
+        $tiketnumber = $req->input('tiketnumber');
+        $sistro = Sistro::where('tiketno', $tiketnumber)->first();
+        $res = Material::where('id_material_sap', $sistro->idproduk)->get();
+
+        $obj = (new AktivitasResource($res))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ],
+        ], Response::HTTP_OK);
+
+        return $obj;
     }
 }
