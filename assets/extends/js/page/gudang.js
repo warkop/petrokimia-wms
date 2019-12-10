@@ -118,7 +118,7 @@ var load_table = function () {
                             <a class="dropdown-item" href="${baseUrl+'list-pallet/'+full.id}"><i class="flaticon-layers"></i> List pallet</a>
                             <button class="dropdown-item" onclick="edit(${full.id})" data-toggle="modal" data-target="#kt_modal_1"><i class="flaticon-edit-1"></i> Edit data</button>
                             <a class="dropdown-item" href="` + baseUrl + `gudang/layout-gudang"><i class="flaticon-app"></i> Layout Gudang</a>
-                            <a class="dropdown-item" href="javascript:;" onclick="showModalAktivitasGudang()"><i class="flaticon-list"></i> Aktivitas Gudang</a>
+                            <a class="dropdown-item" href="javascript:;" onclick="showModalAktivitasGudang(${full.id})"><i class="flaticon-list"></i> Aktivitas Gudang</a>
                         </div>`;
                 },
             }
@@ -380,6 +380,57 @@ function simpan() {
 
                 swal.fire(head, message, type);
             }
+        }
+    });
+}
+
+function loadAktivitasGudang(id_gudang) {
+    $("#aktivitas_gudang").select2({
+        allowClear: true,
+        placeholder: 'Ketikkan aktivitas',
+        dropdownParent: $("#modalAktivitasGudang"),
+        // minimumInputLength: 3,
+        delay: 250,
+        ajax: {
+            url: ajaxUrl + '/get-aktivitas/'+id_gudang,
+            dataType: 'json',
+            processResults: function (response) {
+                /*Tranforms the top-level key of the response object from 'items' to 'results'*/
+                return {
+                    results: $.map(response.data, function (item) {
+                        return {
+                            text: item.Plant + " - " + item.Material_number,
+                            id: item.Material_number
+                        }
+                    })
+                };
+            }
+        }
+    }).on("select2:select", (q) => {
+        const id_plant = q.params.data.id_plant;
+        $("#id_plant").val(id_plant);
+    });
+
+    $.ajax({
+        url: ajaxUrl + '/load-aktivitas-gudang/'+id_gudang,
+        success:(response)=>{
+            const obj = response.data;
+
+            let html = "";
+            obj.forEach(element => {
+                html += `<tr>
+                            <td class="text-left">${element.aktivitas.nama}</td>
+                            <td>
+                                <a href="#" class="btn btn-danger btn-sm _btnHapus" onclick="hapus(${element.id})" ><i class="fa fa-trash"></i> Hapus</a>
+                            </td>
+                        </tr>`;
+            });
+
+            $("#list_aktivitas").html(html);
+
+        },
+        error: (response)=>{
+
         }
     });
 }

@@ -106,6 +106,8 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
 
     Route::group(['prefix' => 'gudang'], function () {
         Route::get('/', 'GudangController@index');
+        Route::get('/get-aktivitas/{id_gudang}', 'GudangController@getAktivitas');
+        Route::get('/load-aktivitas-gudang/{id_gudang}', 'GudangController@getAktivitasGudang');
         Route::get('/load-pallet', 'GudangController@loadPallet');
         Route::get('/get-produk', 'GudangController@getProduk');
         Route::get('/get-pallet', 'GudangController@getPallet');
@@ -185,6 +187,8 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     // Route::get('/penerimaan-gp/detail', function () {
     //     return view('penerimaan-gp.detail');
     // });
+
+    Route::get('report/aktivitas-harian', 'ReportController@aktivitasHarian');
 
     Route::group(['prefix' => 'log-aktivitas'], function () {
         Route::get('/', 'LogAktivitasController@index');
@@ -278,6 +282,9 @@ Route::get('/main', function () {
 });
 
 
+Route::get('/laporan-material', function () {
+    return view('report.material.grid');
+});
 Route::get('/laporan-material', function () {
     return view('report.material.grid');
 });

@@ -46,6 +46,11 @@ class AktivitasHarian extends Model
     {
         return $this->hasOne(AlatBerat::class, 'id', 'id_alat_berat');
     }
+    
+    public function checker()
+    {
+        return $this->belongsTo(TenagaKerjaNonOrganik::class, 'created_by');
+    }
 
     public function aktivitasFoto()
     {

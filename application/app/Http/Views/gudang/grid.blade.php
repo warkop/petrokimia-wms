@@ -282,9 +282,9 @@
                             <div class="form-group">
                                 <label for="exampleSelect1">Pilih Aktivitas</label>
                                 <select class="form-control m-select2" id="aktivitas_gudang" name="aktivitas_gudang" style="width:100%">
-                                    <option value="1">Pengiriman Gudang Internal</option>
+                                    {{-- <option value="1">Pengiriman Gudang Internal</option>
                                     <option value="2">Pengiriman GP</option>
-                                    <option value="2">Pengiriman Pemindahan</option>
+                                    <option value="2">Pengiriman Pemindahan</option> --}}
                                 </select>
                             </div>
                         </div>
@@ -297,7 +297,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="_listAktivitasGudang" class="row mt2" style="display:none">
+                    <div id="_listAktivitasGudang" class="row mt2">
                         <label class="col-12 boldd">List aktivitas gudang</label>
                         <div class="col-12 kel-min">
                             <table class="table table-striped table-bordered dttb-hargaPupukInternasional table-hover table-checkable" id="dttb-hargaPupukInternasional">
@@ -307,8 +307,8 @@
                                         <th style="width: 20%">Action</th>
                                     </tr>     
                                 </thead>
-                                <tbody class="text-center">
-                                    <tr>
+                                <tbody class="text-center" id="list_aktivitas">
+                                    {{-- <tr>
                                         <td class="text-left">Pengiriman Gudang Internal</td>
                                         <td>
                                             <a href="#" class="btn btn-danger btn-sm _btnHapus" ><i class="fa fa-trash"></i> Hapus</a>
@@ -325,7 +325,7 @@
                                         <td>
                                             <a href="#" class="btn btn-danger btn-sm _btnHapus"" ><i class="fa fa-trash"></i> Hapus</a>
                                         </td>
-                                    </tr>
+                                    </tr> --}}
                                 </tbody>
                             </table>
                         </div>
@@ -360,12 +360,15 @@ $('#end_date').datepicker({
     orientation: "bottom left"
 });
 
-$('#aktivitas_gudang').select2({
-    placeholder: "Pilih Aktivitas",
-    allowClear: true,
-});
+// $('#aktivitas_gudang').select2({
+//     placeholder: "Pilih Aktivitas",
+//     allowClear: true,
+// });
 
-function showModalAktivitasGudang() { $('#modalAktivitasGudang').modal();}
+function showModalAktivitasGudang(id_gudang) { 
+    $('#modalAktivitasGudang').modal();
+    loadAktivitasGudang(id_gudang);
+}
 
 function _tambahAktivitas() {
     $('#_listAktivitasGudang').show();

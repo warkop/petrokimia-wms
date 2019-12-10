@@ -1304,4 +1304,9 @@ class AktivitasController extends Controller
 
         return $obj;
     }
+
+    public function testFirebase()
+    {
+        // send_firebase('');
+    }
 }

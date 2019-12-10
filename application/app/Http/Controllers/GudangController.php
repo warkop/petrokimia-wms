@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Models\Aktivitas;
+use App\Http\Models\AktivitasGudang;
 use App\Http\Models\Gudang;
 use App\Http\Models\Material;
 use App\Http\Models\Karu;
@@ -161,18 +163,39 @@ class GudangController extends Controller
         return response()->render(200, $data);
     }
 
-    public function edit(Gudang $gudang)
+    public function getAktivitas(Request $request, $id_gudang)
     {
-        //
+        $search = $request->input('term');
+        $pattern = '/[^a-zA-Z0-9 !@#$%^&*\/\.\,\(\)-_:;?\+=]/u';
+        $search = preg_replace($pattern, '', $search);
+
+        $res = Aktivitas::
+        leftJoin('aktivitas_gudang', 'aktivitas.id', '=', 'aktivitas_gudang')
+        ->whereNotIn('id_gudang', $id_gudang)
+        ->where('aktivitas', 'LIKE', "%" . $search . "%")
+        ->get();
+
+        if (!empty($res)) {
+            $this->responseCode = 200;
+            $this->responseMessage = 'Data tersedia.';
+            $this->responseData = $res;
+        } else {
+            $this->responseData = [];
+            $this->responseStatus = 'No Data Available';
+            $this->responseMessage = 'Data Jalan tidak tersedia';
+        }
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 
-    public function update(Request $request, Gudang $gudang)
+    public function getAktivitasGudang($id_gudang)
     {
-        //
-    }
+        $res = AktivitasGudang::with('aktivitas')->where('id_gudang', $id_gudang)->get();
+        $this->responseData = $res;
+        $this->responseCode = 200;
 
-    public function destroy(Gudang $gudang)
-    {
-        //
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 }
