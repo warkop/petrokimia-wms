@@ -37,7 +37,7 @@ class RealisasiController extends Controller
 
     public function show($id)
     {
-        $realisasi = Realisasi::findOrFail($id);
+        $realisasi = Realisasi::where('id_rencana', $id)->firstOrFail();
 
         $realisasiHousekeeper = RealisasiHousekeeper::select(
             'realisasi_housekeeper.id',
