@@ -275,7 +275,7 @@ class AktivitasController extends Controller
             $aktivitasHarian->dikembalikan      = $req->input('dikembalikan');
             $aktivitasHarian->alasan            = $req->input('alasan');
             $aktivitasHarian->created_by        = $res_user->id;
-            $aktivitasHarian->created_at        = now();
+            $aktivitasHarian->created_at        = date('Y-m-d H:i:s');
 
             $saved = $aktivitasHarian->save();
 
@@ -337,7 +337,7 @@ class AktivitasController extends Controller
                                     $array = [
                                         'id_material'           => $produk,
                                         'id_aktivitas_harian'   => $aktivitasHarian->id,
-                                        'tanggal'               => now(),
+                                        'tanggal'               => date('Y-m-d H:i:s'),
                                         'tipe'                  => $tipe,
                                         'jumlah'                => $list_jumlah[$k]['jumlah'],
                                         'status_produk'         => $status_produk,
@@ -350,7 +350,7 @@ class AktivitasController extends Controller
                                         'id_area_stok'          => $area_stok->id,
                                         'jumlah'                => $list_jumlah[$k]['jumlah'],
                                         'tipe'                  => $tipe,
-                                        'created_at'            => now(),
+                                        'created_at'            => date('Y-m-d H:i:s'),
                                         'created_by'            => $res_user->id,
                                     ]);
                                 }
@@ -419,7 +419,7 @@ class AktivitasController extends Controller
                                         $array = [
                                             'id_material'           => $produk,
                                             'id_aktivitas_harian'   => $aktivitasHarian->id,
-                                            'tanggal'               => now(),
+                                            'tanggal'               => date('Y-m-d H:i:s'),
                                             'tipe'                  => $tipe,
                                             'jumlah'                => $list_jumlah[$k]['jumlah'],
                                             'status_produk'         => $status_produk,
@@ -431,7 +431,7 @@ class AktivitasController extends Controller
                                             'id_area_stok'          => $saved_area_stok->id,
                                             'jumlah'                => $list_jumlah[$k]['jumlah'],
                                             'tipe'                  => $tipe,
-                                            'created_at'            => now(),
+                                            'created_at'            => date('Y-m-d H:i:s'),
                                             'created_by'            => $res_user->id,
                                         ]);
                                     }
@@ -453,7 +453,7 @@ class AktivitasController extends Controller
                         $tipe = $list_pallet[$i]['tipe'];
                         $arr = [
                             'id_aktivitas_harian'       => $aktivitasHarian->id,
-                            'tanggal'                   => now(),
+                            'tanggal'                   => date('Y-m-d H:i:s'),
                             'id_material'               => $pallet,
                             'jumlah'                    => $jumlah,
                             'tipe'                      => $tipe,
@@ -546,7 +546,7 @@ class AktivitasController extends Controller
                         'lat'                       => $lat[$i],
                         'lng'                       => $lng[$i],
                         'created_by'                => $res_user->id,
-                        'created_at'                => now(),
+                        'created_at'                => date('Y-m-d H:i:s'),
                     ];
 
                     $aktivitasFoto->create($arrayFoto);
@@ -606,7 +606,7 @@ class AktivitasController extends Controller
                             'ekstensi'                  => $foto[$i]->getClientOriginalExtension(),
                             'file_enc'                  => $md5Name . '.' . $guessExtension,
                             'created_by'                => $res_user->id,
-                            'created_at'                => now(),
+                            'created_at'                => date('Y-m-d H:i:s'),
                         ];
 
                         $aktivitasKelayakanFoto->create($arrayFoto);
@@ -680,11 +680,11 @@ class AktivitasController extends Controller
             $wannaSave->sistro            = $req->input('sistro');
             $wannaSave->alasan            = $req->input('alasan');
             $wannaSave->created_by        = $res_user->id;
-            $wannaSave->created_at        = now();
+            $wannaSave->created_at        = date('Y-m-d H:i:s');
 
             $wannaSave->save();
 
-            $aktivitasHarian->approve = now();
+            $aktivitasHarian->approve = date('Y-m-d H:i:s');
             $aktivitasHarian->save();
 
             if ($aktivitas->pengaruh_tgl_produksi != null) { //jika tidak pengaruh tanggal produksi dicentang
@@ -741,7 +741,7 @@ class AktivitasController extends Controller
                                 $array = [
                                     'id_material'           => $produk,
                                     'id_aktivitas_harian'   => $aktivitasHarian->id,
-                                    'tanggal'               => now(),
+                                    'tanggal'               => date('Y-m-d H:i:s'),
                                     'tipe'                  => $tipe,
                                     'jumlah'                => $list_jumlah[$k]['jumlah'],
                                     'status_produk'         => $status_produk,
@@ -754,7 +754,7 @@ class AktivitasController extends Controller
                                     'id_area_stok'          => $area_stok->id,
                                     'jumlah'                => $list_jumlah[$k]['jumlah'],
                                     'tipe'                  => $tipe,
-                                    'created_at'            => now(),
+                                    'created_at'            => date('Y-m-d H:i:s'),
                                     'created_by'            => $res_user->id,
                                 ]);
                             }
@@ -823,7 +823,7 @@ class AktivitasController extends Controller
                                     $array = [
                                         'id_material'           => $produk,
                                         'id_aktivitas_harian'   => $aktivitasHarian->id,
-                                        'tanggal'               => now(),
+                                        'tanggal'               => date('Y-m-d H:i:s'),
                                         'tipe'                  => $tipe,
                                         'jumlah'                => $list_jumlah[$k]['jumlah'],
                                         'status_produk'         => $status_produk,
@@ -835,7 +835,7 @@ class AktivitasController extends Controller
                                         'id_area_stok'          => $saved_area_stok->id,
                                         'jumlah'                => $list_jumlah[$k]['jumlah'],
                                         'tipe'                  => $tipe,
-                                        'created_at'            => now(),
+                                        'created_at'            => date('Y-m-d H:i:s'),
                                         'created_by'            => $res_user->id,
                                     ]);
                                 }
@@ -857,7 +857,7 @@ class AktivitasController extends Controller
                     $tipe = $list_pallet[$i]['tipe'];
                     $arr = [
                         'id_aktivitas_harian'       => $aktivitasHarian->id,
-                        'tanggal'                   => now(),
+                        'tanggal'                   => date('Y-m-d H:i:s'),
                         'id_material'               => $pallet,
                         'jumlah'                    => $jumlah,
                         'tipe'                      => $tipe,
