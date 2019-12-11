@@ -21,6 +21,7 @@ class ReportAktivitasHarianResource extends Resource
             'nama_gudang'       => $this->gudang->nama,
             'nama_checker'      => $this->checker->nama,
             'produk'            => $this->produk,
+            'tanggal'           => $this->created_at,
         ];
     }
 }

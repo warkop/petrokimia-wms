@@ -13,10 +13,10 @@
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
     <div class="kt-portlet">
+        <form action="{{url('report/aktivitas-harian')}}" method="GET">
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
-                    {{-- <i class="la la-group"></i> &nbsp; --}}
                     Laporan Aktivitas
                 </h4>
                 <p class="sub">
@@ -24,12 +24,6 @@
                         Petrokimia.</span>
                 </p>
             </div>
-            {{-- <div class="kt-portlet__head-toolbar">
-                <div class="kt-portlet__head-group pt-4">
-                    <a href="{{url('/add-rencana-harian')}}" class="btn btn-wms btn-elevate btn-elevate-air"><i
-                class="la la-plus"></i> Tambah Data</a>
-        </div>
-    </div> --}}
         </div>
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
@@ -37,7 +31,7 @@
                 <h4 class="col-2 col-form-label text-kiri">Start Date</h4>
                 <div class="col-4">
                     <div class="form-group">
-                        <input type="text" class="form-control" id="start_date" name="start_date" readonly
+                        <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
                             placeholder="Select date">
                     </div>
                 </div>
@@ -46,7 +40,7 @@
                 <h4 class="col-2 col-form-label text-kiri">End Date</h4>
                 <div class="col-4">
                     <div class="form-group">
-                        <input type="text" class="form-control" id="end_date" name="end_date" readonly
+                        <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
                             placeholder="Select date">
                     </div>
                 </div>
@@ -56,11 +50,13 @@
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="offset-lg-2">
-                        <a href="{{asset('assets/reports/aktivitas/aktivitas.xlsx')}}" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</a>
+                        {{-- <a href="{{asset('assets/reports/aktivitas/aktivitas.xlsx')}}" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</a> --}}
+                        <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
                     </div>
                 </div>
             </div>
         </div>
+        </form>
     </div>
 </div>
 <!-- end:: Content -->

@@ -188,7 +188,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     //     return view('penerimaan-gp.detail');
     // });
 
-    Route::get('report/aktivitas-harian', 'ReportController@aktivitasHarian');
+    // Route::get('report/aktivitas-harian', 'ReportController@aktivitasHarian');
 
     Route::group(['prefix' => 'log-aktivitas'], function () {
         Route::get('/', 'LogAktivitasController@index');
@@ -199,6 +199,11 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     Route::group(['prefix' => 'log-aktivitas-user'], function () {
         Route::get('/', 'LogAktivitasUserController@index');
         Route::post('/', 'LogAktivitasUserController@json');
+    });
+
+    Route::group(['prefix' => 'report'], function () {
+        Route::get('/laporan-aktivitas', 'ReportController@laporanAktivitas');
+        Route::get('/aktivitas-harian', 'ReportController@aktivitasHarian');
     });
 });
 
@@ -317,7 +322,4 @@ Route::get('/gudang/layout-gudang', function () {
 });
 Route::get('/log-aktivitas-user', function () {
     return view('log-aktivitas-user.grid');
-});
-Route::get('/laporan-aktivitas', function () {
-    return view('report.aktivitas.grid');
 });
