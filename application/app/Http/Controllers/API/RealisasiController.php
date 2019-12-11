@@ -52,7 +52,10 @@ class RealisasiController extends Controller
         ->where('id_realisasi', $realisasi->id)->with('areaHousekeeperFoto')->get();
         
         $res = collect($realisasi);
-        $res = $res->merge(['list_housekeeper' => $realisasiHousekeeper]);
+        $res = $res->merge([
+            'list_housekeeper' => $realisasiHousekeeper, 
+            'url' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_realisasi_housekeeper}}&ctg=realisasi_housekeeper&src={{file_enc}}'
+        ]);
 
 
         return (new AktivitasResource($res))->additional([
