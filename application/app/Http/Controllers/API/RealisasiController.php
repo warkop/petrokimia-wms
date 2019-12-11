@@ -49,7 +49,7 @@ class RealisasiController extends Controller
         )
         ->join('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'realisasi_housekeeper.id_tkbm')
         ->join('area', 'area.id', '=', 'realisasi_housekeeper.id_area')
-        ->where('id_realisasi', $realisasi->id)->get();
+        ->where('id_realisasi', $realisasi->id)->with('areaHousekeeperFoto')->get();
         
         $res = collect($realisasi);
         $res = $res->merge(['list_housekeeper' => $realisasiHousekeeper]);
