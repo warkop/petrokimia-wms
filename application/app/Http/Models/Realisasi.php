@@ -35,4 +35,14 @@ class Realisasi extends Model
             $table->created_at = now();
         });
     }
+
+    public function realisasiHousekeeper()
+    {
+        return $this->hasMany(RealisasiHousekeeper::class, 'id_realisasi');
+    }
+
+    public function areaHousekeeperFoto()
+    {
+        return $this->hasManyThrough(AreaHousekeeperFoto::class, RealisasiHousekeeper::class, 'id_realisasi', 'id_realisasi_housekeeper', 'id', 'id');
+    }
 }

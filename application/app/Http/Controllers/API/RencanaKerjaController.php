@@ -16,6 +16,7 @@ use App\Http\Models\TenagaKerjaNonOrganik;
 use App\Http\Models\Users;
 use App\Http\Requests\ApiRencanaKerjaRequest;
 use App\Http\Resources\AktivitasResource;
+use App\Http\Resources\RencanaAreaTkbmResource;
 use DateTime;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -113,6 +114,7 @@ class RencanaKerjaController extends Controller
         ->join('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'rencana_area_tkbm.id_tkbm')
         ->where('id_rencana', $rencanaHarian->id)
         ->where('job_desk_id', 4)
+        ->with('realisasi')
         ->get();
 
         $res = collect($rencanaHarian);
@@ -120,7 +122,7 @@ class RencanaKerjaController extends Controller
         $res = $res->merge(['list_operator' => $operator]);
         $res = $res->merge(['list_checker' => $checker]);
         $res = $res->merge(['list_alat_berat' => $rencanaAlatBerat]);
-        $res = $res->merge(['list_area_tkbm' => $rencanaAreaTkbm]);
+        $res = $res->merge(['list_area_tkbm' => RencanaAreaTkbmResource::collection($rencanaAreaTkbm)]);
 
 
         return (new AktivitasResource($res))->additional([

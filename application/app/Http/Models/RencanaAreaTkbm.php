@@ -33,4 +33,9 @@ class RencanaAreaTkbm extends Model
     {
         return $this->hasMany('App\Http\Models\TenagaKerjaNonOrganik', 'id_tkbm', 'id');
     }
+
+    public function realisasi()
+    {
+        return $this->hasOne(Realisasi::class, 'id_rencana','id_rencana');
+    }
 }
