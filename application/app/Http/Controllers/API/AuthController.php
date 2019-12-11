@@ -26,9 +26,10 @@ class AuthController extends Controller
             $this->responseMessage = 'Silahkan isi form dengan benar terlebih dahulu';
             $this->responseData['error_log'] = $validator->errors();
         } else {
-            $username = $request->input('username');
-            $password = $request->input('password');
-            $device_id = $request->input('device');
+            $username   = $request->input('username');
+            $password   = $request->input('password');
+            $device_id  = $request->input('device');
+            $user_gcid  = $request->input('user_gcid');
 
             $cek_user = Users::where('username', $username)->endDate()->first();
 
