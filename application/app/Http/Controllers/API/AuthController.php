@@ -67,6 +67,9 @@ class AuthController extends Controller
                                 if (date('Y-m-d H:i:s', strtotime($rencanaHarian->end_date)) < date('Y-m-d H:i:s')) {
                                     $this->responseCode = 403;
                                     $this->responseMessage = 'Rencana harian dari checker ini sudah kadaluarsa!';
+                                    
+                                    $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                                    return response()->json($response, $this->responseCode);
                                 }
                                 $gudang             = Gudang::findOrFail($rencanaHarian->id_gudang);
                                 
