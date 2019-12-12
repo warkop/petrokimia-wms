@@ -1273,7 +1273,7 @@ class AktivitasController extends Controller
         // ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
         // ->where('id_material', $id_material);
 
-        $obj = (new AktivitasResource($res->get()))->additional([
+        $obj = HistoryMaterialAreaResource::collection($res->get())->additional([
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK
