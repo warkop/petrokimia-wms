@@ -62,7 +62,9 @@ class AuthController extends Controller
                                 'gcid'          => $m_user->user_gcid,
                             ];
                             if ($m_user->id_tkbm != null) {
+                                dd($m_user->id_tkbm);
                                 $rencanaTkbm        = RencanaTkbm::where('id_tkbm', $m_user->id_tkbm)->orderBy('id_rencana', 'desc')->first();
+                                dd($rencanaTkbm->id_rencana);
                                 $rencanaHarian  = RencanaHarian::findOrFail($rencanaTkbm->id_rencana);
                                 $gudang         = Gudang::findOrFail($rencanaHarian->id_gudang);
                                 
