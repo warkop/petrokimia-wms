@@ -33,7 +33,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>Kode Aktivitas</label>
-                            <input type="text" class="form-control" name="kode_aktivitas" id="kode_aktivitas" placeholder="Masukkan kode aktivitas">
+                            <input type="text" class="form-control" name="kode_aktivitas" id="kode_aktivitas" placeholder="Masukkan kode aktivitas" maxlength="3">
                         </div>
                     </div>
                 </div>

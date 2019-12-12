@@ -53,6 +53,7 @@ class AktivitasRequest extends FormRequest
             'upload_foto.*'             => 'nullable|numeric',
             'alat_berat.*'              => 'nullable|numeric',
             'anggaran.*'                => 'nullable|numeric',
+            'kode_aktivitas'            => 'nullable|size:3',
         ];
 
         
@@ -63,6 +64,8 @@ class AktivitasRequest extends FormRequest
     public function attributes()
     {
         return [
+            'kode_aktivitas'            => 'Kode Aktivitas',
+            'nama'                      => 'Nama Aktivitas',
             'produk_stok'               => 'Produk',
             'produk_rusak'              => 'Produk Rusak',
             'pallet_stok'               => 'Pallet Stok',
@@ -91,8 +94,9 @@ class AktivitasRequest extends FormRequest
     public function messages()
     {
         return [
-            'nama.required'             => 'Nama Aktivitas wajib diisi!',
+            'required'                  => ':attribute wajib diisi!',
             'numeric'                   => 'Inputan :attribute tidak valid!',
+            'size'                      => ':attribute harus :size karakter!',
             'start_date.date_format'    => 'Tanggal harus dengan format tanggal-bulan-tahun',
             'end_date.date_format'      => 'Tanggal harus dengan format tanggal-bulan-tahun',
             'end_date.after'            => 'Tanggal End Date tidak boleh melebihi Start Date!',
