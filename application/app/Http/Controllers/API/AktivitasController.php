@@ -32,6 +32,7 @@ use App\Http\Resources\AlatBeratResource;
 use App\Http\Resources\AreaPenerimaanGiResource;
 use App\Http\Resources\AreaStokResource;
 use App\Http\Resources\getAreaFromPenerimaResource;
+use App\Http\Resources\HistoryMaterialAreaResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
