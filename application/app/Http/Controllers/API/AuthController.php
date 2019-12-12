@@ -62,11 +62,13 @@ class AuthController extends Controller
                                 'gcid'          => $m_user->user_gcid,
                             ];
                             if ($m_user->id_tkbm != null) {
-                                dd($m_user->id_tkbm);
                                 $rencanaTkbm        = RencanaTkbm::where('id_tkbm', $m_user->id_tkbm)->orderBy('id_rencana', 'desc')->first();
-                                dd($rencanaTkbm->id_rencana);
-                                $rencanaHarian  = RencanaHarian::findOrFail($rencanaTkbm->id_rencana);
-                                $gudang         = Gudang::findOrFail($rencanaHarian->id_gudang);
+                                $rencanaHarian      = RencanaHarian::findOrFail($rencanaTkbm->id_rencana);
+                                if (date('Y-m-d H:i:s', strtotime($rencanaHarian->end_date)) < date('Y-m-d H:i:s')) {
+                                    $this->responseCode = 403;
+                                    $this->responseMessage = 'Rencana harian dari checker ini sudah kadaluarsa!';
+                                }
+                                $gudang             = Gudang::findOrFail($rencanaHarian->id_gudang);
                                 
                                 $arr['nama_gudang'] = $gudang->nama;
                             }
