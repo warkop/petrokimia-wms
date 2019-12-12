@@ -1193,7 +1193,7 @@ class AktivitasController extends Controller
                 WHEN peminjaman IS NOT NULL THEN
                     \'Peminjaman\'
             END AS jenis_aktivitas'),
-            DB::raw('CASE WHEN approve IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
+            DB::raw('CASE WHEN approve IS NOT NULL OR internal_gudang IS NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
             'aktivitas_harian.created_at',
             'aktivitas_harian.created_by'
         )
