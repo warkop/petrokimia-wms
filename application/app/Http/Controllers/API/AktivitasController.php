@@ -240,12 +240,23 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
+    public function checkProduk($id_area, $id_material, $tanggal)
+    {
+        $areaStok = AreaStok::where('id_area', $id_area)
+        ->where('id_material', $id_material)
+        ->where('tanggal', date('Y-m-d', strotime($tanggal)))
+        ->first();
+        if (!empty($areaStok)) {
+            
+        }
+    }
+
     public function store(ApiAktivitasRequest $req, AktivitasHarian $aktivitasHarian) //menyimpan aktivitas harian secara reguler
     {
         $req->validated();
 
-        $user = $req->get('my_auth');
-        $res_user = Users::findOrFail($user->id_user);
+        $user       = $req->get('my_auth');
+        $res_user   = Users::findOrFail($user->id_user);
 
         if ($res_user->role_id == 3) { //hanya checker yang diizinkan untuk menambah aktivitas harian
             $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
@@ -254,17 +265,17 @@ class AktivitasController extends Controller
                 ->take(1)->first();
 
             if (empty($rencana_tkbm)) {
-                $this->responseCode = 500;
-                $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
-                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                $this->responseCode     = 500;
+                $this->responseMessage  = 'Checker tidak terdaftar pada rencana harian apapun!';
+                $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                 return response()->json($response, $this->responseCode);
             }
             $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
             $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
             if (empty($gudang)) {
-                $this->responseCode = 500;
-                $this->responseMessage = 'Gudang tidak tersedia!';
-                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                $this->responseCode     = 500;
+                $this->responseMessage  = 'Gudang tidak tersedia!';
+                $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                 return response()->json($response, $this->responseCode);
             }
 
@@ -275,7 +286,6 @@ class AktivitasController extends Controller
             $aktivitasHarian->id_shift          = $rencana_tkbm->id_shift;
             $aktivitasHarian->id_gudang_tujuan  = $req->input('id_gudang_tujuan');
             $aktivitasHarian->ref_number        = $req->input('ref_number');
-            $aktivitasHarian->id_area           = $req->input('id_pindah_area');
             $aktivitasHarian->id_alat_berat     = $req->input('id_alat_berat');
             $aktivitasHarian->sistro            = $req->input('sistro');
             $aktivitasHarian->approve           = $req->input('approve');
@@ -299,26 +309,26 @@ class AktivitasController extends Controller
                         $jums_list_produk = count($list_produk);
 
                         for ($i = 0; $i < $jums_list_produk; $i++) {
-                            $produk = $list_produk[$i]['produk'];
-                            $status_produk = $list_produk[$i]['status_produk'];
-                            $list_area = $list_produk[$i]['list_area'];
+                            $produk         = $list_produk[$i]['produk'];
+                            $status_produk  = $list_produk[$i]['status_produk'];
+                            $list_area      = $list_produk[$i]['list_area'];
                             $jums_list_area = count($list_area);
 
                             for ($j = 0; $j < $jums_list_area; $j++) {
-                                $tipe = $list_area[$j]['tipe'];
-                                $id_area_stok = $list_area[$j]['id_area_stok'];
-                                $list_jumlah = $list_area[$j]['list_jumlah'];
-                                $jums_list_jumlah = count($list_jumlah);
+                                $tipe               = $list_area[$j]['tipe'];
+                                $id_area            = $list_area[$j]['id_area_stok'];
+                                $list_jumlah        = $list_area[$j]['list_jumlah'];
+                                $jums_list_jumlah   = count($list_jumlah);
 
                                 for ($k = 0; $k < $jums_list_jumlah; $k++) {
                                     if ($res_aktivitas->fifo != null) { //jika FIFO
-                                        $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                        $area_stok = AreaStok::where('id_area', $id_area)
                                         ->where('id_material', $produk)
                                         ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
                                         ->orderBy('tanggal', 'asc')
                                         ->first();
                                     } else {
-                                        $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                        $area_stok = AreaStok::where('id_area', $id_area)
                                         ->where('id_material', $produk)
                                         ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
                                         ->first();
@@ -333,11 +343,11 @@ class AktivitasController extends Controller
                                         
                                         $area_stok->save();
                                     } else {
-                                        $area_stok = new AreaStok;
-                                        $area_stok->id_area = $id_area_stok;
+                                        $area_stok              = new AreaStok;
+                                        $area_stok->id_area     = $id_area;
                                         $area_stok->id_material = $produk;
-                                        $area_stok->tanggal = date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']));
-                                        $area_stok->jumlah = $list_jumlah[$k]['jumlah'];
+                                        $area_stok->tanggal     = date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']));
+                                        $area_stok->jumlah      = $list_jumlah[$k]['jumlah'];
                                         $area_stok->save();
                                     }
 
@@ -373,55 +383,44 @@ class AktivitasController extends Controller
                         $jums_list_produk = count($list_produk);
 
                         for ($i = 0; $i < $jums_list_produk; $i++) {
-                            $produk = $list_produk[$i]['produk'];
-                            $status_produk = $list_produk[$i]['status_produk'];
+                            $produk         = $list_produk[$i]['produk'];
+                            $status_produk  = $list_produk[$i]['status_produk'];
                            
                             $list_area = $list_produk[$i]['list_area'];
                             if (!empty($list_area)) {
                                 $jums_list_area = count($list_area);
                                 for ($j = 0; $j < $jums_list_area; $j++) {
-                                    $tipe = $list_area[$j]['tipe'];
-                                    $id_area_stok = $list_area[$j]['id_area_stok'];
-                                    $list_jumlah = $list_area[$j]['list_jumlah'];
-                                    $jums_list_jumlah = count($list_jumlah);
+                                    $tipe               = $list_area[$j]['tipe'];
+                                    $id_area            = $list_area[$j]['id_area_stok'];
+                                    $list_jumlah        = $list_area[$j]['list_jumlah'];
+                                    $jums_list_jumlah   = count($list_jumlah);
 
                                     for ($k = 0; $k < $jums_list_jumlah; $k++) {
-                                        $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                        $area_stok = AreaStok::where('id_area', $id_area)
                                             ->where('id_material', $produk)
                                             ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
                                             ->first();
                                             
                                         if (!empty($area_stok)) {
-                                            $this->responseCode = 403;
-                                            $this->responseMessage = 'Area, Produk, dan Tanggal yang Anda masukkan sudah dipakai oleh data lain! Silahkan masukkan data yang lain atau hubungi Kepala Regu!';
-                                            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                                            $this->responseCode     = 403;
+                                            $this->responseMessage  = 'Area, Produk, dan Tanggal yang Anda masukkan sudah dipakai oleh data lain! Silahkan masukkan data yang lain atau hubungi Kepala Regu!';
+                                            $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                                             return response()->json($response, $this->responseCode);
                                         }
                                     }
-    
+
                                     for ($k = 0; $k < $jums_list_jumlah; $k++) {
-                                        $area_stok = AreaStok::where('id_area', $id_area_stok)
-                                            ->where('id_material', $produk)
-                                            ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                            ->first();
-
-                                        if (!empty($area_stok)) {
-                                            $this->responseCode = 403;
-                                            $this->responseMessage = 'Area, Produk, dan Tanggal yang Anda masukkan sudah dipakai oleh data lain! Silahkan masukkan data yang lain atau hubungi Kepala Regu!';
-                                            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                                            return response()->json($response, $this->responseCode);
-                                        }
-
                                         $area_stok = new AreaStok;
     
                                         $arr = [
                                             'id_material'   => $produk,
-                                            'id_area'       => $id_area_stok,
+                                            'id_area'       => $id_area,
                                             'jumlah'        => $list_jumlah[$k]['jumlah'],
-                                            'tanggal'       => $list_jumlah[$k]['tanggal'],
+                                            'tanggal'       => date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])),
                                         ];
     
                                         $saved_area_stok = $area_stok->create($arr);
+
     
                                         $material_trans = new MaterialTrans;
 
@@ -456,10 +455,10 @@ class AktivitasController extends Controller
                     $jums_list_pallet = count($list_pallet);
 
                     for ($i = 0; $i < $jums_list_pallet; $i++) {
-                        $pallet = $list_pallet[$i]['pallet'];
-                        $jumlah = $list_pallet[$i]['jumlah'];
-                        $status_pallet = $list_pallet[$i]['status_pallet'];
-                        $tipe = $list_pallet[$i]['tipe'];
+                        $pallet         = $list_pallet[$i]['pallet'];
+                        $jumlah         = $list_pallet[$i]['jumlah'];
+                        $status_pallet  = $list_pallet[$i]['status_pallet'];
+                        $tipe           = $list_pallet[$i]['tipe'];
                         $arr = [
                             'id_aktivitas_harian'       => $aktivitasHarian->id,
                             'tanggal'                   => date('Y-m-d H:i:s'),
@@ -492,20 +491,20 @@ class AktivitasController extends Controller
                     'produk' => $list_produk,
                     'pallet' => $list_pallet,
                     'status' => [
-                        'message' => '',
-                        'code' => Response::HTTP_CREATED,
+                        'message'   => '',
+                        'code'      => Response::HTTP_CREATED,
                     ]
                 ], Response::HTTP_CREATED);
             } else {
-                $this->responseCode = 500;
-                $this->responseMessage = 'Gagal menyimpan aktivitas!';
-                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                $this->responseCode     = 500;
+                $this->responseMessage  = 'Gagal menyimpan aktivitas!';
+                $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                 return response()->json($response, $this->responseCode);
             }
         } else {
-            $this->responseCode = 403;
-            $this->responseMessage = 'Hanya Checker yang diizinkan untuk menyimpan aktivitas!';
-            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            $this->responseCode     = 403;
+            $this->responseMessage  = 'Hanya Checker yang diizinkan untuk menyimpan aktivitas!';
+            $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
             return response()->json($response, $this->responseCode);
         }
     }
@@ -710,19 +709,19 @@ class AktivitasController extends Controller
 
                         for ($j = 0; $j < $jums_list_area; $j++) {
                             $tipe = $list_area[$j]['tipe'];
-                            $id_area_stok = $list_area[$j]['id_area_stok'];
+                            $id_area = $list_area[$j]['id_area_stok'];
                             $list_jumlah = $list_area[$j]['list_jumlah'];
                             $jums_list_jumlah = count($list_jumlah);
 
                             for ($k = 0; $k < $jums_list_jumlah; $k++) {
                                 if ($aktivitas->fifo != null) { //jika FIFO
-                                    $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                    $area_stok = AreaStok::where('id_area', $id_area)
                                         ->where('id_material', $produk)
                                         ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
                                         ->orderBy('tanggal', 'asc')
                                         ->first();
                                 } else {
-                                    $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                    $area_stok = AreaStok::where('id_area', $id_area)
                                         ->where('id_material', $produk)
                                         ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
                                         ->first();
@@ -738,7 +737,7 @@ class AktivitasController extends Controller
                                     $area_stok->save();
                                 } else {
                                     $area_stok = new AreaStok;
-                                    $area_stok->id_area = $id_area_stok;
+                                    $area_stok->id_area = $id_area;
                                     $area_stok->id_material = $produk;
                                     $area_stok->tanggal = date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']));
                                     $area_stok->jumlah = $list_jumlah[$k]['jumlah'];
@@ -785,12 +784,12 @@ class AktivitasController extends Controller
                             $jums_list_area = count($list_area);
                             for ($j = 0; $j < $jums_list_area; $j++) {
                                 $tipe = $list_area[$j]['tipe'];
-                                $id_area_stok = $list_area[$j]['id_area_stok'];
+                                $id_area = $list_area[$j]['id_area_stok'];
                                 $list_jumlah = $list_area[$j]['list_jumlah'];
                                 $jums_list_jumlah = count($list_jumlah);
                                 for ($k = 0; $k < $jums_list_jumlah; $k++) {
                                     // dd($list_jumlah[$k]['tanggal']);
-                                    $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                    $area_stok = AreaStok::where('id_area', $id_area)
                                         ->where('id_material', $produk)
                                         ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
                                         ->first();
@@ -804,7 +803,7 @@ class AktivitasController extends Controller
                                 }
 
                                 for ($k = 0; $k < $jums_list_jumlah; $k++) {
-                                    $area_stok = AreaStok::where('id_area', $id_area_stok)
+                                    $area_stok = AreaStok::where('id_area', $id_area)
                                         ->where('id_material', $produk)
                                         ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
                                         ->first();
@@ -820,7 +819,7 @@ class AktivitasController extends Controller
 
                                     $arr = [
                                         'id_material'   => $produk,
-                                        'id_area'       => $id_area_stok,
+                                        'id_area'       => $id_area,
                                         'jumlah'        => $list_jumlah[$k]['jumlah'],
                                         'tanggal'       => date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])),
                                     ];
