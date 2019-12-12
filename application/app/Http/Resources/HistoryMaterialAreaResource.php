@@ -16,7 +16,7 @@ class HistoryMaterialAreaResource extends Resource
     {
         return [
             'id_area'   => $this->areaStok->id_area,
-            'nama'      => $this->areaStok->material->nama,
+            'nama'      => $this->areaStok->area->nama,
             'tanggal'   => $this->areaStok->tanggal,
             'jumlah'    => $this->jumlah,
         ];
