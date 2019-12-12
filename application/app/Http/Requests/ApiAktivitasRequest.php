@@ -25,7 +25,7 @@ class ApiAktivitasRequest extends FormRequest
     public function rules()
     {
         // $this->sanitize();
-        // $request = \Request::instance();
+        $request = \Request::instance();
         $rules = [
             'id_aktivitas'      => 'required|exists:aktivitas,id',
             'id_gudang_tujuan'  => 'nullable|exists:gudang,id',
