@@ -237,14 +237,14 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="row form-group mb-0 mb2">
+                            {{-- <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                         <input type="checkbox" name="pindah_area" id="pindah_area" value="1"> Pindah Area
                                         <span></span>
                                     </label>
                                 </div>
-                            </div>
+                            </div> --}}
                             
                         </div>
                         <div class="col-md-4 col-lg-4">
