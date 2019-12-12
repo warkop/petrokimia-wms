@@ -38,6 +38,24 @@ use Illuminate\Support\Facades\Storage;
 
 class AktivitasController extends Controller
 {
+    private function getCheckerGudang($user) { //untuk memperoleh informasi checker ini sekarang berada di gudang mana
+        $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+            ->where('id_tkbm', $user->id_tkbm)
+            ->orderBy('rencana_harian.id', 'desc')
+            ->take(1)->first();
+
+        if (empty($rencana_tkbm)) {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+        $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
+        $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
+
+        return $gudang->id;
+    }
+
     public function index(Request $req) //memuat daftar aktivitas
     {
         $search = strip_tags($req->input('search'));
@@ -98,19 +116,13 @@ class AktivitasController extends Controller
 
     public function getArea(Request $req, $id_aktivitas, $id_material) //memuat area
     {
+        $user = $req->get('my_auth');
+        $id_gudang = $this->getCheckerGudang($user);
+
         $search = strip_tags($req->input('search'));
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
+        
         if ($aktivitas->pengaruh_tgl_produksi != null) {
-            // $resource = DB::table('')
-            // ->select(DB::raw('DISTINCT  b.id_area as id, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
-            // ->from(DB::raw('(SELECT area_stok.id_area, area.nama, area.kapasitas, area_stok.tanggal, area_stok.jumlah FROM area_stok JOIN area ON area_stok.id_area = area.id WHERE area_stok.id_material = '.$id_material.' ORDER BY id_area ) AS b'))
-            // ->where(function ($where) use ($search) {
-            //     $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-            // })
-            // ->groupBy(DB::raw('b.id_area, b.nama, b.kapasitas, B.tanggal, B.jumlah'))
-            // ->orderBy(DB::raw('nama'))
-            // ->get();
-
             $resource = Area::
             select(
                 '*',
@@ -118,28 +130,21 @@ class AktivitasController extends Controller
             )
             ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
             ->where('id_material', $id_material)
+            ->where('id_gudang', $id_gudang)
             ->get();
-
-            // $resource = AreaStok::where('id_material', $id_material)->map(function ($user) {
-            //     return $user->name;
-            // })->get();
-            // return AreaStokResource::collection($resource)->additional([
-            //     'status' => [
-            //         'message' => '',
-            //         'code' => Response::HTTP_OK,
-            //     ]
-            // ], Response::HTTP_OK);
         } else {
             $resource = Area::select(
                 'area.id',
                 'area.nama',
                 'area.kapasitas',
-                DB::raw('null as tanggal'),
-                DB::raw('null as jumlah')
+                DB::raw("TO_CHAR(now(),'YYYY-MM-DD') as tanggal"),
+                DB::raw('0 as jumlah')
             )
             ->where(function ($where) use ($search) {
                 $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-            })->get();
+            })
+            ->where('id_gudang', $id_gudang)
+            ->get();
         }
         return (new AktivitasResource($resource))->additional([
             'status' => [
