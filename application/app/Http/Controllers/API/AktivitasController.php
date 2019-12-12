@@ -1265,7 +1265,7 @@ class AktivitasController extends Controller
 
     public function historyMaterialArea($id_aktivitas_harian, $id_material)
     {
-        $res = AktivitasHarianArea::with('areaStok')->where('id_aktivitas_harian', $id_aktivitas_harian)->whereHas('areaStok', function (Builder $query) use ($id_material) {
+        $res = AktivitasHarianArea::with('areaStok')->where('id_aktivitas_harian', $id_aktivitas_harian)->whereHas('areaStok', function ($query) use ($id_material) {
             $query->where('id_material', $id_material);
         });
         // $res = AreaStok::select(
