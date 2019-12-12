@@ -125,8 +125,11 @@ class AktivitasController extends Controller
         if ($aktivitas->pengaruh_tgl_produksi != null) {
             $resource = Area::
             select(
-                '*',
-                DB::raw('(SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.') as total')
+                'area.id',
+                'area.nama',
+                'area.kapasitas',
+                'area_stok.tanggal',
+                DB::raw('(SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.') as jumlah')
             )
             ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
             ->where('id_material', $id_material)
