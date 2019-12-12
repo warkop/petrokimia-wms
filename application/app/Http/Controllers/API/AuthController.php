@@ -64,7 +64,7 @@ class AuthController extends Controller
                             if ($m_user->id_tkbm != null) {
                                 $rencanaTkbm        = RencanaTkbm::where('id_tkbm', $m_user->id_tkbm)->orderBy('id_rencana', 'desc')->first();
                                 $rencanaHarian      = RencanaHarian::findOrFail($rencanaTkbm->id_rencana);
-                                if (date('Y-m-d H:i:s', strtotime($rencanaHarian->end_date)) < date('Y-m-d H:i:s')) {
+                                if (date('Y-m-d H:i:s', strtotime($rencanaHarian->end_date)) > date('Y-m-d H:i:s')) {
                                     $this->responseCode = 403;
                                     $this->responseMessage = 'Rencana harian dari checker ini sudah kadaluarsa!';
                                     
