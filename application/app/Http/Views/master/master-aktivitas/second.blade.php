@@ -237,6 +237,14 @@
                                     </label>
                                 </div>
                             </div>
+                            <div class="row form-group mb-0 mb2">
+                                <div class="col-6 offset-col-2">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox" name="penerimaan_gi" id="penerimaan_gi" value="1"> Penerimaan GI
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
                             {{-- <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
@@ -308,14 +316,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="row form-group mb-0 mb2">
-                                <div class="col-6 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="penerimaan_gi" id="penerimaan_gi" value="1"> Penerimaan GI
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
