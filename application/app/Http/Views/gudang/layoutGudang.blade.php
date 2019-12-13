@@ -33,9 +33,6 @@
                 <div class="kt-portlet__head-group pt-4">
                         <select class="form-control m-select2 col-12" style="width:200px" id="selcWil" name="param">
                             <option value="" selected disabled>Pilih Area</option>
-                            <option value="wil1">Area 1</option>
-                            <option value="wil2">Area 2</option>
-                            {{-- <option value="drawManual">Draw Manual</option> --}}
                         </select>
                     <a href="#" class="btn btn-success" data-toggle="modal"
                          onclick="carWil()" style="min-width:130px">Mulai Gambar</a>
@@ -59,21 +56,31 @@
 
 <script src="{{asset('assets/extends/js/page/gudangLayout.js')}}" type="text/javascript"></script>
 <script>
-// $('#id_karu').select2({
-//     placeholder: "Pilih Kepala Regu",
+// $('#selcWil').select2({
+//     placeholder: "Pilih Area",
 //     allowClear: true,
-//     dropdownParent:$("#modal_form")
 // });
-// $('#end_date').datepicker({
-//     rtl: KTUtil.isRTL(),
-//     todayHighlight: true,
-//     format:'dd-mm-yyyy',
-//     clearBtn:true,
-//     orientation: "bottom left"
-// });
-$('#selcWil').select2({
-    placeholder: "Pilih Area",
+
+$("#selcWil").select2({
     allowClear: true,
+    placeholder: 'Pilih Area',
+    delay: 250,
+    ajax: {
+        url: "{{url('gudang')}}" + '/load-area/' + "{{$id_gudang}}",
+        dataType: 'json',
+        processResults: function (response) {
+            /*Tranforms the top-level key of the response object from 'items' to 'results'*/
+            return {
+                results: $.map(response.data, function (item) {
+                    return {
+                        text: item.nama,
+                        id: item.id
+                    }
+                })
+            };
+        }
+    }
+}).on("select2:select", (q) => {
 });
 
 $('#selcWil').on('change', function() {

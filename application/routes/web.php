@@ -111,6 +111,9 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/load-pallet', 'GudangController@loadPallet');
         Route::get('/get-produk', 'GudangController@getProduk');
         Route::get('/get-pallet', 'GudangController@getPallet');
+        Route::get('/layout-gudang/{id_gudang}', 'GudangController@layoutGudang')->where('id_gudang', '[0-9]+');
+        Route::get('/load-area/{id_gudang}', 'GudangController@loadArea')->where('id_gudang', '[0-9]+');
+        
         Route::post('/select-aktivitas', 'GudangController@selectAktivitas');
         Route::delete('/remove-aktivitas/{id_gudang}/{id_aktivitas}', 'GudangController@removeAktivitas')->where('id_gudang', '[0-9]+')->where('id_aktivitas', '[0-9]+');
         Route::put('/', 'GudangController@store');
@@ -319,9 +322,7 @@ Route::get('/laporan-keluhan-alat-berat', function () {
 Route::get('/laporan-keluhan-gp', function () {
     return view('report.keluhan-gp.grid');
 });
-Route::get('/gudang/layout-gudang', function () {
-    return view('gudang.layoutGudang');
-});
+
 Route::get('/log-aktivitas-user', function () {
     return view('log-aktivitas-user.grid');
 });
