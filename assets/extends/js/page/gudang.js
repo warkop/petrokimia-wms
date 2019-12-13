@@ -384,6 +384,58 @@ function simpan() {
     });
 }
 
+function loadListAktivitas(id_gudang) {
+    $.ajax({
+        url: ajaxUrl + '/load-aktivitas-gudang/' + id_gudang,
+        success: (response) => {
+            const obj = response.data;
+
+            let html = "";
+            obj.forEach(element => {
+                html += `<tr>
+                            <td class="text-left">${element.aktivitas.nama}</td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm _btnHapus" onclick="removeAktivitas(${element.id_gudang}, ${element.id_aktivitas})" ><i class="fa fa-trash"></i> Hapus</button>
+                            </td>
+                        </tr>`;
+            });
+
+            $("#list_aktivitas").html(html);
+
+        },
+        error: (response) => {
+            let head = 'Maaf',
+                message = 'Terjadi kesalahan koneksi',
+                type = 'error';
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            if (response['status'] == 401 || response['status'] == 419) {
+                location.reload();
+            } else {
+                if (response['status'] != 404 && response['status'] != 500) {
+                    let obj = JSON.parse(response['responseText']);
+
+                    if (!$.isEmptyObject(obj.message)) {
+                        if (obj.code > 400) {
+                            head = 'Maaf';
+                            message = obj.message;
+                            type = 'error';
+                        } else {
+                            head = 'Pemberitahuan';
+                            message = obj.message;
+                            type = 'warning';
+                        }
+                    }
+                }
+
+                swal.fire(head, message, type);
+            }
+        }
+    });
+}
+
 function loadAktivitasGudang(id_gudang) {
     $("#aktivitas_gudang").select2({
         allowClear: true,
@@ -399,8 +451,8 @@ function loadAktivitasGudang(id_gudang) {
                 return {
                     results: $.map(response.data, function (item) {
                         return {
-                            text: item.Plant + " - " + item.Material_number,
-                            id: item.Material_number
+                            text: item.nama,
+                            id: item.id
                         }
                     })
                 };
@@ -411,26 +463,118 @@ function loadAktivitasGudang(id_gudang) {
         $("#id_plant").val(id_plant);
     });
 
+    loadListAktivitas(id_gudang);
+}
+
+function tambahAktivitas() {
+    const id_aktivitas = $("#aktivitas_gudang").val();
+    const id_gudang = $("#id_gudang").val();
     $.ajax({
-        url: ajaxUrl + '/load-aktivitas-gudang/'+id_gudang,
+        url: ajaxSource+"/select-aktivitas",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method:"post",
+        data:{
+            id_aktivitas: id_aktivitas,
+            id_gudang: id_gudang
+        },
         success:(response)=>{
             const obj = response.data;
+            let head = 'Pemberitahuan',
+                message = response.message,
+                type = 'success';
 
-            let html = "";
-            obj.forEach(element => {
-                html += `<tr>
-                            <td class="text-left">${element.aktivitas.nama}</td>
-                            <td>
-                                <a href="#" class="btn btn-danger btn-sm _btnHapus" onclick="hapus(${element.id})" ><i class="fa fa-trash"></i> Hapus</a>
-                            </td>
-                        </tr>`;
-            });
-
-            $("#list_aktivitas").html(html);
-
+            swal.fire(head, message, type);
+            loadListAktivitas(id_gudang);
         },
-        error: (response)=>{
+        error:(response)=>{
+            let head = 'Maaf',
+                message = 'Terjadi kesalahan koneksi',
+                type = 'error';
+            window.onbeforeunload = false;
 
+            if (response['status'] == 401 || response['status'] == 419) {
+                location.reload();
+            } else {
+                if (response['status'] != 404 && response['status'] != 500) {
+                    let obj = JSON.parse(response['responseText']);
+                    console.log(obj.message);
+                    if (!$.isEmptyObject(obj.message)) {
+                        if (obj.code > 450) {
+                            head = 'Maaf';
+                            message = obj.message;
+                            type = 'error';
+                        } else {
+                            head = 'Pemberitahuan';
+                            type = 'warning';
+
+                            obj = response.responseJSON.errors;
+                            window.onbeforeunload = false;
+                            $('.btn_close_modal').removeClass('hide');
+                            $('.se-pre-con').hide();
+
+                            const temp = Object.values(obj);
+                            message = '';
+                            temp.forEach(element => {
+                                element.forEach(row => {
+                                    message += row + "<br>"
+                                });
+                            });
+                        }
+                    }
+                }
+
+                swal.fire(head, message, type);
+            }
+        }
+    });
+}
+
+function removeAktivitas(id_gudang, id_aktivitas) {
+    $.ajax({
+        url: ajaxSource + "/remove-aktivitas/" + id_gudang + "/" + id_aktivitas,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method:"delete",
+        success:(response) =>{
+            let head = 'Pemberitahuan',
+                message = response.message,
+                type = 'success';
+
+            swal.fire(head, message, type);
+            loadListAktivitas(id_gudang);
+        },
+        error:(response) => {
+            let head = 'Maaf',
+                message = 'Terjadi kesalahan koneksi',
+                type = 'error';
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            if (response['status'] == 401 || response['status'] == 419) {
+                location.reload();
+            } else {
+                if (response['status'] != 404 && response['status'] != 500) {
+                    let obj = JSON.parse(response['responseText']);
+
+                    if (!$.isEmptyObject(obj.message)) {
+                        if (obj.code > 400) {
+                            head = 'Maaf';
+                            message = obj.message;
+                            type = 'error';
+                        } else {
+                            head = 'Pemberitahuan';
+                            message = obj.message;
+                            type = 'warning';
+                        }
+                    }
+                }
+
+                swal.fire(head, message, type);
+            }
         }
     });
 }

@@ -50,17 +50,17 @@ class AktivitasGudang extends Model
         });
 
         static::creating(function ($table) {
-            $arr = [
-                'modul' => ucwords(str_replace('_', ' ', $table->table)),
-                'action' => 1,
-                'aktivitas' => 'Mendaftarkan aktivitas ' . $table->aktivitas->nama . ' pada gudang ' . $table->gudang->nama,
-                'created_at' => now(),
-                'created_by' => \Auth::id(),
-            ];
-            (new LogActivity)->log($arr);
-
+            
             $table->created_by = \Auth::id();
             $table->created_at = now();
+            // $arr = [
+            //     'modul' => ucwords(str_replace('_', ' ', $table->table)),
+            //     'action' => 1,
+            //     'aktivitas' => 'Mendaftarkan aktivitas ' . $table->aktivitas->nama . ' pada gudang ' . $table->gudang->nama,
+            //     'created_at' => now(),
+            //     'created_by' => \Auth::id(),
+            // ];
+            // (new LogActivity)->log($arr);
         });
     }
 

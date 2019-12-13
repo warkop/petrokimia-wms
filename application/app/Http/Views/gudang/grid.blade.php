@@ -275,24 +275,21 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>
-            <form action="">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-8">
                             <div class="form-group">
                                 <label for="exampleSelect1">Pilih Aktivitas</label>
                                 <select class="form-control m-select2" id="aktivitas_gudang" name="aktivitas_gudang" style="width:100%">
-                                    {{-- <option value="1">Pengiriman Gudang Internal</option>
-                                    <option value="2">Pengiriman GP</option>
-                                    <option value="2">Pengiriman Pemindahan</option> --}}
                                 </select>
                             </div>
                         </div>
                         <div class="offset-1 col-md-3">
                             <div class="form-group">
                                 <label for="exampleSelect1" style="visibility:hidden;">ini tidak berpengaruh</label>
+                                <input type="hidden" id="id_gudang">
                                 <div class="">
-                                    <button onclick="_tambahAktivitas()"  type="button" class="btn btn-success" style="width: 120px">Tambah</button>
+                                    <button onclick="tambahAktivitas()"  type="button" class="btn btn-success" style="width: 120px">Tambah</button>
                                 </div>
                             </div>
                         </div>
@@ -308,34 +305,15 @@
                                     </tr>     
                                 </thead>
                                 <tbody class="text-center" id="list_aktivitas">
-                                    {{-- <tr>
-                                        <td class="text-left">Pengiriman Gudang Internal</td>
-                                        <td>
-                                            <a href="#" class="btn btn-danger btn-sm _btnHapus" ><i class="fa fa-trash"></i> Hapus</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Pengiriman GP</td>
-                                        <td>
-                                            <a href="#" class="btn btn-danger btn-sm _btnHapus"" ><i class="fa fa-trash"></i> Hapus</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Pengiriman Pemindahan</td>
-                                        <td>
-                                            <a href="#" class="btn btn-danger btn-sm _btnHapus"" ><i class="fa fa-trash"></i> Hapus</a>
-                                        </td>
-                                    </tr> --}}
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-wms ladda-button" id="btn_save_a_gudang">Simpan Data</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    {{-- <button type="button" class="btn btn-wms ladda-button" id="btn_save_a_gudang">Simpan Data</button> --}}
                 </div>
-            </form>
         </div>
     </div>
 </div>
@@ -367,12 +345,13 @@ $('#end_date').datepicker({
 
 function showModalAktivitasGudang(id_gudang) { 
     $('#modalAktivitasGudang').modal();
+    $("#id_gudang").val(id_gudang);
     loadAktivitasGudang(id_gudang);
 }
 
-function _tambahAktivitas() {
-    $('#_listAktivitasGudang').show();
-} 
+// function _tambahAktivitas() {
+//     $('#_listAktivitasGudang').show();
+// } 
 
 $("body").on('click', '._btnHapus', function (e) {
     $(this).parent().parent().remove();

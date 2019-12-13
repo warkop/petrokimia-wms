@@ -111,6 +111,8 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/load-pallet', 'GudangController@loadPallet');
         Route::get('/get-produk', 'GudangController@getProduk');
         Route::get('/get-pallet', 'GudangController@getPallet');
+        Route::post('/select-aktivitas', 'GudangController@selectAktivitas');
+        Route::delete('/remove-aktivitas/{id_gudang}/{id_aktivitas}', 'GudangController@removeAktivitas')->where('id_gudang', '[0-9]+')->where('id_aktivitas', '[0-9]+');
         Route::put('/', 'GudangController@store');
         Route::post('/', 'GudangController@json');
         Route::get('/load-material/{id_gudang}', 'GudangController@loadMaterial')->where('id_gudang', '[0-9]+');

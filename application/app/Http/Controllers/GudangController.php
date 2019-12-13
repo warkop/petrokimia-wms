@@ -10,6 +10,7 @@ use App\Http\Models\Karu;
 use App\Http\Models\StokMaterial;
 use App\Http\Requests\GudangRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class GudangController extends Controller
 {
@@ -170,9 +171,9 @@ class GudangController extends Controller
         $search = preg_replace($pattern, '', $search);
 
         $res = Aktivitas::
-        leftJoin('aktivitas_gudang', 'aktivitas.id', '=', 'aktivitas_gudang')
-        ->whereNotIn('id_gudang', $id_gudang)
-        ->where('aktivitas', 'LIKE', "%" . $search . "%")
+        leftJoin('aktivitas_gudang', 'aktivitas.id', '=', 'aktivitas_gudang.id_aktivitas')
+        ->whereNotIn('aktivitas_gudang.id_gudang', [$id_gudang])
+        ->where('aktivitas.nama', 'LIKE', "%" . $search . "%")
         ->get();
 
         if (!empty($res)) {
@@ -184,6 +185,55 @@ class GudangController extends Controller
             $this->responseStatus = 'No Data Available';
             $this->responseMessage = 'Data Jalan tidak tersedia';
         }
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
+    public function selectAktivitas(Request $req)
+    {
+        $validator = Validator::make($req->all(), [
+            'id_aktivitas'  => 'required|exists:aktivitas,id',
+            'id_gudang'     => 'required|exists:gudang,id',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            $this->responseMessage = '';
+
+            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+            return response()->json(['errors' => $errors, 'message' => 'Inputan tidak valid'], $this->responseCode);
+        }
+
+        $id_aktivitas   = $req->input('id_aktivitas');
+        $id_gudang      = $req->input('id_gudang');
+        $res = AktivitasGudang::where('id_gudang', $id_gudang)->where('id_aktivitas', $id_aktivitas)->get();
+        if (!$res->isEmpty()) {
+            $this->responseCode = 403;
+            $this->responseMessage = 'Aktivitas sudah ada pada gudang ini';
+        } else {
+            $aktivitasGudang = new AktivitasGudang;
+            $aktivitasGudang->id_aktivitas  = $id_aktivitas;
+            $aktivitasGudang->id_gudang     = $id_gudang;
+            $aktivitasGudang->save();
+    
+            $this->responseData = $aktivitasGudang;
+            $this->responseCode = 200;
+            $this->responseMessage = 'Aktivitas berhasil ditambahkan';
+        }
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
+    public function removeAktivitas($id_gudang, $id_aktivitas)
+    {
+        $res = AktivitasGudang::where('id_gudang', $id_gudang)->where('id_aktivitas', $id_aktivitas)->forceDelete();
+
+        $res = AktivitasGudang::where('id_gudang', $id_gudang)->get();
+        $this->responseData = $res;
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data berhasil dihapus';
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
