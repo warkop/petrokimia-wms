@@ -172,9 +172,7 @@ class GudangController extends Controller
         $search = preg_replace($pattern, '', $search);
 
         $res = Aktivitas::
-        leftJoin('aktivitas_gudang', 'aktivitas.id', '=', 'aktivitas_gudang.id_aktivitas')
-        ->whereNotIn('aktivitas_gudang.id_gudang', [$id_gudang])
-        ->where('aktivitas.nama', 'LIKE', "%" . $search . "%")
+        where('aktivitas.nama', 'LIKE', "%" . $search . "%")
         ->get();
 
         if (!empty($res)) {
@@ -262,7 +260,7 @@ class GudangController extends Controller
         $pattern = '/[^a-zA-Z0-9 !@#$%^&*\/\.\,\(\)-_:;?\+=]/u';
         $search = preg_replace($pattern, '', $search);
         
-        $res = Area::where('id_gudang', $id_gudang)->search($search)->get();
+        $res = Area::where('id_gudang', $id_gudang)->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%'.strtolower($search).'%')->get();
 
         $this->responseData = $res;
         $this->responseCode = 200;
@@ -271,8 +269,20 @@ class GudangController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
-    public function mulaiGambar()
+    public function storeKoordinat(Request $req)
     {
-        
+        $koordinat  = $req->input('koordinat');
+        $id_area       = $req->input('pilih_area');
+
+        $area = Area::find($id_area);
+        $area->koordinat = $koordinat;
+        $area->save();
+
+        $this->responseData     = $area;
+        $this->responseMessage  = "Data berhasil disimpan";
+        $this->responseCode     = 200;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 }
