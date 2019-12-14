@@ -926,7 +926,7 @@ class AktivitasController extends Controller
             }
         }
         // if ($aktivitas->internal_gudang != null) {
-            $materialTrans = MaterialTrans::select(
+            $produk = MaterialTrans::select(
                 'id_material',
                 'nama as nama_material',
                 'jumlah'
@@ -935,9 +935,22 @@ class AktivitasController extends Controller
             ->where('id_aktivitas_harian', $id)
             ->whereNotNull('status_produk')
             ->get();
+
+            $pallet = MaterialTrans::select(
+                'id_material',
+                'nama as nama_material',
+                'jumlah'
+            )
+            ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
+            ->where('id_aktivitas_harian', $id)
+            ->whereNotNull('status_pallet')
+            ->get();
             
             return response()->json([
-            'data' => $materialTrans,
+            'data' => [
+                'produk' => $produk,
+                'pallet' => $pallet
+            ],
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK
