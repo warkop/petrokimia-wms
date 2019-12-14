@@ -1039,30 +1039,6 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function approve(AktivitasHarian $aktivitas)
-    {
-        $aktivitas->approve = date('Y-m-d H:i:s');
-
-        $saved = $aktivitas->save();
-
-        if ($saved) {
-            return (new AktivitasResource($aktivitas))->additional([
-                'status' => [
-                    'message' => 'Aktivitas Harian berhasil disetujui',
-                    'code' => Response::HTTP_OK,
-                ]
-            ], Response::HTTP_OK);
-        } else {
-            return response()->json([
-                'data' => null,
-                'status' => [
-                    'message' => 'Aktivitas Harian tidak dapat diapprove. Terjadi kesalahan dalam pemrosesan!',
-                    'code' => Response::HTTP_INTERNAL_SERVER_ERROR
-                ]
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
     public function show(Aktivitas $aktivitas) //menampilkan detail aktivitas
     {
         return (new AktivitasResource($aktivitas))->additional([
@@ -1083,6 +1059,28 @@ class AktivitasController extends Controller
         )
         ->join('foto_jenis', 'id_foto_jenis', '=', 'foto_jenis.id')
         ->where('id_aktivitas', $id_aktivitas)->get();
+        return (new AktivitasResource($resource))->additional([
+            'url' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_aktivitas_harian}}&ctg=kelayakan&src={{file_enc}}',
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ]
+        ], Response::HTTP_OK);
+    }
+
+    public function getMuatanFoto(Request $req) //memuat kelayakan foto
+    {
+        $id_aktivitas_harian = $req->input('id_aktivitas_harian');
+        $resource = AktivitasFoto::select(
+            'id',
+            'jenis',
+            'foto',
+            'size',
+            'ekstensi',
+            'file_enc'
+        )
+        ->with('foto_jenis')
+        ->where('id_aktivitas_harian', $id_aktivitas_harian)->get();
         return (new AktivitasResource($resource))->additional([
             'url' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_aktivitas_harian}}&ctg=kelayakan&src={{file_enc}}',
             'status' => [
@@ -1175,6 +1173,7 @@ class AktivitasController extends Controller
             'nomor_lambung',
             'sistro',
             'internal_gudang',
+            'ttd',
             'id_gudang_tujuan',
             DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang_tujuan)
                  AS text_gudang_tujuan'),
@@ -1197,7 +1196,7 @@ class AktivitasController extends Controller
             END AS jenis_aktivitas'),
             DB::raw('CASE WHEN approve IS NOT NULL OR internal_gudang IS NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
             'aktivitas_harian.created_at',
-            'aktivitas_harian.created_by'
+            'aktivitas_harian.created_by' 
         )
         ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
         ->leftJoin('alat_berat', 'aktivitas_harian.id_gudang', '=', 'alat_berat.id')
