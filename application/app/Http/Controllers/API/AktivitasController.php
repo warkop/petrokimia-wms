@@ -60,9 +60,11 @@ class AktivitasController extends Controller
     public function index(Request $req) //memuat daftar aktivitas
     {
         $search = strip_tags($req->input('search'));
-
+        $user = $req->get('my_auth');
+        $id_gudang = $this->getCheckerGudang($user);
         $obj =  AktivitasResource::collection(AktivitasGudang::
         join('aktivitas', 'aktivitas.id', '=', 'aktivitas_gudang.id_aktivitas')
+        ->where('id_gudang', $id_gudang)
         ->where(function ($where) use ($search) {
             $where->where(DB::raw('nama'), 'ILIKE', '%' . strtolower($search) . '%');
         })->orderBy('id', 'desc')->paginate(10))->additional([
