@@ -113,10 +113,12 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/get-pallet', 'GudangController@getPallet');
         Route::get('/layout-gudang/{id_gudang}', 'GudangController@layoutGudang')->where('id_gudang', '[0-9]+');
         Route::get('/load-area/{id_gudang}', 'GudangController@loadArea')->where('id_gudang', '[0-9]+');
+        Route::get('/load-koordinat/{area}', 'GudangController@loadKoordinat')->where('area', '[0-9]+');
         
         Route::post('/select-aktivitas', 'GudangController@selectAktivitas');
         Route::delete('/remove-aktivitas/{id_gudang}/{id_aktivitas}', 'GudangController@removeAktivitas')->where('id_gudang', '[0-9]+')->where('id_aktivitas', '[0-9]+');
         Route::put('/', 'GudangController@store');
+        Route::put('/save-map', 'GudangController@storeKoordinat');
         Route::post('/', 'GudangController@json');
         Route::get('/load-material/{id_gudang}', 'GudangController@loadMaterial')->where('id_gudang', '[0-9]+');
         Route::get('/{id}', 'GudangController@show')->where('id', '[0-9]+');
@@ -173,8 +175,9 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         });
     });
 
-    Route::get('/layout', function () {
-        return view('menu-layout.grid');
+    Route::group(['prefix' => 'layout'], function () {
+        Route::get('/', 'LayoutController@index');
+        Route::get('/load-area', 'LayoutController@loadArea');
     });
 
     Route::group(['prefix' => 'penerimaan-gp'], function () {
@@ -287,9 +290,9 @@ Route::get('/master-pemetaan-sloc', function () {
     return view('master.master-pemetaan-sloc.grid');
 });
 
-Route::get('/main', function () {
-    return view('layout.main');
-});
+// Route::get('/main', function () {
+//     return view('layout.main');
+// });
 
 
 Route::get('/laporan-material', function () {

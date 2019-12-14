@@ -14,8 +14,7 @@ class AlterTableArea2 extends Migration
     public function up()
     {
         Schema::table('area', function (Blueprint $table) {
-            $table->string('lat')->nullable();
-            $table->string('lng')->nullable();
+            $table->text('koordinat')->nullable();
         });
     }
 
@@ -27,8 +26,7 @@ class AlterTableArea2 extends Migration
     public function down()
     {
         Schema::table('area', function (Blueprint $table) {
-            $table->dropColumn('lat');
-            $table->dropColumn('lng');
+            $table->dropColumn('koordinat');
         });
     }
 }

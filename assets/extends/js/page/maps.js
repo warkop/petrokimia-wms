@@ -1,41 +1,49 @@
 "use strict";
+const ajaxSource = baseUrl+"layout";
 
+function loadArea() {
+    console.log(ajaxSource);
+    $.ajax({
+        url: ajaxSource +"/load-area",
+        success:response=>{
+            // const obj = response.data;
+            demo6(obj);
+        },
+        error:response=>{
+
+        }
+    });
+}
 // Class definition
-var KTGoogleMapsDemo = function() {
+const demo6 =  polygons => {
+    var map = new GMaps({
+        div: '#kt_gmap_1',
+        lat: -7.1546369, 
+        lng: 112.640216,
+        zoom: 17
+    });
 
-    var demo6 = function() {
-        var map = new GMaps({
-            div: '#kt_gmap_1',
-            lat: -12.043333,
-            lng: -77.028333
-        });
-
-        var path = [
-            [-12.040397656836609, -77.03373871559225],
-            [-12.040248585302038, -77.03993927003302],
-            [-12.050047116528843, -77.02448169303511],
-            [-12.044804866577001, -77.02154422636042]
-        ];
-
-        var polygon = map.drawPolygon({
-            paths: path,
-            strokeColor: '#BBD8E9',
-            strokeOpacity: 1,
-            strokeWeight: 3,
-            fillColor: '#BBD8E9',
-            fillOpacity: 0.6
-        });
+    let path = [];
+    if (polygons !== null) {
+        for (let i = 0; i < polygons.length; i++) {
+            let temp = polygons[i].koordinat;
+            // console.log(polygons[i].koordinat);
+            path.push(temp);
+        }
     }
 
-    return {
-        // public functions
-        init: function() {
-            // default charts
-            demo6();
-        }
-    };
-}();
+    var polygon = map.drawPolygon({
+        paths: path,
+        strokeColor: '#BBD8E9',
+        strokeOpacity: 1,
+        strokeWeight: 3,
+        fillColor: '#BBD8E9',
+        fillOpacity: 0.6
+    });
 
-jQuery(document).ready(function() {
-    KTGoogleMapsDemo.init();
+    polygon.setMap(map);
+}
+
+$(document).ready(function() {
+    loadArea();
 });

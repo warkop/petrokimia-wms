@@ -8,7 +8,7 @@
 </script>
 
 <link rel="stylesheet" href="{{asset('assets/extends/css/map.css')}}">
-<script src="//maps.google.com/maps/api/js?key=AIzaSyBDHDV2ksjKZ8xtSOZEOBe4_DQM87VrXgI" type="text/javascript" defer>
+<script src="https://maps.google.com/maps/api/js?key=AIzaSyDMHi0AIoQz1JmkicVxHhJJ7mf5cNeXucQ" type="text/javascript" defer>
 </script>
 <script src="{{aset_tema()}}vendors/custom/gmaps/gmaps.js" type="text/javascript"></script>
 <script src="{{aset_tema()}}app/custom/general/components/maps/google-maps.js" type="text/javascript"></script>
@@ -77,7 +77,11 @@
     <!--End::Dashboard 6-->
 </div>
 <!-- end:: Content -->
+<script>
+    // polygon = JSON.parse(polygon);
 
+    // console.log(polygon);
+</script>
 <script src="{{asset('assets/extends/js/page/maps.js')}}"></script>
 
 @endsection
