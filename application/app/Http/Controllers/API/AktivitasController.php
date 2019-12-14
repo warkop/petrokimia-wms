@@ -62,7 +62,7 @@ class AktivitasController extends Controller
         $search = strip_tags($req->input('search'));
 
         $obj =  AktivitasResource::collection(AktivitasGudang::
-        leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_gudang.id_aktivitas')
+        join('aktivitas', 'aktivitas.id', '=', 'aktivitas_gudang.id_aktivitas')
         ->where(function ($where) use ($search) {
             $where->where(DB::raw('nama'), 'ILIKE', '%' . strtolower($search) . '%');
         })->orderBy('id', 'desc')->paginate(10))->additional([
@@ -398,7 +398,7 @@ class AktivitasController extends Controller
                                     for ($k = 0; $k < $jums_list_jumlah; $k++) {
                                         $area_stok = AreaStok::where('id_area', $id_area)
                                             ->where('id_material', $produk)
-                                            ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                            ->where('tanggal', date('Y-m-d'))
                                             ->first();
                                             
                                         if (!empty($area_stok)) {
@@ -416,7 +416,7 @@ class AktivitasController extends Controller
                                             'id_material'   => $produk,
                                             'id_area'       => $id_area,
                                             'jumlah'        => $list_jumlah[$k]['jumlah'],
-                                            'tanggal'       => date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])),
+                                            'tanggal'       => date('Y-m-d'),
                                         ];
     
                                         $saved_area_stok = $area_stok->create($arr);
