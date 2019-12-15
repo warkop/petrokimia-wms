@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\API\AktivitasController;
 use App\Http\Models\AktivitasHarian;
 use App\Http\Models\Karu;
 use App\Http\Models\RencanaHarian;
