@@ -67,7 +67,7 @@ class Handler extends ExceptionHandler
         if ($exception instanceof NotFoundHttpException && $request->wantsJson()) {
             return response()->json([
                 'status' => [
-                    'message' => 'Data tidak ditemukan!',
+                    'message' => 'Halaman tidak ditemukan!',
                     'code' => 404,
                 ]
             ], 404);
