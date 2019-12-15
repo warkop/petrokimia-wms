@@ -39,9 +39,9 @@ use Illuminate\Support\Facades\Storage;
 
 class AktivitasController extends Controller
 {
-    private function getCheckerGudang($user) { //untuk memperoleh informasi checker ini sekarang berada di gudang mana
+    private function getCheckerGudang() { //untuk memperoleh informasi checker ini sekarang berada di gudang mana
         $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
-            ->where('id_tkbm', $user->id_tkbm)
+            ->where('id_tkbm', auth()->user()->id_tkbm)
             ->orderBy('rencana_harian.id', 'desc')
             ->take(1)->first();
 
@@ -61,7 +61,7 @@ class AktivitasController extends Controller
     {
         $search = strip_tags($req->input('search'));
         $user = $req->get('my_auth');
-        $id_gudang = $this->getCheckerGudang($user);
+        $id_gudang = $this->getCheckerGudang();
         $obj =  AktivitasResource::collection(AktivitasGudang::
         join('aktivitas', 'aktivitas.id', '=', 'aktivitas_gudang.id_aktivitas')
         ->where('id_gudang', $id_gudang)
@@ -120,7 +120,7 @@ class AktivitasController extends Controller
     public function getArea(Request $req, $id_aktivitas, $id_material) //memuat area
     {
         $user = $req->get('my_auth');
-        $id_gudang = $this->getCheckerGudang($user);
+        $id_gudang = $this->getCheckerGudang();
 
         $search = strip_tags($req->input('search'));
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
