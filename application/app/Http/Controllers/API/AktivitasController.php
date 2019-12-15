@@ -246,7 +246,7 @@ class AktivitasController extends Controller
     {
         $areaStok = AreaStok::where('id_area', $id_area)
         ->where('id_material', $id_material)
-        ->where('tanggal', date('Y-m-d', strotime($tanggal)))
+        ->where('tanggal', date('Y-m-d', strtotime($tanggal)))
         ->first();
         if (!empty($areaStok)) {
             
