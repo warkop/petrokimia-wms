@@ -148,26 +148,21 @@ class AuthController extends Controller
 
     public function logout(Request $req)
     {
-        $responseCode = 403;
-        $responseStatus = '';
-        $responseMessage = '';
-        $responseData = [];
-
         $this->validate($req, [
             'token' => 'required',
         ]);
 
         $user = new Users;
-        $data = $user->where([['api_token', '=', $req->get('token')]])->first();
+        $data = $user->where('api_token', $req->input('token'))->first();
         if (is_null($data)) {
-            $responseCode = 400;
-            $responseMessage = 'User tidak ditemukan.';
+            $this->responseCode = 400;
+            $this->responseMessage = 'User tidak ditemukan.';
         } else {
             $user->where('id', $data['id'])->update(['api_token' => null]);
-            $responseCode = 200;
-            $responseMessage = 'Berhasil melakukan logout.';
+            $this->responseCode = 200;
+            $this->responseMessage = 'Berhasil melakukan logout.';
         }
         $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-        return response()->json($response, $responseCode);
+        return response()->json($response, $this->responseCode);
     }
 }
