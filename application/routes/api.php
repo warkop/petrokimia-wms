@@ -13,7 +13,7 @@
 Route::post('/login', 'API\AuthController@authenticate');
 Route::post('/logout', 'API\AuthController@logout');
 
-Route::group(['middleware' => 'api.auth'], function () {
+Route::group(['middleware' => 'auth:api'], function () {
     Route::group(['prefix' => 'aktivitas'], function () {
         Route::get('/', 'API\AktivitasController@index');
         Route::get('/get-data-sistro', 'API\AktivitasController@getDataSistro');
