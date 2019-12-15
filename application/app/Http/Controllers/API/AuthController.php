@@ -8,11 +8,24 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Gudang;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    use AuthenticatesUsers;
+
+    public function __construct()
+    {
+        $this->middleware('guest')->except('logout');
+    }
+
+    public function username()
+    {
+        return 'username';
+    }
+
     public function authenticate(Request $request)
     {
         $rules['username'] = 'required';
