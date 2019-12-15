@@ -19,7 +19,15 @@ class AktivitasHarianPolicy
      */
     public function view(Users $user, AktivitasHarian $aktivitasHarian)
     {
-        //
+        return auth()->user()->role_id === 3;
+    }
+
+    public function reply(User $user)
+    {
+        if (auth()->user()->role_id < 5) {
+            $this->deny('Sorry, your level is not high enough to do that!');
+        }
+        return true;
     }
 
     public function store(Users $user, Aktivitas $aktivitas)
