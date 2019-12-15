@@ -41,7 +41,7 @@ class AktivitasController extends Controller
 {
     private function getCheckerGudang() { //untuk memperoleh informasi checker ini sekarang berada di gudang mana
         $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
-            ->where('id_tkbm', auth()->user()->id_tkbm)
+            ->where('id_tkbm',\Request::get('my_auth')->id_tkbm)
             ->orderBy('rencana_harian.id', 'desc')
             ->take(1)->first();
 
