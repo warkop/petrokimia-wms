@@ -9,6 +9,10 @@ class Notifications extends Model
     protected $table = 'notifications';
     protected $primaryKey = 'id';
 
+    protected $guarded = [
+        'id',
+    ];
+
     public $timestamps  = false;
 
     public function notifiable()

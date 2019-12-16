@@ -3,9 +3,11 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class AktivitasHarian extends Model
 {
+    use Notifiable;
     protected $table = 'aktivitas_harian';
     protected $primaryKey = 'id';
 
@@ -62,10 +64,10 @@ class AktivitasHarian extends Model
         return $this->hasManyThrough(Material::class, MaterialTrans::class, 'id_aktivitas_harian', 'id', 'id', 'id_material');
     }
 
-    public function notifications()
-    {
-        return $this->morphMany(Notifications::class, 'notifiable');
-    }
+    // public function notifications()
+    // {
+    //     return $this->morphMany(Notifications::class, 'notifiable');
+    // }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {

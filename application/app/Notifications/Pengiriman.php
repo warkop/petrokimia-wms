@@ -29,7 +29,7 @@ class Pengiriman extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -44,6 +44,20 @@ class Pengiriman extends Notification
                     ->line('The introduction to the notification.')
                     ->action('Notification Action', url('/'))
                     ->line('Thank you for using our application!');
+    }
+
+    public function toDatabase($notifiable)
+    {
+        return [
+            'id_aktivitas_harian'   => $notifiable->id,
+            'id_aktivitas'          => $notifiable->id_aktivitas,
+            'kode_aktivitas'        => $notifiable->aktivitas->kode_aktivitas,
+            'nama'                  => $notifiable->aktivitas->nama,
+            'asal_gudang'           => $notifiable->gudang->nama,
+            'gudang_tujuan'         => $notifiable->gudangTujuan->nama,
+            'waktu'                 => $notifiable->created_at->diffForHumans(),
+            'created_at'            => $notifiable->created_at,
+        ];
     }
 
     /**

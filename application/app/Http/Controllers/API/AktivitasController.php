@@ -35,6 +35,7 @@ use App\Http\Resources\AreaStokResource;
 use App\Http\Resources\getAreaFromPenerimaResource;
 use App\Http\Resources\HistoryMaterialAreaResource;
 use App\Http\Resources\ListNotifikasiResource;
+use App\Notifications\Pengiriman;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -1336,29 +1337,24 @@ class AktivitasController extends Controller
     public function storeNotification()
     {
         $notifications = new Notifications;
-        $user = Users::first();
+        $aktivitasHarian = AktivitasHarian::first();
 
 
 
         $details = [
-
-            'greeting' => 'Hi Artisan',
-
-            'body' => 'This is my first notification from ItSolutionStuff.com',
-
-            'thanks' => 'Thank you for using ItSolutionStuff.com tuto!',
-
-            'actionText' => 'View My Site',
-
-            'actionURL' => url('/'),
-
-            'order_id' => 101
-
+            'id_aktivitas_harian'   => $aktivitasHarian->id,
+            'id_aktivitas'          => $aktivitasHarian->id_aktivitas,
+            'kode_aktivitas'        => $aktivitasHarian->aktivitas->kode_aktivitas,
+            'nama'                  => $aktivitasHarian->aktivitas->nama,
+            'asal_gudang'           => $aktivitasHarian->gudang->nama,
+            'gudang_tujuan'         => $aktivitasHarian->gudangTujuan->nama,
+            'waktu'                 => $aktivitasHarian->created_at->diffForHumans(),
+            'created_at'            => $aktivitasHarian->created_at,
         ];
 
 
 
-        Notification::send($user, new MyFirstNotification($details));
+        Notification::send($aktivitasHarian, new Pengiriman($details));
 
 
 
