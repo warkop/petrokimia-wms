@@ -1182,6 +1182,7 @@ class AktivitasController extends Controller
     {
         $res = AktivitasHarian::select(
             'aktivitas_harian.id',
+            'aktivitas_harian.id_aktivitas',
             'aktivitas.nama as nama_aktivitas',
             DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
                  AS text_gudang'),
