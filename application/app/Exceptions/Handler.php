@@ -68,6 +68,7 @@ class Handler extends ExceptionHandler
         if ($exception instanceof NotFoundHttpException && $request->wantsJson()) {
             return response()->json([
                 'status' => [
+                    'system_message' => $exception->getMessage(),
                     'message' => 'Halaman tidak ditemukan!',
                     'code' => 404,
                 ]
@@ -77,6 +78,7 @@ class Handler extends ExceptionHandler
         if ($exception instanceof AccessDeniedHttpException  && $request->wantsJson()) {
             return response()->json([
                 'status' => [
+                    'system_message' => $exception->getMessage(),
                     'message' => 'Hanya Checker yang diizinkan untuk menambah aktivitas harian!',
                     'code' => 403,
                 ]
