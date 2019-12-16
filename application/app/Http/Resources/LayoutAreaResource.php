@@ -14,13 +14,13 @@ class LayoutAreaResource extends Resource
      */
     public function toArray($request)
     {
-        // if ($this->sum($this->areaStok->jumlah) == $this->kapasitas) {
-        //     $warna = 'red';
-        // } else if ($this->sum($this->areaStok->jumlah) == $this->kapasitas* 70/100) {
-        //     $warna = 'yellow';
-        // } else {
-        //     $warna = 'green';
-        // }
+        if ($this->terpakai == $this->kapasitas) {
+            $warna = '#fd397a';
+        } else if ($this->terpakai >= $this->kapasitas* 70/100 && $this->terpakai != $this->kapasitas) {
+            $warna = '#fbaa00';
+        } else {
+            $warna = '#08976d';
+        }
 
         return [
             'id'        => $this->id,
@@ -28,7 +28,8 @@ class LayoutAreaResource extends Resource
             'nama'      => $this->nama,
             'kapasitas' => $this->kapasitas,
             'tipe'      => $this->tipe,
-            // 'warna'     => $warna,
+            'terpakai'  => $this->terpakai,
+            'warna'     => $warna,
             'koordinat' => json_decode($this->koordinat),
         ];
     }

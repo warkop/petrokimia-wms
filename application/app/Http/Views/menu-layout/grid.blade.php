@@ -10,8 +10,8 @@
 <link rel="stylesheet" href="{{asset('assets/extends/css/map.css')}}">
 <script src="https://maps.google.com/maps/api/js?key=AIzaSyDMHi0AIoQz1JmkicVxHhJJ7mf5cNeXucQ" type="text/javascript" defer>
 </script>
-<script src="{{aset_tema()}}vendors/custom/gmaps/gmaps.js" type="text/javascript"></script>
-<script src="{{aset_tema()}}app/custom/general/components/maps/google-maps.js" type="text/javascript"></script>
+{{-- <script src="{{aset_tema()}}vendors/custom/gmaps/gmaps.js" type="text/javascript"></script> --}}
+{{-- <script src="{{aset_tema()}}app/custom/general/components/maps/google-maps.js" type="text/javascript"></script> --}}
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
@@ -43,10 +43,15 @@
                 </div>
                 <div class="col-md-3">
                     <h4 class="col-12">Info Detail Area</h4>
-                    <p class="col-12 mb2">Kapasitas Area : <strong>400 Ton</strong></p>
+                    <p class="col-12 mb2">Nama Area : <strong><span id="nama">-</span></strong></p>
+                    <p class="col-12 mb2">Nama Gudang : <strong><span id="nama_gudang">-</span></strong></p>
+                    <p class="col-12 mb2">Kapasitas Area : <strong><span id="kapasitas">- </span> Ton</strong></p>
                     <div class="border-pembatas mb1"></div>
-                    <div class="col-12 mb1">
-                        <p class="boldd-500">
+                    <div id="list">
+
+                    </div>
+                    {{-- <div class="col-12 mb1">
+                        <p class="boldd-500" id="tanggal">
                             Tanggal : 30 September 2019
                         </p>
                         <p class="boldd-500">
@@ -62,7 +67,7 @@
                             ZA 200 Ton
                         </p>
                         <div class="border-pembatas"></div>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="col-12 mt1"> 
                     <label class="boldd" >Keterangan : </label><br>
@@ -78,9 +83,6 @@
 </div>
 <!-- end:: Content -->
 <script>
-    // polygon = JSON.parse(polygon);
-
-    // console.log(polygon);
 </script>
 <script src="{{asset('assets/extends/js/page/maps.js')}}"></script>
 

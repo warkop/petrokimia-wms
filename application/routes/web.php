@@ -178,6 +178,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     Route::group(['prefix' => 'layout'], function () {
         Route::get('/', 'LayoutController@index');
         Route::get('/load-area', 'LayoutController@loadArea');
+        Route::get('/detail-area/{id}', 'LayoutController@detailArea')->where('id', '[0-9]+');
     });
 
     Route::group(['prefix' => 'penerimaan-gp'], function () {

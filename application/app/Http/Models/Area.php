@@ -32,7 +32,7 @@ class Area extends CustomModel
 
     public function areaStok()
     {
-        return $this->hasOne(AreaStok::class, 'id', 'id_area');
+        return $this->hasMany(AreaStok::class, 'id_area', 'id');
     }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition, $id_gudang)
