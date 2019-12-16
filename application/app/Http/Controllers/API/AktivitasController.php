@@ -645,6 +645,7 @@ class AktivitasController extends Controller
 
     public function storePenerimaan(ApiAktivitasPenerimaanGiRequest $req) //menyimpan aktivitas harian untuk keperluan penerimaan GI
     {
+        $req->validated();
         $user = $req->get('my_auth');
         $res_user = Users::findOrFail($user->id_user);
         $aktivitas = Aktivitas::whereNotNull('penerimaan_gi')->first();
@@ -1335,5 +1336,10 @@ class AktivitasController extends Controller
     public function testFirebase()
     {
         // send_firebase('');
+    }
+
+    public function listNotifikasi()
+    {
+        // AktivitasHarian::where('')
     }
 }
