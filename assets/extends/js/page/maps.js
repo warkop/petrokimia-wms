@@ -29,6 +29,7 @@ const demo6 =  (data, warna) => {
     const myOptions = {
         zoom: 17,
         center: myLatlng,
+        streetViewControl: false,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     }
     var map = new google.maps.Map(document.getElementById("kt_gmap_1"), myOptions);
