@@ -28,10 +28,13 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-kelayakan-foto', 'API\AktivitasController@getKelayakanFoto');
         Route::get('/get-pindah-area', 'API\AktivitasController@pindahArea');
         Route::get('/history', 'API\AktivitasController@history');
+        Route::get('/list-notifikasi', 'API\AktivitasController@listNotifikasi');
+
         Route::get('/load-penerimaan/{id}', 'API\AktivitasController@loadPenerimaan')->where('id', '[0-9]+');
         Route::get('/get-area-from-pengirim/{id}', 'API\AktivitasController@getAreaFromPengirim')->where('id', '[0-9]+');
         Route::get('/get-area-from-penerima', 'API\AktivitasController@getAreaFromPenerima');
         Route::get('/get-list-tanggal/{id}', 'API\AktivitasController@listTanggalFromAreaStok')->where('id', '[0-9]+');
+        Route::patch('/', 'API\AktivitasController@storePenerimaan');
         
         Route::get('/get-area/{id_aktivitas}/{id_material}', 'API\AktivitasController@getArea')->where('id_aktivitas', '[0-9]+');
         Route::get('/get-area-stok/{id_aktivitas}/{id_material}/{id_area}', 'API\AktivitasController@getAreaStok')->where(['id_area' => '[0-9]+', 'id_material' => '[0-9]+','id_aktivitas' => '[0-9]+']);
@@ -41,7 +44,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::put('/{aktivitas?}', 'API\AktivitasController@store')->where('aktivitas', '[0-9]+');
         Route::post('/{aktivitas?}', 'API\AktivitasController@storePhotos')->where('aktivitas', '[0-9]+');
         Route::post('/kelayakan', 'API\AktivitasController@storeKelayakanPhotos');
-        Route::patch('/', 'API\AktivitasController@storePenerimaan');
+        
     });
     
     Route::group(['prefix' => 'alat-berat'], function () {

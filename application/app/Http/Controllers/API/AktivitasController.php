@@ -33,6 +33,7 @@ use App\Http\Resources\AreaPenerimaanGiResource;
 use App\Http\Resources\AreaStokResource;
 use App\Http\Resources\getAreaFromPenerimaResource;
 use App\Http\Resources\HistoryMaterialAreaResource;
+use App\Http\Resources\ListNotifikasiResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -1340,6 +1341,17 @@ class AktivitasController extends Controller
 
     public function listNotifikasi()
     {
-        // AktivitasHarian::where('')
+        $res = AktivitasHarian::with(['aktivitas', 'gudang', 'gudangTujuan'])->whereHas('aktivitas', function ($query) {
+            $query->whereNotNull('internal_gudang');
+        })->get();
+
+        $obj = ListNotifikasiResource::collection($res)->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ],
+        ], Response::HTTP_OK);
+
+        return $obj;
     }
 }
