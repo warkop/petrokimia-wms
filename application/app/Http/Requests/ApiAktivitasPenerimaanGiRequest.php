@@ -50,7 +50,7 @@ class ApiAktivitasPenerimaanGiRequest extends FormRequest
     public function attributes()
     {
         return [
-            'id_aktivitas'      => 'Aktivitas',
+            'id_aktivitas_harian'=> 'Aktivitas Harian',
             'id_gudang'         => 'Gudang',
             'id_karu'           => 'Karu',
             'id_shift'          => 'Shift',
