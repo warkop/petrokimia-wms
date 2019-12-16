@@ -19,6 +19,7 @@ use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
+use App\Http\Models\Notifications;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use App\Http\Models\Sistro;
@@ -37,6 +38,8 @@ use App\Http\Resources\ListNotifikasiResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+
+use Illuminate\Notifications\Notification;
 
 class AktivitasController extends Controller
 {
@@ -489,7 +492,6 @@ class AktivitasController extends Controller
                     }
                 }
 
-
                 return (new AktivitasResource($aktivitasHarian))->additional([
                     'produk' => $list_produk,
                     'pallet' => $list_pallet,
@@ -567,14 +569,8 @@ class AktivitasController extends Controller
             $foto = AktivitasFoto::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
         }
 
-        // return (new AktivitasResource($foto))->additional([
-        //     'status' => [
-        //         'message' => '',
-        //         'code' => Response::HTTP_CREATED,
-        //     ]
-        // ], Response::HTTP_CREATED);
-
         return response()->json([
+            'data' => $foto,
             'status' => [
                 'message' => 'Berhasil disimpan',
                 'code' => Response::HTTP_CREATED,
@@ -792,7 +788,6 @@ class AktivitasController extends Controller
                                 $list_jumlah = $list_area[$j]['list_jumlah'];
                                 $jums_list_jumlah = count($list_jumlah);
                                 for ($k = 0; $k < $jums_list_jumlah; $k++) {
-                                    // dd($list_jumlah[$k]['tanggal']);
                                     $area_stok = AreaStok::where('id_area', $id_area)
                                         ->where('id_material', $produk)
                                         ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
@@ -927,48 +922,38 @@ class AktivitasController extends Controller
                 ], Response::HTTP_FORBIDDEN);
             }
         }
-        // if ($aktivitas->internal_gudang != null) {
-            $produk = MaterialTrans::select(
-                'id_material',
-                'nama as nama_material',
-                'tipe',
-                'jumlah'
-            )
-            ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
-            ->where('id_aktivitas_harian', $id)
-            ->whereNotNull('status_produk')
-            ->get();
+        $produk = MaterialTrans::select(
+            'id_material',
+            'nama as nama_material',
+            'tipe',
+            'jumlah'
+        )
+        ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
+        ->where('id_aktivitas_harian', $id)
+        ->whereNotNull('status_produk')
+        ->get();
 
-            $pallet = MaterialTrans::select(
-                'id_material',
-                'nama as nama_material',
-                'tipe',
-                'jumlah'
-            )
-            ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
-            ->where('id_aktivitas_harian', $id)
-            ->whereNotNull('status_pallet')
-            ->get();
-            
-            return response()->json([
-            'data' => [
-                'produk' => $produk,
-                'pallet' => $pallet
-            ],
-            'status' => [
-                'message' => '',
-                'code' => Response::HTTP_OK
-            ]
-            ], Response::HTTP_OK);
-        // } else {
-        //     return response()->json([
-        //         'data' => [],
-        //         'status' => [
-        //             'message' => 'Aktivitas tidak valid!',
-        //             'code' => Response::HTTP_FORBIDDEN
-        //         ]
-        //     ], Response::HTTP_FORBIDDEN);
-        // }
+        $pallet = MaterialTrans::select(
+            'id_material',
+            'nama as nama_material',
+            'tipe',
+            'jumlah'
+        )
+        ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
+        ->where('id_aktivitas_harian', $id)
+        ->whereNotNull('status_pallet')
+        ->get();
+        
+        return response()->json([
+        'data' => [
+            'produk' => $produk,
+            'pallet' => $pallet
+        ],
+        'status' => [
+            'message' => '',
+            'code' => Response::HTTP_OK
+        ]
+        ], Response::HTTP_OK);
     }
 
     public function getAreaFromPengirim($id) //memuat area apa saja dan jumlahnya berapa dari si pengirim
@@ -1286,13 +1271,6 @@ class AktivitasController extends Controller
         $res = AktivitasHarianArea::with('areaStok')->where('id_aktivitas_harian', $id_aktivitas_harian)->whereHas('areaStok', function ($query) use ($id_material) {
             $query->where('id_material', $id_material);
         });
-        // $res = AreaStok::select(
-        //     'id_area',
-        //     'nama',
-        //     'jumlah'
-        // )
-        // ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
-        // ->where('id_material', $id_material);
 
         $obj = HistoryMaterialAreaResource::collection($res->get())->additional([
             'status' => [
@@ -1307,7 +1285,6 @@ class AktivitasController extends Controller
     public function getAlat()
     {
         $data = (new AlatBerat)->with('kategori')->get();
-        // return $data;
         return AlatBeratResource::collection($data);
     }
 
@@ -1354,5 +1331,37 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
 
         return $obj;
+    }
+
+    public function storeNotification()
+    {
+        $notifications = new Notifications;
+        $user = Users::first();
+
+
+
+        $details = [
+
+            'greeting' => 'Hi Artisan',
+
+            'body' => 'This is my first notification from ItSolutionStuff.com',
+
+            'thanks' => 'Thank you for using ItSolutionStuff.com tuto!',
+
+            'actionText' => 'View My Site',
+
+            'actionURL' => url('/'),
+
+            'order_id' => 101
+
+        ];
+
+
+
+        Notification::send($user, new MyFirstNotification($details));
+
+
+
+        dd('done');
     }
 }

@@ -62,6 +62,11 @@ class AktivitasHarian extends Model
         return $this->hasManyThrough(Material::class, MaterialTrans::class, 'id_aktivitas_harian', 'id', 'id', 'id_material');
     }
 
+    public function notifications()
+    {
+        return $this->morphMany(Notifications::class, 'notifiable');
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = \DB::table($this->table)
