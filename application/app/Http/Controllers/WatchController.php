@@ -20,7 +20,7 @@ class WatchController extends Controller
         $category           = helpEmpty($request->get("ctg"), 'null');
         $source             = helpEmpty($request->get("src"), 'null');
 
-        $image         = ['.jpg', '.jpeg', '.png'];
+        $image         = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg'];
 
         $file = myBasePath();
 
