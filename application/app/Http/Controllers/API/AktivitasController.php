@@ -1341,9 +1341,10 @@ class AktivitasController extends Controller
 
     public function listNotifikasi()
     {
+        $id_gudang = $this->getCheckerGudang();
         $res = AktivitasHarian::with(['aktivitas', 'gudang', 'gudangTujuan'])->whereHas('aktivitas', function ($query) {
             $query->whereNotNull('internal_gudang');
-        })->get();
+        })->where('id_gudang_tujuan', $id_gudang)->get();
 
         $obj = ListNotifikasiResource::collection($res)->additional([
             'status' => [
