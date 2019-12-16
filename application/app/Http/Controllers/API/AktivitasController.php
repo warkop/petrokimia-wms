@@ -929,6 +929,7 @@ class AktivitasController extends Controller
             $produk = MaterialTrans::select(
                 'id_material',
                 'nama as nama_material',
+                'tipe',
                 'jumlah'
             )
             ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
@@ -939,6 +940,7 @@ class AktivitasController extends Controller
             $pallet = MaterialTrans::select(
                 'id_material',
                 'nama as nama_material',
+                'tipe',
                 'jumlah'
             )
             ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
