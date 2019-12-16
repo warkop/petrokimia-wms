@@ -526,7 +526,7 @@ class AktivitasController extends Controller
         $ttd = $req->file('ttd');
         if (!empty($ttd)) {
             if ($ttd->isValid()) {
-                Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
+                // Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
                 $ttd->storeAs('/public/aktivitas_harian/' . $id_aktivitas_harian, $ttd->getClientOriginalName());
                 $aktivitas->ttd = $ttd->getClientOriginalName();
                 $aktivitas->save();
@@ -541,7 +541,7 @@ class AktivitasController extends Controller
         if (!empty($foto)) {
             $panjang = count($foto);
             (new AktivitasFoto)->where('id_aktivitas_harian', '=', $id_aktivitas_harian)->delete();
-            Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
+            // Storage::deleteDirectory('/public/aktivitas_harian/' . $id_aktivitas_harian);
             for ($i = 0; $i < $panjang; $i++) {
                 if ($foto[$i]->isValid()) {
                     $aktivitasFoto = new AktivitasFoto;
