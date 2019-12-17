@@ -214,6 +214,10 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/laporan-aktivitas', 'ReportController@laporanAktivitas');
         Route::get('/aktivitas-harian', 'ReportController@aktivitasHarian');
     });
+
+    Route::get('/main', function () {
+        return view('layout.main');
+    });
 });
 
 Route::get('watch/{nama}/', 'WatchController@default');
@@ -290,11 +294,6 @@ Route::get('/add-rencana-harian', function () {
 Route::get('/master-pemetaan-sloc', function () {
     return view('master.master-pemetaan-sloc.grid');
 });
-
-// Route::get('/main', function () {
-//     return view('layout.main');
-// });
-
 
 Route::get('/laporan-material', function () {
     return view('report.material.grid');
