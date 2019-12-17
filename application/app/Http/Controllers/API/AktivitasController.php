@@ -37,6 +37,7 @@ use App\Http\Resources\GetSistroResource;
 use App\Http\Resources\HistoryMaterialAreaResource;
 use App\Http\Resources\ListNotifikasiResource;
 use App\Notifications\Pengiriman;
+use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -63,36 +64,40 @@ class AktivitasController extends Controller
         return $gudang->id;
     }
 
-    private function storeNotification($aktivitasHarian)
+    private function storeNotification($aktivitasHarian) //save notifikasi
     {
-        $details = [
-            'id_aktivitas_harian'   => $aktivitasHarian->id,
-            'id_aktivitas'          => $aktivitasHarian->id_aktivitas,
-            'kode_aktivitas'        => $aktivitasHarian->aktivitas->kode_aktivitas,
-            'nama'                  => $aktivitasHarian->aktivitas->nama,
-            'asal_gudang'           => $aktivitasHarian->gudang->nama,
-            'gudang_tujuan'         => $aktivitasHarian->gudangTujuan->nama,
-            'waktu'                 => $aktivitasHarian->created_at->diffForHumans(),
-            'created_at'            => $aktivitasHarian->created_at,
-        ];
-
-        Notification::send($aktivitasHarian, new Pengiriman($details));
+        $aktivitasHarian->notify(new Pengiriman($aktivitasHarian));
     }
 
-    public function testNotif(AktivitasHarian $aktivitasHarian)
+    public function testNotif(AktivitasHarian $aktivitasHarian) //save notifikasi
     {
-        $details = [
-            'id_aktivitas_harian'   => $aktivitasHarian->id,
-            'id_aktivitas'          => $aktivitasHarian->id_aktivitas,
-            'kode_aktivitas'        => $aktivitasHarian->aktivitas->kode_aktivitas,
-            'nama'                  => $aktivitasHarian->aktivitas->nama,
-            'asal_gudang'           => $aktivitasHarian->gudang->nama,
-            'gudang_tujuan'         => $aktivitasHarian->gudangTujuan->nama,
-            'waktu'                 => $aktivitasHarian->created_at->diffForHumans(),
-            'created_at'            => $aktivitasHarian->created_at,
-        ];
+        $user = Users::findOrFail(\Request::get('my_auth')->id_user);
 
-        $aktivitasHarian->notify(new Pengiriman($details));
+        $gudang = Gudang::find($user->id_tkbm);
+        $gudang->notify(new Pengiriman($aktivitasHarian));
+    }
+
+    public function allNotif()
+    {
+        // $aktivitasHarian = new AktivitasHarian;
+        // return $aktivitasHarian->notifications;
+        $user = Users::findOrFail(\Request::get('my_auth')->id_user);
+        return $user->unreadNotifications()->limit(5)->get()->toArray();
+    }
+
+    public function unreadNotif(AktivitasHarian $aktivitasHarian)
+    {
+        return $aktivitasHarian->unreadNotifications;
+    }
+
+    public function readNotif(AktivitasHarian $aktivitasHarian)
+    {
+        return $aktivitasHarian->readNotifications;
+    }
+
+    public function markAsRead(AktivitasHarian $aktivitasHarian)
+    {
+        return $aktivitasHarian->unreadNotifications->markAsRead();
     }
 
     public function index(Request $req) //memuat daftar aktivitas
@@ -526,7 +531,7 @@ class AktivitasController extends Controller
                     }
                 }
 
-                $this->storeNotification($res_aktivitas);
+                // $this->storeNotification($res_aktivitas);
 
                 return (new AktivitasResource($aktivitasHarian))->additional([
                     'produk' => $list_produk,
