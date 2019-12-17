@@ -66,38 +66,55 @@ class AktivitasController extends Controller
 
     private function storeNotification($aktivitasHarian) //save notifikasi
     {
-        $aktivitasHarian->notify(new Pengiriman($aktivitasHarian));
+        $gudang = Gudang::find($aktivitasHarian->id_gudang_tujuan);
+        $gudang->notify(new Pengiriman($aktivitasHarian));
     }
 
     public function testNotif(AktivitasHarian $aktivitasHarian) //save notifikasi
     {
-        $user = Users::findOrFail(\Request::get('my_auth')->id_user);
-
-        $gudang = Gudang::find($user->id_tkbm);
+        $gudang = Gudang::find($aktivitasHarian->id_gudang_tujuan);
         $gudang->notify(new Pengiriman($aktivitasHarian));
     }
 
     public function allNotif()
     {
-        // $aktivitasHarian = new AktivitasHarian;
-        // return $aktivitasHarian->notifications;
-        $user = Users::findOrFail(\Request::get('my_auth')->id_user);
-        return $user->unreadNotifications()->limit(5)->get()->toArray();
+        $gudang = Gudang::find($this->getCheckerGudang());
+        return $gudang->notifications;
     }
 
     public function unreadNotif(AktivitasHarian $aktivitasHarian)
     {
-        return $aktivitasHarian->unreadNotifications;
+        $gudang = Gudang::find($this->getCheckerGudang());
+        return $gudang->unreadNotifications;
     }
 
     public function readNotif(AktivitasHarian $aktivitasHarian)
     {
-        return $aktivitasHarian->readNotifications;
+        $gudang = Gudang::find($this->getCheckerGudang());
+        return $gudang->readNotifications;
     }
 
-    public function markAsRead(AktivitasHarian $aktivitasHarian)
+    public function markAsRead($id)
     {
-        return $aktivitasHarian->unreadNotifications->markAsRead();
+        // if ($request->has('read')) {
+            $gudang = Gudang::findOrFail($this->getCheckerGudang());
+
+            $notification = $gudang->notifications()->where('id', $id)->first();
+            if ($notification) {
+                $notification->markAsRead();
+
+                $this->responseCode = 200;
+                $this->responseMessage = 'Berhasil ditandai!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+
+            $this->responseCode = 500;
+            $this->responseMessage = 'Gagal ditandai!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        // }
+        // return $aktivitasHarian->unreadNotifications->markAsRead();
     }
 
     public function index(Request $req) //memuat daftar aktivitas
@@ -315,7 +332,7 @@ class AktivitasController extends Controller
                 $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                 return response()->json($response, $this->responseCode);
             }
-            $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
+            $rencana_harian = RencanaHarian::withoutGlobalScopes()->findOrFail($rencana_tkbm->id_rencana);
             $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
             if (empty($gudang)) {
                 $this->responseCode     = 500;
@@ -531,7 +548,9 @@ class AktivitasController extends Controller
                     }
                 }
 
-                // $this->storeNotification($res_aktivitas);
+                if ($res_aktivitas->internal_gudang != null) {
+                    $this->storeNotification($aktivitasHarian);
+                }
 
                 return (new AktivitasResource($aktivitasHarian))->additional([
                     'produk' => $list_produk,

@@ -2,23 +2,26 @@
 
 namespace App\Notifications;
 
+use App\Http\Models\AktivitasHarian;
+use App\Http\Models\Users;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class Pengiriman extends Notification
+class Pengiriman extends Notification implements ShouldQueue
 {
     use Queueable;
-
+    protected $aktivitasHarian;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(AktivitasHarian $aktivitasHarian)
     {
-        //
+        $this->aktivitasHarian = $aktivitasHarian;
     }
 
     /**
@@ -48,15 +51,17 @@ class Pengiriman extends Notification
 
     public function toDatabase($notifiable)
     {
+        Carbon::setLocale('id');
+
         return [
-            'id_aktivitas_harian'   => $notifiable->id,
-            'id_aktivitas'          => $notifiable->id_aktivitas,
-            'kode_aktivitas'        => $notifiable->aktivitas->kode_aktivitas,
-            'nama'                  => $notifiable->aktivitas->nama,
-            'asal_gudang'           => $notifiable->gudang->nama,
-            'gudang_tujuan'         => $notifiable->gudangTujuan->nama,
-            'waktu'                 => $notifiable->created_at->diffForHumans(),
-            'created_at'            => $notifiable->created_at,
+            'id_aktivitas_harian'   => $this->aktivitasHarian->id,
+            'id_aktivitas'          => $this->aktivitasHarian->id_aktivitas,
+            'kode_aktivitas'        => $this->aktivitasHarian->aktivitas->kode_aktivitas,
+            'nama'                  => $this->aktivitasHarian->aktivitas->nama,
+            'asal_gudang'           => $this->aktivitasHarian->gudang->nama,
+            'gudang_tujuan'         => $this->aktivitasHarian->gudangTujuan->nama,
+            'waktu'                 => $this->aktivitasHarian->created_at->diffForHumans(),
+            'created_at'            => $this->aktivitasHarian->created_at,
         ];
     }
 

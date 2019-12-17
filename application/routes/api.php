@@ -31,6 +31,10 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/list-notifikasi', 'API\AktivitasController@listNotifikasi');
 
         Route::get('/test-notif/{aktivitasHarian}', 'API\AktivitasController@testNotif');
+        Route::get('/all-notif', 'API\AktivitasController@allNotif');
+        Route::get('/read-notif/{aktivitasHarian}', 'API\AktivitasController@readNotif');
+        Route::get('/unread-notif/{aktivitasHarian}', 'API\AktivitasController@unreadNotif');
+        Route::get('/mark-as-read/{id}', 'API\AktivitasController@markAsRead');
 
         Route::get('/load-penerimaan/{id}', 'API\AktivitasController@loadPenerimaan')->where('id', '[0-9]+');
         Route::get('/get-area-from-pengirim/{id}', 'API\AktivitasController@getAreaFromPengirim')->where('id', '[0-9]+');

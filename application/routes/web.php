@@ -326,6 +326,6 @@ Route::get('/laporan-keluhan-gp', function () {
     return view('report.keluhan-gp.grid');
 });
 
-Route::get('/log-aktivitas-user', function () {
-    return view('log-aktivitas-user.grid');
-});
+// Route::get('/log-aktivitas-user', function () {
+//     return view('log-aktivitas-user.grid');
+// });

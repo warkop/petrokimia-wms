@@ -5,9 +5,12 @@ namespace App\Http\Models;
 use App\Scopes\EndDateScope;
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Illuminate\Notifications\Notifiable;
 
 class Gudang extends Model
 {
+    use Notifiable;
+
     protected $table = 'gudang';
     protected $primaryKey = 'id';
 
