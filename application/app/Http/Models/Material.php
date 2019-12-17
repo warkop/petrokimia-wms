@@ -39,6 +39,11 @@ class Material extends CustomModel
         return $query->where('kategori', 3);
     }
 
+    public function sistro()
+    {
+        return $this->belongsTo(Sistro::class, 'id_material_sap', 'idproduk');
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('material')

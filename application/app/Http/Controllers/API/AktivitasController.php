@@ -33,6 +33,7 @@ use App\Http\Resources\AlatBeratResource;
 use App\Http\Resources\AreaPenerimaanGiResource;
 use App\Http\Resources\AreaStokResource;
 use App\Http\Resources\getAreaFromPenerimaResource;
+use App\Http\Resources\GetSistroResource;
 use App\Http\Resources\HistoryMaterialAreaResource;
 use App\Http\Resources\ListNotifikasiResource;
 use App\Notifications\Pengiriman;
@@ -60,6 +61,38 @@ class AktivitasController extends Controller
         $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
 
         return $gudang->id;
+    }
+
+    private function storeNotification($aktivitasHarian)
+    {
+        $details = [
+            'id_aktivitas_harian'   => $aktivitasHarian->id,
+            'id_aktivitas'          => $aktivitasHarian->id_aktivitas,
+            'kode_aktivitas'        => $aktivitasHarian->aktivitas->kode_aktivitas,
+            'nama'                  => $aktivitasHarian->aktivitas->nama,
+            'asal_gudang'           => $aktivitasHarian->gudang->nama,
+            'gudang_tujuan'         => $aktivitasHarian->gudangTujuan->nama,
+            'waktu'                 => $aktivitasHarian->created_at->diffForHumans(),
+            'created_at'            => $aktivitasHarian->created_at,
+        ];
+
+        Notification::send($aktivitasHarian, new Pengiriman($details));
+    }
+
+    public function testNotif(AktivitasHarian $aktivitasHarian)
+    {
+        $details = [
+            'id_aktivitas_harian'   => $aktivitasHarian->id,
+            'id_aktivitas'          => $aktivitasHarian->id_aktivitas,
+            'kode_aktivitas'        => $aktivitasHarian->aktivitas->kode_aktivitas,
+            'nama'                  => $aktivitasHarian->aktivitas->nama,
+            'asal_gudang'           => $aktivitasHarian->gudang->nama,
+            'gudang_tujuan'         => $aktivitasHarian->gudangTujuan->nama,
+            'waktu'                 => $aktivitasHarian->created_at->diffForHumans(),
+            'created_at'            => $aktivitasHarian->created_at,
+        ];
+
+        $aktivitasHarian->notify(new Pengiriman($details));
     }
 
     public function index(Request $req) //memuat daftar aktivitas
@@ -492,6 +525,8 @@ class AktivitasController extends Controller
                         $gudangStok->save();
                     }
                 }
+
+                $this->storeNotification($res_aktivitas);
 
                 return (new AktivitasResource($aktivitasHarian))->additional([
                     'produk' => $list_produk,
@@ -1300,9 +1335,9 @@ class AktivitasController extends Controller
     {
         $tiketnumber = $req->input('tiketnumber');
         $sistro = Sistro::where('tiketno', $tiketnumber)->first();
-        $res = Material::where('id_material_sap', $sistro->idproduk)->get();
+        $res = Material::with('sistro')->where('id_material_sap', $sistro->idproduk)->get();
 
-        $obj = (new AktivitasResource($res))->additional([
+        $obj = GetSistroResource::collection($res)->additional([
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK
@@ -1332,32 +1367,5 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
 
         return $obj;
-    }
-
-    public function storeNotification()
-    {
-        $notifications = new Notifications;
-        $aktivitasHarian = AktivitasHarian::first();
-
-
-
-        $details = [
-            'id_aktivitas_harian'   => $aktivitasHarian->id,
-            'id_aktivitas'          => $aktivitasHarian->id_aktivitas,
-            'kode_aktivitas'        => $aktivitasHarian->aktivitas->kode_aktivitas,
-            'nama'                  => $aktivitasHarian->aktivitas->nama,
-            'asal_gudang'           => $aktivitasHarian->gudang->nama,
-            'gudang_tujuan'         => $aktivitasHarian->gudangTujuan->nama,
-            'waktu'                 => $aktivitasHarian->created_at->diffForHumans(),
-            'created_at'            => $aktivitasHarian->created_at,
-        ];
-
-
-
-        Notification::send($aktivitasHarian, new Pengiriman($details));
-
-
-
-        dd('done');
     }
 }
