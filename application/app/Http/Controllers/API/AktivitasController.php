@@ -79,31 +79,41 @@ class AktivitasController extends Controller
     public function allNotif()
     {
         $gudang = Gudang::find($this->getCheckerGudang());
-        return $gudang->notifications;
+        $this->responseCode = 200;
+        $this->responseData = $gudang->notifications;
+        $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+        return response()->json($response, $this->responseCode);
     }
 
-    public function unreadNotif(AktivitasHarian $aktivitasHarian)
+    public function unreadNotif()
     {
         $gudang = Gudang::find($this->getCheckerGudang());
-        return $gudang->unreadNotifications;
+        $this->responseCode = 200;
+        $this->responseData = $gudang->unreadNotifications;
+        $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+        return response()->json($response, $this->responseCode);
     }
 
-    public function readNotif(AktivitasHarian $aktivitasHarian)
+    public function readNotif()
     {
         $gudang = Gudang::find($this->getCheckerGudang());
-        return $gudang->readNotifications;
+        $this->responseCode = 200;
+        $this->responseData = $gudang->readNotifications;
+        $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+        return response()->json($response, $this->responseCode);
     }
 
-    public function markAsRead($id)
+    public function markAsRead(Request $request)
     {
-        // if ($request->has('read')) {
+        if ($request->has('read')) {
             $gudang = Gudang::findOrFail($this->getCheckerGudang());
 
-            $notification = $gudang->notifications()->where('id', $id)->first();
+            $notification = $gudang->notifications()->where('id', $request->read)->first();
             if ($notification) {
                 $notification->markAsRead();
 
                 $this->responseCode = 200;
+                $this->responseData = $notification;
                 $this->responseMessage = 'Berhasil ditandai!';
                 $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                 return response()->json($response, $this->responseCode);
@@ -113,8 +123,7 @@ class AktivitasController extends Controller
             $this->responseMessage = 'Gagal ditandai!';
             $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
             return response()->json($response, $this->responseCode);
-        // }
-        // return $aktivitasHarian->unreadNotifications->markAsRead();
+        }
     }
 
     public function index(Request $req) //memuat daftar aktivitas
