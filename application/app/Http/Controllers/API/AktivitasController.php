@@ -66,13 +66,13 @@ class AktivitasController extends Controller
 
     private function storeNotification($aktivitasHarian) //save notifikasi
     {
-        $gudang = Gudang::find($aktivitasHarian->id_gudang_tujuan);
+        $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
         $gudang->notify(new Pengiriman($aktivitasHarian));
     }
 
     public function testNotif(AktivitasHarian $aktivitasHarian) //save notifikasi
     {
-        $gudang = Gudang::find($aktivitasHarian->id_gudang_tujuan);
+        $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
         $gudang->notify(new Pengiriman($aktivitasHarian));
     }
 
