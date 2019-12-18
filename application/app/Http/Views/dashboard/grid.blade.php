@@ -262,25 +262,37 @@
         }
     });
 
+    let dataShift1 = [];
+    @foreach ($shift1 as $item)
+        dataShift1.push({{$item->shift}});
+    @endforeach
 
+    let dataShift2 = [];
+    @foreach ($shift2 as $item)
+        dataShift2.push({{$item->shift}});
+    @endforeach
 
+    let dataShift3 = [];
+    @foreach ($shift3 as $item)
+        dataShift3.push({{$item->shift}});
+    @endforeach
     // chart bar 
     new Chart(document.getElementById("bar-chart"), {
         type: 'bar',
         data: {
-            labels: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"],
+            labels: ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
             datasets: [{
-                data: [318, 150, 278, 490, 103, 176, 108],
+                data: dataShift1,
                 backgroundColor: "#00AE4D",
                 label: "Shift 1",
                 fill: false
             }, {
-                data: [178, 150, 378, 390, 66, 376, 208],
+                data: dataShift2,
                 backgroundColor: "#FAAE32",
                 label: "Shift 2",
                 fill: false
             }, {
-                data: [168, 200, 78, 290, 103, 276, 308],
+                data: dataShift3,
                 backgroundColor: "#E14A3A",
                 label: "Shift 3",
                 fill: false
