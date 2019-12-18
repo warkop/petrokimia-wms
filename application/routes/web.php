@@ -213,6 +213,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/laporan-aktivitas', 'ReportController@laporanAktivitas');
         Route::get('/aktivitas-harian', 'ReportController@aktivitasHarian');
         Route::get('/laporan-keluhan-alat-berat', 'ReportController@laporanKeluhanAlatBerat');
+        Route::get('/keluhan-alat-berat', 'ReportController@keluhanAlatBerat');
     });
 
     Route::get('/main', function () {

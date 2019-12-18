@@ -30,23 +30,25 @@
         </div>
     </div> --}}
         </div>
+        <form action="{{ url('report/keluhan-alat-berat') }}" method="GET">
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row mt2">
                 <h4 class="col-2 col-form-label text-kiri">Jenis Alat Berat</h4>
                 <div class="col-6">
-                    <select class="form-control m-select2" id="alatberat" name="param" multiple="multiple" style="width: 100%">
-                        <option value="aa">Excavator</option>
-                        <option value="AK">Truck</option>
+                    <select class="form-control m-select2" id="alatberat" name="jenis_alat_berat" multiple="multiple" style="width: 100%">
+                        @foreach ($kategori as $item)
+                            <option value="{{$item->id}}">{{$item->nama}}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
             <div class="form-group row">
                 <h4 class="col-2 col-form-label text-kiri">Status Tindak Lanjut</h4>
                 <div class="col-6">
-                    <select class="form-control">
-                        <option>Sudah</option>
-                        <option>Belum</option>
+                    <select class="form-control" name="status_tindak_lanjut">
+                        <option value="1">Sudah</option>
+                        <option value="2">Belum</option>
                     </select>
                 </div>
             </div>
@@ -55,11 +57,12 @@
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="offset-lg-2">
-                        <a href="{{asset('assets/reports/keluhan-alat-berat/keluhan-alat-berat.xlsx')}}" class="btn btn-success"> <i class="fa fa-print"></i> Cetak Laporan</a>
+                        <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
                     </div>
                 </div>
             </div>
         </div>
+        </form>
     </div>
 </div>
 

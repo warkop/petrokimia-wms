@@ -31,4 +31,29 @@ class LaporanKerusakan extends Model
     {
         return $query->where('jenis', 2);
     }
+
+    public function alatBerat()
+    {
+        return $this->belongsTo(AlatBerat::class, 'id_alat_berat');
+    }
+
+    public function kerusakan()
+    {
+        return $this->belongsTo(AlatBeratKerusakan::class, 'id_kerusakan');
+    }
+
+    public function shift()
+    {
+        return $this->belongsTo(ShiftKerja::class, 'id_shift');
+    }
+
+    public function operator()
+    {
+        return $this->belongsTo(TenagaKerjaNonOrganik::class, 'id_operator');
+    }
+
+    public function foto()
+    {
+        return $this->hasMany(LaporanKerusakanFoto::class, 'id_laporan');
+    }
 }

@@ -225,7 +225,7 @@
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
-                                            <a href="{{('laporan-keluhan-alat-berat')}}" class="kt-nav__link">
+                                            <a href="{{url('/report/laporan-keluhan-alat-berat')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon fa fa-truck-moving"></i>
                                                 <span class="kt-nav__link-text">Keluhan Alat Berat</span>
                                             </a>
@@ -234,6 +234,12 @@
                                             <a href="{{('laporan-keluhan-gp')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-file-archive-o"></i>
                                                 <span class="kt-nav__link-text">Keluhan GP</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('laporan-aktivitas')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon la la-file-archive-o"></i>
+                                                <span class="kt-nav__link-text">Aktivitas</span>
                                             </a>
                                         </li>
                                     </ul>
