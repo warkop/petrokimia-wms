@@ -23,10 +23,9 @@ Route::get('/master-grup', function () {
 });
 
 Route::group(['middleware' => ['eauth', 'revalidate']], function () {
-    Route::get('/dashboard', function () {
-        return View::make('dashboard.grid');
+    Route::group(['prefix' => 'dashboard'], function () {
+        Route::get('/', 'DashboardController@index');
     });
-    Route::get('/', 'DashboardController@index')->name('/');
     
     Route::group(['prefix' => 'master-aktivitas'], function () {
         Route::get('/', 'AktivitasController@index');
@@ -213,6 +212,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     Route::group(['prefix' => 'report'], function () {
         Route::get('/laporan-aktivitas', 'ReportController@laporanAktivitas');
         Route::get('/aktivitas-harian', 'ReportController@aktivitasHarian');
+        Route::get('/laporan-keluhan-alat-berat', 'ReportController@laporanKeluhanAlatBerat');
     });
 
     Route::get('/main', function () {
@@ -319,9 +319,7 @@ Route::get('/laporan-produk', function () {
 Route::get('/laporan-realisasi', function () {
     return view('report.realisasi.grid');
 });
-Route::get('/laporan-keluhan-alat-berat', function () {
-    return view('report.keluhan-alat-berat.grid');
-});
+
 Route::get('/laporan-keluhan-gp', function () {
     return view('report.keluhan-gp.grid');
 });

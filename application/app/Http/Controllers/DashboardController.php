@@ -11,6 +11,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $data['title'] = 'Dashboard';
         $laporan_kerusakan = [];
 
         $shift = ShiftKerja::get()->count();
@@ -28,10 +29,6 @@ class DashboardController extends Controller
                 array_push(${'shift'.$i}, $temp);
             }
         }
-        // echo '<pre>';
-        // $shift3 = (array_values($shift3));
-        // return $shift3;
-        // echo '</pre>';
         $data['shift1'] = $shift1;
         $data['shift2'] = $shift2;
         $data['shift3'] = $shift3;
