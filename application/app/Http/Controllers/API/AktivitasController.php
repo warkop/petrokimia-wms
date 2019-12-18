@@ -1243,6 +1243,8 @@ class AktivitasController extends Controller
             DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
                  AS text_gudang'),
             'nomor_lambung',
+             DB::raw('(SELECT nama FROM alat_berat_kat WHERE id = id_kategori)
+                 AS kategori'),
             'sistro',
             'internal_gudang',
             'ttd',
