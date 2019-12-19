@@ -36,7 +36,7 @@
             <div class="form-group row mt2">
                 <h4 class="col-2 col-form-label text-kiri">Jenis Alat Berat</h4>
                 <div class="col-6">
-                    <select class="form-control m-select2" id="alatberat" name="jenis_alat_berat" multiple="multiple" style="width: 100%">
+                    <select class="form-control m-select2" id="alatberat" name="jenis_alat_berat[]" multiple="multiple" style="width: 100%">
                         @foreach ($kategori as $item)
                             <option value="{{$item->id}}">{{$item->nama}}</option>
                         @endforeach

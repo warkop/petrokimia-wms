@@ -65,7 +65,7 @@ class Users extends Authenticatable
             $arr = [
                 'modul' => ucwords(str_replace('_', ' ', $table->table)),
                 'action' => 1,
-                'aktivitas' => 'Menambah data ' . ucwords(str_replace('_', ' ', $table->table)),
+                'aktivitas' => 'Menambah data ' . ucwords(str_replace('_', ' ', $table->table)).' dengan username '.$table->username,
                 'created_at' => now(),
                 'created_by' => \Auth::id(),
             ];

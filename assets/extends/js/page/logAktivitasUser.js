@@ -41,7 +41,7 @@ const load_table = function () {
 		},
 		],
 		aaSorting: [
-			[3, "asc"]
+			[3, "desc"]
 		],
 		lengthMenu: [10, 25, 50, 75, 100],
 		pageLength: 10,
@@ -58,12 +58,12 @@ const load_table = function () {
 				return counter;
 			}
 		}, {
-				aTargets: [0],
-				mData: "created",
+				aTargets: -1,
+				mData: "created_at",
 				mRender: function (data, type, full, draw) {
 					const temp = '';
 
-					return counter;
+					return helpDateFormat(full.created_at, 'si') + " " + helpTime(full.created_at);
 				}
 			}
 		],
