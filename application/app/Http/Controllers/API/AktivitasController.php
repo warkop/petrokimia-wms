@@ -975,6 +975,29 @@ class AktivitasController extends Controller
         }
     }
 
+    public function getAktivitas()
+    {
+        $id_gudang = $this->getCheckerGudang();
+
+        $res=  AktivitasGudang::where('id_gudang', $id_gudang)->get();
+        foreach ($res as $key) {
+            $aktivitas = Aktivitas::find($key->id_aktivitas);
+
+            if ($aktivitas->penerimaan_gi != null) {
+                $this->responseCode = 200;
+                $this->responseData = $aktivitas;
+                $this->responseMessage = '';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+        }
+
+        $this->responseCode = 404;
+        $this->responseMessage = 'Aktivitas penerimaan GI tidak ditemukan';
+        $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+        return response()->json($response, $this->responseCode);
+    }
+
     public function loadPenerimaan($id) //memuat nama material apa saja yang telah dikirim oleh gudang sebalah
     {
         $aktivitasHarian = AktivitasHarian::findOrFail($id);

@@ -5,14 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Models\AktivitasHarian;
 use App\Http\Models\KategoriAlatBerat;
 use App\Http\Models\LaporanKerusakan;
-use App\Http\Resources\ReportAktivitasHarianResource;
-use Illuminate\Http\Request;
 
-use PhpOffice\PhpSpreadsheet\Helper\Sample;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
-use PhpOffice\PhpSpreadsheet\Worksheet\MemoryDrawing;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ReportController extends Controller
@@ -340,7 +335,7 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No');
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Tanggal');
-        $col++;
+        // $col++;
         // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No. Registrasi');
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Jenis Alat Berat');
@@ -379,7 +374,7 @@ class ReportController extends Controller
             )
         );
 
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":J" . $row)->applyFromArray($style_judul_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":I" . $row)->applyFromArray($style_judul_kolom);
         // end : judul kolom
 
         // start : isi kolom
@@ -406,9 +401,9 @@ class ReportController extends Controller
 
             );
 
-            $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":J" . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":I" . $row)->applyFromArray($style_kolom);
 
-            $objSpreadsheet->getActiveSheet()->getStyle('A' . $row . ':J' . $row)->applyFromArray($style_ontop);
+            $objSpreadsheet->getActiveSheet()->getStyle('A' . $row . ':I' . $row)->applyFromArray($style_ontop);
 
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
             $col++;
@@ -427,13 +422,38 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->keterangan);
             $col++;
 
-            $temp = '';
-            foreach ($value->foto as $row2) {
-                $temp .= $row2->file_enc;
+            // $temp = '';
+            // foreach ($value->foto as $row2) {
+            //     $temp .= $row2->file_enc;
+            // }
+            if (!empty($value->foto->id_laporan) && file_exists(storage_path("/app/public/history/" . $value->foto->id_laporan . "/" . $value->path_file))) {
+                $objDrawing = new Drawing;
+                $objDrawing->setName($value->path_file);
+                $objDrawing->setDescription('gambar ' . $value->nama_lokasi);
+                $objDrawing->setPath(storage_path() . "/app/public/history/" . $value->foto->id_laporan . "/" . $value->foto->file_enc);
+                $objDrawing->setCoordinates(strtoupper(toAlpha($col - 1)) . $row);
+                //setOffsetX works properly
+                $objDrawing->setOffsetX(5);
+                $objDrawing->setOffsetY(5);
+                //set width, height
+                // $objDrawing->setWidth(100);
+                $objDrawing->setHeight(150);
+                $objDrawing->setWorksheet($objSpreadsheet->getActiveSheet());
+                $objSpreadsheet->getActiveSheet()->getRowDimension($row)->setRowHeight(150);
+                $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(70);
+            } else {
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "File tidak ada di server");
             }
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $temp);
+            // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $temp);
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->status==0?"Belum":"Sudah");
+
+            $lap = LaporanKerusakan::where('induk', $value->id)->where('status', 1)->orderBy('id', 'desc')->first();
+            
+            if (!empty($lap)) {
+                $col++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, helpDate($lap->created_at, 'si'));
+            }
 
             $style_no['alignment'] = array(
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,

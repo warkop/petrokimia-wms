@@ -28,8 +28,9 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-kelayakan-foto', 'API\AktivitasController@getKelayakanFoto');
         Route::get('/get-pindah-area', 'API\AktivitasController@pindahArea');
         Route::get('/history', 'API\AktivitasController@history');
+        Route::get('/get-aktivitas', 'API\AktivitasController@getAktivitas');
+        
         Route::get('/list-notifikasi', 'API\AktivitasController@listNotifikasi');
-
         Route::get('/test-notif/{aktivitasHarian}', 'API\AktivitasController@testNotif');
         Route::get('/all-notif', 'API\AktivitasController@allNotif');
         Route::get('/read-notif', 'API\AktivitasController@readNotif');
@@ -50,6 +51,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::put('/{aktivitas?}', 'API\AktivitasController@store')->where('aktivitas', '[0-9]+');
         Route::post('/{aktivitas?}', 'API\AktivitasController@storePhotos')->where('aktivitas', '[0-9]+');
         Route::post('/kelayakan', 'API\AktivitasController@storeKelayakanPhotos');
+        
         
     });
     
