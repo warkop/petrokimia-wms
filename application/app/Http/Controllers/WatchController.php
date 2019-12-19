@@ -24,84 +24,73 @@ class WatchController extends Controller
 
         $file = myBasePath();
 
-        // $cek_user = Users::getByAccessToken($access_token);
+        $cek_id = '';
 
-        // if (!empty($access_token) && !empty($cek_user)) {
-            $cek_id = '';
+        if ($category == 'material') {
+            $cek_id = MaterialAdjustment::find($id_file);
 
-            if ($category == 'material') {
-                $cek_id = MaterialAdjustment::find($id_file);
-                // $id_parent = ($id_parent == md5($cek_id->id_mahasiswa . encText('mahasiswa'))) ? $cek_id->id_mahasiswa : false;
-
-                if (!empty($source) && !empty($category) && !empty($cek_id)) {
-                    $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
-                }
-            } else if ($category == 'aktivitas_foto') {
-                $cek_id = AktivitasFoto::find($id_file);
-                // $id_parent = ($id_parent == md5($cek_id->id_mahasiswa . encText('mahasiswa'))) ? $cek_id->id_mahasiswa : false;
-
-                if (!empty($source) && !empty($category) && !empty($cek_id)) {
-                    $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
-                }
-            } else if ($category == 'history') {
-                $cek_id = LaporanKerusakan::find($id_file);
-
-                if (!empty($source) && !empty($category) && !empty($cek_id)) {
-                    $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
-                }
-            } else if ($category == 'aktivitas_harian') {
-                $cek_id = AktivitasHarian::find($id_file);
-
-                if (!empty($source) && !empty($category) && !empty($cek_id)) {
-                    $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
-                }
-            } else if ($category == 'kelayakan') {
-                $cek_id = AktivitasHarian::find($id_file);
-
-                if (!empty($source) && !empty($category) && !empty($cek_id)) {
-                    $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
-                }
-            } else if ($category == 'realisasi_housekeeper') {
-                $cek_id = RealisasiHousekeeper::find($id_file);
-
-                if (!empty($source) && !empty($category) && !empty($cek_id)) {
-                    $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
-                }
+            if (!empty($source) && !empty($category) && !empty($cek_id)) {
+                $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
             }
+        } else if ($category == 'aktivitas_foto') {
+            $cek_id = AktivitasFoto::find($id_file);
 
-            $file = protectPath($file);
+            if (!empty($source) && !empty($category) && !empty($cek_id)) {
+                $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
+            }
+        } else if ($category == 'history') {
+            $cek_id = LaporanKerusakan::find($id_file);
 
-            if (file_exists($file) && !is_dir($file)) {
-                // $type    = 'image';
+            if (!empty($source) && !empty($category) && !empty($cek_id)) {
+                $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
+            }
+        } else if ($category == 'aktivitas_harian') {
+            $cek_id = AktivitasHarian::find($id_file);
 
-                $ext = pathinfo($file, PATHINFO_EXTENSION);
-                $ext = strtolower($ext);
+            if (!empty($source) && !empty($category) && !empty($cek_id)) {
+                $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
+            }
+        } else if ($category == 'kelayakan') {
+            $cek_id = AktivitasHarian::find($id_file);
 
-                if (in_array(strtolower($ext), $image)) {
-                    header('Content-Description: File Transfer');
-                    header('Content-Type: application/octet-stream');
-                    header('Content-Disposition: attachment; filename=' . basename($file));
-                    header('Content-Transfer-Encoding: binary');
-                    header('Expires: 0');
-                    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-                    header('Pragma: public');
-                    header('Content-Length: ' . filesize($file));
-                    ob_clean();
-                    flush();
-                    readfile($file);
-                    exit;
-                } else {
-                    header('Content-Type:' . finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file));
-                    header('Content-Length: ' . filesize($file));
-                    readfile($file);
-                }
+            if (!empty($source) && !empty($category) && !empty($cek_id)) {
+                $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
+            }
+        } else if ($category == 'realisasi_housekeeper') {
+            $cek_id = RealisasiHousekeeper::find($id_file);
+
+            if (!empty($source) && !empty($category) && !empty($cek_id)) {
+                $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
+            }
+        }
+
+        $file = protectPath($file);
+
+        if (file_exists($file) && !is_dir($file)) {
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+            $ext = strtolower($ext);
+
+            if (in_array(strtolower($ext), $image)) {
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename=' . basename($file));
+                header('Content-Transfer-Encoding: binary');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                header('Pragma: public');
+                header('Content-Length: ' . filesize($file));
+                ob_clean();
+                flush();
+                readfile($file);
+                exit;
             } else {
-                $response = helpResponse(404);
-                return response()->json($response, 404);
+                header('Content-Type:' . finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file));
+                header('Content-Length: ' . filesize($file));
+                readfile($file);
             }
-        // } else {
-        //     $response = helpResponse(401);
-        //     return response()->json($response, 401);
-        // }
+        } else {
+            $response = helpResponse(404);
+            return response()->json($response, 404);
+        }
     }
 }
