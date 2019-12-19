@@ -56,7 +56,9 @@ class ReportController extends Controller
         ->with('foto')
         // ->where('id_kategori', $jenis_alat_berat)
         ->whereHas('alatBerat', function ($query) use ($jenis_alat_berat) {
-            $query->where('id_kategori', $jenis_alat_berat);
+            foreach ($jenis_alat_berat as $key => $value) {
+                $query->orWhere('id_kategori', $value);
+            }
         })
         ->where('status', $status_tindak_lanjut)
         ->where('jenis', '2')
@@ -339,7 +341,7 @@ class ReportController extends Controller
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Tanggal');
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No. Registrasi');
+        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No. Registrasi');
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Jenis Alat Berat');
         // $col++;
@@ -411,8 +413,8 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y H:i:s', strtotime($value->created_at)));
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '');
+            // $col++;
+            // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '');
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->alatBerat->kategori->nama);
             // $col++;
