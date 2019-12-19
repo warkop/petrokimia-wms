@@ -321,8 +321,8 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(35);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(25);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(35);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(20);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(20);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(40);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(40);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(20);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(20);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(20);
@@ -422,27 +422,33 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->keterangan);
             $col++;
 
-            // $temp = '';
-            // foreach ($value->foto as $row2) {
-            //     $temp .= $row2->file_enc;
-            // }
-            if (!empty($value->foto->id_laporan) && file_exists(storage_path("/app/public/history/" . $value->foto->id_laporan . "/" . $value->path_file))) {
-                $objDrawing = new Drawing;
-                $objDrawing->setName($value->path_file);
-                $objDrawing->setDescription('gambar ' . $value->nama_lokasi);
-                $objDrawing->setPath(storage_path() . "/app/public/history/" . $value->foto->id_laporan . "/" . $value->foto->file_enc);
-                $objDrawing->setCoordinates(strtoupper(toAlpha($col - 1)) . $row);
-                //setOffsetX works properly
-                $objDrawing->setOffsetX(5);
-                $objDrawing->setOffsetY(5);
-                //set width, height
-                // $objDrawing->setWidth(100);
-                $objDrawing->setHeight(150);
-                $objDrawing->setWorksheet($objSpreadsheet->getActiveSheet());
-                $objSpreadsheet->getActiveSheet()->getRowDimension($row)->setRowHeight(150);
-                $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(70);
-            } else {
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "File tidak ada di server");
+            $temp = '';
+            $x = 5;
+            $y = 5;
+            foreach ($value->foto as $row2) {
+                $temp .= $row2->file_enc;
+                
+                if (!empty($value->id) && file_exists(storage_path("/app/public/history/" . $value->id . "/" . $row2->file_enc))) {
+                    $objDrawing = new Drawing;
+                    $objDrawing->setName($row2->file_ori);
+                    $objDrawing->setDescription('gambar ' . $row2->file_ori);
+                    $objDrawing->setPath(storage_path() . "/app/public/history/" . $value->id . "/" . $row2->file_enc);
+                    $objDrawing->setCoordinates(strtoupper(toAlpha($col - 1)) . $row);
+                    //setOffsetX works properly
+                    $objDrawing->setOffsetX($x);
+                    $objDrawing->setOffsetY($y);
+                    //set width, height
+                    // $objDrawing->setWidth(100);
+                    $objDrawing->setHeight(110);
+                    $objDrawing->setWorksheet($objSpreadsheet->getActiveSheet());
+                    $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(40);
+                    
+                    // $x += 110;
+                    $y += $objDrawing->getHeight();
+                    $objSpreadsheet->getActiveSheet()->getRowDimension($row)->setRowHeight($y);
+                } else {
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "File tidak ada di server ". $value->id);
+                }
             }
             // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $temp);
             $col++;
