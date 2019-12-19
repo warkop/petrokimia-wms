@@ -23,9 +23,7 @@ Route::get('/master-grup', function () {
 });
 
 Route::group(['middleware' => ['eauth', 'revalidate']], function () {
-    Route::group(['prefix' => 'dashboard'], function () {
-        Route::get('/', 'DashboardController@index');
-    });
+    Route::get('/', 'DashboardController@index');
     
     Route::group(['prefix' => 'master-aktivitas'], function () {
         Route::get('/', 'AktivitasController@index');
