@@ -714,9 +714,10 @@ class AktivitasController extends Controller
         $req->validated();
         $user = $req->get('my_auth');
         $res_user = Users::findOrFail($user->id_user);
-        $aktivitas = Aktivitas::whereNotNull('penerimaan_gi')->first();
+        $aktivitas = AktivitasGudang::with('aktivitas')->whereHas('aktivitas', function ($query) {
+            $query->whereNotNull('penerimaan_gi');
+        })->first();
         $aktivitasHarian = AktivitasHarian::findOrFail($req->input('id_aktivitas_harian'));
-
         if ($aktivitasHarian->approve != null) {
             $this->responseCode = 403;
             $this->responseMessage = 'Aktivitas harian sudah disetujui!';
@@ -724,7 +725,7 @@ class AktivitasController extends Controller
             return response()->json($response, $this->responseCode);
         }
 
-        if ($aktivitas->penerimaan_gi != null) {
+        if ($aktivitas->aktivitas->penerimaan_gi != null) {
             $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
                 ->where('id_tkbm', $user->id_tkbm)
                 ->orderBy('rencana_harian.id', 'desc')
@@ -736,9 +737,9 @@ class AktivitasController extends Controller
                 $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                 return response()->json($response, $this->responseCode);
             }
-
+            
             $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
-
+            
             if (empty($gudang)) {
                 $this->responseCode = 500;
                 $this->responseMessage = 'Gudang tidak tersedia!';
@@ -969,7 +970,7 @@ class AktivitasController extends Controller
             return response()->json($response, $this->responseCode);
         } else {
             $this->responseCode = 500;
-            $this->responseMessage = 'Gudang tidak tersedia!';
+            $this->responseMessage = 'Aktivitas tidak berstatus penerimaan GI!';
             $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
             return response()->json($response, $this->responseCode);
         }
