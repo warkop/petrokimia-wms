@@ -35,9 +35,10 @@
             <div class="form-group row mt2">
                 <h4 class="col-2 col-form-label text-kiri">Gudang</h4>
                 <div class="col-6">
-                    <select class="form-control m-select2" id="gudang" name="param" multiple="multiple" style="width: 100%">
-                        <option value="aa">Gudang A</option>
-                        <option value="AK">Gudang B</option>
+                    <select class="form-control m-select2" id="gudang" name="gudang" multiple="multiple" style="width: 100%">
+                         @foreach ($gudang as $item)
+                            <option value="{{$item->id}}">{{$item->nama}}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -46,19 +47,19 @@
                 <div class="col-6">
                     <div class="kt-radio-inline">
                         <label class="kt-radio kt-radio--success">
-                            <input id="semuaCheck" type="radio" name="radio2" onclick="checkSemua()"> Semua
+                            <input id="semuaCheck" type="radio" name="pallet" onclick="checkSemua()"> Semua
                             <span></span>
                         </label>
                         <label class="kt-radio kt-radio--warning">
-                            <input id="myCheck" type="radio" name="radio2" onclick="checkBx()"> Spesifik
+                            <input id="myCheck" type="radio" name="pallet" onclick="checkBx()"> Spesifik
                             <span></span>
                         </label> 
                     </div>
                     <div class="mt1" id="textadd" style="display:none;">
-                        <select class="form-control m-select2" id="pallet" name="param" multiple="multiple" style="width:100%">
-                            <option value="xx" disabled>Pilih produk</option>
-                            <option value="aa">Pallet Plastik</option>
-                            <option value="AK">Terplas</option>
+                        <select class="form-control m-select2" id="pallet" name="pilih_pallet" multiple="multiple" style="width:100%">
+                            @foreach ($pallet as $item)
+                                <option value="{{$item->id}}">{{$item->nama}}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -71,14 +72,14 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Start Date</label>
-                                    <input type="text" class="form-control" id="start_date" name="start_date" readonly
+                                    <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
                                         placeholder="Select date">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>End Date</label>
-                                    <input type="text" class="form-control" id="end_date" name="end_date" readonly
+                                    <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
                                         placeholder="Select date">
                                 </div>
                             </div>

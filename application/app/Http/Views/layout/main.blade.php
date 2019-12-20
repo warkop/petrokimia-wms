@@ -201,7 +201,7 @@
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
-                                            <a href="{{('laporan-mutasi-pallet')}}" class="kt-nav__link">
+                                            <a href="{{('report/laporan-mutasi-pallet')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon fa fa-arrows-alt-h"></i>
                                                 <span class="kt-nav__link-text">Mutasi Pallet</span>
                                             </a>
@@ -213,13 +213,13 @@
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
-                                            <a href="{{('laporan-produk')}}" class="kt-nav__link">
+                                            <a href="{{('report/laporan-produk')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon fa fa-boxes"></i>
                                                 <span class="kt-nav__link-text">Produk</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
-                                            <a href="{{('laporan-realisasi')}}" class="kt-nav__link">
+                                            <a href="{{('report/laporan-realisasi')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon fa fa-check-square"></i>
                                                 <span class="kt-nav__link-text">Realisasi</span>
                                             </a>

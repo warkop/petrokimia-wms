@@ -35,30 +35,31 @@
             <div class="form-group row mt2">
                 <h4 class="col-2 col-form-label text-kiri">Gudang</h4>
                 <div class="col-6">
-                    <select class="form-control m-select2" id="gudang" name="param" multiple="multiple" style="width: 100%">
-                        <option value="aa">Gudang A</option>
-                        <option value="AK">Gudang B</option>
+                    <select class="form-control m-select2" id="gudang" name="gudang" multiple="multiple" style="width: 100%">
+                         @foreach ($gudang as $item)
+                            <option value="{{$item->id}}">{{$item->nama}}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
             <div class="form-group row">
-                <h4 class="col-2 col-form-label text-kiri">Roduk</h4>
+                <h4 class="col-2 col-form-label text-kiri">Produk</h4>
                 <div class="col-6">
                     <div class="kt-radio-inline">
                         <label class="kt-radio kt-radio--success">
-                            <input id="semuaCheck" type="radio" name="radio2" onclick="checkSemua()"> Semua
+                            <input id="semuaCheck" type="radio" name="produk[]" onclick="checkSemua()"> Semua
                             <span></span>
                         </label>
                         <label class="kt-radio kt-radio--warning">
-                            <input id="myCheck" type="radio" name="radio2" onclick="checkBx()"> Spesifik
+                            <input id="myCheck" type="radio" name="produk" onclick="checkBx()"> Spesifik
                             <span></span>
                         </label> 
                     </div>
                     <div class="mt1" id="textadd" style="display:none;">
-                        <select class="form-control m-select2" id="pallet" name="param" multiple="multiple" style="width:100%">
-                            <option value="xx" disabled>Pilih produk</option>
-                            <option value="aa">Pallet Plastik</option>
-                            <option value="AK">Terplas</option>
+                        <select class="form-control m-select2" id="produk" name="pilih_produk[]" multiple="multiple" style="width:100%">
+                            @foreach ($produk as $item)
+                                <option value="{{$item->id}}">{{$item->nama}}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -66,20 +67,20 @@
             <div class="form-group row">
                 <h4 class="col-2 col-form-label text-kiri">Shift</h4>
                 <div class="col-6">
-                    <select class="form-control m-select2" id="shift" name="param" multiple="multiple" style="width: 100%">
-                        <option value="aa">Shift 1</option>
-                        <option value="AK">Shift 2</option>
+                    <select class="form-control m-select2" id="shift" name="shift[]" multiple="multiple" style="width: 100%">
+                        @foreach ($shift as $item)
+                            <option value="{{$item->id}}">{{$item->nama}}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
             <div class="form-group row">
                 <h4 class="col-2 col-form-label text-kiri">Kegiatan</h4>
                 <div class="col-6">
-                    <select class="form-control m-select2" id="kegiatan" name="param" multiple="multiple" style="width: 100%">
-                        <option value="aa">Produksi</option>
-                        <option value="AK">Pengiriman Pemindahan</option>
-                        <option value="a">Geser Area</option>
-                        <option value="b">Bongkar Muat Truk Kembali</option>
+                    <select class="form-control m-select2" id="kegiatan" name="kegiatan[]" multiple="multiple" style="width: 100%">
+                         @foreach ($aktivitas as $item)
+                            <option value="{{$item->id}}">{{$item->nama}}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -91,14 +92,14 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Start Date</label>
-                                    <input type="text" class="form-control" id="start_date" name="start_date" readonly
+                                    <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
                                         placeholder="Select date">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>End Date</label>
-                                    <input type="text" class="form-control" id="end_date" name="end_date" readonly
+                                    <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
                                         placeholder="Select date">
                                 </div>
                             </div>
@@ -123,8 +124,8 @@
     $('#gudang').select2({
         placeholder: "Pilih gudang"
     });
-    $('#pallet').select2({
-        placeholder: "Pilih pallet",
+    $('#produk').select2({
+        placeholder: "Pilih produk",
         allowClear: true
     });
     $('#shift').select2({
@@ -155,7 +156,7 @@ function checkSemua() {
     var text = document.getElementById("textadd");
     if (checkBox.checked == true){
         text.style.display = "none";
-        $("#pallet").val('').trigger('change');
+        $("#produk").val('').trigger('change');
     } else {
         text.style.display = "block";
     }

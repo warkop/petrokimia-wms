@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Models\Aktivitas;
 use App\Http\Models\AktivitasHarian;
+use App\Http\Models\Gudang;
 use App\Http\Models\KategoriAlatBerat;
 use App\Http\Models\LaporanKerusakan;
-
+use App\Http\Models\Material;
+use App\Http\Models\RealisasiMaterial;
+use App\Http\Models\ShiftKerja;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -498,5 +502,112 @@ class ReportController extends Controller
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="' . $nama_file . '"');
         $writer->save("php://output");
+    }
+
+    public function laporanProduk()
+    {
+        $data['title'] = 'Laporan Produk';
+        $data['gudang'] = Gudang::all();
+        $data['produk'] = Material::produk()->get();
+        return view('report.produk.grid', $data);
+    }
+
+    public function produk()
+    {
+        $gudang             = request()->input('gudang'); //multi
+        $produk             = request()->input('produk');
+        $pilih_produk       = request()->input('pilih_produk'); //multi
+        $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
+
+        $res = AreaStok::
+        with('area', 'area.gudang')
+        ->with('produk')
+        ->whereHas('area', function ($query) use ($gudang) {
+            foreach ($gudang as $key => $value) {
+                $query->orWhere('id_kategori', $value);
+            }
+        })
+        ->whereBetween('created_at', [$tgl_awal, $tgl_akhir])
+        ->get();
+        if (!is_dir(storage_path() . '/app/public/excel/')) {
+            mkdir(storage_path() . '/app/public/excel', 755);
+        }
+
+        $nama_file = date("YmdHis") . '_aktivitas_harian.xlsx';
+        $this->generateExcelAktivitas($res, $nama_file, $tgl_awal, $tgl_akhir);
+    }
+
+    public function laporanMutasiPallet()
+    {
+        $data['title'] = 'Laporan Pallet';
+        $data['gudang'] = Gudang::all();
+        $data['pallet'] = Material::pallet()->get();
+        return view('report.mutasi-pallet.grid', $data);
+    }
+
+    public function mutasiPallet()
+    {
+        $gudang             = request()->input('gudang'); //multi
+        $pallet             = request()->input('pallet');
+        $pilih_pallet       = request()->input('pilih_pallet'); //multi
+        $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
+
+        $res = GudangStok::where(function ($query) use ($gudang) {
+            foreach ($gudang as $key => $value) {
+                $query->where('id_gudang', $value);
+            }
+        })->get();
+        if (!is_dir(storage_path() . '/app/public/excel/')) {
+            mkdir(storage_path() . '/app/public/excel', 755);
+        }
+
+        $nama_file = date("YmdHis") . '_mutasi_pallet.xlsx';
+        $this->generateExcelAktivitas($res, $nama_file, $tgl_awal, $tgl_akhir);
+    }
+
+    public function generateExcelMutasiPallet()
+    {
+        # code...
+    }
+
+    public function laporanRealisasi()
+    {
+        $data['gudang']     = Gudang::all();
+        $data['produk']     = Material::produk()->get();
+        $data['shift']      = ShiftKerja::all();
+        $data['aktivitas']  = Aktivitas::all();
+        return view('report.realisasi.grid', $data);
+    }
+
+    public function realisasi()
+    {
+        $gudang             = request()->input('gudang'); //multi
+        $produk             = request()->input('produk');
+        $pilih_produk       = request()->input('pilih_produk'); //multi
+        $shift              = request()->input('shift'); //multi
+        $kegiatan           = request()->input('kegiatan'); //multi
+        $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
+        
+
+        $realisasiMaterial = RealisasiMaterial::where(function ($query) use ($shift){
+            foreach ($shift as $key => $value) {
+                $query->where('id_shift', $value);
+            }
+        });
+
+        $res = GudangStok::where(function ($query) use ($gudang) {
+            foreach ($gudang as $key => $value) {
+                $query->where('id_gudang', $value);
+            }
+        })->get();
+        if (!is_dir(storage_path() . '/app/public/excel/')) {
+            mkdir(storage_path() . '/app/public/excel', 755);
+        }
+
+        $nama_file = date("YmdHis") . '_mutasi_pallet.xlsx';
+        $this->generateExcelAktivitas($res, $nama_file, $tgl_awal, $tgl_akhir);
     }
 }
