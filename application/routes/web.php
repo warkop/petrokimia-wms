@@ -212,6 +212,8 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/aktivitas-harian', 'ReportController@aktivitasHarian');
         Route::get('/laporan-keluhan-alat-berat', 'ReportController@laporanKeluhanAlatBerat');
         Route::get('/keluhan-alat-berat', 'ReportController@keluhanAlatBerat');
+        Route::get('/laporan-produk', 'ReportController@laporanProduk');
+        Route::get('/laporan-mutasi-pallet', 'ReportController@laporanMutasiPallet');
     });
 
     Route::get('/main', function () {
@@ -312,9 +314,9 @@ Route::get('/laporan-mutasi-pallet', function () {
 Route::get('/laporan-mutasi-stok', function () {
     return view('report.mutasi-stok.grid');
 });
-Route::get('/laporan-produk', function () {
-    return view('report.produk.grid');
-});
+// Route::get('/laporan-produk', function () {
+//     return view('report.produk.grid');
+// });
 Route::get('/laporan-realisasi', function () {
     return view('report.realisasi.grid');
 });

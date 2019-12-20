@@ -483,9 +483,11 @@ function simpan() {
             const obj = response;
 
             if (obj.status == "OK") {
-                datatable.api().ajax.reload();
-                swal.fire('Ok', obj.message, 'success');
-                $('#modal_form').modal('hide');
+                // datatable.api().ajax.reload();
+                swal.fire('Ok', obj.message, 'success').then(()=>{
+                    location.reload();
+                });
+                // $('#modal_form').modal('hide');
             } else {
                 swal.fire('Pemberitahuan', obj.message, 'warning');
             }
