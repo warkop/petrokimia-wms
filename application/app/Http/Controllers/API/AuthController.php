@@ -62,6 +62,7 @@ class AuthController extends Controller
                             }
 
                             $m_user->device = $device_id;
+                            $m_user->user_gcid = $user_gcid;
                             $m_user->save();
 
                             $arr = [
@@ -72,7 +73,7 @@ class AuthController extends Controller
                                 'email'         => $m_user->email,
                                 'id_tkbm'       => $m_user->id_tkbm,
                                 'id_karu'       => $m_user->id_karu,
-                                'gcid'          => $m_user->user_gcid,
+                                'user_gcid'     => $m_user->user_gcid,
                             ];
                             if ($m_user->id_tkbm != null) {
                                 $rencanaTkbm        = RencanaTkbm::where('id_tkbm', $m_user->id_tkbm)->orderBy('id_rencana', 'desc')->first();
@@ -108,6 +109,7 @@ class AuthController extends Controller
                         }
 
                         $m_user->device = $device_id;
+                        $m_user->user_gcid = $user_gcid;
                         $m_user->save();
                         
 

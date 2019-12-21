@@ -68,9 +68,13 @@ class AktivitasController extends Controller
     {
         $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
         $gudang->notify(new Pengiriman($aktivitasHarian));
+
+        $aktivitas = Aktivitas::find($aktivitasHarian->id_aktivitas);
+        $user = Users::find(\Request::get('my_auth')->id_user);
+        send_firebase($user->user_gcid, $aktivitas->nama);
     }
 
-    public function testNotif(AktivitasHarian $aktivitasHarian) //save notifikasi
+    public function testNotif(AktivitasHarian $aktivitasHarian) //save notifikasi, for testing only
     {
         $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
         $gudang->notify(new Pengiriman($aktivitasHarian));
