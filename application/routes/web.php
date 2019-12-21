@@ -215,6 +215,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/laporan-produk', 'ReportController@laporanProduk');
         Route::get('/laporan-mutasi-pallet', 'ReportController@laporanMutasiPallet');
         Route::get('/laporan-realisasi', 'ReportController@laporanRealisasi');
+        Route::get('/realisasi', 'ReportController@realisasi');
     });
 
     Route::get('/main', function () {

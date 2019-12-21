@@ -481,7 +481,7 @@ class ReportController extends Controller
         }
 
         //Sheet Title
-        $objSpreadsheet->getActiveSheet()->setTitle("Aktivitas Harian");
+        $objSpreadsheet->getActiveSheet()->setTitle("Keluhan Alat Berat");
         // end : isi kolom
         // end : sheet
 
@@ -575,7 +575,7 @@ class ReportController extends Controller
     public function laporanRealisasi()
     {
         $data['gudang']     = Gudang::all();
-        $data['produk']     = Material::produk()->get();
+        $data['produk']     = Material::lainlain()->get();
         $data['shift']      = ShiftKerja::all();
         $data['aktivitas']  = Aktivitas::all();
         return view('report.realisasi.grid', $data);
@@ -592,17 +592,46 @@ class ReportController extends Controller
         $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
         
 
-        $realisasiMaterial = RealisasiMaterial::where(function ($query) use ($shift){
+        // $realisasiMaterial = RealisasiMaterial::where(function ($query) use ($shift){
+        //     foreach ($shift as $key => $value) {
+        //         $query->where('id_shift', $value);
+        //     }
+        // });
+
+        $res = RealisasiMaterial::select(
+            'realisasi_material.id',
+            'tipe',
+            'm.nama',
+            'mt.jumlah',
+            'realisasi_material.tanggal',
+            'gs.id_gudang',
+            'realisasi_material.id_shift',
+            'g.nama as nama_gudang'
+        )
+        ->leftJoin('material_trans as mt', 'realisasi_material.id', '=', 'id_realisasi_material')
+        ->leftJoin('material as m', 'm.id', '=', 'id_material')
+        ->leftJoin('gudang_stok as gs', 'gs.id_material', '=', 'mt.id_material')
+        ->leftJoin('gudang as g', 'g.id', '=', 'gs.id_gudang')
+        ->where(function ($query) use ($shift) {
             foreach ($shift as $key => $value) {
-                $query->where('id_shift', $value);
+                $query->orWhere('id_shift', $value);
+            }
+        })
+        ->where(function ($query) use ($gudang) {
+            foreach ($gudang as $key => $value) {
+                $query->orWhere('id_gudang', $value);
+            }
+        })
+        ->where(function ($query) use ($pilih_produk,$produk) {
+            if ($produk == 2) {
+                foreach ($pilih_produk as $key => $value) {
+                    $query->orWhere('m.id', $value);
+                }
             }
         });
 
-        $res = GudangStok::where(function ($query) use ($gudang) {
-            foreach ($gudang as $key => $value) {
-                $query->where('id_gudang', $value);
-            }
-        })->get();
+        $res = $res->get();
+        // dd($res->toArray());
         if (!is_dir(storage_path() . '/app/public/excel/')) {
             mkdir(storage_path() . '/app/public/excel', 755);
         }
@@ -633,7 +662,7 @@ class ReportController extends Controller
         $col = 3;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Kerusakan Alat Berat');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Realisasi');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
         // $row++;
         // $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
@@ -674,11 +703,6 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(25);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(35);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(40);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(40);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(20);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(20);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(20);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('K')->setWidth(20);
 
         // end : title
         // start : judul kolom
@@ -686,26 +710,15 @@ class ReportController extends Controller
         $row = 6;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No');
         $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Nama Gudang');
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Jenis Produk');
+        $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Tanggal');
-        // $col++;
-        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No. Registrasi');
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Jenis Alat Berat');
-        // $col++;
-        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Nama Gudang');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Shift');
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Jenis Keluhan');
-        $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No. Lambung');
-        $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Keterangan');
-        $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Dokumentasi');
-        $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Tindak Lanjut Rekanan');
-        $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Tanggal Tindak Lanjut');
-
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Kuantum');
 
         $style_judul_kolom = array(
             'fill' => array(
@@ -726,7 +739,7 @@ class ReportController extends Controller
             )
         );
 
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":I" . $row)->applyFromArray($style_judul_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":F" . $row)->applyFromArray($style_judul_kolom);
         // end : judul kolom
 
         // start : isi kolom
@@ -753,65 +766,30 @@ class ReportController extends Controller
 
             );
 
-            $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":I" . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":F" . $row)->applyFromArray($style_kolom);
 
-            $objSpreadsheet->getActiveSheet()->getStyle('A' . $row . ':I' . $row)->applyFromArray($style_ontop);
+            $objSpreadsheet->getActiveSheet()->getStyle('A' . $row . ':F' . $row)->applyFromArray($style_ontop);
 
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y H:i:s', strtotime($value->created_at)));
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama_gudang);
+            $col++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama);
+            $col++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d/m/Y', strtotime($value->tanggal)));
+            $col++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->id_shift);
+            $col++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->jumlah);
             // $col++;
-            // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '');
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->alatBerat->kategori->nama);
-            // $col++;
-            // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->gudang->nama);
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->kerusakan->nama);
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->alatBerat->nomor_lambung);
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->keterangan);
-            $col++;
+            // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->status == 0 ? "Belum" : "Sudah");
 
-            $temp = '';
-            $x = 5;
-            $y = 5;
-            foreach ($value->foto as $row2) {
-                $temp .= $row2->file_enc;
+            // $lap = LaporanKerusakan::where('induk', $value->id)->where('status', 1)->orderBy('id', 'desc')->first();
 
-                if (!empty($value->id) && file_exists(storage_path("/app/public/history/" . $value->id . "/" . $row2->file_enc))) {
-                    $objDrawing = new Drawing;
-                    $objDrawing->setName($row2->file_ori);
-                    $objDrawing->setDescription('gambar ' . $row2->file_ori);
-                    $objDrawing->setPath(storage_path() . "/app/public/history/" . $value->id . "/" . $row2->file_enc);
-                    $objDrawing->setCoordinates(strtoupper(toAlpha($col - 1)) . $row);
-                    //setOffsetX works properly
-                    $objDrawing->setOffsetX($x);
-                    $objDrawing->setOffsetY($y);
-                    //set width, height
-                    // $objDrawing->setWidth(100);
-                    $objDrawing->setHeight(110);
-                    $objDrawing->setWorksheet($objSpreadsheet->getActiveSheet());
-                    $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(40);
-
-                    // $x += 110;
-                    $y += $objDrawing->getHeight();
-                    $objSpreadsheet->getActiveSheet()->getRowDimension($row)->setRowHeight($y);
-                } else {
-                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "File tidak ada di server " . $value->id);
-                }
-            }
-            // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $temp);
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->status == 0 ? "Belum" : "Sudah");
-
-            $lap = LaporanKerusakan::where('induk', $value->id)->where('status', 1)->orderBy('id', 'desc')->first();
-
-            if (!empty($lap)) {
-                $col++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, helpDate($lap->created_at, 'si'));
-            }
+            // if (!empty($lap)) {
+            //     $col++;
+            //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, helpDate($lap->created_at, 'si'));
+            // }
 
             $style_no['alignment'] = array(
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
@@ -829,7 +807,7 @@ class ReportController extends Controller
         }
 
         //Sheet Title
-        $objSpreadsheet->getActiveSheet()->setTitle("Aktivitas Harian");
+        $objSpreadsheet->getActiveSheet()->setTitle("Realisasi");
         // end : isi kolom
         // end : sheet
 
