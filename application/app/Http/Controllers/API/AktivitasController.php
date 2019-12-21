@@ -71,13 +71,41 @@ class AktivitasController extends Controller
 
         $aktivitas = Aktivitas::find($aktivitasHarian->id_aktivitas);
         $user = Users::find(\Request::get('my_auth')->id_user);
-        send_firebase($user->user_gcid, $aktivitas->nama);
+        send_firebase(
+            $user->user_gcid, 
+            [
+                'title' => $aktivitas->nama,
+                'message' => 'Ada pengiriman dari '.$aktivitasHarian->gudang->nama.' dengan nama '.$aktivitas->nama,
+                'meta' => [
+                    'id' => $aktivitasHarian->id,
+                    'id_aktivitas' => $aktivitasHarian->id_aktivitas,
+                    'kode_aktivitas' => $aktivitasHarian->kode_aktivitas,
+                ],
+            ]
+        );
     }
 
     public function testNotif(AktivitasHarian $aktivitasHarian) //save notifikasi, for testing only
     {
+        // $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
+        // $gudang->notify(new Pengiriman($aktivitasHarian));
         $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
+        // $isiNotif = ;
         $gudang->notify(new Pengiriman($aktivitasHarian));
+
+        $aktivitas = Aktivitas::find($aktivitasHarian->id_aktivitas);
+
+        $res = send_firebase('f7UiJI7HyXs:APA91bG4xy09SdGsZkdI76b_oO5tm-c7lgkQCMHfq_YJSlKKFzjqVGozV-tUqBeLZg5S4asafFB97y0elgDB32_ySI065Y7MsTefuD2oukjuRWESbojE7RcJpTQBqdbg1STENa82y5tH',
+            [
+                'title' => $aktivitas->nama,
+                'message' => 'Ada pengiriman dari ' . $aktivitasHarian->gudang->nama . ' dengan nama ' . $aktivitas->nama,
+                'meta' => [
+                    'id' => $aktivitasHarian->id,
+                    'id_aktivitas' => $aktivitasHarian->id_aktivitas,
+                    'kode_aktivitas' => $aktivitasHarian->kode_aktivitas,
+                ],
+            ]);
+        dd($res);
     }
 
     public function allNotif()
