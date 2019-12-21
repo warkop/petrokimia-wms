@@ -608,6 +608,247 @@ class ReportController extends Controller
         }
 
         $nama_file = date("YmdHis") . '_mutasi_pallet.xlsx';
-        $this->generateExcelAktivitas($res, $nama_file, $tgl_awal, $tgl_akhir);
+        $this->generateExcelRealisasi($res, $nama_file, $tgl_awal, $tgl_akhir);
+    }
+
+    public function generateExcelRealisasi($res, $nama_file)
+    {
+        $objSpreadsheet = new Spreadsheet();
+
+        $sheetIndex = 0;
+
+        // start : sheet
+        $objSpreadsheet->createSheet($sheetIndex);
+        $objSpreadsheet->setActiveSheetIndex($sheetIndex);
+        $style_title = array(
+            'font' => array(
+                // 'size' => 18,
+                'bold' => true
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            )
+        );
+        // start : title
+        $col = 3;
+        $row = 1;
+        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Kerusakan Alat Berat');
+        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        // $row++;
+        // $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TANGGAL ' . date('d/m/Y', strtotime($tgl_awal)) . ' - ' . date('d/m/Y', strtotime($tgl_akhir)));
+        // $objSpreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(30);
+
+
+
+        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+
+        $col = 1;
+        $row++;
+
+        $style_acara = array(
+            'font' => array(
+                'size' => 14,
+                'bold' => true
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            )
+        );
+
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_acara);
+
+        $style_note = array(
+            'font' => array(
+                'bold' => true
+            )
+        );
+
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
+
+
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(7);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(15);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(35);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(25);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(35);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(40);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(40);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(20);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(20);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(20);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('K')->setWidth(20);
+
+        // end : title
+        // start : judul kolom
+        $col = 1;
+        $row = 6;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No');
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Tanggal');
+        // $col++;
+        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No. Registrasi');
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Jenis Alat Berat');
+        // $col++;
+        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Nama Gudang');
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Jenis Keluhan');
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No. Lambung');
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Keterangan');
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Dokumentasi');
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Tindak Lanjut Rekanan');
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Tanggal Tindak Lanjut');
+
+
+        $style_judul_kolom = array(
+            'fill' => array(
+                // 'type'  => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'color' => array('rgb' => 'D3D3D3')
+            ),
+            'font' => array(
+                'bold' => true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                )
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            )
+        );
+
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":I" . $row)->applyFromArray($style_judul_kolom);
+        // end : judul kolom
+
+        // start : isi kolom
+        $no = 0;
+        // var_dump($res);
+        foreach ($res as $value) {
+            $no++;
+            $col = 1;
+            $row++;
+
+            $style_ontop = array(
+                'alignment' => array(
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
+                )
+            );
+
+            $style_kolom = array(
+
+                'borders' => array(
+                    'allBorders' => array(
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                    )
+                ),
+
+            );
+
+            $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":I" . $row)->applyFromArray($style_kolom);
+
+            $objSpreadsheet->getActiveSheet()->getStyle('A' . $row . ':I' . $row)->applyFromArray($style_ontop);
+
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
+            $col++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y H:i:s', strtotime($value->created_at)));
+            // $col++;
+            // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '');
+            $col++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->alatBerat->kategori->nama);
+            // $col++;
+            // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->gudang->nama);
+            $col++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->kerusakan->nama);
+            $col++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->alatBerat->nomor_lambung);
+            $col++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->keterangan);
+            $col++;
+
+            $temp = '';
+            $x = 5;
+            $y = 5;
+            foreach ($value->foto as $row2) {
+                $temp .= $row2->file_enc;
+
+                if (!empty($value->id) && file_exists(storage_path("/app/public/history/" . $value->id . "/" . $row2->file_enc))) {
+                    $objDrawing = new Drawing;
+                    $objDrawing->setName($row2->file_ori);
+                    $objDrawing->setDescription('gambar ' . $row2->file_ori);
+                    $objDrawing->setPath(storage_path() . "/app/public/history/" . $value->id . "/" . $row2->file_enc);
+                    $objDrawing->setCoordinates(strtoupper(toAlpha($col - 1)) . $row);
+                    //setOffsetX works properly
+                    $objDrawing->setOffsetX($x);
+                    $objDrawing->setOffsetY($y);
+                    //set width, height
+                    // $objDrawing->setWidth(100);
+                    $objDrawing->setHeight(110);
+                    $objDrawing->setWorksheet($objSpreadsheet->getActiveSheet());
+                    $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(40);
+
+                    // $x += 110;
+                    $y += $objDrawing->getHeight();
+                    $objSpreadsheet->getActiveSheet()->getRowDimension($row)->setRowHeight($y);
+                } else {
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "File tidak ada di server " . $value->id);
+                }
+            }
+            // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $temp);
+            $col++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->status == 0 ? "Belum" : "Sudah");
+
+            $lap = LaporanKerusakan::where('induk', $value->id)->where('status', 1)->orderBy('id', 'desc')->first();
+
+            if (!empty($lap)) {
+                $col++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, helpDate($lap->created_at, 'si'));
+            }
+
+            $style_no['alignment'] = array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            );
+            $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_no);
+
+            $style_isi_kolom = array(
+
+                'borders' => array(
+                    'allBorders' => array(
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                    )
+                )
+            );
+        }
+
+        //Sheet Title
+        $objSpreadsheet->getActiveSheet()->setTitle("Aktivitas Harian");
+        // end : isi kolom
+        // end : sheet
+
+        #### END : SHEET SESI ####
+        $writer = new Xlsx($objSpreadsheet);
+
+        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+        header("Cache-Control: no-store, no-cache, must-revalidate");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+        $writer->save(storage_path() . '/app/public/excel/' . $nama_file);
+
+        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
+        $spreadsheet = $reader->load(storage_path() . '/app/public/excel/' . $nama_file);
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+        $writer->save("php://output");
     }
 }
