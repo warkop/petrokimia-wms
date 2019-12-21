@@ -256,6 +256,7 @@ class RealisasiController extends Controller
             'nama'
         )
         ->leftJoin('shift_kerja', 'realisasi_material.id_shift', '=', 'shift_kerja.id')
+        ->orderBy('realisasi_material.created_at', 'desc')
         ->paginate(10);
         return AktivitasResource::collection($res)->additional([
             'status' => [
