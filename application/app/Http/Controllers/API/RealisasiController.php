@@ -252,7 +252,6 @@ class RealisasiController extends Controller
     {
         $res = RealisasiMaterial::select(
             'realisasi_material.id',
-            'id_material',
             'tanggal',
             'nama'
         )
