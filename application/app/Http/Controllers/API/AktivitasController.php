@@ -478,11 +478,21 @@ class AktivitasController extends Controller
 
                                     if (!empty($area_stok)) {
                                         if ($tipe == 1) {
-                                            $area_stok->jumlah = $area_stok->jumlah-$list_jumlah[$k]['jumlah'];
+                                            if ($area_stok->jumlah > $list_jumlah[$k]['jumlah']) {
+                                                $area_stok->jumlah = $area_stok->jumlah-$list_jumlah[$k]['jumlah'];
+                                            } else {
+                                                $temp_area = Area::find($id_area);
+                                                $temp_material = Material::find($produk);
+
+                                                $this->responseCode     = 500;
+                                                $this->responseMessage  = 'Jumlah yang Anda masukkan pada area '.$temp_area->nama.' dengan nama material '. $temp_material->nama.' melebihi jumlah ketersediaan yaitu '. $area_stok->jumlah.'!';
+                                                $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                                                return response()->json($response, $this->responseCode);
+                                            }
                                         } else {
                                             $area_stok->jumlah = $area_stok->jumlah+$list_jumlah[$k]['jumlah'];
                                         }
-                                        
+
                                         $area_stok->save();
                                     } else {
                                         $area_stok              = new AreaStok;
@@ -494,7 +504,7 @@ class AktivitasController extends Controller
                                     }
 
                                     $material_trans = new MaterialTrans;
-
+                                    // dd($area_stok->id);
                                     $array = [
                                         'id_material'           => $produk,
                                         'id_aktivitas_harian'   => $aktivitasHarian->id,
@@ -502,8 +512,9 @@ class AktivitasController extends Controller
                                         'tipe'                  => $tipe,
                                         'jumlah'                => $list_jumlah[$k]['jumlah'],
                                         'status_produk'         => $status_produk,
+                                        'id_area_stok'          => $area_stok->id,
                                     ];
-
+                                    // dd($material_trans);
                                     $material_trans->create($array);
 
                                     (new AktivitasHarianArea)->create([
@@ -573,6 +584,7 @@ class AktivitasController extends Controller
                                             'tipe'                  => $tipe,
                                             'jumlah'                => $list_jumlah[$k]['jumlah'],
                                             'status_produk'         => $status_produk,
+                                            'id_area_stok'          => $saved_area_stok->id,
                                         ];
                                         $material_trans->create($array);
                                         
@@ -601,18 +613,7 @@ class AktivitasController extends Controller
                         $jumlah         = $list_pallet[$i]['jumlah'];
                         $status_pallet  = $list_pallet[$i]['status_pallet'];
                         $tipe           = $list_pallet[$i]['tipe'];
-                        $arr = [
-                            'id_aktivitas_harian'       => $aktivitasHarian->id,
-                            'tanggal'                   => date('Y-m-d H:i:s'),
-                            'id_material'               => $pallet,
-                            'jumlah'                    => $jumlah,
-                            'tipe'                      => $tipe,
-                            'status_pallet'             => $status_pallet,
-                        ];
-
-                        $materialTrans = new MaterialTrans;
-
-                        $materialTrans->create($arr);
+                        
 
                         $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('id_material', $pallet)->first();
 
@@ -625,6 +626,20 @@ class AktivitasController extends Controller
                         $gudangStok->jumlah        = $jumlah;
                         $gudangStok->status        = $status_pallet;
                         $gudangStok->save();
+
+                        $arr = [
+                            'id_aktivitas_harian'       => $aktivitasHarian->id,
+                            'tanggal'                   => date('Y-m-d H:i:s'),
+                            'id_material'               => $pallet,
+                            'jumlah'                    => $jumlah,
+                            'tipe'                      => $tipe,
+                            'status_pallet'             => $status_pallet,
+                            'id_gudang_stok'            => $gudangStok->id,
+                        ];
+
+                        $materialTrans = new MaterialTrans;
+
+                        $materialTrans->create($arr);
                     }
                 }
 
@@ -894,6 +909,7 @@ class AktivitasController extends Controller
                                     'tipe'                  => $tipe,
                                     'jumlah'                => $list_jumlah[$k]['jumlah'],
                                     'status_produk'         => $status_produk,
+                                    'id_area_stok'          => $area_stok->id,
                                 ];
 
                                 $material_trans->create($array);
@@ -975,6 +991,7 @@ class AktivitasController extends Controller
                                         'tipe'                  => $tipe,
                                         'jumlah'                => $list_jumlah[$k]['jumlah'],
                                         'status_produk'         => $status_produk,
+                                        'id_area_stok'          => $saved_area_stok->id,
                                     ];
                                     $material_trans->create($array);
 
