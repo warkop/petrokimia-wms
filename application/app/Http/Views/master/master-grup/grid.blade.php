@@ -149,13 +149,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Start Date</label>
-                                <input type="text" class="form-control" id="start_date" readonly placeholder="Select date">
+                                <input type="text" class="form-control" id="start_date" readonly placeholder="Pilih tanggal">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>End Date</label>
-                                <input type="text" class="form-control" id="end_date" readonly placeholder="Select date">
+                                <input type="text" class="form-control" id="end_date" readonly placeholder="Pilih tanggal">
                             </div>
                         </div>
                     </div>

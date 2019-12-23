@@ -32,7 +32,7 @@
                 <div class="col-4">
                     <div class="form-group">
                         <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
-                            placeholder="Select date">
+                            placeholder="Pilih tanggal">
                     </div>
                 </div>
             </div>
@@ -41,7 +41,7 @@
                 <div class="col-4">
                     <div class="form-group">
                         <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
-                            placeholder="Select date">
+                            placeholder="Pilih tanggal">
                     </div>
                 </div>
             </div>

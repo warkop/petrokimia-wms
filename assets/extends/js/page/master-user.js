@@ -122,8 +122,8 @@ function tambah() {
     $('#action').val('add');
     $("#tempat_password").show();
     $('#btn_save').html('Tambah Data');
-    $('#modal_form .modal-title').html('Tambah Data Shift Kerja');
-    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk menambahkan data terkait master Shift Kerja.');
+    $('#modal_form .modal-title').html('Tambah Data User');
+    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk menambahkan data terkait master User.');
     $('#modal_form').modal({
         backdrop: 'static',
         keyboard: false
@@ -136,8 +136,8 @@ function edit(id = '') {
     $('#action').val('edit');
     $("#tempat_password").hide();
     $('#btn_save').html('Simpan Data');
-    $('#modal_form .modal-title').html('Edit Data Shift Kerja');
-    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk mengubah data master Shift Kerja sesuai kebutuhan.');
+    $('#modal_form .modal-title').html('Edit Data User');
+    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk mengubah data master User sesuai kebutuhan.');
     $('#modal_form').modal({
         backdrop: 'static',
         keyboard: false

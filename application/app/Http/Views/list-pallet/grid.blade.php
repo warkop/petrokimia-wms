@@ -108,7 +108,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Tanggal</label>
-                            <input type="text" class="form-control" readonly placeholder="Select date" name="tanggal" id="tanggal" readonly value="{{date('d-m-Y')}}"/>
+                            <input type="text" class="form-control" readonly placeholder="Pilih tanggal" name="tanggal" id="tanggal" readonly value="{{date('d-m-Y')}}"/>
                             </div>
                         </div>
                     </div>
@@ -116,7 +116,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Pallet</label>
-                                <select class="form-control input-enter m-select2" readonly placeholder="Select date" name="material" id="material" style="width: 100%"/>
+                                <select class="form-control input-enter m-select2" readonly placeholder="Pilih tanggal" name="material" id="material" style="width: 100%"/>
 
                                 </select>
                             </div>

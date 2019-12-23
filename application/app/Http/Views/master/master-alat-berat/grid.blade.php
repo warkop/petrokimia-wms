@@ -165,13 +165,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Start Date</label>
-                                <input type="text" class="form-control input-enter" name="start_date" id="start_date" value="{{date('d-m-Y')}}" readonly placeholder="Select date">
+                                <input type="text" class="form-control input-enter" name="start_date" id="start_date" value="{{date('d-m-Y')}}" readonly placeholder="Pilih tanggal">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>End Date</label>
-                                <input type="text" class="form-control input-enter" name="end_date" id="end_date" readonly placeholder="Select date">
+                                <input type="text" class="form-control input-enter" name="end_date" id="end_date" readonly placeholder="Pilih tanggal">
                             </div>
                         </div>
                     </div>

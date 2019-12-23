@@ -260,7 +260,7 @@ License: You must have a valid license purchased only from themeforest(the above
 							<div class="kt-header__topbar-item kt-header__topbar-item--user">
 								<div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px,0px">
 									<div class="kt-header__topbar-user">
-										<span class="kt-header__topbar-welcome kt-hidden-mobile">Hi,</span>
+										<span class="kt-header__topbar-welcome kt-hidden-mobile">Halo,</span>
 										<span class="kt-header__topbar-username kt-hidden-mobile">{{session('userdata')['username']}}</span>
 										<img class="kt-hidden" alt="Pic" src="{{aset_tema()}}media/users/300_25.jpg" />
 

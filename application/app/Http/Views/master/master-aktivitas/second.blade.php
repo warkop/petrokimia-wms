@@ -33,7 +33,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>Kode Aktivitas</label>
-                            <input type="text" class="form-control" name="kode_aktivitas" id="kode_aktivitas" placeholder="Masukkan kode aktivitas" maxlength="3">
+                            <input type="text" class="form-control" name="kode_aktivitas" id="kode_aktivitas" placeholder="Kode Aktivitas maksimal 3 karakter" maxlength="3">
                         </div>
                     </div>
                 </div>
@@ -48,6 +48,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="kel mb2">
+                            <span><em><strong>Produk atau Produk Rusak hanya dapat dipilih salah satu</strong></em></span>
                             <div class="row">
                                 <div class="col-4 col-form-label">
                                     <label class="kt-checkbox kt-checkbox--brand">
@@ -189,7 +190,7 @@
                             </div>
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Pengiriman GP atau Pengiriman Gudang Internal harus dipilih untuk dapat mengaktifkan fitur ini">
                                         <input type="checkbox" name="butuh_approval" id="butuh_approval" value="1"> Butuh Approval
                                         <span></span>
                                     </label>
@@ -207,7 +208,7 @@
                         <div class="col-md-4 col-lg-4">
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Tidak pengaruh tanggal produksi harus dicentang untuk dapat mengaktifkan fitur ini">
                                         <input type="checkbox" name="fifo" id="fifo" value="1"> FIFO
                                         <span></span>
                                     </label>
@@ -324,13 +325,13 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label>Start Date</label>
-                            <input type="text" class="form-control" id="start_date" name="start_date" readonly placeholder="Select date" value="{{date('d-m-Y')}}">
+                            <input type="text" class="form-control" id="start_date" name="start_date" readonly placeholder="Pilih tanggal" value="{{date('d-m-Y')}}">
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label>End Date</label>
-                            <input type="text" class="form-control" id="end_date" name="end_date" readonly placeholder="Select date">
+                            <input type="text" class="form-control" id="end_date" name="end_date" readonly placeholder="Pilih tanggal">
                         </div>
                     </div>
                 </div>

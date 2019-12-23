@@ -84,7 +84,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="exampleSelect1">Pilih Gudang</label>
-                                <select class="form-control" id="tipe_gudang" name="tipe_gudang">
+                                <select class="form-control" id="tipe_gudang" name="tipe_gudang" placeholder="Pilih tipe gudang">
                                     <option value="1">Internal</option>
                                     <option value="2">Eksternal</option>
                                 </select>
@@ -99,7 +99,7 @@
                                 </select>
                             </div>
 
-                            <label class="boldd-500">Jumlah Minimal Palet</label>
+                            {{-- <label class="boldd-500">Jumlah Minimal Palet</label>
                             @php $i=0 @endphp
                             @foreach ($material as $item)
                                 <div class="form-group row">
@@ -112,18 +112,18 @@
                                     </div>
                                 </div>
                                 @php $i++ @endphp
-                            @endforeach
+                            @endforeach --}}
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Start Date</label>
-                                        <input type="text" class="form-control input-enter" id="start_date" name="start_date" readonly placeholder="Select date" value="{{date('d-m-Y')}}">
+                                        <input type="text" class="form-control input-enter" id="start_date" name="start_date" readonly placeholder="Pilih tanggal" value="{{date('d-m-Y')}}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>End Date</label>
-                                        <input type="text" class="form-control input-enter" id="end_date" name="end_date" readonly placeholder="Select date">
+                                        <input type="text" class="form-control input-enter" id="end_date" name="end_date" readonly placeholder="Pilih tanggal">
                                     </div>
                                 </div>
                             </div>
