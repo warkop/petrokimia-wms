@@ -564,7 +564,7 @@ class ReportController extends Controller
         }
 
         $nama_file = date("YmdHis") . '_mutasi_pallet.xlsx';
-        $this->generateExcelAktivitas($res, $nama_file, $tgl_awal, $tgl_akhir);
+        $this->generateExcelMutasiPallet($res, $nama_file, $tgl_awal, $tgl_akhir);
     }
 
     public function generateExcelMutasiPallet()
