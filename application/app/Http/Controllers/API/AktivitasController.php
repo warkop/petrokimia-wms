@@ -1087,12 +1087,14 @@ class AktivitasController extends Controller
             }
         }
         $produk = MaterialTrans::select(
-            'id_material',
+            'material_trans.id_material',
             'nama as nama_material',
-            'tipe',
-            'jumlah'
+            'material_trans.tipe',
+            'material_trans.jumlah',
+            'area_stok.tanggal'
         )
         ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
+        ->leftJoin('area_stok', 'area_stok.id_material', '=', 'material_trans.id_material')
         ->where('id_aktivitas_harian', $id)
         ->whereNotNull('status_produk')
         ->get();
