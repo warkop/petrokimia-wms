@@ -83,21 +83,23 @@ class AktivitasController extends Controller
             $query->orWhere('end_date', '>=', now());
         })
         ->get();
-
+        // dd($rencanaTkbm->toArray());
         foreach ($rencanaTkbm as $key) {
             $user = Users::where('id_tkbm', $key->id_tkbm)->first();
-            send_firebase(
-                $user->user_gcid, 
-                [
-                    'title' => $aktivitas->nama,
-                    'message' => 'Ada pengiriman dari '.$aktivitasHarian->gudang->nama.' dengan nama '.$aktivitas->nama,
-                    'meta' => [
-                        'id' => $aktivitasHarian->id,
-                        'id_aktivitas' => $aktivitasHarian->id_aktivitas,
-                        'kode_aktivitas' => $aktivitasHarian->kode_aktivitas,
-                    ],
-                ]
-            );
+            if (!empty($user)) {
+                send_firebase(
+                    $user->user_gcid, 
+                    [
+                        'title' => $aktivitas->nama,
+                        'message' => 'Ada pengiriman dari '.$aktivitasHarian->gudang->nama.' dengan nama '.$aktivitas->nama,
+                        'meta' => [
+                            'id' => $aktivitasHarian->id,
+                            'id_aktivitas' => $aktivitasHarian->id_aktivitas,
+                            'kode_aktivitas' => $aktivitasHarian->kode_aktivitas,
+                        ],
+                    ]
+                );
+            }
         }
 
     }
