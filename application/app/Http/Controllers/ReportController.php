@@ -829,4 +829,19 @@ class ReportController extends Controller
         header('Content-Disposition: attachment; filename="' . $nama_file . '"');
         $writer->save("php://output");
     }
+
+    public function laporanKeluhanGp()
+    {
+        
+    }
+
+    public function keluhanGp()
+    {
+
+    }
+
+    public function generateExcelKeluhanGp()
+    {
+        
+    }
 }
