@@ -21,6 +21,7 @@ class MaterialTrans extends Model
         'status_pallet',
         'status_produk',
         'id_gudang_stok',
+        'id_area_stok',
     ];
 
     public $timestamps  = false;
