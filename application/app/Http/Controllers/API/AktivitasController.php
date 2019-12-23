@@ -119,12 +119,13 @@ class AktivitasController extends Controller
             ->first();
 
         $rencanaTkbm = RencanaTkbm::where('id_rencana', $rencanaHarian->id)
+            ->join('rencana_harian', 'rencana_tkbm.id_rencana', '=', 'rencana_harian.id')
             ->where(function ($query) {
                 $query->where('end_date');
                 $query->orWhere('end_date', '>', now());
             })
         ->get();
-
+        // dd($rencanaTkbm->toArray());
         foreach ($rencanaTkbm as $key) {
             $user = Users::where('id_tkbm', $key->id_tkbm)->first();
             if (!empty($user)) {
