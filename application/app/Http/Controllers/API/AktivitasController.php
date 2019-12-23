@@ -1191,6 +1191,7 @@ class AktivitasController extends Controller
             'area.id',
             'id_gudang',
             'nama',
+            'area_stok.tanggal',
             'kapasitas',
             'jumlah'
         )
