@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\AktivitasFoto;
 use App\Http\Models\AktivitasHarian;
 use App\Http\Models\AktivitasKeluhanGp;
+use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
@@ -21,7 +22,8 @@ class PenerimaanGpController extends Controller
      */
     public function index()
     {
-        return view('penerimaan-gp.grid');
+        $data['title'] = 'Penerimaan GP';
+        return view('penerimaan-gp.grid', $data);
     }
 
     public function json(Request $req)
@@ -86,16 +88,6 @@ class PenerimaanGpController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -149,6 +141,7 @@ class PenerimaanGpController extends Controller
      */
     public function show(AktivitasHarian $aktivitasHarian)
     {
+        $data['title'] = 'Detail Penerimaan GP';
         $data['aktivitasHarian'] = $aktivitasHarian;
         $data['aktivitasFoto'] = AktivitasFoto::withoutGlobalScopes()->where('id_aktivitas_harian', $aktivitasHarian->id)->get();
         $res = AreaStok::select(
@@ -162,49 +155,23 @@ class PenerimaanGpController extends Controller
 
         $produk = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->where('status_produk', 1)->get();
         $data['produk'] = MaterialTransResource::collection($produk);
-        // return ($data['produk']);
+        $pallet = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_pallet')->get();
+        $data['pallet'] = $pallet;
+        $data['id_gudang'] = $aktivitasHarian->id_gudang;
 
         $data['list_produk'] = Material::produk()->get();
         return view('penerimaan-gp.detail', $data);
     }
 
-    public function getArea(Request $req, AreaStok $areaStok)
+    public function getArea($id_gudang, $id_material)
     {
-
+        $areaStok = Area::with('areaStok')
+        ->whereHas('areaStok', function($query) use ($id_material) {
+            $query->where('id_material', $id_material);
+        })
+        ->where('id_gudang', $id_gudang)
+        ->orderBy('nama')
+        ->get();
         return response()->json($areaStok, 200);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

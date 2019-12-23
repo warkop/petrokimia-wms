@@ -180,6 +180,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
 
     Route::group(['prefix' => 'penerimaan-gp'], function () {
         Route::get('/', 'PenerimaanGpController@index');
+        Route::get('/get-area/{id_gudang}/{id_material}', 'PenerimaanGpController@getArea')->where('id_material', '[0-9]+');
         Route::get('/{aktivitasHarian}', 'PenerimaanGpController@show')->where('aktivitasHarian', '[0-9]+');
         Route::get('/get-produk/{id_aktivitas_harian}', 'PenerimaanGpController@getProduk')->where('id_aktivitas_harian', '[0-9]+');
         Route::post('/', 'PenerimaanGpController@json');

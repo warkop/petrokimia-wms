@@ -97,7 +97,7 @@
                                         </p>
                                 </div>
                                     <a href="#" class="btn btn-sm btn-brand btn-bold" data-toggle="modal"
-                                    data-target="#kt_modal" onclick="loadArea({{$item->id_gudang_stok}})">Area</a>
+                                    data-target="#kt_modal" onclick="loadArea({{$item->id_material}})">Area</a>
                                 </div>
                                     @endforeach
                                 <div class="border-pembatas mb1"></div>
@@ -119,26 +119,24 @@
                     <div class="row listterplas mt2">
                         <label class="boldd mb1">List Pallet</label>
                         <div class="kt-widget4 col-12 kel">
-                            <div class="kt-widget4__item border-bottom-dash">
-                                <div class="kt-widget4__info">
-                                    <p class="kt-widget4__username">
-                                        Terplas - <span class="boldd">100</span>
-                                    </p>
-                                    <p class="kt-widget4__text color-green boldd">
-                                        Menambah
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="kt-widget4__item border-bottom-dash">
-                                <div class="kt-widget4__info">
-                                    <p class="kt-widget4__username">
-                                        Terplas - <span class="boldd">20</span>
-                                    </p>
-                                    <p class="kt-widget4__text color-green boldd">
-                                        Menambah
-                                    </p>
-                                </div>
-                            </div>
+                            @foreach ($pallet as $item)
+                                <div class="kt-widget4__item border-bottom-dash">
+                                    <div class="kt-widget4__info">
+                                        <p class="kt-widget4__username">
+                                            {{$item->material->nama}} - <span class="boldd">{{$item->jumlah}}</span>
+                                        </p>
+                                        @if ($item->tipe == 1)
+                                            <p class="kt-widget4__text color-oren boldd">
+                                                Mengurangi    
+                                            </p>
+                                        @else 
+                                            <p class="kt-widget4__text color-green boldd">
+                                                Menambah
+                                            </p>
+                                        @endif
+                                    </div>
+                                </div>    
+                            @endforeach
                             <div class="border-pembatas mb1"></div>
                         </div>
                     </div>
@@ -648,6 +646,64 @@ let datatable,
                         }
                     }
                 });
+            }
+        });
+    }
+
+    function loadArea(id_material) {
+        $.ajax({
+            url:ajaxSource+'/get-area/'+"{{$id_gudang}}"+id_material,
+            success:(response) => {
+                // const obj = JSON.parse(response);
+                let tampung_nama = "";
+                let temp_nama = "";
+                let areanya,temp,temp_container;
+                console.log(response);
+                response.forEach(element => {
+                    if (tampung_nama != element.area.nama) {
+                        temp_container = temp_nama+areanya
+
+                        temp_nama = `
+                        <div class="card-body">
+                            <div class="card-header" id="headingOne5">
+                                <div class="card-title" data-toggle="collapse" data-target="#collapseOne5"
+                                    aria-expanded="true" aria-controls="collapseOne5">
+                                    <i class="flaticon2-shelter"></i> Area ${element.area.nama}
+                                </div>
+                            </div>
+                        `;
+                        tampung_nama = element.area.nama;
+                        areanya = ``;
+                    }
+
+                    element.area.forEach(element2 => {
+                        areanya += `
+                            <div class="kt-widget4__item border-bottom-dash mt1">
+                                <div class="kt-widget4__info">
+                                    <h6 class="kt-widget4__username">
+                                        ${helpDateFormat(element.tanggal, "mi")}
+                                    </h6>
+                                    <p class="kt-widget4__text boldd">
+                                        ${element.jumlah} Ton
+                                    </p>
+                                </div>
+                            </div>`;
+                    });
+
+                    temp_nama += areanya+"</div>"; 
+                });
+
+                temp = `
+                        <div class="card">
+                            <div id="collapseOne5" class="collapse" aria-labelledby="headingOne5" data-parent="#accordionExample5">
+                                ${temp_container}
+                            </div>
+                        </div>`;
+
+                console.log(temp);
+            },
+            error:(response) => {
+
             }
         });
     }
