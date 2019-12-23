@@ -263,19 +263,26 @@
     });
 
     let dataShift1 = [];
-    @foreach ($shift1 as $item)
-        dataShift1.push({{$item->shift}});
-    @endforeach
+    @if (!empty($shift1))
+        @foreach ($shift1 as $item)
+            dataShift1.push({{$item->shift}});
+        @endforeach
+    @endif
 
     let dataShift2 = [];
-    @foreach ($shift2 as $item)
-        dataShift2.push({{$item->shift}});
-    @endforeach
-
+    
+    @if (!empty($shift2))
+        @foreach ($shift2 as $item)
+            dataShift2.push({{$item->shift}});
+        @endforeach
+    @endif
+    
     let dataShift3 = [];
-    @foreach ($shift3 as $item)
-        dataShift3.push({{$item->shift}});
-    @endforeach
+    @if (!empty($shift3))
+        @foreach ($shift3 as $item)
+            dataShift3.push({{$item->shift}});
+        @endforeach    
+    @endif
     // chart bar 
     new Chart(document.getElementById("bar-chart"), {
         type: 'bar',
