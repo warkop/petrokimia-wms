@@ -71,18 +71,34 @@ class AktivitasController extends Controller
 
         $aktivitas = Aktivitas::find($aktivitasHarian->id_aktivitas);
         $user = Users::find(\Request::get('my_auth')->id_user);
-        send_firebase(
-            $user->user_gcid, 
-            [
-                'title' => $aktivitas->nama,
-                'message' => 'Ada pengiriman dari '.$aktivitasHarian->gudang->nama.' dengan nama '.$aktivitas->nama,
-                'meta' => [
-                    'id' => $aktivitasHarian->id,
-                    'id_aktivitas' => $aktivitasHarian->id_aktivitas,
-                    'kode_aktivitas' => $aktivitasHarian->kode_aktivitas,
-                ],
-            ]
-        );
+
+        $rencanaHarian = RencanaHarian::where('id_gudang', $aktivitasHarian->id_gudang_tujuan)
+            ->orderBy('id_gudang', 'desc')
+            ->first();
+
+        $rencanaTkbm = RencanaTkbm::where('id_rencana', $rencanaHarian->id)
+            ->where(function ($query) {
+                $query->where('end_date');
+                $query->orWhere('end_date', '>', now());
+            })
+            ->get();
+
+        foreach ($rencanaTkbm as $key) {
+            $user = Users::where('id_tkbm', $key->id_tkbm)->first();
+            send_firebase(
+                $user->user_gcid, 
+                [
+                    'title' => $aktivitas->nama,
+                    'message' => 'Ada pengiriman dari '.$aktivitasHarian->gudang->nama.' dengan nama '.$aktivitas->nama,
+                    'meta' => [
+                        'id' => $aktivitasHarian->id,
+                        'id_aktivitas' => $aktivitasHarian->id_aktivitas,
+                        'kode_aktivitas' => $aktivitasHarian->kode_aktivitas,
+                    ],
+                ]
+            );
+        }
+
     }
 
     public function testNotif(AktivitasHarian $aktivitasHarian) //save notifikasi, for testing only
@@ -95,17 +111,36 @@ class AktivitasController extends Controller
 
         $aktivitas = Aktivitas::find($aktivitasHarian->id_aktivitas);
 
-        $res = send_firebase('f7UiJI7HyXs:APA91bG4xy09SdGsZkdI76b_oO5tm-c7lgkQCMHfq_YJSlKKFzjqVGozV-tUqBeLZg5S4asafFB97y0elgDB32_ySI065Y7MsTefuD2oukjuRWESbojE7RcJpTQBqdbg1STENa82y5tH',
-            [
-                'title' => $aktivitas->nama,
-                'message' => 'Ada pengiriman dari ' . $aktivitasHarian->gudang->nama . ' dengan nama ' . $aktivitas->nama,
-                'meta' => [
-                    'id' => $aktivitasHarian->id,
-                    'id_aktivitas' => $aktivitasHarian->id_aktivitas,
-                    'kode_aktivitas' => $aktivitasHarian->kode_aktivitas,
-                ],
-            ]);
-        dd($res);
+        $rencanaHarian = RencanaHarian::where('id_gudang', $aktivitasHarian->id_gudang_tujuan)
+            ->orderBy('id_gudang', 'desc')
+            ->first();
+
+        $rencanaTkbm = RencanaTkbm::where('id_rencana', $rencanaHarian->id)
+            ->where(function ($query) {
+                $query->where('end_date');
+                $query->orWhere('end_date', '>', now());
+            })
+        ->get();
+
+        foreach ($rencanaTkbm as $key) {
+            $user = Users::where('id_tkbm', $key->id_tkbm)->first();
+            if (!empty($user)) {
+                $res = send_firebase(
+                    $user->user_gcid,
+                    [
+                        'title' => $aktivitas->nama,
+                        'message' => 'Ada pengiriman dari ' . $aktivitasHarian->gudang->nama . ' dengan nama ' . $aktivitas->nama,
+                        'meta' => [
+                            'id' => $aktivitasHarian->id,
+                            'id_aktivitas' => $aktivitasHarian->id_aktivitas,
+                            'kode_aktivitas' => $aktivitasHarian->kode_aktivitas,
+                        ],
+                    ]);
+                // dd($res);
+            }
+        }
+        
+
     }
 
     public function allNotif()
