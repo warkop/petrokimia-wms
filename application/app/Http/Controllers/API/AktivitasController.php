@@ -1094,7 +1094,7 @@ class AktivitasController extends Controller
             'area_stok.tanggal'
         )
         ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
-        ->leftJoin('area_stok', 'area_stok.id_material', '=', 'material_trans.id_material')
+        ->leftJoin('area_stok', 'area_stok.id', '=', 'material_trans.id_area_stok')
         ->where('id_aktivitas_harian', $id)
         ->whereNotNull('status_produk')
         ->get();
