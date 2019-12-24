@@ -33,7 +33,7 @@ class MaterialRequest extends FormRequest
 
         $rules = [
             'id_material_sap'   => [
-                'required',
+                'required_if:kategori,<>,1',
                 Rule::unique('material', 'id_material_sap')->ignore(\Request::instance()->id)
             ],
             'nama'              => 'required',
@@ -48,7 +48,7 @@ class MaterialRequest extends FormRequest
     public function messages()
     {
         return [
-            'id_material_sap.required' => 'ID Material SAP harus diisi!',
+            'id_material_sap.required_if' => 'ID Material SAP harus diisi!',
             'id_material_sap.integer' => 'ID Material SAP harus berupa angka!',
             'id_material_sap.unique' => 'ID Material SAP sudah ada pada data lain!',
             'nama.unique' => 'Nama Material sudah ada!',

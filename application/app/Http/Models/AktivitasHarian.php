@@ -109,4 +109,45 @@ class AktivitasHarian extends Model
 
         return $result;
     }
+
+    public function jsonGridGp($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
+    {
+        $result = \DB::table($this->table)
+            ->select(
+                'aktivitas_harian.id AS id',
+                'aktivitas.nama as nama_aktivitas',
+                'aktivitas_harian.created_at as tanggal',
+                'gudang.nama as nama_gudang',
+                'shift_kerja.nama as nama_shift',
+                'approve'
+            )
+            ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+            ->join('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
+            ->join('shift_kerja', 'shift_kerja.id', '=', 'aktivitas_harian.id_shift')
+            ->whereNotNull('pengaruh_tgl_produksi')
+            ->whereNotNull('pengiriman');
+
+        if (!empty($search)) {
+            $result = $result->where(function ($where) use ($search) {
+                $where->where(\DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere('gudang.nama', 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere('shift_kerja.nama', 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(\DB::raw("TO_CHAR(aktivitas_harian.created_at, 'DD/MM/YYYY')"), 'ILIKE', '%' . strtolower($search) . '%');
+            });
+        }
+
+        if (!$condition) {
+            foreach ($condition as $key => $value) {
+                $result = $result->where($key, $value);
+            }
+        }
+
+        if ($count == true) {
+            $result = $result->count();
+        } else {
+            $result  = $result->offset($start)->limit($length)->orderBy($field, $sort)->get();
+        }
+
+        return $result;
+    }
 }

@@ -128,6 +128,7 @@ function tambah() {
         backdrop: 'static',
         keyboard: false
     }, 'show');
+    $('#start_date').val(helpDateFormat(Date.now(), 'de'));
 }
 
 function edit(id = '') {
@@ -434,4 +435,7 @@ function reset_form(method = '') {
     $('#password').change();
     $('#end_date').val('');
     $('#end_date').change();
+    $('#pilih').val('');
+    $('#pilih').change();
+    $("input[name=role_id]").prop('checked', false);
 }

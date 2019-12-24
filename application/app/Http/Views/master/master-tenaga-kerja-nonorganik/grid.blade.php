@@ -78,7 +78,7 @@
                                 <label>Nomor Hp</label>
                                 <input type="text" class="form-control input-enter" id="nomor_hp" name="nomor_hp" placeholder="Contoh: 0895340952989">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="pilih_job_desk">
                                 <label>Job Desk</label>
                                 <select class="form-control m-select2" id="job_desk_id" name="job_desk_id" aria-placeholder="Pilih kategori" style="width: 100%;">
                                     <option value="">Pilih pekerjaan</option>
@@ -156,7 +156,8 @@
 <script src="{{asset('assets/extends/js/page/master-tenaga-kerja.js')}}" type="text/javascript"></script>
 <script>
 $('#job_desk_id').select2({
-    placeholder: "Select Job Desk"
+    placeholder: "Select Job Desk",
+    dropdownParent: $("#pilih_job_desk")
 });
 $('#end_date').datepicker({
     rtl: KTUtil.isRTL(),

@@ -55,8 +55,8 @@ class PenerimaanGpController extends Controller
         $page = ($start / $perpage) + 1;
 
         if ($page >= 0) {
-            $result = $models->jsonGrid($start, $perpage, $search, false, $sort, $field, $condition);
-            $total  = $models->jsonGrid($start, $perpage, $search, true, $sort, $field, $condition);
+            $result = $models->jsonGridGp($start, $perpage, $search, false, $sort, $field, $condition);
+            $total  = $models->jsonGridGp($start, $perpage, $search, true, $sort, $field, $condition);
         } else {
             $result = $models::orderBy($field, $sort)->get();
             $total  = $models::all()->count();

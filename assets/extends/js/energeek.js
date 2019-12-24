@@ -184,6 +184,9 @@ var helpDateFormat = function (value, mode = 'se')
 		case 'bi':
 		return helpMonth(month)+' '+year;
 		break;
+		case 'de':
+		return date + '-' + month + '-' + year;
+		break;
 		default:
 		return 'Undefined';
 		break;

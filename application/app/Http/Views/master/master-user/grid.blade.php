@@ -141,7 +141,7 @@ $('#end_date').datepicker({
 
 $('#pilih').select2({
     placeholder: "Pilih Pegawai",
-    dropdownParent:$("#modal_form")
+    dropdownParent:$("#pilih_pegawai")
 });
 
 $(".reveal").on('click',function() {

@@ -89,7 +89,7 @@
                                     <option value="2">Eksternal</option>
                                 </select>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="pilih_karu">
                                 <label>Kepala Regu</label>
                                 <select class="form-control m-select2" id="id_karu" name="id_karu" aria-placeholder="Pilih Kepala Regu" style="width: 100%;">
                                     <option value="">Pilih Kepala Regu</option>
@@ -328,7 +328,7 @@
 $('#id_karu').select2({
     placeholder: "Pilih Kepala Regu",
     allowClear: true,
-    dropdownParent:$("#modal_form")
+    dropdownParent:$("#pilih_karu")
 });
 $('#end_date').datepicker({
     rtl: KTUtil.isRTL(),

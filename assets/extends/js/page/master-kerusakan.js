@@ -108,8 +108,8 @@ function tambah() {
     $('#id').val('');
     $('#action').val('add');
     $('#btn_save').html('Tambah Data');
-    $('#modal_form .modal-title').html('Tambah Data Jenis Foto');
-    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk menambahkan data terkait master Jenis Foto.');
+    $('#modal_form .modal-title').html('Tambah Data Kerusakan Alat Berat');
+    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk menambahkan data terkait master Kerusakan Alat Berat.');
     $('#modal_form').modal({
         backdrop: 'static',
         keyboard: false
@@ -121,8 +121,8 @@ function edit(id = '') {
     $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
-    $('#modal_form .modal-title').html('Edit Data Jenis Foto');
-    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk mengubah data master Jenis Foto sesuai kebutuhan.');
+    $('#modal_form .modal-title').html('Edit Data Kerusakan Alat Berat');
+    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk mengubah data master Kerusakan Alat Berat sesuai kebutuhan.');
     $('#modal_form').modal({
         backdrop: 'static',
         keyboard: false

@@ -170,6 +170,7 @@ function tambah() {
         backdrop: 'static',
         keyboard: false
     }, 'show');
+    $('#start_date').val(helpDateFormat(Date.now(), 'de'));
 }
 
 function pilihKategori(target) {
