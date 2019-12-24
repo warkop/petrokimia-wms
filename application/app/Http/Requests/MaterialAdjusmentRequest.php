@@ -26,18 +26,15 @@ class MaterialAdjusmentRequest extends FormRequest
         }
 
         $rules = [
-            // 'produk'            => 'required|array',
             'produk.*'          => 'required',
-            // 'pallet'            => 'required|array',
+            'area.*'            => 'required',
             'pallet.*'          => 'required',
-            // 'action_produk'     => 'array',
-            'action_produk.*'   => 'numeric|between:1,2',
-            // 'action_pallet'     => 'array',
-            'action_pallet.*'   => 'numeric|between:1,2',
-            // 'produk_jumlah'     => 'array',
+            'action_produk.*'   => 'required|numeric|between:1,2',
+            'action_pallet.*'   => 'required|numeric|between:1,2',
             'produk_jumlah.*'   => 'numeric',
-            // 'pallet_jumlah'     => 'array',
+            // 'produk_alasan.*'   => 'required',
             'pallet_jumlah.*'   => 'numeric',
+            // 'pallet_alasan.*'   => 'required',
             'tanggal'           => 'required|date_format:d-m-Y',
         ];
 
@@ -49,7 +46,7 @@ class MaterialAdjusmentRequest extends FormRequest
     public function messages()
     {
         return [
-            'required'      => ':attribute harus diisi!',
+            'required'      => ':attribute wajib diisi!',
             'numeric'       => ':attribute harus berupa angka!',
             'between'       => ':attribute yang dimasukkan tidak valid!',
             'date_format'   => ':attribute harus dengan format tanggal-bulan-tahun!',
@@ -60,12 +57,15 @@ class MaterialAdjusmentRequest extends FormRequest
     {
         return [
             'produk.*'              => 'Produk',
+            'area.*'                => 'Area',
             'pallet.*'              => 'Pallet',
             'action_produk.*'       => 'Jenis aksi produk',
             'action_pallet.*'       => 'Jenis aksi pallet',
             'produk_jumlah.*'       => 'Jumlah Produk',
+            'produk_alasan.*'       => 'Alasan Produk',
             'pallet_jumlah.*'       => 'Jumlah Pallet',
-            'tanggal'             => 'Tanggal',
+            'pallet_alasan.*'       => 'Alasan Pallet',
+            'tanggal'               => 'Tanggal',
         ];
     }
 

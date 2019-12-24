@@ -125,6 +125,7 @@ lines {
                                 <tr>
                                     <th>No</th>
                                     <th width="20%">Nama</th>
+                                    <th width="20%">Area</th>
                                     <th width="20%">Jenis</th>
                                     <th>Jumlah</th>
                                     <th>Alasan</th>
@@ -195,6 +196,7 @@ lines {
                                 <tr>
                                     <th>No</th>
                                     <th>Nama produk</th>
+                                    <th>Area</th>
                                     <th>Jenis aktivitas</th>
                                     <th>Jumlah</th>
                                     <th>Alasan</th>

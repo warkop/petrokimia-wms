@@ -190,7 +190,10 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
                     <td>${rows}</td>
                     <td>
                         <select class="form-control m-select2 pilih_produk" id="produk-${rows}" name="produk[]" onchange="checkProduk(this)" aria-placeholder="Pilih Produk" style="width: 100%;">
-                            
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control m-select2 pilih_area" id="area-${rows}" name="area[]" aria-placeholder="Pilih Area" style="width: 100%;">
                         </select>
                     </td>
                     <td>
@@ -222,6 +225,7 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
   $(".kt-selectpicker").selectpicker();
   protectNumber(`#produk-jumlah-${rows}`, 10);
   getProduk(`#produk-${rows}`, rows, id, tipe, jumlah);
+  getArea(`#area-${rows}`);
 }
 
 function hapusProduk(id) {
@@ -241,11 +245,10 @@ function tambahPallet(id = "", tipe = "", jumlah = "") {
                     <td>${rows}</td>
                     <td>
                         <select class="form-control m-select2 pilih_pallet" id="pallet-${rows}" name="pallet[]" onchange="checkPallet(this)" aria-placeholder="Pilih Pallet" style="width: 100%;">
-                            
                         </select>
                     </td>
                     <td>
-                        <select class="form-control kt-selectpicker" name="action_pallet[]" id="pallet-status-${rows}" style="width: 100%;">
+                        <select class="form-control" name="action_pallet[]" id="pallet-status-${rows}" style="width: 100%;">
                         <option value="1">Mengurangi</option>
                         <option value="2">Menambah</option>
                         </select>
@@ -294,6 +297,25 @@ function getProduk(target, no, id = "", tipe = "", jumlah = "") {
       $(target).val(id);
       $("#produk-status-" + no).val(tipe);
       $("#produk-jumlah-" + no).val(jumlah);
+    },
+    error: () => {}
+  });
+}
+
+function getArea(target) {
+  // $("#table_produk").children('tr:nth-child(' + no + ')').html(`<lines class="shine"></lines>`);
+  $.ajax({
+    url: ajaxSource + "/get-area/"+id_gudang,
+    beforeSend: () => {},
+    success: res => {
+      const obj = res.data;
+
+      let html = `<option value="">Pilih Area</option>`;
+      obj.forEach((item, index) => {
+        html += `<option value="${item.id}">${item.nama}</option>`;
+      });
+
+      $(target).html(html);
     },
     error: () => {}
   });
@@ -501,12 +523,12 @@ function detail(id) {
       let obj_pallet = response.data.pallet;
 
       if (obj_adjustment.tanggal != null) {
-        $("#tempat_tanggal").html(helpDateFormat(obj_adjustment.tanggal, "si"));
+        $("#tempat_tanggal").html(helpDateFormat(obj_adjustment.tanggal, "li"));
       }
 
       if (obj_adjustment.foto != null) {
         let html =
-          '<a target="_blank" href="' +
+          '<a id="gambar" target="_blank" href="' +
           baseUrl +
           /watch/ +
           obj_adjustment.foto +
@@ -525,6 +547,10 @@ function detail(id) {
           $("#tempat_muncul_gambar").prop("src", link);
 
         $("#list").html(html);
+      } else {
+        $("#tempat_link_gambar").prop("href", "");
+        $("#tempat_muncul_gambar").prop("src", "");
+        $("#list").html("Tidak ada gambar");
       }
 
         let text = "";
@@ -540,8 +566,9 @@ function detail(id) {
                 <tr>
                     <td>${i}</td>
                     <td>${element.nama}</td>
+                    <td>${element.nama_area}</td>
                     <td>${text_tipe}</td>
-                    <td>${element.jumlah} pcs</td>
+                    <td>${element.jumlah} kg</td>
                     <td>${element.alasan ? element.alasan : ''}</td>
                 </tr>
             `;

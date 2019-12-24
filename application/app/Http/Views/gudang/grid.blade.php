@@ -39,7 +39,7 @@
                         <th>Id Plant</th>
                         <th>Nama Gudang</th>
                         <th>Tipe Gudang</th>
-                        <th>Min Pallet</th>
+                        {{-- <th>Min Pallet</th> --}}
                         {{-- <th>Min Terplas</th> --}}
                         {{-- <th>Jumlah Pupuk</th> --}}
                         {{-- <th>Jumlah Alat Berat</th> --}}

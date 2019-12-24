@@ -107,6 +107,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/load-aktivitas-gudang/{id_gudang}', 'GudangController@getAktivitasGudang');
         Route::get('/load-pallet', 'GudangController@loadPallet');
         Route::get('/get-produk', 'GudangController@getProduk');
+        Route::get('/get-area/{id_gudang}', 'GudangController@getArea')->where('id_gudang', '[0-9]+');
         Route::get('/get-pallet', 'GudangController@getPallet');
         Route::get('/layout-gudang/{id_gudang}', 'GudangController@layoutGudang')->where('id_gudang', '[0-9]+');
         Route::get('/load-area/{id_gudang}', 'GudangController@loadArea')->where('id_gudang', '[0-9]+');

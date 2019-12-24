@@ -11,10 +11,11 @@ class LayoutController extends Controller
 {
     public function index()
     {
+        $data['title'] = 'Layout';
         $area = Area::whereNotNull('koordinat')->get();
 
         // $data['area'] = LayoutAreaResource::collection($area);
-        return view('menu-layout.grid');
+        return view('menu-layout.grid', $data);
     }
 
     public function loadArea()

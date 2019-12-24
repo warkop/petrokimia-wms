@@ -158,6 +158,13 @@ class GudangController extends Controller
         return response()->render(200, $data);
     }
 
+    public function getArea($id_gudang)
+    {
+        $data = Area::where('id_gudang', $id_gudang)->get();
+
+        return response()->render(200, $data);
+    }
+
     public function getPallet()
     {
         $data = Material::pallet()->get();
@@ -250,6 +257,7 @@ class GudangController extends Controller
 
     public function layoutGudang($id_gudang)
     {
+        $data['title'] = 'Layout Gudang';
         $data['id_gudang'] = $id_gudang;
         return view('gudang.layoutGudang', $data);
     }
