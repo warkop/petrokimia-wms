@@ -160,8 +160,8 @@ function edit(id = '') {
     $('#id').val(id);
     $('#action').val('edit');
     $('#btn_save').html('Simpan Data');
-    $('#modal_form .modal-title').html('Edit Data List Alat Berat');
-    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk mengubah data master List Alat Berat sesuai kebutuhan.');
+    $('#modal_form .modal-title').html('Edit Data Area');
+    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk mengubah data master Area sesuai kebutuhan.');
     $('#modal_form').modal({
         backdrop: 'static',
         keyboard: false
