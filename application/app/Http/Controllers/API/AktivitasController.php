@@ -1108,7 +1108,8 @@ class AktivitasController extends Controller
             'nama as nama_material',
             'material_trans.tipe',
             'material_trans.jumlah',
-            'area_stok.tanggal'
+            'area_stok.tanggal',
+            'area_stok.id_area'
         )
         ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
         ->leftJoin('area_stok', 'area_stok.id', '=', 'material_trans.id_area_stok')
