@@ -160,7 +160,7 @@ class AuthController extends Controller
             $this->responseCode = 400;
             $this->responseMessage = 'User tidak ditemukan.';
         } else {
-            $user->where('id', $data['id'])->update(['api_token' => null]);
+            $user->where('id', $data['id'])->update(['api_token' => null, 'user_gcid' => null]);
             $this->responseCode = 200;
             $this->responseMessage = 'Berhasil melakukan logout.';
         }
