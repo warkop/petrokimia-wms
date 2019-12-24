@@ -279,7 +279,7 @@ class MaterialAdjustmentController extends Controller
                         'a.nama as nama_area',
                         'mt.tipe',
                         'alasan',
-                        'mt.jumlah',
+                        'mt.jumlah'
                     )
                     ->leftJoin('material_trans as mt', 'mt.id_adjustment', '=', 'ma.id')
                     ->leftJoin('material as m', 'mt.id_material', '=', 'm.id')
