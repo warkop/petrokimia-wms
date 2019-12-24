@@ -23,8 +23,6 @@ class PalletRequest extends FormRequest
      */
     public function rules()
     {
-        $this->sanitize();
-
         $action = \Request::instance()->action;
         if ($action == 'edit') {
             $rules['id'] = 'required';
@@ -37,6 +35,8 @@ class PalletRequest extends FormRequest
             'tipe'              => 'between:1,2',
             'jenis'             => 'between:1,4',
         ];
+
+        $this->sanitize();
 
         return $rules;
     }
@@ -68,6 +68,12 @@ class PalletRequest extends FormRequest
 
         foreach ($input as $key => $value) {
             $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
+        }
+
+        if ($input['tanggal'] != '') {
+            $input['tanggal']  = date('Y-m-d', strtotime($input['tanggal']));
+        } else {
+            $input['tanggal'] = null;
         }
 
         $this->replace($input);
