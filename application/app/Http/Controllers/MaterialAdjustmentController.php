@@ -70,15 +70,14 @@ class MaterialAdjustmentController extends Controller
 
             $id = $req->input('id');
             if (!empty($id)) {
-                $materialAdjustment = MaterialAdjustment::withoutGlobalScopes()->find($id);
+                $materialAdjustment = MaterialAdjustment::find($id);
                 MaterialTrans::where('id_adjustment', $id)->truncate();
             } else {
                 $materialAdjustment = new MaterialAdjustment;
             }
 
             //material adjustment
-            $materialAdjustment->tanggal            = $req->input('tanggal');
-            // $materialAdjustment->foto               = $req->input('foto');
+            $materialAdjustment->tanggal = $req->input('tanggal');
             $materialAdjustment->save();
 
             //material trans
@@ -93,20 +92,13 @@ class MaterialAdjustmentController extends Controller
                 $produk_jumlah    = array_values($produk_jumlah);
                 $produk_alasan    = array_values($produk_alasan);
                 for ($i = 0; $i < $panjang; $i++) {
-                    $materialTrans = new MaterialTrans;
-                    $materialTrans->id_adjustment   = $materialAdjustment->id;
-                    $materialTrans->id_material     = $produk[$i];
-                    $materialTrans->tipe            = $action_produk[$i];
-                    $materialTrans->jumlah          = $produk_jumlah[$i];
-                    $materialTrans->alasan          = $produk_alasan[$i];
-                    $materialTrans->save();
-
                     $gudangStok = GudangStok::where('id_material', $produk[$i])->first();
                     if (empty($gudangStok)) {
                         if ($action_produk[$i] == 1) {
+                            $materialAdjustment->forceDelete();
                             $this->responseMessage = 'Stok belum tersedia jadi Anda hanya diizinkan untuk menambah untuk material ini!';
                             $this->responseCode = 403;
-
+                            
                             $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
                             return response()->json($response, $this->responseCode);
                         }
@@ -115,6 +107,7 @@ class MaterialAdjustmentController extends Controller
                     } else {
                         if ($action_produk[$i] == 1) {
                             if ($gudangStok->jumlah - $produk_jumlah[$i] < 0) {
+                                $materialAdjustment->forceDelete();
                                 $this->responseMessage = 'Jumlah yang Anda masukkan melebihi stok yang tersedia!';
                                 $this->responseCode = 403;
 
@@ -126,6 +119,14 @@ class MaterialAdjustmentController extends Controller
                             $gudangStok->jumlah         = $gudangStok->jumlah + $produk_jumlah[$i];
                         }
                     }
+
+                    $materialTrans = new MaterialTrans;
+                    $materialTrans->id_adjustment   = $materialAdjustment->id;
+                    $materialTrans->id_material     = $produk[$i];
+                    $materialTrans->tipe            = $action_produk[$i];
+                    $materialTrans->jumlah          = $produk_jumlah[$i];
+                    $materialTrans->alasan          = $produk_alasan[$i];
+                    $materialTrans->save();
                 }
             }
 
@@ -140,18 +141,10 @@ class MaterialAdjustmentController extends Controller
                 $pallet_jumlah    = array_values($pallet_jumlah);
                 $pallet_alasan    = array_values($pallet_alasan);
                 for ($i = 0; $i < $panjang; $i++) {
-                    $materialTrans = new MaterialTrans;
-                    $materialTrans->id_adjustment   = $materialAdjustment->id;
-                    $materialTrans->id_adjustment   = $materialAdjustment->id;
-                    $materialTrans->id_material     = $pallet[$i];
-                    $materialTrans->tipe            = $action_pallet[$i];
-                    $materialTrans->jumlah          = $pallet_jumlah[$i];
-                    $materialTrans->alasan          = $pallet_alasan[$i];
-                    $materialTrans->save();
-
                     $gudangStok = GudangStok::where('id_material', $pallet[$i])->first();
                     if (empty($gudangStok)) {
                         if ($action_pallet[$i] == 1) {
+                            $materialAdjustment->forceDelete();
                             $this->responseMessage = 'Stok belum tersedia jadi Anda hanya diizinkan untuk menambah untuk material ini!';
                             $this->responseCode = 403;
 
@@ -163,6 +156,7 @@ class MaterialAdjustmentController extends Controller
                     } else {
                         if ($action_pallet[$i] == 1) {
                             if ($gudangStok->jumlah - $pallet_jumlah[$i] < 0) {
+                                $materialAdjustment->forceDelete();
                                 $this->responseMessage = 'Jumlah yang Anda masukkan melebihi stok yang tersedia!';
                                 $this->responseCode = 403;
 
@@ -174,7 +168,14 @@ class MaterialAdjustmentController extends Controller
                             $gudangStok->jumlah         = $gudangStok->jumlah + $pallet_jumlah[$i];
                         }
                     }
-
+                    $materialTrans = new MaterialTrans;
+                    $materialTrans->id_adjustment   = $materialAdjustment->id;
+                    $materialTrans->id_adjustment   = $materialAdjustment->id;
+                    $materialTrans->id_material     = $pallet[$i];
+                    $materialTrans->tipe            = $action_pallet[$i];
+                    $materialTrans->jumlah          = $pallet_jumlah[$i];
+                    $materialTrans->alasan          = $pallet_alasan[$i];
+                    $materialTrans->save();
                 }
             }
 
@@ -185,7 +186,6 @@ class MaterialAdjustmentController extends Controller
             $this->responseCode = 400;
             $this->responseMessage = 'ID gudang tidak valid';
         }
-        
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
@@ -193,7 +193,7 @@ class MaterialAdjustmentController extends Controller
 
     public function uploadFile($id_gudang, Request $req)
     {
-        $id = $req->get("id");
+        $id = $req->get('id');
         $file = $req->file('file');
 
         $cek_penggunaan = MaterialAdjustment::find($id);
@@ -201,8 +201,6 @@ class MaterialAdjustmentController extends Controller
         if (!empty($cek_penggunaan)) {
             $ext = $file->getClientOriginalExtension();
             $filename = $file->getClientOriginalName();
-            // $file_enc = md5($filename) . '.' . $ext;
-             
 
             $filter = [
                 'jpg',

@@ -99,11 +99,6 @@ lines {
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Foto</label>
-                                {{-- <form action="/file-upload" class="kt-dropzone dropzone" id="m-dropzone-one">
-                                    <div class="fallback">
-                                        <input type="file" name="file" />
-                                    </div>
-                                </form> --}}
                                 <div class="kt-dropzone dropzone" id="m-dropzone-one" >
                                     <div class="kt-dropzone__msg dz-message needsclick">
                                         <h3 class="kt-dropzone__msg-title">Seret berkas atau klik untuk mengunggah</h3>
@@ -159,44 +154,6 @@ lines {
                             </tbody>
                         </table>
                     </div>
-                    {{-- <div class="mt-4">
-                        <h5>List terplas</h5>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th width="">No</th>
-                                    <th width="">Nama</th>
-                                    <th width="25%">Jenis</th>
-                                    <th width="25%">Jumlah</th>
-                                    <th width=""><button class="btn btn-success btn-elevate btn-icon btn-sm"><i class="la la-plus"></i></button></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>
-                                        <select class="form-control m-select2" id="kt_select2_terplas4" name="param" aria-placeholder="Pilih kategori" style="width: 100%;">
-                                            <option value="">Pilih produk</option>
-                                            <option value="AK">Terplas A</option>
-                                            <option value="HI">Terplas B</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select class="form-control kt-selectpicker" style="width: 100%;">
-                                            <option>Menambah</option>
-                                            <option>Mengurangi</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="text" name="jumlah" class="form-control" placeholder="Masukkan jumlah">
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger btn-elevate btn-icon btn-sm"><i class="la la-trash"></i></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>

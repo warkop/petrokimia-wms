@@ -194,7 +194,7 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
                         </select>
                     </td>
                     <td>
-                        <select class="form-control kt-selectpicker" name="action_produk[]" id="produk-status-${rows}" style="width: 100%;">
+                        <select class="form-control" name="action_produk[]" id="produk-status-${rows}" style="width: 100%;">
                         <option value="1">Mengurangi</option>
                         <option value="2">Menambah</option>
                         </select>
@@ -648,12 +648,12 @@ function simpan() {
       window.onbeforeunload = false;
       $(".btn_close_modal").removeClass("hide");
       $(".se-pre-con").hide();
-
       if (response["status"] == 401 || response["status"] == 419) {
         location.reload();
       } else {
         if (response["status"] != 404 && response["status"] != 500) {
           let obj = JSON.parse(response["responseText"]);
+          console.log(obj)
 
           if (!$.isEmptyObject(obj.message)) {
             if (obj.code > 450) {
@@ -663,20 +663,23 @@ function simpan() {
             } else {
               head = "Pemberitahuan";
               type = "warning";
-
-              obj = response.responseJSON.errors;
-              laddaButton.stop();
-              window.onbeforeunload = false;
-              $(".btn_close_modal").removeClass("hide");
-              $(".se-pre-con").hide();
-
-              const temp = Object.values(obj);
-              message = "";
-              temp.forEach(element => {
-                element.forEach(row => {
-                  message += row + "<br>";
+              if (!$.isEmptyObject(response.responseJSON.errors)) {
+                obj = response.responseJSON.errors;
+                laddaButton.stop();
+                window.onbeforeunload = false;
+                $(".btn_close_modal").removeClass("hide");
+                $(".se-pre-con").hide();
+  
+                const temp = Object.values(obj);
+                message = "";
+                temp.forEach(element => {
+                  element.forEach(row => {
+                    message += row + "<br>";
+                  });
                 });
-              });
+              } else {
+                message = obj.message
+              }
             }
           }
         }
