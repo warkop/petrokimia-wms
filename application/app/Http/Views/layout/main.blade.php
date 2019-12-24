@@ -56,7 +56,7 @@
                         </div>
                         <div class="row">
                             <div class="col-6 mb2">
-                                <button onclick="location.href='{{('/')}}'" type="button"
+                                <button onclick="location.href='{{url('/')}}'" type="button"
                                     class="btn btn-elevate btn-outline-success btn-icon-sm" style="width: 100%;"> <i class="la la-desktop"></i>
                                     Dashboard</button>
                             </div>

@@ -54,7 +54,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		<!-- begin:: Header Mobile -->
 		<div id="kt_header_mobile" class="kt-header-mobile  kt-header-mobile--fixed ">
 			<div class="kt-header-mobile__logo">
-				<a href="{{url('/dashboard')}}">
+				<a href="{{url('/')}}">
 					<img alt="Logo" src="{{aset_extends()}}/img/logo/logo-wms-green.png" width="20%"/>
 				</a>
 			</div>
@@ -76,7 +76,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					<!-- begin:: Aside -->
 					<div class="kt-aside__brand kt-grid__item " id="kt_aside_brand" style="background-color: #ffffff">
 						<div class="kt-aside__brand-logo">
-							<a href="{{url('/dashboard')}}">
+							<a href="{{url('/')}}">
 								<img alt="Logo" src="{{aset_extends()}}/img/logo/logo-wms-green.png" width="100%" />
 							</a>
 						</div>
