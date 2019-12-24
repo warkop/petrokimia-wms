@@ -79,41 +79,18 @@
                             @foreach ($produk as $item)
                             <div class="kt-widget4__item border-bottom-dash">
                                 <div class="kt-widget4__info">
-
-                                        {{-- @if ($temp_material != $item->material->nama) --}}
-                                        @php 
-                                            // $total += $item->jumlah;
-                                        @endphp
-                                        <p class="kt-widget4__username">
-                                            {{$item->material->nama??'-'}} - <span class="boldd">{{$total}} Ton</span>
-                                        </p>
-                                        @php
-                                            // $temp_material = $item->material->nama
-                                        @endphp
-                                        {{-- @endif --}}
-
-                                        <p class="kt-widget4__text color-oren boldd">
-                                            {{$item->text_tipe}}
-                                        </p>
+                                    <p class="kt-widget4__username">
+                                        {{$item->material->nama??'-'}} - <span class="boldd">{{$item->jumlah/1000}} Ton</span>
+                                    </p>
+                                    <p class="kt-widget4__text color-oren boldd">
+                                        {{$item->text_tipe}}
+                                    </p>
                                 </div>
                                     <a href="#" class="btn btn-sm btn-brand btn-bold" data-toggle="modal"
                                     data-target="#kt_modal" onclick="loadArea({{$item->id_material}})">Area</a>
                                 </div>
                                     @endforeach
                                 <div class="border-pembatas mb1"></div>
-                            {{-- <div class="kt-widget4__item border-bottom-dash ">
-                                <div class="kt-widget4__info">
-                                    <p class="kt-widget4__username">
-                                        Pupuk ZE - <span class="boldd">20 Ton</span>
-                                    </p>
-                                    <p class="kt-widget4__text color-oren boldd">
-                                        Menambah
-                                    </p>
-                                </div>
-                                <a href="#" class="btn btn-sm btn-brand btn-bold" data-toggle="modal"
-                                    data-target="#kt_modal">Area</a>
-                            </div> --}}
-                            
                         </div>
                     </div>
                     <div class="row listterplas mt2">
@@ -176,8 +153,8 @@
                 <div class="modal-body">
                     <label class="boldd">List Area</label>
                     <!--begin::Accordion-->
-                    <div class="accordion accordion-light  accordion-toggle-arrow" id="accordionExample5">
-                        <div class="card">
+                    <div class="accordion accordion-light  accordion-toggle-arrow" id="tempat_card">
+                        {{-- <div class="card">
                             <div class="card-header" id="headingOne5">
                                 <div class="card-title" data-toggle="collapse" data-target="#collapseOne5"
                                     aria-expanded="true" aria-controls="collapseOne5">
@@ -255,7 +232,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <!--end::Accordion-->
@@ -394,6 +371,7 @@
 
 <script src="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.js')}}"></script>
 <script type="text/javascript">
+const id_gudang = "{{$id_gudang}}";
 let datatable,
     tableTarget = "#kt_table_1",
     ajaxUrl = baseUrl + "penerimaan-gp",
@@ -652,55 +630,53 @@ let datatable,
 
     function loadArea(id_material) {
         $.ajax({
-            url:ajaxSource+'/get-area/'+"{{$id_gudang}}"+id_material,
+            url:ajaxSource+'/get-area/'+id_gudang+"/"+id_material,
             success:(response) => {
-                // const obj = JSON.parse(response);
                 let tampung_nama = "";
                 let temp_nama = "";
-                let areanya,temp,temp_container;
-                console.log(response);
+                let areanya = "";
+                let temp = "";
+                let i=1;
                 response.forEach(element => {
-                    if (tampung_nama != element.area.nama) {
-                        temp_container = temp_nama+areanya
-
-                        temp_nama = `
-                        <div class="card-body">
-                            <div class="card-header" id="headingOne5">
-                                <div class="card-title" data-toggle="collapse" data-target="#collapseOne5"
-                                    aria-expanded="true" aria-controls="collapseOne5">
-                                    <i class="flaticon2-shelter"></i> Area ${element.area.nama}
-                                </div>
+                    temp_nama = `
+                        <div class="card-header" id="heading-${i}">
+                            <div class="card-title" data-toggle="collapse show" data-target="#collapse-${i}"
+                                aria-expanded="true" aria-controls="collapse-${i}">
+                                <i class="flaticon2-shelter"></i> Area ${element.nama}
                             </div>
-                        `;
-                        tampung_nama = element.area.nama;
-                        areanya = ``;
-                    }
+                        </div>
+                    `;
 
-                    element.area.forEach(element2 => {
+                    areanya = "";
+                    element.area_stok.forEach(element2 => {
                         areanya += `
                             <div class="kt-widget4__item border-bottom-dash mt1">
                                 <div class="kt-widget4__info">
                                     <h6 class="kt-widget4__username">
-                                        ${helpDateFormat(element.tanggal, "mi")}
+                                        ${helpDateFormat(element2.tanggal, "mi")}
                                     </h6>
                                     <p class="kt-widget4__text boldd">
-                                        ${element.jumlah} Ton
+                                        ${element2.jumlah} KG
                                     </p>
                                 </div>
                             </div>`;
                     });
-
-                    temp_nama += areanya+"</div>"; 
+                    if (!$.isEmptyObject(temp_nama)) {
+                        temp += `
+                                <div class="card">
+                                    <div id="collapse-${i}" class="collapse show" aria-labelledby="heading-${i}" data-parent="#tempat_card">
+                                        <div class="card-body">
+                                        ${temp_nama}
+                                        ${areanya}
+                                        </div>
+                                    </div>
+                                </div>`;
+                    }
                 });
-
-                temp = `
-                        <div class="card">
-                            <div id="collapseOne5" class="collapse" aria-labelledby="headingOne5" data-parent="#accordionExample5">
-                                ${temp_container}
-                            </div>
-                        </div>`;
-
-                console.log(temp);
+                console.log(temp)
+                // console.log($("#accordionExample5"));
+                $("#tempat_card").html(temp);
+                // console.log(temp);
             },
             error:(response) => {
 
