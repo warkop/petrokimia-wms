@@ -279,6 +279,13 @@ class GudangController extends Controller
 
     public function storeKoordinat(Request $req)
     {
+        $validatedData = $req->validate([
+            'koordinat' => 'required',
+            'pilih_area' => 'required',
+        ], [
+            'required' => ':attribute wajib diisi!',
+        ]);
+
         $koordinat      = $req->input('koordinat');
         $id_area        = $req->input('pilih_area');
 

@@ -61,7 +61,7 @@
     {{-- <form method="post" accept-charset="utf-8" id="map_form"> --}}
         <div class="row">
             <input class="form-control col-md-8" type="text" name="koordinat" value="" id="koordinat" readonly/>&nbsp;
-            <input class="btn btn-primary col-md-2" type="button" name="save" value="Simpan" id="save" />
+            <input class="btn btn-primary col-md-2 ladda-button" data-style="zoom-in" id="save" type="button" name="save" value="Simpan"/>
         </div>
     {{-- </form> --}}
     <!--End::Dashboard 6-->
@@ -208,7 +208,10 @@ function muatArea() {
 }
 
 $(function () {
-    $('#save').click(function () {
+    $('#save').click(function (e) {
+        e.preventDefault();
+        laddaButton = Ladda.create(this);
+        laddaButton.start();
         const koordinat = $("#koordinat").val();
         const pilih_area = $("#pilih_area").val();
         $.ajax({
@@ -221,15 +224,58 @@ $(function () {
                 koordinat:koordinat,
                 pilih_area:pilih_area
             },
+            beforeSend: function() {
+                preventLeaving();
+            },
             success:response=>{
                 swal.fire("Pemberitahuan", response.message, "success").then(()=>{
                     // $("#koordinat").val("");
                 });
             },
-            error:(response)=>{
+            error:response=>{
+                $("#save").prop("disabled", false);
+                let head = "Maaf",
+                    message = "Terjadi kesalahan koneksi",
+                    type = "error";
+                laddaButton.stop();
+                window.onbeforeunload = false;
+                $(".se-pre-con").hide();
+                if (response["status"] == 401 || response["status"] == 419) {
+                    location.reload();
+                } else {
+                    if (response["status"] != 404 && response["status"] != 500) {
+                        let obj = JSON.parse(response["responseText"]);
 
+                        if (!$.isEmptyObject(obj.message)) {
+                            if (obj.code > 450) {
+                                head = "Maaf";
+                                message = obj.message;
+                                type = "error";
+                            } else {
+                                head = "Pemberitahuan";
+                                type = "warning";
+                                if (!$.isEmptyObject(response.responseJSON.errors)) {
+                                    obj = response.responseJSON.errors;
+                                    laddaButton.stop();
+                                    window.onbeforeunload = false;
+                    
+                                    const temp = Object.values(obj);
+                                    message = "";
+                                    temp.forEach(element => {
+                                        element.forEach(row => {
+                                            message += row + "<br>";
+                                        });
+                                    });
+                                } else {
+                                    message = obj.message
+                                }
+                            }
+                        }
+                    }
+                    swal.fire(head, message, type);
+                }
             }
-        })
+        });
     });
 });
 
