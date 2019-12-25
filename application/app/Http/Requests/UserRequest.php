@@ -41,6 +41,9 @@ class UserRequest extends FormRequest
             'role_id'       => [
                 'required',
             ],
+            'pilih'         => [
+                'required',
+            ],
             'start_date'    => 'nullable|date_format:d-m-Y',
             'end_date'      => 'nullable|date_format:d-m-Y|after:start_date',
         ];

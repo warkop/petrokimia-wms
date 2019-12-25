@@ -96,7 +96,7 @@ class PalletController extends Controller
     {
         $req->validated();
 
-        $gudangStok = GudangStok::where('id_material', $req->input('material'))->first();
+        $gudangStok = GudangStok::where('id_material', $req->input('material'))->where('id_gudang', $id_gudang)->where('status', $req->input('jenis'))->first();
         if (empty($gudangStok)) {
             if ($req->input('tipe') == 1) {
                 $this->responseMessage = 'Stok belum tersedia jadi Anda hanya diizinkan untuk menambah untuk material ini!';

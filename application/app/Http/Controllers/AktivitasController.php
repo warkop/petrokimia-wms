@@ -90,11 +90,16 @@ class AktivitasController extends Controller
         $aktivitas->butuh_tkbm                 = $req->input('butuh_tkbm');
         $aktivitas->tanda_tangan               = $req->input('tanda_tangan');
         $aktivitas->butuh_approval             = $req->input('butuh_approval');
-        $aktivitas->anggaran_tkbm              = $req->input('anggaran_tkbm');
+        // $aktivitas->anggaran_tkbm              = $req->input('anggaran_tkbm');
         $aktivitas->kode_aktivitas             = $req->input('kode_aktivitas');
         $aktivitas->penerimaan_gi              = $req->input('penerimaan_gi');
         $aktivitas->start_date                 = $req->input('start_date');
         $aktivitas->end_date                   = $req->input('end_date');
+
+        $anggaran_tkbm = ($req->input('anggaran_tkbm') ? $req->input('anggaran_tkbm') : 0);
+        $anggaran_tkbm = str_replace('.', '', $anggaran_tkbm);
+        $temp_tkbm = explode(',', $anggaran_tkbm);
+        $aktivitas->anggaran_tkbm = $temp_tkbm[0];
 
         $aktivitas->save();
 
@@ -119,10 +124,15 @@ class AktivitasController extends Controller
         if (!empty($alat_berat) && !empty($butuh_alat_berat)) {
             AktivitasAlatBerat::where('id_aktivitas', $aktivitas->id)->delete();
             for ($i=0; $i<count($alat_berat); $i++) {
+                $anggaran[$alat_berat[$i]] = ($anggaran[$alat_berat[$i]] ? $anggaran[$alat_berat[$i]] : 0);
+                $anggaran[$alat_berat[$i]] = str_replace('.', '', $anggaran[$alat_berat[$i]]);
+                $temps = explode(',', $anggaran[$alat_berat[$i]]);
+                $temp_anggaran = $temps[0];
+
                 $arr = [
                     'id_aktivitas'              => $aktivitas->id,
                     'id_kategori_alat_berat'    => $alat_berat[$i],
-                    'anggaran'                  => $anggaran[$alat_berat[$i]],
+                    'anggaran'                  => $temp_anggaran,
                 ];
     
                 AktivitasAlatBerat::create($arr);

@@ -49,10 +49,10 @@ class AktivitasRequest extends FormRequest
             'tanda_tangan'              => 'nullable|numeric',
             'start_date'                => 'nullable|date_format:d-m-Y',
             'end_date'                  => 'nullable|date_format:d-m-Y|after:start_date',
-            'anggaran_tkbm'             => 'nullable|numeric',
+            // 'anggaran_tkbm'             => 'nullable|numeric',
             'upload_foto.*'             => 'nullable|numeric',
             'alat_berat.*'              => 'nullable|numeric',
-            'anggaran.*'                => 'nullable|numeric',
+            // 'anggaran.*'                => 'nullable|numeric',
             'kode_aktivitas'            => 'nullable|size:3',
         ];
 

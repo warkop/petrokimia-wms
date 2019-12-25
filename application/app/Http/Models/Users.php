@@ -120,8 +120,11 @@ class Users extends Authenticatable
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('users as u')
-            ->select('u.id AS id', 'email', 'id_karu', 'id_tkbm', 'r.nama AS role_name', 'name','username AS nama', DB::raw('TO_CHAR(u.start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(u.end_date, \'dd-mm-yyyy\') AS end_date'))
-            ->leftJoin('role as r', 'u.role_id', '=', 'r.id');
+            ->select('u.id AS id', 'email', 'id_karu', 'id_tkbm', 'r.nama AS role_name', 'name', 'tk.nama as nama_tk', 'k.nama as nama_karu','username AS nama', DB::raw('TO_CHAR(u.start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(u.end_date, \'dd-mm-yyyy\') AS end_date'))
+            ->leftJoin('role as r', 'u.role_id', '=', 'r.id')
+            ->leftJoin('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'u.id_tkbm')
+            ->leftJoin('karu as k', 'k.id', '=', 'u.id_karu')
+            ;
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {

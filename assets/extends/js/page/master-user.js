@@ -58,6 +58,9 @@ let load_table = function () {
                 "mData": "nama"
             },
             {
+                "mData": "id"
+            },
+            {
                 "mData": "role_name"
             },
             {
@@ -89,7 +92,20 @@ let load_table = function () {
                 }
             },
             {
-                "aTargets": [7],
+                "aTargets": [4],
+                "mData": "id",
+                "mRender": function (data, type, full, draw) {
+                    if (full.id_tkbm != null) {
+                        return full.nama_tk;
+                    } else if (full.id_karu != null) {
+                        return full.nama_karu;
+                    } else {
+                        return ``;
+                    }
+                }
+            },
+            {
+                "aTargets": -1,
                 "mData": "id",
                 "aaSorting":false,
                 render: function (data, type, full, meta) {

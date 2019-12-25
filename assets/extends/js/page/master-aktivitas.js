@@ -29,11 +29,18 @@ $(document).ready(function () {
         }
     });
 
-    $('#anggaran').autoNumeric('init', {
+    $('.anggaran').autoNumeric('init', {
         aSep: '.',
         aDec: ',',
-        aSign: ''
+        aSign: '',
+        allowDecimalPadding: false
     });
+
+    // $('#anggaran_tkbm').autoNumeric('init', {
+    //     allowDecimalPadding: false
+    // });
+
+    // $("#anggaran_tkbm").val(($("#anggaran_tkbm").val()/1000).toFixed(3))
 });
 
 let load_table = function () {

@@ -34,6 +34,7 @@
                         <th>Nama</th>
                         <th>E-mail</th>
                         <th>Username</th>
+                        <th>Nama Pegawai</th>
                         <th>Hak Akses</th>
                         <th>Start Date</th>
                         <th>End Date</th>
