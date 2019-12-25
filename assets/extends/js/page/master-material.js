@@ -142,12 +142,18 @@ let load_table = function () {
                 "mData": "id",
                 render: function (data, type, full, meta) {
                     return `
-                        <button type = "button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Ubah Data">
+                        <button type = "button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-togle="x-tooltip" data-placement="top" title="Ubah Data">
                         <i class="flaticon-edit-1"></i> </button>
                     `;
                 },
             }
         ],
+        "drawCallback": function( settings ) {
+            $('[data-togle="x-tooltip"]').tooltip({
+                boundary: "window",
+                container: "body"
+            });
+        },
         "fnHeaderCallback": function (nHead, aData, iStart, iEnd, aiDisplay) {
             $(nHead).children('th:nth-child(1), th:nth-child(2), th:nth-child(3)').addClass('text-center');
         },
