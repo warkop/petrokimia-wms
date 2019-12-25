@@ -29,18 +29,38 @@ $(document).ready(function () {
         }
     });
 
-    $('.anggaran').autoNumeric('init', {
-        aSep: '.',
-        aDec: ',',
-        aSign: '',
-        allowDecimalPadding: false
-    });
+    // $('.anggaran').AutoNumeric('init', {
+    //     aSep: '.',
+    //     aDec: ',',
+    //     aSign: '',
+    //     minimumValue: '0',
+    //     maximumValue: '999999999',
+    //     decimalPlaces: 0,
+    //     allowDecimalPadding: false,
+    //     digitGroupSeparator : ''
+    // });
 
     // $('#anggaran_tkbm').autoNumeric('init', {
     //     allowDecimalPadding: false
     // });
 
     // $("#anggaran_tkbm").val(($("#anggaran_tkbm").val()/1000).toFixed(3))
+    // const numeric = new AutoNumeric('.anggaran', { allowDecimalPadding: false });
+});
+
+jQuery(function ($) {
+    const numeric = new AutoNumeric.multiple('.anggaran', { 
+        decimalCharacter: ',',
+        digitGroupSeparator:'.',
+        allowDecimalPadding: false 
+    });
+
+    // const numeric2 = new AutoNumeric('#anggaran_tkbm', {
+    //     decimalCharacter: ',',
+    //     digitGroupSeparator: '.',
+    //     allowDecimalPadding: false
+    // });
+    // console.log(numeric);
 });
 
 let load_table = function () {
