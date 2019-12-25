@@ -351,6 +351,14 @@ License: You must have a valid license purchased only from themeforest(the above
 
 		<!-- end::Scrolltop -->
 
+		<script>
+			document.onkeydown = function(evt) {
+				evt = evt || window.event;
+				if (evt.keyCode == 27) {
+					$('.modal').modal('hide');
+				}
+			};
+		</script>
 		
 	</body>
 
