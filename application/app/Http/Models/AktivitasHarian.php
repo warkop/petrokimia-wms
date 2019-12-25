@@ -95,7 +95,7 @@ class AktivitasHarian extends Model
             });
         }
 
-        if (!$condition) {
+        if (!empty($condition)) {
             foreach ($condition as $key => $value) {
                 $result = $result->where($key, $value);
             }

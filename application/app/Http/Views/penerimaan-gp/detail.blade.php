@@ -82,15 +82,21 @@
                                     <p class="kt-widget4__username">
                                         {{$item->material->nama??'-'}} - <span class="boldd">{{$item->jumlah/1000}} Ton</span>
                                     </p>
-                                    <p class="kt-widget4__text color-oren boldd">
-                                        {{$item->text_tipe}}
-                                    </p>
+                                     @if ($item->tipe == 1)
+                                        <p class="kt-widget4__text color-oren boldd">
+                                            Mengurangi    
+                                        </p>
+                                    @else 
+                                        <p class="kt-widget4__text color-green boldd">
+                                            Menambah
+                                        </p>
+                                    @endif
                                 </div>
-                                    <a href="#" class="btn btn-sm btn-brand btn-bold" data-toggle="modal"
-                                    data-target="#kt_modal" onclick="loadArea({{$item->id_material}})">Area</a>
-                                </div>
-                                    @endforeach
-                                <div class="border-pembatas mb1"></div>
+                                <a href="#" class="btn btn-sm btn-brand btn-bold" data-toggle="modal"
+                                data-target="#kt_modal" onclick="loadArea({{$item->id_material}})">Area</a>
+                            </div>
+                            @endforeach
+                            <div class="border-pembatas mb1"></div>
                         </div>
                     </div>
                     <div class="row listterplas mt2">
@@ -126,9 +132,9 @@
                     <div class="col-10">
                         @if ($aktivitasHarian->approve == null)
                         <button type="button" class="btn btn-wms btn-lg" onclick="approve()">Approve</button>
+                        @endif
                         <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
                             data-target="#kt_keluhan" onclick="loadKeluhan()">Keluhan</button>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -346,10 +352,12 @@
                     <div class="col-8">
                         <h5 class="boldd">List Produk</h5>
                     </div>
+                     @if ($aktivitasHarian->approve == null)
                     <div class="col-4">
                         <p class="btn btn-outline-success pull-right cursor pointer" onclick="tambah()"><i class="la la-plus"></i>
                             Tambah</p>
                     </div>
+                    @endif
                 </div>
                 <div id="table_produk" style="border-bottom: 2px solid #F2F3F8">
                     <div id="belumada" class="row kel">
@@ -361,7 +369,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-clean" data-dismiss="modal">Tutup</button>
+                 @if ($aktivitasHarian->approve == null)
                 <button type="button" class="btn btn-primary ladda-button" data-style="zoom-in" id="btn_save">Simpan</button>
+                @endif
             </div>
             </form>
         </div>
@@ -399,47 +409,77 @@ let datatable,
     function tambah(obj='') {
         const tableId = "table_produk";
         const rows = document.getElementById(tableId).getElementsByTagName("div").length;
-        $("#table_produk").append(`
-        <div class="row mb2 produk_baris" id="baris-produk-${rows}">
-            <div class="col-3">
-                <label class="boldd-500">Pilih Produk</label>
-                <select class="form-control select2Custom m-select2" id="produk-${rows}" name="produk[]" aria-placeholder="Pilih Produk" style="width: 100%;">
-                    <option disabled selected>Pilih Produk</option>
-                </select>
+        @if ($aktivitasHarian->approve == null)
+            $("#table_produk").append(`
+            <div class="row mb2 produk_baris" id="baris-produk-${rows}">
+                <div class="col-3">
+                    <label class="boldd-500">Pilih Produk</label>
+                    <select class="form-control select2Custom m-select2" id="produk-${rows}" name="produk[]" aria-placeholder="Pilih Produk" style="width: 100%;">
+                        <option disabled selected>Pilih Produk</option>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <label class="boldd-500">Jumlah</label><br>
+                    <input type="text" id="jumlah-${rows}" name="jumlah[]" class="form-control" placeholder="Jumlah">
+                </div>
+                <div class="col-5">
+                    <label class="boldd-500">Keluhan</label>
+                    <textarea class="form-control" id="keluhan-${rows}" name="keluhan[]" rows="2"></textarea>
+                </div>
+                <div class="col-2">
+                    <label class="visibility-hide">Area</label><br>
+                    <button href="javascript:void(0)" type="button" class="btn btn-danger cursor pointer btn-elevate btn-icon button_hapus" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="Hapus"><i class="flaticon-delete"></i> </button>
+                </div>
             </div>
-            <div class="col-2">
-                <label class="boldd-500">Jumlah</label><br>
-                <input type="text" id="jumlah-${rows}" name="jumlah[]" class="form-control" placeholder="Jumlah">
+            `);
+            
+            loadProduk(rows, `#produk-${rows}`, obj)
+            $(`#produk-${rows}`).attr("readonly", false);
+        @else
+            $("#table_produk").append(`
+            <div class="row mb2 produk_baris" id="baris-produk-${rows}">
+                <div class="col-3">
+                    <label class="boldd-500">Pilih Produk</label>
+                    <select class="form-control select2Custom m-select2" id="produk-${rows}" name="produk[]" aria-placeholder="Pilih Produk" style="width: 100%;">
+                        <option disabled selected>Pilih Produk</option>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <label class="boldd-500">Jumlah</label><br>
+                    <input readonly type="text" id="jumlah-${rows}" name="jumlah[]" class="form-control" placeholder="Jumlah">
+                </div>
+                <div class="col-5">
+                    <label class="boldd-500">Keluhan</label>
+                    <textarea readonly class="form-control" id="keluhan-${rows}" name="keluhan[]" rows="2"></textarea>
+                </div>
+                <div class="col-2">
+                    <label class="visibility-hide">Area</label><br>
+                    <button href="javascript:void(0)" type="button" class="btn btn-danger cursor pointer btn-elevate btn-icon button_hapus" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="Hapus"><i class="flaticon-delete"></i> </button>
+                </div>
             </div>
-            <div class="col-5">
-                <label class="boldd-500">Keluhan</label>
-                <textarea class="form-control" id="keluhan-${rows}" name="keluhan[]" rows="2"></textarea>
-            </div>
-            <div class="col-2">
-                <label class="visibility-hide">Area</label><br>
-                <button href="javascript:void(0)" type="button" class="btn btn-danger cursor pointer btn-elevate btn-icon button_hapus" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="Hapus"><i class="flaticon-delete"></i> </button>
-            </div>
-        </div>
-        `);
+            `);
+            
+            loadProduk(rows, `#produk-${rows}`, obj, false)
 
-        loadProduk(rows, `#produk-${rows}`, obj)
+            // $(`#produk-${rows}`).attr("readonly", true);
+        @endif
         $('.select2Custom').select2({
             placeholder: "Pilih Produk",
             dropdownParent:$("#kt_keluhan")
         });
         
+         
     }
 
     $("body").on('click', '.button_hapus', function (e) {
         $(this).parent().parent().remove();
     });
 
-    function loadProduk(no, target, produk='') {
+    function loadProduk(no, target, produk='', edit=true) {
         $.ajax({
             url:  baseUrl + "penerimaan-gp" + "/" + "get-produk/"+id_aktivitas_harian,
             success: res => {
                 const obj = res.data;
-                console.log(obj);
                 let html = `<option value="">Pilih Produk</option>`;
                 obj.forEach((item, index) => {
                     html += `<option value="${item.id}">${item.nama}</option>`;
@@ -449,6 +489,12 @@ let datatable,
                 $("#produk-"+no).val(produk.id_material);
                 $("#jumlah-"+no).val(produk.jumlah);
                 $("#keluhan-"+no).html(produk.keluhan);
+
+                if (edit == false) {
+                    $("#produk-"+no).select2({
+                    disabled: true
+                    });
+                }
             },
             error: () => {}
         });

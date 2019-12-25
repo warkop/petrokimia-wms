@@ -38,7 +38,7 @@
                     <div class="form-group row">
                         <label class="col-form-label col-lg-3 col-sm-12">Pilih Gudang</label>
                         <div class="col-lg-7 col-md-9 col-sm-12">
-                            <select class="form-control m-select2" id="gudang">
+                            <select class="form-control m-select2" id="gudang" onchange="pilih()">
                                 @foreach ($gudang as $key)
                                     <option value="{{$key->id}}">{{$key->nama}}</option>
                                 @endforeach
@@ -51,7 +51,7 @@
                     <div class="form-group row">
                         <label class="col-form-label col-lg-3 col-sm-12">Pilih Shift</label>
                         <div class="col-lg-7 col-md-9 col-sm-12">
-                            <select class="form-control" id="shift">
+                            <select class="form-control" id="shift" onchange="pilih()">
                                 @foreach ($shift as $key)
                                 <option value="{{$key->id}}">{{$key->nama}}</option>
                                 @endforeach
