@@ -142,7 +142,7 @@ let load_table = function () {
                 "mData": "id",
                 render: function (data, type, full, meta) {
                     return `
-                        <button type = "button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-togle="x-tooltip" data-placement="top" title="Ubah Data">
+                        <button type = "button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-togle="x-tooltip" data-placement="left" title="Ubah Data">
                         <i class="flaticon-edit-1"></i> </button>
                     `;
                 },
@@ -151,7 +151,8 @@ let load_table = function () {
         "drawCallback": function( settings ) {
             $('[data-togle="x-tooltip"]').tooltip({
                 boundary: "window",
-                container: "body"
+                container: "body",
+                trigger: "hover"
             });
         },
         "fnHeaderCallback": function (nHead, aData, iStart, iEnd, aiDisplay) {
