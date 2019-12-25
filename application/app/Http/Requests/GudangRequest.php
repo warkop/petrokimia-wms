@@ -25,6 +25,7 @@ class GudangRequest extends FormRequest
     public function rules()
     {
         $rules = [
+            'id_sloc'           => Rule::unique('gudang')->ignore(\Request::instance()->id),
             'nama'              => 'required',
             'tipe_gudang'       => 'required|numeric|digits_between:1,2',
             'id_karu'           => [Rule::unique('gudang')->ignore(\Request::instance()->id),],
@@ -45,6 +46,7 @@ class GudangRequest extends FormRequest
     public function attributes()
     {
         return [
+            'id_sloc'       => 'ID Sloc',
             'nama'          => 'Nama',
             'tipe_gudang'   => 'Tipe Gudang',
             'id_karu'       => 'Karu',
