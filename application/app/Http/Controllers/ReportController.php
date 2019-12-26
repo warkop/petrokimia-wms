@@ -636,7 +636,7 @@ class ReportController extends Controller
             mkdir(storage_path() . '/app/public/excel', 755);
         }
 
-        $nama_file = date("YmdHis") . '_mutasi_pallet.xlsx';
+        $nama_file = date("YmdHis") . '_realisasi.xlsx';
         $this->generateExcelRealisasi($res, $nama_file, $tgl_awal, $tgl_akhir);
     }
 
@@ -843,5 +843,57 @@ class ReportController extends Controller
     public function generateExcelKeluhanGp()
     {
         
+    }
+
+    public function laporanMaterial()
+    {
+        # code...
+    }
+
+    public function material()
+    {
+        $gudang             = request()->input('gudang'); //multi
+        $produk             = request()->input('produk');
+        $pilih_produk       = request()->input('pilih_produk'); //multi
+        $shift              = request()->input('shift'); //multi
+        $kegiatan           = request()->input('kegiatan'); //multi
+        $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
+
+        $res = DB::table('gudang as g')->select(
+            'g.nama as nama_gudang',
+            'm.nama as nama_material',
+            'ars.jumlah',
+            DB::raw('(SELECT jumlah FROM material_trans WHERE id_area_stok = ars.id ORDER BY id asc limit 1) as stok_awal')
+        )
+        ->join(DB::raw('area as a'), 'a.id_gudang', '=', 'g.id')
+        ->join(DB::raw('material as m'), 'm.id', '=', 'a.id_gudang')
+        ->join(DB::raw('area_stok as ars'), 'm.id', '=', 'ars.id_material')
+        ->where(function ($query) use ($gudang) {
+            foreach ($gudang as $key => $value) {
+                $query = $query->orWhere('g.id_gudang', $value);
+            }
+        })
+        ->where(function ($query) use ($produk, $pilih_produk) {
+            if ($produk == 2) {
+                foreach ($pilih_produk as $key => $value) {
+                    $query->orWhere('m.id', $value);
+                }
+            }
+        })
+        ->get()
+        ;
+
+        if (!is_dir(storage_path() . '/app/public/excel/')) {
+            mkdir(storage_path() . '/app/public/excel', 755);
+        }
+
+        $nama_file = date("YmdHis") . '_material.xlsx';
+        $this->generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir);
+    }
+
+    public function generateExcelMaterial($res, $nama_file)
+    {
+        # code...
     }
 }

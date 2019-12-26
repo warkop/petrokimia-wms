@@ -44,6 +44,11 @@ class Material extends CustomModel
         return $this->belongsTo(Sistro::class, 'id_material_sap', 'idproduk');
     }
 
+    public function areaStok()
+    {
+        return $this->hasMany(AreaStok::class, 'id', 'id_material');
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('material')
