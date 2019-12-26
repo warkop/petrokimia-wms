@@ -47,19 +47,25 @@ use Illuminate\Notifications\Notification;
 class AktivitasController extends Controller
 {
     private function getCheckerGudang() { //untuk memperoleh informasi checker ini sekarang berada di gudang mana
-        $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
-            ->where('id_tkbm',\Request::get('my_auth')->id_tkbm)
-            ->orderBy('rencana_harian.id', 'desc')
-            ->take(1)->first();
-
-        if (empty($rencana_tkbm)) {
-            $this->responseCode = 500;
-            $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
-            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-            return response()->json($response, $this->responseCode);
+        if (\Request::get('my_auth')->role == 3) {
+            $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+                ->where('id_tkbm',\Request::get('my_auth')->id_tkbm)
+                ->orderBy('rencana_harian.id', 'desc')
+                ->take(1)->first();
+    
+            if (empty($rencana_tkbm)) {
+                $this->responseCode = 500;
+                $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+            $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
+            $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
+        } else if (\Request::get('my_auth')->role == 5) {
+            $gudang = Gudang::where('id_karu', \Request::get('my_auth')->id_karu)->first();
+        } else {
+            return false;
         }
-        $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
-        $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
 
         return $gudang->id;
     }
