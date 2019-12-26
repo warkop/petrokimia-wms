@@ -11,7 +11,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="{{app_info('description')}}">
     <meta name="author" content="{{app_info(['vendor', 'company'])}}">
-	<link rel="shortcut icon" href="{{ aset_extends('img/logo/fav_wms_green@2x.png')}}" />
+	<link rel="shortcut icon" href="{{ aset_extends('img/logo/favwms.png')}}" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
         var baseUrl = "{{url('/')}}/";

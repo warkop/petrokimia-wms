@@ -38,7 +38,7 @@
                     <div class="kt-login__wrapper">
                         <div class="kt-login__content">
                             <a class="kt-login__logo" href="{{('master-aktivitas')}}">
-                                <img src="{{asset('assets/extends/img/logo/logo-wms-green.png')}}">
+                                <img src="{{asset('assets/extends/img/logo/logo_wms1.png')}}" width="100%">
                             </a>
                         </div>
                     </div>
