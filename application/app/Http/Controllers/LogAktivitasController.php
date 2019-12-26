@@ -46,7 +46,7 @@ class LogAktivitasController extends Controller
         $shift      = $req->get('shift');
         $sort = $numbcol[0]['dir'];
         $field = $columns[$numbcol[0]['column']]['data'];
-
+        $condition = [];
         if ($gudang != '') {
             $condition['id_gudang'] = $gudang;
         }

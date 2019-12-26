@@ -39,6 +39,7 @@
                         <label class="col-form-label col-lg-3 col-sm-12">Pilih Gudang</label>
                         <div class="col-lg-7 col-md-9 col-sm-12">
                             <select class="form-control m-select2" id="gudang" onchange="pilih()">
+                                <option value="">Pilih Semua</option>
                                 @foreach ($gudang as $key)
                                     <option value="{{$key->id}}">{{$key->nama}}</option>
                                 @endforeach
@@ -51,7 +52,8 @@
                     <div class="form-group row">
                         <label class="col-form-label col-lg-3 col-sm-12">Pilih Shift</label>
                         <div class="col-lg-7 col-md-9 col-sm-12">
-                            <select class="form-control" id="shift" onchange="pilih()">
+                            <select class="form-control m-select2" id="shift" onchange="pilih()">
+                                <option></option>
                                 @foreach ($shift as $key)
                                 <option value="{{$key->id}}">{{$key->nama}}</option>
                                 @endforeach
@@ -171,7 +173,12 @@
 
 <script>
     $("#gudang").select2({
-        placeholder: "Pilih Gudang",
+        placeholder: "Pilih Semua Gudang",
+        allowClear: true
+    });
+
+    $("#shift").select2({
+        placeholder: "Pilih Semua Shift",
         allowClear: true
     })
 </script>
