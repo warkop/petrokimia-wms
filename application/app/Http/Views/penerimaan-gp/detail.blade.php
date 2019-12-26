@@ -257,6 +257,8 @@
 <script src="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.js')}}"></script>
 <script type="text/javascript">
 const id_gudang = "{{$id_gudang}}";
+const id_aktivitas_harian = "{{$aktivitasHarian->id}}";
+
 let datatable,
     tableTarget = "#kt_table_1",
     ajaxUrl = baseUrl + "penerimaan-gp",
@@ -264,7 +266,6 @@ let datatable,
     totalFiles = 0,
     completeFiles = 0,
     laddaButton;
-    const id_aktivitas_harian = "{{$aktivitasHarian->id}}";
 
     $(document).ready(()=>{
         $("#btn_save").on("click", function(e) {
@@ -551,7 +552,7 @@ let datatable,
 
     function loadArea(id_material) {
         $.ajax({
-            url:ajaxSource+'/get-area/'+id_gudang+"/"+id_material,
+            url:ajaxSource+'/get-area/'+id_gudang+"/"+id_material+"/"+id_aktivitas_harian,
             success:(response) => {
                 let tampung_nama = "";
                 let temp_nama = "";

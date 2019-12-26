@@ -279,6 +279,7 @@
 <script src="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.js')}}"></script>
 <script type="text/javascript">
     const id_gudang = "{{$id_gudang}}";
+    const id_aktivitas_harian = "{{$id_aktivitas_harian}}";
 
     let ajaxUrl = baseUrl + "log-aktivitas",
     ajaxSource = ajaxUrl;
@@ -291,7 +292,7 @@
 
     function loadArea(id_material) {
         $.ajax({
-            url:ajaxSource+'/get-area/'+id_gudang+"/"+id_material,
+            url:ajaxSource+'/get-area/'+id_gudang+"/"+id_material+"/"+id_aktivitas_harian,
             success:(response) => {
                 let tampung_nama = "";
                 let temp_nama = "";
