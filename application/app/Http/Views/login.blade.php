@@ -39,7 +39,7 @@
         <div class="login">
             <div class="row">
                 <div class="col-lg-5 left">
-                    <img class="logo" src="{{ aset_extends('img/logo/logo_petro.png')}}" alt="" srcset="">            
+                    <img class="logo" src="{{ aset_extends('img/logo/logo_petro1.png')}}" alt="" srcset="">            
                     <img class="full" src="{{ aset_extends('img/illustration/login-wms.png')}}" alt="" srcset="">            
                 </div>
                 
@@ -47,7 +47,9 @@
                     <div class="login-wrapper">
                         <div class="top-logo">
                             <span>
-                                    <img src="{{ aset_extends('img/logo/logo-wms-green.png')}}" alt="PT Petrokimia Gresik">
+                                    <img src="{{ aset_extends('img/logo/logo_ggmu1.png')}}" alt="Gudang Gresik Makin Unggul">
+                                    <img src="{{ aset_extends('img/logo/logo_wms1.png')}}" alt="Warehouse Management System">
+                                    <img src="{{ aset_extends('img/logo/logo_petro1.png')}}" alt="PT Petrokimia Gresik">
                             </span>
                             <!-- <span> <p>Dinas Kebudayaan dan Pariwisata Kota Surabaya </p></span> -->
                         </div>
