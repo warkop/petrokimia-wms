@@ -145,8 +145,8 @@
                 <div class="modal-body">
                     <label class="boldd">List Area</label>
                     <!--begin::Accordion-->
-                    <div class="accordion accordion-light  accordion-toggle-arrow" id="accordionExample5">
-                        <div class="card">
+                    <div class="accordion accordion-light  accordion-toggle-arrow" id="tempat_card">
+                        {{-- <div class="card">
                             <div class="card-header" id="headingOne5">
                                 <div class="card-title" data-toggle="collapse" data-target="#collapseOne5"
                                     aria-expanded="true" aria-controls="collapseOne5">
@@ -224,7 +224,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <!--end::Accordion-->
@@ -278,14 +278,72 @@
 
 <script src="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.js')}}"></script>
 <script type="text/javascript">
+    const id_gudang = "{{$id_gudang}}";
 
-  $(".fancybox").fancybox({
+    let ajaxUrl = baseUrl + "log-aktivitas",
+    ajaxSource = ajaxUrl;
 
-      openEffect: "none",
+    $(".fancybox").fancybox({
+        openEffect: "none",
 
-      closeEffect: "none"
+        closeEffect: "none"
+    });
 
-  });
+    function loadArea(id_material) {
+        $.ajax({
+            url:ajaxSource+'/get-area/'+id_gudang+"/"+id_material,
+            success:(response) => {
+                let tampung_nama = "";
+                let temp_nama = "";
+                let areanya = "";
+                let temp = "";
+                let i=1;
+                response.forEach(element => {
+                    temp_nama = `
+                        <div class="card-header" id="heading-${i}">
+                            <div class="card-title" data-toggle="collapse show" data-target="#collapse-${i}"
+                                aria-expanded="true" aria-controls="collapse-${i}">
+                                <i class="flaticon2-shelter"></i> Area ${element.nama}
+                            </div>
+                        </div>
+                    `;
+
+                    areanya = "";
+                    element.area_stok.forEach(element2 => {
+                        areanya += `
+                            <div class="kt-widget4__item border-bottom-dash mt1">
+                                <div class="kt-widget4__info">
+                                    <h6 class="kt-widget4__username">
+                                        ${helpDateFormat(element2.tanggal, "mi")}
+                                    </h6>
+                                    <p class="kt-widget4__text boldd">
+                                        ${element2.jumlah} KG
+                                    </p>
+                                </div>
+                            </div>`;
+                    });
+                    if (!$.isEmptyObject(temp_nama)) {
+                        temp += `
+                                <div class="card">
+                                    <div id="collapse-${i}" class="collapse show" aria-labelledby="heading-${i}" data-parent="#tempat_card">
+                                        <div class="card-body">
+                                        ${temp_nama}
+                                        ${areanya}
+                                        </div>
+                                    </div>
+                                </div>`;
+                    }
+                });
+                console.log(temp)
+                // console.log($("#accordionExample5"));
+                $("#tempat_card").html(temp);
+                // console.log(temp);
+            },
+            error:(response) => {
+
+            }
+        });
+    }
 
 </script>
 
