@@ -21,6 +21,12 @@ class AuthController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    protected function clean($user)
+    {
+        $user->user_gcid = null;
+        $user->save();
+    }
+
     public function username()
     {
         return 'username';
@@ -79,6 +85,8 @@ class AuthController extends Controller
                                 $rencanaTkbm        = RencanaTkbm::where('id_tkbm', $m_user->id_tkbm)->orderBy('id_rencana', 'desc')->first();
                                 $rencanaHarian      = RencanaHarian::findOrFail($rencanaTkbm->id_rencana);
                                 if (date('Y-m-d H:i:s', strtotime($rencanaHarian->end_date)) < date('Y-m-d H:i:s')) {
+                                    $this->clean($m_user);
+
                                     $this->responseCode = 403;
                                     $this->responseMessage = 'Rencana harian dari checker ini sudah kadaluarsa!';
                                     
@@ -94,8 +102,10 @@ class AuthController extends Controller
                             $this->responseData = $arr;
                             $this->responseMessage = 'Anda berhasil login';
                         } else {
+                            $this->clean($m_user);
                             $this->responseCode = 403;
                             $this->responseMessage = 'Checker tidak didaftarkan pada rencana harian!';
+
                         }
                     } else {
                         $m_user = Users::withoutGlobalScopes()->find($cek_user['id']);
