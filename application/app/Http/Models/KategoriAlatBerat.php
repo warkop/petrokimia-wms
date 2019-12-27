@@ -24,6 +24,11 @@ class KategoriAlatBerat extends CustomModel
 
     public $timestamps  = false;
 
+    public function alatBerat()
+    {
+        return $this->hasMany(AlatBerat::class, 'id_kategori', 'id');
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('alat_berat_kat')

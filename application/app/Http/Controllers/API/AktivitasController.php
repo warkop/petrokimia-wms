@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Aktivitas;
+use App\Http\Models\AktivitasAlatBerat;
 use App\Http\Models\Users;
 use App\Http\Models\AktivitasFoto;
 use App\Http\Models\AktivitasGudang;
@@ -361,16 +362,14 @@ class AktivitasController extends Controller
         }
     }
 
-    public function getAlatBerat(Request $req) //memuat alat berat
+    public function getAlatBerat(Request $req, $id_aktivitas) //memuat alat berat
     {
         $search = strip_tags($req->input('search'));
-        $resource = AlatBerat::
-        leftJoin('alat_berat_kat as abk', 'alat_berat.id_kategori', '=', 'abk.id')
-        ->where('status', 1)
-        ->where(function ($where) use ($search) {
-            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-            $where->orWhere(DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
-        })->get();
+
+        $resource = AktivitasAlatBerat::
+        with('kategoriAlatBerat', 'kategoriAlatBerat.alatBerat')
+        ->where('id_aktivitas', $id_aktivitas)
+        ->get();
         return (new AktivitasResource($resource))->additional([
             'status' => [
                 'message' => '',

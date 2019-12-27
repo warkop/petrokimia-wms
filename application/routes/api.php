@@ -23,7 +23,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-gudang', 'API\AktivitasController@getGudang');
         Route::get('/get-produk', 'API\AktivitasController@getMaterial');
         Route::get('/get-pallet', 'API\AktivitasController@getPallet');
-        Route::get('/get-alat-berat', 'API\AktivitasController@getAlatBerat');
+        Route::get('/get-alat-berat/{id_aktivitas}', 'API\AktivitasController@getAlatBerat')->where('id_aktivitas', '[0-9]+');
         Route::get('/get-jenis-foto', 'API\AktivitasController@getJenisFoto');
         Route::get('/get-kelayakan-foto', 'API\AktivitasController@getKelayakanFoto');
         Route::get('/get-pindah-area', 'API\AktivitasController@pindahArea');
