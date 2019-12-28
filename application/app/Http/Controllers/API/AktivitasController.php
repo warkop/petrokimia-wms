@@ -21,6 +21,7 @@ use App\Http\Models\GudangStok;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
 use App\Http\Models\Notifications;
+use App\Http\Models\RencanaAlatBerat;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use App\Http\Models\Sistro;
@@ -389,15 +390,13 @@ class AktivitasController extends Controller
         // ->where('id_aktivitas', $id_aktivitas)
         // ->get();
 
-        $resource = AktivitasAlatBerat::select(
+        $resource = RencanaAlatBerat::select(
             'alat_berat.id',
-            'anggaran',
             'alat_berat_kat.nama as kategori',
             'nomor_lambung'
         )
-        ->join('alat_berat_kat', 'alat_berat_kat.id', '=', 'aktivitas_alat_berat.id_kategori_alat_berat')
-        ->join('alat_berat', 'alat_berat.id_kategori', '=', 'alat_berat_kat.id')
-        ->where('id_aktivitas', $id_aktivitas)
+        ->join('alat_berat', 'alat_berat.id', '=', 'rencana_alat_berat.id_alat_berat')
+        ->join('alat_berat_kat', 'alat_berat_kat.id', '=', 'alat_berat.id_kategori')
         ->orderBy('alat_berat.id', 'asc')
         ->get()
         ;
