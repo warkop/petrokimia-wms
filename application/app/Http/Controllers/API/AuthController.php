@@ -95,6 +95,7 @@ class AuthController extends Controller
                                 }
                                 $gudang             = Gudang::findOrFail($rencanaHarian->id_gudang);
                                 
+                                $arr['id_gudang'] = $gudang->id;
                                 $arr['nama_gudang'] = $gudang->nama;
                             }
 
