@@ -62,6 +62,13 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/{id}', 'TenagaKerjaNonOrganikController@show')->where('id', '[0-9]+');
     });
 
+    Route::group(['prefix' => 'master-pemetaan-sloc'], function () { 
+        Route::get('/', 'PemetaanSlocController@index');
+        Route::post('/', 'PemetaanSlocController@json');
+        Route::put('/', 'PemetaanSlocController@store');
+        Route::get('/load-sloc', 'PemetaanSlocController@loadSloc');
+    }); 
+
     Route::group(['prefix' => 'master-kerusakan-alat'], function () {
         Route::get('/', 'AlatBeratKerusakanController@index');
         Route::put('/', 'AlatBeratKerusakanController@store');
@@ -290,16 +297,6 @@ Route::get('/add-rencana-harian', function () {
 // Route::get('/log-aktivitas/detail', function () {
 //     return view('log-aktivitas.detail');
 // });
-
-
-
-
-
-
-
-Route::get('/master-pemetaan-sloc', function () {
-    return view('master.master-pemetaan-sloc.grid');
-});
 
 Route::get('/laporan-material', function () {
     return view('report.material.grid');

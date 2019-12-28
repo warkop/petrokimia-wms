@@ -60,7 +60,7 @@
             </div>
             <form id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
                 <div class="modal-body">
-                    <input type="hidden" class="form-control" name="shift_kerja_id">
+                    <input type="hidden" class="form-control" name="id">
                     <input type="hidden" name="action" value="add">
                     <div class="row">
                         <div class="col-md-12">
@@ -82,7 +82,7 @@
                             </div> --}}
                             <div class="form-group">
                                 <label>Nama Pemetaan</label>
-                                <input class="form-control" id="" name="" placeholder="Masukkan Nama Pemetaan">
+                                <input class="form-control" id="nama" name="nama" placeholder="Masukkan Nama Pemetaan">
                             </div>
                         </div>
                     </div>
