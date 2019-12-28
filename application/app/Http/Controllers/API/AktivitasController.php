@@ -1394,7 +1394,7 @@ class AktivitasController extends Controller
             'butuh_approval',
             DB::raw('
                 CASE
-                    WHEN internal_gudang IS NOT NULL AND butuh_approval IS NOT NULL THEN true
+                    WHEN internal_gudang IS NOT NULL AND butuh_approval IS NOT NULL THEN true AND id_gudang_tujuan = '.$id_gudang.'
                 ELSE false
             END AS tombol_approval'),
             DB::raw('
