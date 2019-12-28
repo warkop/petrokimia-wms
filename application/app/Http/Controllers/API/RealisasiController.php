@@ -76,12 +76,12 @@ class RealisasiController extends Controller
             'material.id',
             'id_material_sap',
             'id_plant',
-            'nama',
-            'jumlah'
+            'nama'
+            // 'jumlah'
         )
-        ->join('gudang_stok as gs', 'gs.id_material', '=', 'material.id')
+        // ->join('gudang_stok as gs', 'gs.id_material', '=', 'material.id')
         ->lainlain()
-        ->where('id_gudang', $gudang->id)
+        // ->where('id_gudang', $gudang->id)
         ->get();
 
         return (new AktivitasResource($res))->additional([
