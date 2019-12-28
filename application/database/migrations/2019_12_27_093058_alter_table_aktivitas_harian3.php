@@ -14,7 +14,7 @@ class AlterTableAktivitasHarian3 extends Migration
     public function up()
     {
         Schema::table('aktivitas_harian', function (Blueprint $table) {
-            $table->integer('draft')->nullable();
+            $table->integer('draft')->default(1)->nullable();
         });
     }
 
