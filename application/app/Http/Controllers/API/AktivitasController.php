@@ -24,6 +24,7 @@ use App\Http\Models\Notifications;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use App\Http\Models\Sistro;
+use App\Http\Models\TenagaKerjaNonOrganik;
 use App\Http\Requests\ApiAktivitasPenerimaanGiRequest;
 use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Requests\ApiSaveKelayakanPhotos;
@@ -71,7 +72,7 @@ class AktivitasController extends Controller
         return $gudang->id;
     }
 
-    private function storeNotification($aktivitasHarian) //save notifikasi
+    private function storeNotification($aktivitasHarian, $message='') //save notifikasi
     {
         $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
         $gudang->notify(new Pengiriman($aktivitasHarian));
@@ -90,7 +91,7 @@ class AktivitasController extends Controller
             $query->orWhere('end_date', '>=', now());
         })
         ->get();
-        // dd($rencanaTkbm->toArray());
+        
         foreach ($rencanaTkbm as $key) {
             $user = Users::where('id_tkbm', $key->id_tkbm)->first();
             if (!empty($user)) {
@@ -98,11 +99,14 @@ class AktivitasController extends Controller
                     $user->user_gcid, 
                     [
                         'title' => $aktivitas->nama,
-                        'message' => 'Ada pengiriman dari '.$aktivitasHarian->gudang->nama.' dengan nama '.$aktivitas->nama,
+                        'message' => $message,
                         'meta' => [
                             'id' => $aktivitasHarian->id,
-                            'id_aktivitas' => $aktivitasHarian->id_aktivitas,
-                            'kode_aktivitas' => $aktivitasHarian->kode_aktivitas,
+                            'id_aktivitas'      => $aktivitasHarian->id_aktivitas,
+                            'kode_aktivitas'    => $aktivitasHarian->kode_aktivitas,
+                            'approve'           => $aktivitasHarian->approve,
+                            'pengiriman_gi'     => $aktivitasHarian->aktivitas->pengiriman_gi,
+                            'penerimaan_gi'     => $aktivitasHarian->aktivitas->penerimaan_gi,
                         ],
                     ]
                 );
@@ -663,7 +667,8 @@ class AktivitasController extends Controller
                 }
 
                 if ($res_aktivitas->internal_gudang != null) {
-                    $this->storeNotification($aktivitasHarian);
+                    $message = 'Ada pengiriman dari ' . $aktivitasHarian->gudang->nama . ' dengan nama ' . $res_aktivitas->nama;
+                    $this->storeNotification($aktivitasHarian, $message);
                 }
 
                 return (new AktivitasResource($aktivitasHarian))->additional([
@@ -819,10 +824,35 @@ class AktivitasController extends Controller
         $req->validated();
         $user = $req->get('my_auth');
         $res_user = Users::findOrFail($user->id_user);
+        $aktivitasHarian = AktivitasHarian::findOrFail($req->input('id_aktivitas_harian'));
+
+        $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+            ->where('id_tkbm', $user->id_tkbm)
+            ->orderBy('rencana_harian.id', 'desc')
+            ->take(1)->first();
+
+        if (empty($rencana_tkbm)) {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+
+        $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
+
+        if (empty($gudang)) {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Gudang tidak tersedia!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+
         $aktivitasGudang = AktivitasGudang::with('aktivitas')->whereHas('aktivitas', function ($query) {
             $query->whereNotNull('penerimaan_gi');
-        })->first();
-        $aktivitasHarian = AktivitasHarian::findOrFail($req->input('id_aktivitas_harian'));
+        })
+        ->where('id_gudang', $gudang->id)
+        ->first();
+        
         if ($aktivitasHarian->approve != null) {
             $this->responseCode = 403;
             $this->responseMessage = 'Aktivitas harian sudah disetujui!';
@@ -831,27 +861,6 @@ class AktivitasController extends Controller
         }
 
         if ($aktivitasGudang->aktivitas->penerimaan_gi != null) {
-            $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
-                ->where('id_tkbm', $user->id_tkbm)
-                ->orderBy('rencana_harian.id', 'desc')
-                ->take(1)->first();
-
-            if (empty($rencana_tkbm)) {
-                $this->responseCode = 500;
-                $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
-                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                return response()->json($response, $this->responseCode);
-            }
-            
-            $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
-            
-            if (empty($gudang)) {
-                $this->responseCode = 500;
-                $this->responseMessage = 'Gudang tidak tersedia!';
-                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                return response()->json($response, $this->responseCode);
-            }
-
             $wannaSave = new AktivitasHarian;
             $wannaSave->ref_number        = $aktivitasHarian->id;
             $wannaSave->id_aktivitas      = $aktivitasGudang->id_aktivitas;
@@ -1071,14 +1080,16 @@ class AktivitasController extends Controller
             }
 
             if ($aktivitasGudang->aktivitas->penerimaan_gi != null) {
-                $this->storeNotification($aktivitasHarian);
+                $tkbm = TenagaKerjaNonOrganik::findOrFail($res_user->id_tkbm);
+                $message = 'Pengiriman Gudang Internal pada gudang '. $gudang->nama.' berhasil di setujui oleh '.$tkbm->nama;
+                $this->storeNotification($aktivitasHarian, $message);
             }
 
             $this->responseCode = 200;
             $this->responseData = [
-                'data' => $wannaSave, 
-                'produk' => $produk, 
-                'pallet' => $pallet, 
+                'data'      => $wannaSave, 
+                'produk'    => $produk, 
+                'pallet'    => $pallet, 
             ];
             $this->responseMessage = 'Data berhasil disimpan!';
             $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
