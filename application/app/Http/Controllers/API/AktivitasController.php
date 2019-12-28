@@ -819,7 +819,7 @@ class AktivitasController extends Controller
         $req->validated();
         $user = $req->get('my_auth');
         $res_user = Users::findOrFail($user->id_user);
-        $aktivitas = AktivitasGudang::with('aktivitas')->whereHas('aktivitas', function ($query) {
+        $aktivitasGudang = AktivitasGudang::with('aktivitas')->whereHas('aktivitas', function ($query) {
             $query->whereNotNull('penerimaan_gi');
         })->first();
         $aktivitasHarian = AktivitasHarian::findOrFail($req->input('id_aktivitas_harian'));
@@ -830,7 +830,7 @@ class AktivitasController extends Controller
             return response()->json($response, $this->responseCode);
         }
 
-        if ($aktivitas->aktivitas->penerimaan_gi != null) {
+        if ($aktivitasGudang->aktivitas->penerimaan_gi != null) {
             $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
                 ->where('id_tkbm', $user->id_tkbm)
                 ->orderBy('rencana_harian.id', 'desc')
@@ -854,7 +854,7 @@ class AktivitasController extends Controller
 
             $wannaSave = new AktivitasHarian;
             $wannaSave->ref_number        = $aktivitasHarian->id;
-            $wannaSave->id_aktivitas      = $aktivitas->id;
+            $wannaSave->id_aktivitas      = $aktivitasGudang->id_aktivitas;
             $wannaSave->id_gudang         = $gudang->id;
             $wannaSave->id_karu           = $gudang->id_karu;
             $wannaSave->id_shift          = $rencana_tkbm->id_shift;
@@ -870,7 +870,7 @@ class AktivitasController extends Controller
             $aktivitasHarian->approve = date('Y-m-d H:i:s');
             $aktivitasHarian->save();
 
-            if ($aktivitas->pengaruh_tgl_produksi != null) { //jika tidak pengaruh tanggal produksi dicentang
+            if ($aktivitasGudang->aktivitas->pengaruh_tgl_produksi != null) { //jika tidak pengaruh tanggal produksi dicentang
                 $list_produk = $req->input('list_produk');
 
                 if (!empty($list_produk)) {
@@ -889,7 +889,7 @@ class AktivitasController extends Controller
                             $jums_list_jumlah = count($list_jumlah);
 
                             for ($k = 0; $k < $jums_list_jumlah; $k++) {
-                                if ($aktivitas->fifo != null) { //jika FIFO
+                                if ($aktivitasGudang->aktivitas->fifo != null) { //jika FIFO
                                     $area_stok = AreaStok::where('id_area', $id_area)
                                         ->where('id_material', $produk)
                                         ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
@@ -970,6 +970,10 @@ class AktivitasController extends Controller
                                         ->first();
 
                                     if (!empty($area_stok)) {
+                                        $wannaSave->forceDelete();
+                                        $aktivitasHarian->approve = null;
+                                        $aktivitasHarian->save();
+
                                         $this->responseCode = 403;
                                         $this->responseMessage = 'Area, Produk, dan Tanggal yang Anda masukkan sudah dipakai oleh data lain! Silahkan masukkan data yang lain atau hubungi Kepala Regu!';
                                         $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
@@ -1064,6 +1068,10 @@ class AktivitasController extends Controller
                     $gudangStok->status        = $status_pallet;
                     $gudangStok->save();
                 }
+            }
+
+            if ($aktivitasGudang->aktivitas->penerimaan_gi != null) {
+                $this->storeNotification($aktivitasHarian);
             }
 
             $this->responseCode = 200;
@@ -1330,11 +1338,7 @@ class AktivitasController extends Controller
 
     public function history(Request $req) //memuat history
     {
-        $user = $req->get('my_auth');
-        $res_user = Users::findOrFail($user->id_user);
-        $rencanaTkbm = RencanaTkbm::where('id_tkbm', $res_user->id_tkbm)->orderBy('id_rencana')->first();
-        $rencanaHarian = RencanaHarian::find($rencanaTkbm->id_rencana);
-        $gudang = Gudang::findOrFail($rencanaHarian->id_gudang);
+        $id_gudang = $this->getCheckerGudang();
         $search = $req->input('search');
 
         $res = AktivitasHarian::select(
@@ -1347,9 +1351,9 @@ class AktivitasController extends Controller
         )
         ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
         ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
-        ->where(function ($where) use ($gudang) {
-            $where->where('id_gudang', $gudang->id);
-            $where->orWhere('id_gudang_tujuan', $gudang->id);
+        ->where(function ($where) use ($id_gudang) {
+            $where->where('id_gudang', $id_gudang);
+            $where->orWhere('id_gudang_tujuan', $id_gudang);
         })
         ->whereNull('ref_number')
         ->where(function ($where) use ($search) {
@@ -1371,6 +1375,7 @@ class AktivitasController extends Controller
 
     public function detailHistory($id) //memuat detail history
     {
+        $id_gudang = $this->getCheckerGudang();
         $res = AktivitasHarian::select(
             'aktivitas_harian.id',
             'aktivitas_harian.id_aktivitas',
@@ -1389,7 +1394,7 @@ class AktivitasController extends Controller
             'butuh_approval',
             DB::raw('
                 CASE
-                    WHEN internal_gudang IS NOT NULL AND butuh_approval IS NOT NULL THEN true
+                    WHEN internal_gudang IS NOT NULL AND butuh_approval IS NOT NULL THEN true AND id_gudang_tujuan = '.$id_gudang.'
                 ELSE false
             END AS tombol_approval'),
             DB::raw('
