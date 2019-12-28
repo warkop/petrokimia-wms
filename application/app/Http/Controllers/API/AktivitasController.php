@@ -48,6 +48,8 @@ use Illuminate\Notifications\Notification;
 
 class AktivitasController extends Controller
 {
+    private $pembagi = 1000;
+
     private function getCheckerGudang() { //untuk memperoleh informasi checker ini sekarang berada di gudang mana
         if (\Request::get('my_auth')->role == 3) {
             $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
@@ -520,7 +522,7 @@ class AktivitasController extends Controller
                                                 $temp_material = Material::find($produk);
 
                                                 $this->responseCode     = 500;
-                                                $this->responseMessage  = 'Jumlah yang Anda masukkan pada area '.$temp_area->nama.' dengan nama material '. $temp_material->nama.' melebihi jumlah ketersediaan yaitu '. $area_stok->jumlah.'!';
+                                                $this->responseMessage  = 'Jumlah yang Anda masukkan pada area '.$temp_area->nama.' dengan nama material '. $temp_material->nama.' melebihi jumlah ketersediaan yaitu '. $area_stok->jumlah.'!'.$list_jumlah[$k]['jumlah'];
                                                 $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                                                 return response()->json($response, $this->responseCode);
                                             }
