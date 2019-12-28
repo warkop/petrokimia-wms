@@ -14,7 +14,7 @@ class AlterTableRealisasi3 extends Migration
     public function up()
     {
         Schema::table('realisasi', function (Blueprint $table) {
-            $table->integer('draft')->default(1)->nullable();
+            $table->integer('draft')->default(0)->nullable();
         });
     }
 
