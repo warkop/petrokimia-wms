@@ -374,6 +374,7 @@ class AktivitasController extends Controller
         $resource = AktivitasAlatBerat::select(
             'alat_berat.id',
             'anggaran',
+            'alat_berat_kat.nama as kategori',
             'nomor_lambung'
         )
         ->join('alat_berat_kat', 'alat_berat_kat.id', '=', 'aktivitas_alat_berat.id_kategori_alat_berat')
