@@ -64,21 +64,25 @@
                     <input type="hidden" name="action" value="add">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label>Id Plan</label>
                                 <select class="form-control m-select2" id="kt_select2_1_modal" name="param">
                                     <option id="IdP1" value="AK">0021</option>
                                     <option value="HI">0033</option>
                                     <option value="CA">0055</option>
                                 </select>
-                            </div>
-                            <div class="form-group">
+                            </div> --}}
+                            {{-- <div class="form-group">
                                 <label>Id Sloc</label>
                                 <select class="form-control m-select2" id="kt_select2_2_modal" name="param">
                                     <option value="AK">22106324</option>
                                     <option value="HI">2210634</option>
                                     <option value="CA">22106124</option>
                                 </select>
+                            </div> --}}
+                            <div class="form-group">
+                                <label>Nama Pemetaan</label>
+                                <input class="form-control" id="" name="" placeholder="Masukkan Nama Pemetaan">
                             </div>
                         </div>
                     </div>
