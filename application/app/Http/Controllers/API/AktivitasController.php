@@ -522,7 +522,7 @@ class AktivitasController extends Controller
                                                 $temp_material = Material::find($produk);
 
                                                 $this->responseCode     = 500;
-                                                $this->responseMessage  = 'Jumlah yang Anda masukkan pada area '.$temp_area->nama.' dengan nama material '. $temp_material->nama.' melebihi jumlah ketersediaan yaitu '. $area_stok->jumlah.'!'. $list_jumlah[$k]['jumlah'].'-'. $list_jumlah[$k]['tanggal'];
+                                                $this->responseMessage  = 'Jumlah yang Anda masukkan pada area '.$temp_area->nama.' dengan nama material '. $temp_material->nama.' melebihi jumlah ketersediaan yaitu '. $area_stok->jumlah.'!'. $list_jumlah[$k]['jumlah'].'|'. $list_jumlah[$k]['tanggal'].'|'. $id_area.'|'. $produk;
                                                 $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                                                 return response()->json($response, $this->responseCode);
                                             }
