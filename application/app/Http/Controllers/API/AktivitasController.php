@@ -81,7 +81,7 @@ class AktivitasController extends Controller
         $user = Users::find(\Request::get('my_auth')->id_user);
 
         $rencanaHarian = RencanaHarian::where('id_gudang', $aktivitasHarian->id_gudang_tujuan)
-            ->orderBy('id_gudang', 'desc')
+            ->orderBy('id', 'desc')
             ->first();
 
         $rencanaTkbm = RencanaTkbm::where('id_rencana', $rencanaHarian->id)
@@ -126,7 +126,7 @@ class AktivitasController extends Controller
         $aktivitas = Aktivitas::find($aktivitasHarian->id_aktivitas);
 
         $rencanaHarian = RencanaHarian::where('id_gudang', $aktivitasHarian->id_gudang_tujuan)
-            ->orderBy('id_gudang', 'desc')
+            ->orderBy('id', 'desc')
             ->first();
 
         $rencanaTkbm = RencanaTkbm::where('id_rencana', $rencanaHarian->id)
@@ -137,6 +137,7 @@ class AktivitasController extends Controller
             })
         ->get();
         // dd($rencanaTkbm->toArray());
+        // dd($user);
         foreach ($rencanaTkbm as $key) {
             $user = Users::where('id_tkbm', $key->id_tkbm)->first();
             if (!empty($user)) {
@@ -151,11 +152,22 @@ class AktivitasController extends Controller
                             'kode_aktivitas' => $aktivitasHarian->kode_aktivitas,
                         ],
                     ]);
-                // dd($res);
+                
             }
         }
-        
 
+        // send_firebase(
+        //     'dQMTBNjR6RU:APA91bF2DD6hvuUpEDerEI5I6EL26-rDoAnehdDp5HG3ie3pQZLpW5fTdT4a2Llu6Tz372iZWqTGq8ng1xnEXa055gswUVg9U2wQxPiQh1u_ghBNAKWK07rrHP1r-6ZVzRZPUkRnsW99',
+        //     [
+        //         'title' => 'warkop',
+        //         'message' => 'yohoho',
+        //         'meta' => [
+        //             'id' => $aktivitasHarian->id,
+        //             'id_aktivitas' => $aktivitasHarian->id_aktivitas,
+        //             'kode_aktivitas' => $aktivitasHarian->kode_aktivitas,
+        //         ],
+        //     ]
+        // );
     }
 
     public function allNotif()
