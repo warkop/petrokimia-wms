@@ -390,7 +390,7 @@ class AktivitasController extends Controller
         // ->where('id_aktivitas', $id_aktivitas)
         // ->get();
 
-        $resource = RencanaAlatBerat::select(
+        $resource = RencanaAlatBerat::distinct()->select(
             'alat_berat.id',
             'alat_berat_kat.nama as kategori',
             'nomor_lambung'
