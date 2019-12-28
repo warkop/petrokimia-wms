@@ -79,7 +79,7 @@ class MaterialAdjustmentController extends Controller
             }
 
             //material adjustment
-            $materialAdjustment->tanggal = $req->input('tanggal');
+            $materialAdjustment->tanggal = date('Y-m-d', strtotime($req->input('tanggal')));
             $materialAdjustment->save();
 
             //material trans
