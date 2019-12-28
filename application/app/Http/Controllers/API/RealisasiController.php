@@ -77,7 +77,6 @@ class RealisasiController extends Controller
             'id_material_sap',
             'id_plant',
             'nama'
-            // 'jumlah'
         )
         // ->join('gudang_stok as gs', 'gs.id_material', '=', 'material.id')
         ->lainlain()
