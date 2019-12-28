@@ -366,10 +366,23 @@ class AktivitasController extends Controller
     {
         $search = strip_tags($req->input('search'));
 
-        $resource = AktivitasAlatBerat::
-        with('kategoriAlatBerat', 'kategoriAlatBerat.alatBerat')
+        // $resource = AktivitasAlatBerat::
+        // with('kategoriAlatBerat', 'kategoriAlatBerat.alatBerat')
+        // ->where('id_aktivitas', $id_aktivitas)
+        // ->get();
+
+        $resource = AktivitasAlatBerat::select(
+            'alat_berat.id',
+            'anggaran',
+            'nomor_lambung'
+        )
+        ->join('alat_berat_kat', 'alat_berat_kat.id', '=', 'aktivitas_alat_berat.id_kategori_alat_berat')
+        ->join('alat_berat', 'alat_berat.id_kategori', '=', 'alat_berat_kat.id')
         ->where('id_aktivitas', $id_aktivitas)
-        ->get();
+        ->orderBy('alat_berat.id', 'asc')
+        ->get()
+        ;
+
         return (new AktivitasResource($resource))->additional([
             'status' => [
                 'message' => '',
