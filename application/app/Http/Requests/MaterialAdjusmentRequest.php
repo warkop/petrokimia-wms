@@ -83,6 +83,12 @@ class MaterialAdjusmentRequest extends FormRequest
             }
         }
 
+        if ($input['tanggal'] != '') {
+            $input['tanggal']   = date('Y-m-d', strtotime($input['tanggal']));
+        } else {
+            $input['tanggal'] = null;
+        }
+
         $this->replace($input);
     }
 }
