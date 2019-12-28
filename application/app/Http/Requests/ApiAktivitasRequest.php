@@ -48,7 +48,7 @@ class ApiAktivitasRequest extends FormRequest
                 })
             ],
             'list_pallet.*.tipe'    => 'between:1,2',
-            'list_pallet.*.jumlah'  => 'integer',
+            'list_pallet.*.jumlah'  => 'numeric',
             'list_pallet.*.status_pallet'  => 'between:1,4',
         ];
         

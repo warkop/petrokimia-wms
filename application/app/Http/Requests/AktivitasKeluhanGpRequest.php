@@ -32,7 +32,7 @@ class AktivitasKeluhanGpRequest extends FormRequest
                     $query->where('kategori', 1);
                 })
             ],
-            'jumlah.*'     => 'integer',
+            'jumlah.*'     => 'numeric',
         ];
 
         $this->sanitize();
@@ -53,7 +53,7 @@ class AktivitasKeluhanGpRequest extends FormRequest
     {
         return [
             'required'  => ':attribute wajib diisi!',
-            'integer'   => ':attribute harus berupa angka!',
+            'numeric'   => ':attribute harus berupa angka!',
         ];
     }
 

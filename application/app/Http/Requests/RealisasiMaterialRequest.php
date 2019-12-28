@@ -38,7 +38,7 @@ class RealisasiMaterialRequest extends FormRequest
                     $query->where('kategori', 3);
                 }),
             ],
-            'list_material.*.jumlah'            => 'integer',
+            'list_material.*.jumlah'            => 'numeric',
             'list_material.*.tipe'              => 'between:1,2',
         ];
 
@@ -60,7 +60,7 @@ class RealisasiMaterialRequest extends FormRequest
     {
         return [
             'required'       => ':attribute wajib diisi!',
-            'integer'        => ':attribute harus berupa angka!',
+            'numeric'        => ':attribute harus berupa angka!',
             'between'        => ':attribute tidak valid!',
             'exists'         => ':attribute tidak tersedia!',
         ];
