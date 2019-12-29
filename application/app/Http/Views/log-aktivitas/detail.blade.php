@@ -318,7 +318,7 @@
                                         ${helpDateFormat(element2.tanggal, "mi")}
                                     </h6>
                                     <p class="kt-widget4__text boldd">
-                                        ${element2.jumlah} KG
+                                        ${element2.jumlah} Ton
                                     </p>
                                 </div>
                             </div>`;
