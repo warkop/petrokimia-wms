@@ -62,10 +62,11 @@ class MaterialAdjustment extends Model
         });
     }
 
-    public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
+    public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition, $id_gudang)
     {
         $result = DB::table($this->table)
-            ->select('id', 'foto', DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\') AS tanggal', 'alasan'));
+            ->select('id', 'foto', DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\') AS tanggal', 'alasan'))
+            ->where('id_gudang', $id_gudang);
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {

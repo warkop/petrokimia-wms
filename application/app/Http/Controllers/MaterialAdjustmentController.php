@@ -28,7 +28,7 @@ class MaterialAdjustmentController extends Controller
         }
     }
 
-    public function json(Request $req)
+    public function json(Request $req, $id_gudang)
     {
         $models = new MaterialAdjustment();
 
@@ -52,8 +52,8 @@ class MaterialAdjustmentController extends Controller
         $page = ($start / $perpage) + 1;
 
         if ($page >= 0) {
-            $result = $models->jsonGrid($start, $perpage, $search, false, $sort, $field, $condition);
-            $total  = $models->jsonGrid($start, $perpage, $search, true, $sort, $field, $condition);
+            $result = $models->jsonGrid($start, $perpage, $search, false, $sort, $field, $condition, $id_gudang);
+            $total  = $models->jsonGrid($start, $perpage, $search, true, $sort, $field, $condition, $id_gudang);
         } else {
             $result = $models::orderBy($field, $sort)->get();
             $total  = $models::all()->count();
@@ -79,7 +79,8 @@ class MaterialAdjustmentController extends Controller
             }
 
             //material adjustment
-            $materialAdjustment->tanggal = date('Y-m-d', strtotime($req->input('tanggal')));
+            $materialAdjustment->tanggal    = date('Y-m-d', strtotime($req->input('tanggal')));
+            $materialAdjustment->id_gudang  = $id_gudang;
             $materialAdjustment->save();
 
             //material trans
