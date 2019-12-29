@@ -64,8 +64,10 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
 
     Route::group(['prefix' => 'master-pemetaan-sloc'], function () { 
         Route::get('/', 'PemetaanSlocController@index');
+        Route::get('/{id}', 'PemetaanSlocController@show')->where('id', '[0-9]+');
         Route::post('/', 'PemetaanSlocController@json');
         Route::put('/', 'PemetaanSlocController@store');
+        Route::patch('/{pemetaanSloc}', 'PemetaanSlocController@store')->where('pemetaanSloc', '[0-9]+');
         Route::get('/load-sloc', 'PemetaanSlocController@loadSloc');
     }); 
 

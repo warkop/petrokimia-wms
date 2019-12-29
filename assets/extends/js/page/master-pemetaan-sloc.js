@@ -30,36 +30,6 @@ jQuery(document).ready(function () {
             $("#btn_save").click();
         }
     });
-
-
-    $("#id_material_sap").select2({
-        allowClear: true,
-        placeholder: 'Ketikkan id material',
-        dropdownParent: $("#modal_form"),
-        // minimumInputLength: 3,
-        delay: 250,
-        ajax: {
-            url: ajaxUrl + '/sap',
-            dataType: 'json',
-            processResults: function (response) {
-                /*Tranforms the top-level key of the response object from 'items' to 'results'*/
-                return {
-                    results: $.map(response.data, function (item) {
-                        // console.log(response.data);
-
-                        return {
-                            text: item.Plant + " - " + item.Material_number,
-                            id: item.Material_number,
-                            id_plant: item.Plant
-                        }
-                    })
-                };
-            }
-        }
-    }).on("select2:select", (q) => {
-        const id_plant = q.params.data.id_plant;
-        $("#id_plant").val(id_plant);
-    });
 });
 
 let load_table = function () {
@@ -108,9 +78,10 @@ let load_table = function () {
             }, {
                 "aTargets": -1,
                 "mData": "id",
+                "orderable":false,
                 render: function (data, type, full, meta) {
                     return `
-                        <button type="button" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-togle="kt-tooltip" data-placement="top" title="" data-original-title="Edit" data-toggle="modal" data-target="#modal_form">
+                        <button type="button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon">
                             <i class="flaticon-edit-1"></i> </button>
                     `;
                 },
@@ -135,16 +106,105 @@ let load_table = function () {
     });
 };
 
+function tambah() {
+    $("#modal_form").modal("show");
+
+    reset_form();
+
+}
+
+function edit(id = '') {
+    reset_form();
+    console.log(id)
+    $('#id').val(id);
+    $('#action').val('edit');
+    $('#btn_save').html('Simpan Data');
+    $('#modal_form .modal-title').html('Edit Data Pemetaan');
+    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk mengubah data master Pemetaan sesuai kebutuhan.');
+    $('#modal_form').modal({
+        backdrop: 'static',
+        keyboard: false
+    }, 'show');
+
+    $.ajax({
+        type: "GET",
+        url: ajaxUrl + "/" + id,
+        beforeSend: function () {
+            preventLeaving();
+            $('.btn_close_modal').addClass('hide');
+            $('.se-pre-con').show();
+        },
+        success: function (response) {
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            let obj = response;
+
+            if (obj.status == "OK") {
+                $('#nama').val(obj.data['nama']);
+
+                let det = obj.data.detail_pemetaan_sloc;
+                let no = 1;
+                det.forEach(element => {
+                    loadSloc(no, element.id_sloc);
+                    // no++;
+                });
+
+            } else {
+                swal.fire('Pemberitahuan', obj.message, 'warning');
+            }
+
+        },
+        error: function (response) {
+            let head = 'Maaf',
+                message = 'Terjadi kesalahan koneksi',
+                type = 'error';
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            if (response['status'] == 401 || response['status'] == 419) {
+                location.reload();
+            } else {
+                if (response['status'] != 404 && response['status'] != 500) {
+                    let obj = JSON.parse(response['responseText']);
+
+                    if (!$.isEmptyObject(obj.message)) {
+                        if (obj.code > 400) {
+                            head = 'Maaf';
+                            message = obj.message;
+                            type = 'error';
+                        } else {
+                            head = 'Pemberitahuan';
+                            message = obj.message;
+                            type = 'warning';
+                        }
+                    }
+                }
+
+                swal.fire(head, message, type);
+            }
+        }
+    });
+}
+
 function simpan() {
     let data = $("#form1").serializeArray();
-    $('#btn_save').prop('disabled', true);
     let type = "PUT";
+    const id = $("#id").val();
+    let url = ajaxUrl;
+    if (id) {
+        type = "PATCH";
+        url = ajaxUrl + "/" + id 
+    }
+    console.log(id)
     $.ajax({
         type: type,
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: ajaxUrl,
+        url: url,
         data: data,
         beforeSend: function () {
             preventLeaving();
@@ -216,185 +276,108 @@ function simpan() {
     });
 }
 
-var KTDatatablesDataSourceHtml = function () {
-    var dataJSONArray = JSON.parse(
-        '[[1,"0097344"]]');
-    var initTable1 = function () {
-        var table = $('#kt_table_1');
-        // begin first table
-        table.DataTable({
-            responsive: true,
-            data: dataJSONArray,
-            columnDefs: [{
-                className: 'text-center',
-                targets: -1,
-                title: 'Actions',
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return `
-                        <button type="button" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-togle="kt-tooltip" data-placement="top" title="" data-original-title="Edit" data-toggle="modal" data-target="#modal_form">
-                            <i class="flaticon-edit-1"></i> </button>
-                        `;
-                },
-            }],
-            "drawCallback": function (settings) {
-                $('[data-togle="kt-tooltip"]').tooltip();
+function drawSloc(no) {
+    // return 
+}
+
+$("#btnTambah").click(function () {
+    const tableId = "#inputAdjst";
+    const rows = $(tableId).attr("value");
+    console.log(rows);
+    loadSloc(rows);
+});
+
+$("body").on('click', '.button_hapus', function (e) {
+    $(this).parent().parent().remove();
+
+    let angka = $("#inputAdjst").attr("value");
+    angka--;
+
+    $("#inputAdjst").attr("value", angka);
+});
+
+// $('.select2Custom').select2({
+//     placeholder: "Pilih Id "
+// });
+
+function loadSloc(id, value="") {
+    let angka = $("#inputAdjst").attr("value");
+    angka++;
+
+    $("#inputAdjst").attr("value", angka);
+    id = angka
+    var xyz = ` 
+        <div class="row sloc_list" id="baris-${id}">
+            <div class="col-10 mb1">
+                <select class="form-control select2Custom m-select2 pilih_sloc" id="sloc-${id}" name="detail_sloc[]" onchange="checkUnique(this)" style="width: 100%">
+                </select>
+            </div>
+            <div class="col-2">
+                <a href="javascript:void(0)" class="btn button_hapus btn-outline-danger btn-sm"><i class="fa fa-trash" style="padding: .9rem;"></i></a>
+            </div>
+        </div>
+        `
+    $("#inputAdjst").append(xyz);
+
+   
+
+    $('.select2Custom').select2({
+        placeholder: "Pilih Sloc",
+        dropdownParent: $("#inputAdjst")
+    });
+    $.ajax({
+        url: ajaxSource + "/load-sloc",
+        success: response => {
+            const obj = response.data;
+
+            let element = '<option value="" selected>Pilih Sloc</option>';
+            const panjang = obj.length;
+            for (let i = 0; i < panjang; i++) {
+                element += `<option value="${obj[i].id}">${obj[i].id_sloc}</option>`;
             }
-        });
-    };
-    return {
-        //main function to initiate the module
-        init: function () {
-            // initTable1();
+
+            $("#sloc-" + id).html(element);
+            $("#sloc-" + id).val(value);
         },
-    };
-}();
+        error: response => {
 
-
-// Class definition
-var KTSelect2 = function () {
-    // Private functions
-    var demos = function () {
-        // basic
-        $('#kt_select2_1, #kt_select2_1_validate').select2({
-            placeholder: "Select a state"
-        });
-
-        // nested
-        $('#kt_select2_2, #kt_select2_2_validate').select2({
-            placeholder: "Select a state"
-        });
-
-        // multi select
-        $('#kt_select2_3, #kt_select2_3_validate').select2({
-            placeholder: "Select a state",
-        });
-
-        // basic
-        $('#kt_select2_4').select2({
-            placeholder: "Select a state",
-            allowClear: true
-        });
-
-        // loading data from array
-        var data = [{
-            id: 0,
-            text: 'Enhancement'
-        }, {
-            id: 1,
-            text: 'Bug'
-        }, {
-            id: 2,
-            text: 'Duplicate'
-        }, {
-            id: 3,
-            text: 'Invalid'
-        }, {
-            id: 4,
-            text: 'Wontfix'
-        }];
-
-        $('#kt_select2_5').select2({
-            placeholder: "Select a value",
-            data: data
-        });
-
-        // loading remote data
-
-        function formatRepo(repo) {
-            if (repo.loading) return repo.text;
-            var markup = "<div class='select2-result-repository clearfix'>" +
-                "<div class='select2-result-repository__meta'>" +
-                "<div class='select2-result-repository__title'>" + repo.full_name + "</div>";
-            if (repo.description) {
-                markup += "<div class='select2-result-repository__description'>" + repo.description + "</div>";
-            }
-            markup += "<div class='select2-result-repository__statistics'>" +
-                "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> " + repo.forks_count + " Forks</div>" +
-                "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> " + repo.stargazers_count + " Stars</div>" +
-                "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> " + repo.watchers_count + " Watchers</div>" +
-                "</div>" +
-                "</div></div>";
-            return markup;
         }
+    })
+}
 
-        function formatRepoSelection(repo) {
-            return repo.full_name || repo.text;
+function checkUnique(target) {
+    let lokasi = $(".pilih_sloc");
+    let chosen = false;
+
+    const id_target = $(target)
+        .attr("id")
+        .replace("-", "");
+    for (let i = 0; i < lokasi.length; i++) {
+        if (
+            $(target).val() != "" &&
+            $(target).attr("id") != $(lokasi[i]).attr("id") &&
+            $(target).val() == $(lokasi[i]).val()
+        ) {
+            chosen = true;
         }
-
-        $("#kt_select2_6").select2({
-            placeholder: "Search for git repositories",
-            allowClear: true,
-            ajax: {
-                url: "https://api.github.com/search/repositories",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        q: params.term, // search term
-                        page: params.page
-                    };
-                },
-                processResults: function (data, params) {
-                    // parse the results into the format expected by Select2
-                    // since we are using custom formatting functions we do not need to
-                    // alter the remote JSON data, except to indicate that infinite
-                    // scrolling can be used
-                    params.page = params.page || 1;
-
-                    return {
-                        results: data.items,
-                        pagination: {
-                            more: (params.page * 30) < data.total_count
-                        }
-                    };
-                },
-                cache: true
-            },
-            escapeMarkup: function (markup) {
-                return markup;
-            }, // let our custom formatter work
-            minimumInputLength: 1,
-            templateResult: formatRepo, // omitted for brevity, see the source of this page
-            templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
-        });
-
     }
 
-    var modalDemos = function () {
-        $('#modal_form').on('shown.bs.modal', function () {
-            // basic
-            $('#kt_select2_1_modal').select2({
-                placeholder: "Pilih Id Plan"
-            });
-
-            $('#kt_select2_2_modal').select2({
-                placeholder: "Pilih Id Sloc"
-            });
-
-            $('#kt_loket').select2({
-                placeholder: "Pilih Loket"
-            });
-
-            $('#kt_operator').select2({
-                placeholder: "Pilih Operator"
-            });
-
-            $('#kt_housekeeping').select2({
-                placeholder: "Pilih House Keeping"
-            });
-
-            $('#kt_checker').select2({
-                placeholder: "Pilih Checker"
-            });
-
-        });
+    if (chosen == true) {
+        $(target).val("").trigger("change.select2");
+        swal.fire(
+            "Pemberitahuan",
+            "Sloc sudah dipilih. Silahkan Pilih Sloc lain!",
+            "error"
+        );
+        $("#sloc-" + id_target).val("");
     }
+}
 
-    // Public functions
-    return {
-        init: function () {
-            modalDemos();
-        }
-    };
-}();
+
+function reset_form(method = '') {
+    $('#id').val('');
+    $('#id').change();
+    $('#nama').val('');
+    $('#inputAdjst').html('');
+    $('#inputAdjst').attr("value", 0);
+}

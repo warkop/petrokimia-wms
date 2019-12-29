@@ -8,8 +8,10 @@ class DetailPemetaanSloc extends Model
 {
     protected $table = 'detail_pemetaan_sloc';
     protected $primaryKey = null;
+    protected $guarded = [
 
-    protected $dates = ['created_at', 'updated_at'];
+    ];
 
     public $incrementing = false;
+    public $timestamps = false;
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Models\DetailPemetaanSloc;
 use App\Http\Models\Gudang;
 use App\Http\Models\PemetaanSloc;
 use App\Http\Requests\PemetaanSlocRequest;
@@ -55,14 +56,49 @@ class PemetaanSlocController extends Controller
         $req->validated();
 
         $pemetaanSloc->nama = $req->nama;
-        $pemetaanSloc->nama = $req->nama;
-        $pemetaanSloc->nama = $req->nama;
+        $pemetaanSloc->save();
+
+        DetailPemetaanSloc::where('id_pemetaan_sloc', $pemetaanSloc->id)->forceDelete();
+        $detailPemetaanSloc = new DetailPemetaanSloc;
+
+        $detail_sloc = array_values($req->input('detail_sloc'));
+
+        foreach ($detail_sloc as $key => $value) {
+            
+            $detailPemetaanSloc->create([
+                'id_pemetaan_sloc' => $pemetaanSloc->id,
+                'id_sloc' => $value,
+            ]);
+        }
+
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data berhasil disimpan';
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
+    public function show($id)
+    {
+        $data = PemetaanSloc::with('detailPemetaanSloc')->find($id);
+
+        $this->responseCode = 200;
+        $this->responseData = $data;
+        $this->responseMessage = 'Data tersedia.';
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 
     public function loadSloc()
     {
         $data = Gudang::distinct()->whereNotNull('id_sloc')->orderBy('id_sloc', 'asc')->get();
 
-        return response()->json($data, 200);
+        $this->responseCode = 200;
+        $this->responseData = $data;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 }

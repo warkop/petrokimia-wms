@@ -30,7 +30,7 @@ class PemetaanSlocRequest extends FormRequest
         }
 
         $rules = [
-            'id_sloc.*'          => [
+            'detail_sloc.*'          => [
                 'required',
             ],
             'nama'            => [
@@ -47,17 +47,17 @@ class PemetaanSlocRequest extends FormRequest
     public function attributes()
     {
         return [
-            'id_sloc.*'         => 'ID Sloc',
+            'detail_sloc.*'         => 'ID Sloc',
             'nama'              => 'Nama',
         ];
     }
 
-    public function message()
+    public function messages()
     {
         return [
             'required'       => ':attribute wajib diisi!',
             'integer'        => ':attribute harus berupa angka!',
-            'between'        => ':attribute tidak valid!',
+            'unique'         => ':attribute sudah ada!',
             'exists'         => ':attribute tidak tersedia!',
         ];
     }
