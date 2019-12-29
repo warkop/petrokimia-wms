@@ -98,7 +98,7 @@ class MaterialAdjustmentController extends Controller
                 $produk_alasan    = array_values($produk_alasan);
 
                 for ($i = 0; $i < $panjang; $i++) {
-                    $areaStok = AreaStok::where('id_area', $area[$i])->where('id_material', $produk[$i])->first();
+                    $areaStok = AreaStok::where('id_area', $area[$i])->where('id_material', $produk[$i])->where('tanggal', $materialAdjustment->tanggal)->first();
                     if (empty($areaStok)) {
                         if ($action_produk[$i] == 1) {
                             $materialAdjustment->forceDelete();
