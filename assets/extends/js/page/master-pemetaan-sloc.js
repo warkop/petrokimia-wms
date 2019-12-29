@@ -258,8 +258,6 @@ function simpan() {
                             if (obj == null) {
                                 message = response.responseJSON.message;
                             } else {
-                                
-    
                                 const temp = Object.values(obj);
                                 message = '';
                                 temp.forEach(element => {
