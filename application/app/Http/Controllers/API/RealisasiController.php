@@ -258,7 +258,7 @@ class RealisasiController extends Controller
         )
         ->leftJoin('shift_kerja', 'realisasi_material.id_shift', '=', 'shift_kerja.id')
         ->where(function($query) use ($search){
-            $query->orWhere(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $query->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             $query->orWhere(DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
         })
         ->orderBy('realisasi_material.created_at', 'desc')
