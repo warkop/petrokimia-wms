@@ -28,6 +28,9 @@ class RencanaKerjaController extends Controller
         $user = $req->get('my_auth');
         $res_user = Users::findOrFail($user->id_user);
         $res_gudang = Gudang::where('id_karu', $res_user->id_karu)->first();
+
+        $search = $req->input('search');
+
         if (empty($res_gudang)) {
             $data = [
                 'status' => [
@@ -46,7 +49,13 @@ class RencanaKerjaController extends Controller
             THEN 'Done' ELSE 'Progress'
             END AS status")
         )
-        ->where('id_gudang', $res_gudang->id)->orderBy('id', 'desc')->paginate(10);
+        ->where('id_gudang', $res_gudang->id)
+        ->where(function($query) use ($search){
+            $query->where(DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\')'), 'ILIKE', '%'.strtolower($search).'%');
+            $query->orWhere(DB::raw('LOWER(CONCAT(\'shift \', id_shift))'), 'ILIKE', '%' . strtolower($search).'%');
+        })
+        ->orderBy('id', 'desc')
+        ->paginate(10);
 
         return AktivitasResource::collection($data)->additional([
             'status' => [
