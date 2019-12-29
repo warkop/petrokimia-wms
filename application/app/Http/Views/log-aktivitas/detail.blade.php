@@ -79,7 +79,7 @@
                         <div class="kt-widget4__item border-bottom-dash">
                             <div class="kt-widget4__info">
                                 <p class="kt-widget4__username">
-                                    {{$item->material->nama??'-'}} - <span class="boldd">{{$item->jumlah/1000}} Ton</span>
+                                    {{$item->material->nama??'-'}} - <span class="boldd">{{$item->jumlah}} Ton</span>
                                 </p>
                                 @if ($item->tipe == 1)
                                     <p class="kt-widget4__text color-oren boldd">
