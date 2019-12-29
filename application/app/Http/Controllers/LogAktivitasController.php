@@ -106,7 +106,7 @@ class LogAktivitasController extends Controller
     {
         $areaStok = Area::with('areaStok', 'areaStok.materialTrans')
             ->whereHas('areaStok', function ($query) use ($id_material) {
-                $query->where('id_material', $id_material);
+                $query->where('id_materials', $id_material);
             })
             ->whereHas('areaStok.materialTrans', function ($query) use ($id_aktivitas_harian) {
                 $query->where('id_aktivitas_harian', $id_aktivitas_harian);
