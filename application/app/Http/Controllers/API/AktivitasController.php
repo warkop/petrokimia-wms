@@ -283,7 +283,7 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function getArea(Request $req, $id_aktivitas, $id_material) //memuat area
+    public function getArea(Request $req, $id_aktivitas, $id_material, $pindah=false) //memuat area
     {
         $user = $req->get('my_auth');
         $id_gudang = $this->getCheckerGudang();
@@ -298,12 +298,15 @@ class AktivitasController extends Controller
                 'area.nama',
                 'area.kapasitas',
                 'area_stok.tanggal',
-                DB::raw('(SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.') as jumlah')
+                DB::raw('COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.'),0) as jumlah')
             )
-            ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
-            ->where('id_material', $id_material)
-            ->where('id_gudang', $id_gudang)
-            ->get();
+            ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
+            ->where('id_gudang', $id_gudang);
+
+            if ($pindah == false) {
+                $resource = $resource->where('id_material', $id_material);
+            }
+            $resource = $resource->get();
         } else {
             $resource = Area::select(
                 'area.id',
