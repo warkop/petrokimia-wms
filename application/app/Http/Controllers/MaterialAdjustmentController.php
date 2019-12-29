@@ -113,7 +113,7 @@ class MaterialAdjustmentController extends Controller
                         $areaStok = new AreaStok;
                         $areaStok->id_area      = $area[$i];
                         $areaStok->id_material  = $produk[$i];
-                        $areaStok->tanggal      = now();
+                        $areaStok->tanggal      = $materialAdjustment->tanggal;
                         $areaStok->jumlah       = $produk_jumlah[$i];
                     } else {
                         if ($action_produk[$i] == 1) {
