@@ -35,7 +35,7 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Id Sloc</th>
+                        <th>Nama Pemetaan</th>
                         <th>Actions</th>
                     </tr>
                 </thead>

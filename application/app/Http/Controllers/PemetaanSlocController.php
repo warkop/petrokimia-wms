@@ -61,14 +61,22 @@ class PemetaanSlocController extends Controller
         DetailPemetaanSloc::where('id_pemetaan_sloc', $pemetaanSloc->id)->forceDelete();
         $detailPemetaanSloc = new DetailPemetaanSloc;
 
-        $detail_sloc = array_values($req->input('detail_sloc'));
+        if (!empty($req->input('detail_sloc'))) {
+            $detail_sloc = array_values($req->input('detail_sloc'));
 
-        foreach ($detail_sloc as $key => $value) {
-            
-            $detailPemetaanSloc->create([
-                'id_pemetaan_sloc' => $pemetaanSloc->id,
-                'id_sloc' => $value,
-            ]);
+            foreach ($detail_sloc as $key => $value) {
+                $detailPemetaanSloc->create([
+                    'id_pemetaan_sloc' => $pemetaanSloc->id,
+                    'id_sloc' => $value,
+                ]);
+            }
+        } else {
+            $pemetaanSloc->forceDelete();
+            $this->responseCode = 403;
+            $this->responseMessage = 'Sloc wajib dipilih minimal 1!';
+
+            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+            return response()->json($response, $this->responseCode);
         }
 
 

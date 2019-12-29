@@ -108,7 +108,8 @@ let load_table = function () {
 
 function tambah() {
     $("#modal_form").modal("show");
-
+    $('#modal_form .modal-title').html('Tambah Data Pemetaan');
+    $('#modal_form .modal-info').html('Isilah form dibawah ini untuk menambah data master Pemetaan sesuai kebutuhan.');
     reset_form();
 
 }
@@ -252,20 +253,26 @@ function simpan() {
                         } else {
                             head = 'Pemberitahuan';
                             type = 'warning';
-
                             obj = response.responseJSON.errors;
+                            message = '';
+                            if (obj == null) {
+                                message = response.responseJSON.message;
+                            } else {
+                                
+    
+                                const temp = Object.values(obj);
+                                message = '';
+                                temp.forEach(element => {
+                                    element.forEach(row => {
+                                        message += row + "<br>"
+                                    });
+                                });
+                            }
+
                             laddaButton.stop();
                             window.onbeforeunload = false;
                             $('.btn_close_modal').removeClass('hide');
                             $('.se-pre-con').hide();
-
-                            const temp = Object.values(obj);
-                            message = '';
-                            temp.forEach(element => {
-                                element.forEach(row => {
-                                    message += row + "<br>"
-                                });
-                            });
                         }
                     }
                 }
