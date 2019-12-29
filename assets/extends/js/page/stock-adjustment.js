@@ -568,7 +568,7 @@ function detail(id) {
                     <td>${element.nama}</td>
                     <td>${element.nama_area}</td>
                     <td>${text_tipe}</td>
-                    <td>${element.jumlah} kg</td>
+                    <td>${element.jumlah} Ton</td>
                     <td>${element.alasan ? element.alasan : ''}</td>
                 </tr>
             `;
