@@ -6,6 +6,7 @@ use App\Http\Models\Users;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Gudang;
+use App\Http\Models\Realisasi;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -84,11 +85,23 @@ class AuthController extends Controller
                             if ($m_user->id_tkbm != null) {
                                 $rencanaTkbm        = RencanaTkbm::where('id_tkbm', $m_user->id_tkbm)->orderBy('id_rencana', 'desc')->first();
                                 $rencanaHarian      = RencanaHarian::findOrFail($rencanaTkbm->id_rencana);
+
+                                $realisasi = Realisasi::where('id_rencana', $rencanaHarian->id)->orderBy('id', 'desc')->first();
+                                if (!empty($realisasi)) {
+                                    $this->clean($m_user);
+
+                                    $this->responseCode = 403;
+                                    $this->responseMessage = 'Rencana harian dari checker ini sudah ter-realisasi!';
+
+                                    $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                                    return response()->json($response, $this->responseCode);
+                                }
+
                                 if (date('Y-m-d H:i:s', strtotime($rencanaHarian->end_date)) < date('Y-m-d H:i:s')) {
                                     $this->clean($m_user);
 
                                     $this->responseCode = 403;
-                                    $this->responseMessage = 'Rencana harian dari checker ini sudah kadaluarsa!';
+                                    $this->responseMessage = 'Rencana harian dari checker ini sudah kadaluarsa! Silahkan buat Rencana Harian lagi untuk checker ini!';
                                     
                                     $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                                     return response()->json($response, $this->responseCode);
