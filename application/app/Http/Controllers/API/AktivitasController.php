@@ -385,6 +385,19 @@ class AktivitasController extends Controller
     {
         $search = strip_tags($req->input('search'));
 
+        $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+            ->where('id_tkbm', \Request::get('my_auth')->id_tkbm)
+            ->orderBy('rencana_harian.id', 'desc')
+            ->take(1)->first();
+
+        if (empty($rencana_tkbm)) {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+        $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
+
         // $resource = AktivitasAlatBerat::
         // with('kategoriAlatBerat', 'kategoriAlatBerat.alatBerat')
         // ->where('id_aktivitas', $id_aktivitas)
@@ -397,6 +410,9 @@ class AktivitasController extends Controller
         )
         ->join('alat_berat', 'alat_berat.id', '=', 'rencana_alat_berat.id_alat_berat')
         ->join('alat_berat_kat', 'alat_berat_kat.id', '=', 'alat_berat.id_kategori')
+        ->join('aktivitas_alat_berat', 'alat_berat_kat.id', '=', 'aktivitas_alat_berat.id_kategori_alat_berat')
+        ->where('id_aktivitas', $id_aktivitas)
+        ->where('id_rencana', $rencana_harian->id)
         ->orderBy('alat_berat.id', 'asc')
         ->get()
         ;
