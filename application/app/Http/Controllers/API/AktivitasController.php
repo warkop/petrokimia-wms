@@ -1464,7 +1464,7 @@ class AktivitasController extends Controller
             'aktivitas_harian.created_by' 
         )
         ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-        ->leftJoin('alat_berat', 'aktivitas_harian.id_gudang', '=', 'alat_berat.id')
+        ->leftJoin('alat_berat', 'aktivitas_harian.id_alat_berat', '=', 'alat_berat.id')
         ->where('aktivitas_harian.id', $id)
         ->orderBy('aktivitas_harian.id', 'desc')
         ;
