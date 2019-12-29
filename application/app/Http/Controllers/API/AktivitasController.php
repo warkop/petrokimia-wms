@@ -536,6 +536,8 @@ class AktivitasController extends Controller
                                             if ($area_stok->jumlah > $list_jumlah[$k]['jumlah']) {
                                                 $area_stok->jumlah = $area_stok->jumlah-$list_jumlah[$k]['jumlah'];
                                             } else {
+                                                AktivitasHarian::find($aktivitasHarian->id)->forceDelete();
+
                                                 $temp_area = Area::find($id_area);
                                                 $temp_material = Material::find($produk);
 
@@ -610,6 +612,7 @@ class AktivitasController extends Controller
                                             ->first();
                                             
                                         if (!empty($area_stok)) {
+                                            AktivitasHarian::find($aktivitasHarian->id)->forceDelete();
                                             $this->responseCode     = 403;
                                             $this->responseMessage  = 'Area, Produk, dan Tanggal yang Anda masukkan sudah dipakai oleh data lain! Silahkan masukkan data yang lain atau hubungi Kepala Regu!';
                                             $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
