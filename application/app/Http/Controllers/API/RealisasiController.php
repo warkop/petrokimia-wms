@@ -19,6 +19,7 @@ use App\Http\Models\Users;
 use App\Http\Requests\ApiRealisasiRequest;
 use App\Http\Requests\RealisasiMaterialRequest;
 use App\Http\Resources\AktivitasResource;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class RealisasiController extends Controller
@@ -249,12 +250,17 @@ class RealisasiController extends Controller
 
     public function getRealisasiMaterial()
     {
+        $search = request()->input('search');
         $res = RealisasiMaterial::select(
             'realisasi_material.id',
             'tanggal',
             'nama'
         )
         ->leftJoin('shift_kerja', 'realisasi_material.id_shift', '=', 'shift_kerja.id')
+        ->where(function($query) use ($search){
+            $query->orWhere(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $query->orWhere(DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
+        })
         ->orderBy('realisasi_material.created_at', 'desc')
         ->paginate(10);
         return AktivitasResource::collection($res)->additional([
@@ -349,6 +355,9 @@ class RealisasiController extends Controller
                 } else {
                     if ($tipe == 1) {
                         if ($gudangStok->jumlah - $jumlah < 0) {
+                            MaterialTrans::where('id_realisasi_material', $realisasiMaterial->id)->forceDelete();
+                            RealisasiMaterial::find($realisasiMaterial->id)->forceDelete();
+
                             $this->responseMessage = 'Jumlah yang Anda masukkan melebihi stok yang tersedia!';
                             $this->responseCode = 403;
 
