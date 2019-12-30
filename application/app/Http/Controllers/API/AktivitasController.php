@@ -627,8 +627,13 @@ class AktivitasController extends Controller
                                             ->where('tanggal', date('Y-m-d'))
                                             ->first();
 
+
                                         if ($tipe == 1) {
+                                            if (empty($area_stok)) {
+                                                $area_stok = new AreaStok();
+                                            }
                                             if ($area_stok->jumlah > $list_jumlah[$k]['jumlah']) {
+
                                                 $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
                                             } else {
                                                 AktivitasHarian::find($aktivitasHarian->id)->forceDelete();
@@ -636,12 +641,21 @@ class AktivitasController extends Controller
                                                 $temp_area = Area::find($id_area);
                                                 $temp_material = Material::find($produk);
 
+                                                $area_stok = AreaStok::where('id_area', $id_area)
+                                                    ->where('id_material', $produk)
+                                                    ->where('tanggal', date('Y-m-d'))
+                                                    ->first();
+
                                                 $this->responseCode     = 500;
-                                                $this->responseMessage  = 'Jumlah yang Anda masukkan pada area ' . $temp_area->nama . ' dengan nama material ' . $temp_material->nama . ' melebihi jumlah ketersediaan yaitu ' . $area_stok->jumlah . '!' . $list_jumlah[$k]['jumlah'] . '|' . $list_jumlah[$k]['tanggal'] . '|' . $id_area . '|' . $produk;
+                                                $this->responseMessage  = 'Jumlah yang Anda masukkan pada area ' . $temp_area->nama . ' dengan nama material ' . $temp_material->nama . ' melebihi jumlah ketersediaan!';
                                                 $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                                                 return response()->json($response, $this->responseCode);
                                             }
                                         } else {
+                                            if (empty($area_stok)) {
+                                                $area_stok = new AreaStok();
+                                            }
+
                                             $area_stok->jumlah = $area_stok->jumlah + $list_jumlah[$k]['jumlah'];
                                         }
     
@@ -1051,6 +1065,10 @@ class AktivitasController extends Controller
                                             ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
                                             ->first();
 
+                                        if (empty($area_stok)) {
+                                            $area_stok = new AreaStok();
+                                        }
+
                                         if ($area_stok->jumlah > $list_jumlah[$k]['jumlah']) {
                                             $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
                                         } else {
@@ -1060,7 +1078,7 @@ class AktivitasController extends Controller
                                             $temp_material = Material::find($produk);
 
                                             $this->responseCode     = 500;
-                                            $this->responseMessage  = 'Jumlah yang Anda masukkan pada area ' . $temp_area->nama . ' dengan nama material ' . $temp_material->nama . ' melebihi jumlah ketersediaan yaitu ' . $area_stok->jumlah . '!' . $list_jumlah[$k]['jumlah'] . '|' . $list_jumlah[$k]['tanggal'] . '|' . $id_area . '|' . $produk;
+                                            $this->responseMessage  = 'Jumlah yang Anda masukkan pada area ' . $temp_area->nama . ' dengan nama material ' . $temp_material->nama . ' melebihi jumlah ketersediaan!';
                                             $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                                             return response()->json($response, $this->responseCode);
                                         }
