@@ -42,7 +42,7 @@ class UserRequest extends FormRequest
                 'required',
             ],
             'pilih'         => [
-                'required',
+                'required_if:role_id,2,3,4,5',
             ],
             'start_date'    => 'nullable|date_format:d-m-Y',
             'end_date'      => 'nullable|date_format:d-m-Y|after:start_date',
@@ -71,6 +71,7 @@ class UserRequest extends FormRequest
             'email'         => 'Email',
             'start_date'    => 'Start Date',
             'end_date'      => 'End Date',
+            'pilih'         => 'Pegawai',
         ];
     }
 
