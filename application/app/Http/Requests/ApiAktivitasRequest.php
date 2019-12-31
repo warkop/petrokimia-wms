@@ -70,7 +70,7 @@ class ApiAktivitasRequest extends FormRequest
             'kelayakan_after'           => 'Kelayakan After',
             'dikembalikan'              => 'Dikembalikan',
             'list_produk.*.produk'      => 'Produk',
-            'list_produk.*.pallet'      => 'Pallet',
+            'list_pallet.*.pallet'      => 'Pallet',
         ];
     }
 
@@ -80,7 +80,7 @@ class ApiAktivitasRequest extends FormRequest
             'required'      => ':attribute wajib diisi!',
             'numeric'       => ':attribute harus berupa angka!',
             'image'         => ':attribute harus berupa gambar!',
-            'exists'        => ':attribute tidak tersedia!',
+            'exists'        => ':attribute yang dipilih tidak ditemukan!',
             'between'       => ':attribute tidak valid!',
             'date_format'   => ':attribute tanggal harus dengan format tanggal-bulan-tahun, contoh: 13-05-2018',
         ];
