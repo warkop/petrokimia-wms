@@ -57,8 +57,8 @@ class AuthController extends Controller
                 if (Hash::check($password, $cek_user['password'])) {
                     if ($cek_user['role_id'] == 3) {
                         $rencanaTkbm = RencanaTkbm::where('id_tkbm', $cek_user['id_tkbm'])->get();
+                        $m_user = Users::withoutGlobalScopes()->find($cek_user['id']);
                         if (!$rencanaTkbm->isEmpty()) {
-                            $m_user = Users::withoutGlobalScopes()->find($cek_user['id']);
 
                             if (empty($cek_user['api_token'])) {
                                 $access_token = 'wMs-' . rand_str(10) . date('Y') . rand_str(6) . date('m') . rand_str(6) . date('d') . rand_str(6) . date('H') . rand_str(6) . date('i') . rand_str(6) . date('s');
