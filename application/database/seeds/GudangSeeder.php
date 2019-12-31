@@ -12,6 +12,6 @@ class GudangSeeder extends Seeder
      */
     public function run()
     {
-        factory(Gudang::class, 100)->create();
+        factory(Gudang::class, 10)->create();
     }
 }

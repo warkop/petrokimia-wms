@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Models\GudangPallet;
+use App\Http\Models\GudangStok;
 use Illuminate\Database\Seeder;
 
 class GudangPalletSeeder extends Seeder
@@ -12,6 +12,6 @@ class GudangPalletSeeder extends Seeder
      */
     public function run()
     {
-        factory(GudangPallet::class, 150)->create();
+        factory(GudangStok::class, 150)->create();
     }
 }
