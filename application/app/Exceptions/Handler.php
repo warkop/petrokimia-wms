@@ -86,8 +86,7 @@ class Handler extends ExceptionHandler
             ], 403);
         }
 
-        if ($exception instanceof AuthorizationException)
-        {
+        if ($exception instanceof AuthorizationException && $request->wantsJson()) {
             return response()->json([
                 'message' => 'Aksi yang Anda lakukan dilarang oleh sistem! Silahkan hubungi administrator untuk mengetahui info lebih lanjut!',
                 'code'    => 403,
@@ -95,8 +94,7 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof AuthorizationException) {
-            $exception = new HttpException(419, $exception->getMessage(), $exception);
-            return $exception;
+            abort(403, 'Unauthorized action.');
         }
 
         return parent::render($request, $exception);
