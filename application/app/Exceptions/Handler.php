@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -82,6 +83,14 @@ class Handler extends ExceptionHandler
                     'message' => 'Hanya Checker yang diizinkan untuk menambah aktivitas harian!',
                     'code' => 403,
                 ]
+            ], 403);
+        }
+
+        if ($exception instanceof AuthorizationException)
+        {
+            return response()->json([
+                'message' => 'Aksi yang Anda lakukan dilarang oleh sistem! Silahkan hubungi administrator untuk mengetahui info lebih lanjut!',
+                'code'    => 403,
             ], 403);
         }
 
