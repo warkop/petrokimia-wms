@@ -14,7 +14,7 @@ class UserRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user()->role_id == 1;
     }
 
     /**
@@ -24,27 +24,18 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        $action = \Request::instance()->action;
-        if ($action == 'edit') {
-            $rules['id'] = 'required';
-        }
-
         $rules = [
+            'id'            => 'bail|required_if:action,edit',
             'username'      => [
                 'required',
-                Rule::unique('users', 'username')->ignore(\Request::instance()->id),
+                Rule::unique('users', 'username')->ignore(request()->id),
             ],
             'email'         => [
                 'email',
-                Rule::unique('users', 'email')->ignore(\Request::instance()->id),
+                Rule::unique('users', 'email')->ignore(request()->id),
             ],
-            'role_id'       => [
-                'required',
-            ],
-            'pilih'         => [
-                'required_if:role_id,2,3,4,5',
-            ],
-            'start_date'    => 'nullable|date_format:d-m-Y',
+            'role_id'       => 'required',
+            'pilih'         => 'required_if:role_id,3,4,5',
             'end_date'      => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
@@ -56,10 +47,13 @@ class UserRequest extends FormRequest
     public function messages()
     {
         return [
-            'required' => ':attribute wajib diisi!',
-            'unique' => ':attribute tidak boleh sama dengan data yang lain!',
-            'date_format' => ':attribute harus dengan format tanggal-bulan-tahun!',
-            'after' => ':attribute harus lebih besar dari Start Date!',
+            'required'      => ':attribute wajib diisi!',
+            'unique'        => ':attribute tidak boleh sama dengan data yang lain!',
+            'date_format'   => ':attribute harus dengan format tanggal-bulan-tahun!',
+            'after'         => ':attribute harus lebih besar dari :after!',
+            'email'         => ':attribute tidak sesuai dengan format email!',
+            'id.required_if'=> ':attribute wajib ada apabila edit data!',
+            'required_if'   => ':attribute wajib diisi apabila :other dalam posisi selain administrator!',
         ];
     }
 
@@ -72,6 +66,7 @@ class UserRequest extends FormRequest
             'start_date'    => 'Start Date',
             'end_date'      => 'End Date',
             'pilih'         => 'Pegawai',
+            'role_id'       => 'Hak Akses',
         ];
     }
 

@@ -182,7 +182,6 @@ function edit(id = '') {
                 $('#email').val(obj.data['email']);
                 $("#radio"+obj.data['role_id']).prop("checked",true);
                 
-                console.log(obj.data['id_karu']);
                 if (obj.data['role_id'] == 5) {
                     setTimeout(() => {
                         $("#pilih").val(obj.data['id_karu']).trigger('change.select2');
@@ -316,7 +315,6 @@ function gantiPassword(id) {
                     $('.se-pre-con').hide();
 
                     let obj = response;
-                    console.log(obj)
                     if (obj.status == "OK") {
                         swal.fire('Ok', obj.message, 'success');
                     } else {
@@ -368,6 +366,7 @@ function simpan() {
         },
         url: ajaxUrl,
         data: data,
+        dataType:"json",
         beforeSend: function () {
             preventLeaving();
             $('.btn_close_modal').addClass('hide');
@@ -414,20 +413,24 @@ function simpan() {
                         } else {
                             head = 'Pemberitahuan';
                             type = 'warning';
-
                             obj = response.responseJSON.errors;
+                            message = '';
+                            if (obj == null) {
+                                message = response.responseJSON.message;
+                            } else {
+                                const temp = Object.values(obj);
+                                message = '';
+                                temp.forEach(element => {
+                                    element.forEach(row => {
+                                        message += row + "<br>"
+                                    });
+                                });
+                            }
+
                             laddaButton.stop();
                             window.onbeforeunload = false;
                             $('.btn_close_modal').removeClass('hide');
                             $('.se-pre-con').hide();
-
-                            const temp = Object.values(obj);
-                            message = '';
-                            temp.forEach(element => {
-                                element.forEach(row => {
-                                    message += row + "<br>"
-                                });
-                            });
                         }
                     }
                 }
