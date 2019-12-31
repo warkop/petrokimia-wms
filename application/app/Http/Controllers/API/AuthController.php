@@ -151,6 +151,13 @@ class AuthController extends Controller
                         $arr['nama_gudang'] = '';
                         if ($m_user->id_karu != null) {
                             $gudang = Gudang::where('id_karu', $m_user->id_karu)->first();
+                            if (empty($gudang)) {
+                                $this->responseCode = 500;
+                                $this->responseMessage = 'Karu belum terdaftar pada gudang manapun!';
+                                
+                                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                                return response()->json($response, $this->responseCode);
+                            }
                             $arr['nama_gudang'] = $gudang->nama;
                         }
 
