@@ -53,9 +53,11 @@ class KaruController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(KaruRequest $req, Karu $karu)
+    public function store(KaruRequest $req, $karu)
     {
         $req->validated();
+
+        $karu = Karu::withoutGlobalScopes()->find($karu);
 
         $karu->nama                   = $req->input('nama');
         $karu->nik                    = $req->input('nik');

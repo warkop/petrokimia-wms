@@ -122,7 +122,7 @@ class AuthController extends Controller
 
                         }
                     } else {
-                        $m_user = Users::withoutGlobalScopes()->find($cek_user['id']);
+                        $m_user = Users::find($cek_user['id']);
 
                         if (empty($cek_user['api_token'])) {
                             $access_token = 'wMs-' . rand_str(10) . date('Y') . rand_str(6) . date('m') . rand_str(6) . date('d') . rand_str(6) . date('H') . rand_str(6) . date('i') . rand_str(6) . date('s');
