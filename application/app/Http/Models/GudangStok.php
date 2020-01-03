@@ -39,6 +39,11 @@ class GudangStok extends Model
         return $query->where('status', 4);
     }
 
+    public function gudang()
+    {
+        return $this->belongsTo(Gudang::class, 'id_gudang');
+    }
+
     public function gridJson($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition, $id_gudang)
     {
         $result = \DB::table($this->table)

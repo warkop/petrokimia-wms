@@ -228,6 +228,8 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/laporan-mutasi-pallet', 'ReportController@laporanMutasiPallet');
         Route::get('/laporan-realisasi', 'ReportController@laporanRealisasi');
         Route::get('/realisasi', 'ReportController@realisasi');
+        Route::get('/laporan-material', 'ReportController@laporanMaterial');
+        Route::get('/material', 'ReportController@material');
     });
 
     Route::get('/main', function () {
@@ -300,12 +302,6 @@ Route::get('/add-rencana-harian', function () {
 //     return view('log-aktivitas.detail');
 // });
 
-Route::get('/laporan-material', function () {
-    return view('report.material.grid');
-});
-Route::get('/laporan-material', function () {
-    return view('report.material.grid');
-});
 Route::get('/laporan-stok', function () {
     return view('report.stok.grid');
 });
