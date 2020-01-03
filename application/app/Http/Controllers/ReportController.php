@@ -1315,7 +1315,9 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
 
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->gudangStok->gudang->nama);
+            if (!empty($value->gudangStok)) {
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->gudangStok->gudang->nama);
+            }
 
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->material->nama);
