@@ -1142,15 +1142,17 @@ class ReportController extends Controller
                 $query = $query->orWhere('id_gudang', $value);
             }
         })
-        
         ;
 
         if ($pallet == 2) {
             $res = $res->whereHas('material', function ($query) use ($pilih_pallet) {
-                $query->where('id_kategori', 2);
                 foreach ($pilih_pallet as $key => $value) {
                     $query = $query->orWhere('id', $value);
                 }
+            });
+        } else {
+            $res = $res->whereHas('material', function ($query) {
+                $query = $query->where('kategori', 2);
             });
         }
 
@@ -1316,7 +1318,8 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
 
             $col++;
-            if (!empty($value->gudangStok)) {
+            if ($value->gudangStok != null) {
+                // dd($value->gudangStok->toArray());
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->gudangStok->gudang->nama);
             }
 
