@@ -41,11 +41,13 @@ class KaruController extends Controller
         $page = ($start / $perpage) + 1;
 
         if ($page >= 0) {
-            $result = $models->jsonGrid($start, $perpage, $search, false, $sort, $field, $condition);
-            $total  = $models->jsonGrid($start, $perpage, $search, true, $sort, $field, $condition);
+            $temp = $models->jsonGrid($start, $perpage, $search, $sort, $field, $condition);
+            $result = $temp['result'];
+            $total  = $temp['count'];
         } else {
-            $result = $models::orderBy($field, $sort)->get();
-            $total  = $models::all()->count();
+            $temp = $models::orderBy($field, $sort)->get();
+            $result = $temp;
+            $total  = $temp->count();
         }
         $this->responseCode = 200;
         $this->responseData = array("sEcho" => $echo, "iTotalRecords" => $total, "iTotalDisplayRecords" => $total, "aaData" => $result);

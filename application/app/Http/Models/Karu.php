@@ -24,7 +24,7 @@ class Karu extends CustomModel
 
     public $timestamps  = false;
 
-    public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
+    public function jsonGrid($start = 0, $length = 10, $search = '', $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table($this->table)
             ->select('id AS id', 'nama AS nama', 'nik', 'no_hp', DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\') AS end_date'));
@@ -38,12 +38,9 @@ class Karu extends CustomModel
             });
         }
 
-        if ($count == true) {
-            $result = $result->count();
-        } else {
-            $result  = $result->offset($start)->limit($length)->orderBy($field, $sort)->get();
-        }
+        $count      = $result->count();
+        $result     = $result->offset($start)->limit($length)->orderBy($field, $sort)->get();
 
-        return $result;
+        return ['result' => $result, 'count' => $count];
     }
 }
