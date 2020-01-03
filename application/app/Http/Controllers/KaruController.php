@@ -53,19 +53,23 @@ class KaruController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(KaruRequest $req, $karu)
+    public function store(KaruRequest $req, $id='')
     {
         $req->validated();
 
-        $karu = Karu::withoutGlobalScopes()->find($karu);
+        if (!empty($id)) {
+            $karu = Karu::withoutGlobalScopes()->find($id);
+        } else {
+            $karu = new Karu;
+        }
 
-        $karu->nama                   = $req->input('nama');
-        $karu->nik                    = $req->input('nik');
-        $karu->no_hp                  = $req->input('no_hp');
-        $karu->start_date             = $req->input('start_date');
-        $karu->end_date               = $req->input('end_date');
-
-        $karu->save();
+        $karu->fill([
+            'nama'      => $req->nama,
+            'nik'       => $req->nik,
+            'no_hp'     => $req->no_hp,
+            'start_date'=> $req->start_date,
+            'end_date'  => $req->end_date,
+        ])->save();
 
         $this->responseCode = 200;
         $this->responseMessage = 'Data berhasil disimpan';
