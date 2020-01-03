@@ -1148,21 +1148,21 @@ class ReportController extends Controller
         if ($pallet == 2) {
             $res = $res->whereHas('material', function ($query) use ($pilih_pallet) {
                 foreach ($pilih_pallet as $key => $value) {
-                    $query = $query->where('id', $value);
+                    $query = $query->orWhere('id', $value);
                 }
             });
         }
 
         $res = $res->get();
 
-        // if (!is_dir(storage_path() . '/app/public/excel/')) {
-        //     mkdir(storage_path() . '/app/public/excel', 755);
-        // }
+        if (!is_dir(storage_path() . '/app/public/excel/')) {
+            mkdir(storage_path() . '/app/public/excel', 755);
+        }
 
-        // $nama_file = date("YmdHis") . '_material.xlsx';
-        // $this->generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir);
+        $nama_file = date("YmdHis") . '_material.xlsx';
+        $this->generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir);
 
-        dd($res->toArray());
+        // dd($res->toArray());
     }
 
     public function generateExcelMaterial($res, $nama_file)
