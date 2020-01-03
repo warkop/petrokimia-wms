@@ -1139,7 +1139,7 @@ class ReportController extends Controller
         ->with('aktivitasHarian')
         ->whereHas('gudangStok', function ($query) use ($gudang) {
             foreach ($gudang as $key => $value) {
-                $query = $query->where('id_gudang', $value);
+                $query = $query->orWhere('id_gudang', $value);
             }
         })
         
