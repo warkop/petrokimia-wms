@@ -59,9 +59,15 @@ class GudangController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(GudangRequest $req, Gudang $models)
+    public function store(GudangRequest $req, $id='')
     {
         $req->validated();
+
+        if (!empty($id)) {
+            $models = Aktivitas::withoutGlobalScopes()->find($id);
+        } else {
+            $models = new Aktivitas;
+        }
 
         $id = $req->input('id');
 
