@@ -1147,6 +1147,7 @@ class ReportController extends Controller
 
         if ($pallet == 2) {
             $res = $res->whereHas('material', function ($query) use ($pilih_pallet) {
+                $query->where('id_kategori', 2);
                 foreach ($pilih_pallet as $key => $value) {
                     $query = $query->orWhere('id', $value);
                 }
