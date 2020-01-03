@@ -1319,8 +1319,10 @@ class ReportController extends Controller
 
             $col++;
             if ($value->gudangStok != null) {
-                // dd($value->gudangStok->toArray());
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->gudangStok->gudang->nama);
+                if ($value->gudangStok->gudang != null) {
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->gudangStok->gudang->nama);
+                }
+            } else {
             }
 
             $col++;
