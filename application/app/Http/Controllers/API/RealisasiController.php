@@ -372,7 +372,7 @@ class RealisasiController extends Controller
 
                 $gudangStok->id_gudang      = $gudang->id;
                 $gudangStok->id_material    = $material;
-                $gudangStok->status         = 0;
+                $gudangStok->status         = 1;
                 $gudangStok->save();
 
             }
