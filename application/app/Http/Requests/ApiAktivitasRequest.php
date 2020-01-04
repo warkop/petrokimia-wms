@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Models\GudangStok;
+use App\Http\Models\Users;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -14,7 +16,30 @@ class ApiAktivitasRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        $my_auth = request()->get('my_auth');
+        $res_user = Users::findOrFail($my_auth->id_user);
+        return $res_user->role_id == 3;
+    }
+
+    public function getRencana()
+    {
+        $my_auth = request()->get('my_auth');
+        $user = Users::findOrFail($my_auth->id_user);
+
+        $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+            ->where('id_tkbm', $user->id_tkbm)
+            ->orderBy('rencana_harian.id', 'desc')
+            ->take(1)->first();
+
+        if (!empty($rencana_tkbm)) {
+            $rencana_harian = RencanaHarian::withoutGlobalScopes()->findOrFail($rencana_tkbm->id_rencana);
+            $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
+            if (!empty($gudang)) {
+                return $gudang;
+            }
+        }
+
+        return 0;
     }
 
     /**
