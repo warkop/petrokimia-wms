@@ -89,7 +89,10 @@ class Handler extends ExceptionHandler
         if ($exception instanceof AuthorizationException && $request->wantsJson()) {
             return response()->json([
                 'message' => 'Aksi yang Anda lakukan dilarang oleh sistem! Silahkan hubungi administrator untuk mengetahui info lebih lanjut!',
-                'code'    => 403,
+                'status' => [
+                    'message' => 'Aksi yang Anda lakukan dilarang oleh sistem! Silahkan hubungi administrator untuk mengetahui info lebih lanjut!',
+                    'code'    => 403
+                ],
             ], 403);
         }
 
