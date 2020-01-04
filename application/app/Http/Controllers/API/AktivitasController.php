@@ -83,7 +83,7 @@ class AktivitasController extends Controller
         $aktivitas = Aktivitas::find($aktivitasHarian->id_aktivitas);
         $user = Users::find(\Request::get('my_auth')->id_user);
 
-        $rencanaHarian = RencanaHarian::where('id_gudang', $aktivitasHarian->id_gudang_tujuan)
+        $rencanaHarian = RencanaHarian::withoutGlobalScopes()->where('id_gudang', $aktivitasHarian->id_gudang_tujuan)
             ->orderBy('id', 'desc')
             ->first();
 
