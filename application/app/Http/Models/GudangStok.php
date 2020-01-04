@@ -13,15 +13,6 @@ class GudangStok extends Model
         'id',
     ];
 
-    protected $hidden = [
-        'created_at',
-        'created_by',
-        'updated_at',
-        'updated_by',
-    ];
-
-    protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
-
     public $timestamps  = false;
 
     public function scopeDipakai($query)
@@ -42,6 +33,11 @@ class GudangStok extends Model
     public function gudang()
     {
         return $this->belongsTo(Gudang::class, 'id_gudang');
+    }
+
+    public function material()
+    {
+        return $this->belongsTo(Material::class, 'id_material');
     }
 
     public function gridJson($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition, $id_gudang)
