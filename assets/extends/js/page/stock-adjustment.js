@@ -188,7 +188,7 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
 
   let html = `<tr class="produk_baris" id="baris-produk-${rows}">
                     <td>${rows}</td>
-                    <td>
+                    <td id="tempat-produk-${rows}">
                         <select class="form-control m-select2 pilih_produk" id="produk-${rows}" name="produk[]" onchange="checkProduk(this)" aria-placeholder="Pilih Produk" style="width: 100%;">
                         </select>
                     </td>
@@ -214,8 +214,8 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
                 </tr>`;
   $("#table_produk tbody").append(html);
   $(".pilih_produk").select2({
-    placeholder: "Pilih Produk"
-    // dropdownParent: $("modal_form")
+    placeholder: "Pilih Produk",
+    dropdownParent: $(`#tempat-produk-${rows}`)
   });
 
   // $('#produk-' + rows).select2({
@@ -243,7 +243,7 @@ function tambahPallet(id = "", tipe = "", jumlah = "") {
 
   let html = `<tr class="pallet_baris" id="baris-pallet-${rows}">
                     <td>${rows}</td>
-                    <td>
+                    <td id="tempat-pallet-${rows}">
                         <select class="form-control m-select2 pilih_pallet" id="pallet-${rows}" name="pallet[]" onchange="checkPallet(this)" aria-placeholder="Pilih Pallet" style="width: 100%;">
                         </select>
                     </td>
@@ -265,7 +265,8 @@ function tambahPallet(id = "", tipe = "", jumlah = "") {
                 </tr>`;
   $("#table_pallet tbody").append(html);
   $(".m-select2").select2({
-    placeholder: "Pilih Pallet"
+    placeholder: "Pilih Pallet",
+    dropdownParent: $(`#tempat-pallet-${rows}`)
   });
   $(".kt-selectpicker").selectpicker();
   protectNumber(`#pallet-jumlah-${rows}`, 10);

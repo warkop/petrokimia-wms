@@ -196,11 +196,13 @@ class MaterialAdjustmentController extends Controller
 
                     $materialTrans = new MaterialTrans;
                     $materialTrans->id_adjustment   = $materialAdjustment->id;
-                    $materialTrans->id_adjustment   = $materialAdjustment->id;
                     $materialTrans->id_material     = $pallet[$i];
                     $materialTrans->tipe            = $action_pallet[$i];
                     $materialTrans->jumlah          = $pallet_jumlah[$i];
                     $materialTrans->alasan          = $pallet_alasan[$i];
+                    $materialTrans->tanggal         = $materialAdjustment->tanggal;
+                    $materialTrans->status_pallet   = 1;
+                    $materialTrans->id_gudang_stok  = $gudangStok->id;
                     $materialTrans->save();
                 }
             }

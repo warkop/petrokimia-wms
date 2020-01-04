@@ -36,7 +36,7 @@
             <div class="form-group row mt2">
                 <h4 class="col-2 col-form-label text-kiri">Gudang</h4>
                 <div class="col-6">
-                    <select class="form-control m-select2" id="gudang" name="gudang[]" multiple="multiple" style="width: 100%">
+                    <select class="form-control m-select2 @error('title') is-invalid @enderror" id="gudang" name="gudang[]" multiple="multiple" style="width: 100%">
                         @foreach ($gudang as $item)
                             <option value="{{$item->id}}">{{$item->nama}}</option>
                         @endforeach
@@ -88,6 +88,12 @@
                     </div>
                 </div>
             </div>
+            {{-- @error('title') --}}
+            @foreach ($errors->all() as $error)
+                {{-- <li>{{  }}</li> --}}
+                <div class="alert alert-danger">{{ $error }}</div>
+            @endforeach
+            {{-- @enderror --}}
         </div>
         <div class="kt-portlet__foot">
             <div class="kt-form__actions">
