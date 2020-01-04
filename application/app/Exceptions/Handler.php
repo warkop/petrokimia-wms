@@ -91,8 +91,9 @@ class Handler extends ExceptionHandler
                 'message' => 'Aksi yang Anda lakukan dilarang oleh sistem! Silahkan hubungi administrator untuk mengetahui info lebih lanjut!',
                 'status' => [
                     'message' => 'Aksi yang Anda lakukan dilarang oleh sistem! Silahkan hubungi administrator untuk mengetahui info lebih lanjut!',
-                    'code'    => 403
+                    'code'    => 403,
                 ],
+                'code'    => 403,
             ], 403);
         }
 
