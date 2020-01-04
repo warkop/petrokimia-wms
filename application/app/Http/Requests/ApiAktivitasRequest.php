@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Models\Aktivitas;
 use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
 use App\Http\Models\Material;
@@ -63,9 +64,6 @@ class ApiAktivitasRequest extends FormRequest
             'id_aktivitas'      => 'required|exists:aktivitas,id',
             'id_gudang_tujuan'  => 'nullable|exists:gudang,id',
             'id_alat_berat'     => 'nullable|exists:alat_berat,id',
-            'alasan'            => [
-                'nullable',
-            ],
             'list_produk.*.produk'       => [
                 Rule::exists('material', 'id')->where(function ($query) {
                     $query->where('kategori', 1);
@@ -83,6 +81,22 @@ class ApiAktivitasRequest extends FormRequest
             'list_pallet.*.tipe'    => 'between:1,2',
             'list_pallet.*.status_pallet'  => 'between:1,4',
         ];
+
+        $aktivitas = Aktivitas::findOrFail($request->id_aktivitas);
+        if ($aktivitas->fifo != null) {
+            $rules['alasan'] = [
+                'nullable',
+                'required',
+            ];
+        }
+
+        if ($aktivitas->internal_gudang != null) {
+            $rules['id_gudang_tujuan'] = [
+                'nullable',
+                'exists:gudang,id',
+                'required',
+            ];
+        }
 
         for ($i = 0; $i < count($request->list_pallet); $i++) {
             $gudangStok = GudangStok::where('id_material', $request->list_pallet[0]['pallet'])
@@ -114,6 +128,7 @@ class ApiAktivitasRequest extends FormRequest
         $attributes = [
             'id_aktivitas'              => 'Aktivitas',
             'id_gudang'                 => 'Gudang',
+            'id_gudang_tujuan'          => 'Gudang Tujuan',
             'ref_number'                => 'Nomor Referensi',
             'id_pindah_area'            => 'Pindah Area',
             'id_alat_berat'             => 'Alat Berat',
@@ -123,6 +138,7 @@ class ApiAktivitasRequest extends FormRequest
             'kelayakan_before'          => 'Kelayakan Before',
             'kelayakan_after'           => 'Kelayakan After',
             'dikembalikan'              => 'Dikembalikan',
+            'alasan'                    => 'Alasan',
             'list_produk.*.produk'      => 'Produk',
             'list_pallet.*.pallet'      => 'Pallet',
             'list_pallet.*.status_pallet'      => 'Status Pallet',
