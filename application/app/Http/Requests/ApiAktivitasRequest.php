@@ -2,7 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
+use App\Http\Models\Material;
+use App\Http\Models\RencanaHarian;
+use App\Http\Models\RencanaTkbm;
 use App\Http\Models\Users;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -51,6 +55,10 @@ class ApiAktivitasRequest extends FormRequest
     {
         // $this->sanitize();
         $request = \Request::instance();
+
+        $gudang = $this->getRencana();
+        
+
         $rules = [
             'id_aktivitas'      => 'required|exists:aktivitas,id',
             'id_gudang_tujuan'  => 'nullable|exists:gudang,id',
@@ -73,16 +81,37 @@ class ApiAktivitasRequest extends FormRequest
                 })
             ],
             'list_pallet.*.tipe'    => 'between:1,2',
-            'list_pallet.*.jumlah'  => 'numeric',
             'list_pallet.*.status_pallet'  => 'between:1,4',
         ];
-        
+
+        for ($i = 0; $i < count($request->list_pallet); $i++) {
+            $gudangStok = GudangStok::where('id_material', $request->list_pallet[0]['pallet'])
+            ->where('status', $request->list_pallet[0]['status_pallet'])
+            ->where('id_gudang', $gudang->id)->first();
+            if (!empty($gudangStok)) {
+                $max = $gudangStok->jumlah;
+            } else {
+                $max = 0;
+            }
+
+            if ($request->list_pallet[0]['tipe'] == 1) {
+                $rules['list_pallet.' . $i . '.jumlah'] = [
+                    'min:0', 'max:' . $max, 'numeric'
+                ];
+            } else {
+                $rules['list_pallet.' . $i . '.jumlah'] = [
+                    'min:0', 'numeric'
+                ];
+            }
+
+        }
         return $rules;
     }
 
     public function attributes()
     {
-        return [
+        $request = \Request::instance();
+        $attributes = [
             'id_aktivitas'              => 'Aktivitas',
             'id_gudang'                 => 'Gudang',
             'ref_number'                => 'Nomor Referensi',
@@ -96,7 +125,15 @@ class ApiAktivitasRequest extends FormRequest
             'dikembalikan'              => 'Dikembalikan',
             'list_produk.*.produk'      => 'Produk',
             'list_pallet.*.pallet'      => 'Pallet',
+            'list_pallet.*.status_pallet'      => 'Status Pallet',
         ];
+
+        for ($i = 0; $i < count($request->list_pallet); $i++) {
+            $material = Material::find($request->list_pallet[0]['pallet']);
+            $attributes['list_pallet.' . $i . '.jumlah'] =  'Jumlah Pallet '.$material->nama;
+        }
+
+        return $attributes;
     }
 
     public function messages()
@@ -107,6 +144,8 @@ class ApiAktivitasRequest extends FormRequest
             'image'         => ':attribute harus berupa gambar!',
             'exists'        => ':attribute yang dipilih tidak ditemukan!',
             'between'       => ':attribute tidak valid!',
+            'max'           => ':attribute melebihi kapasitas di gudang yaitu :max pcs!',
+            'min'           => ':attribute harus minimal :max pcs!',
             'date_format'   => ':attribute tanggal harus dengan format tanggal-bulan-tahun, contoh: 13-05-2018',
         ];
     }
