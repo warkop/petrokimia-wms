@@ -52,7 +52,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::post('/{aktivitas?}', 'API\AktivitasController@storePhotos')->where('aktivitas', '[0-9]+');
         Route::post('/kelayakan', 'API\AktivitasController@storeKelayakanPhotos');
         
-        
+        Route::post('/test-save/{kategoriAlatBerat}', 'API\AktivitasController@testSave');
     });
     
     Route::group(['prefix' => 'alat-berat'], function () {

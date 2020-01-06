@@ -2,6 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Models\Gudang;
+use App\Http\Models\RencanaHarian;
+use App\Http\Models\RencanaTkbm;
+use App\Http\Models\Users;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -17,6 +21,27 @@ class ApiAktivitasPenerimaanGiRequest extends FormRequest
         return true;
     }
 
+    public function getRencana()
+    {
+        $my_auth = request()->get('my_auth');
+        $user = Users::findOrFail($my_auth->id_user);
+
+        $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+            ->where('id_tkbm', $user->id_tkbm)
+            ->orderBy('rencana_harian.id', 'desc')
+            ->take(1)->first();
+
+        if (!empty($rencana_tkbm)) {
+            $rencana_harian = RencanaHarian::withoutGlobalScopes()->findOrFail($rencana_tkbm->id_rencana);
+            $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
+            if (!empty($gudang)) {
+                return $gudang;
+            }
+        }
+
+        return 0;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,6 +49,7 @@ class ApiAktivitasPenerimaanGiRequest extends FormRequest
      */
     public function rules()
     {
+        $gudang = $this->getRencana();
         $rules = [
             'id_aktivitas_harian'   => 'required|numeric|exists:aktivitas_harian,id',
             'id_gudang'         => 'nullable|numeric',
@@ -36,7 +62,12 @@ class ApiAktivitasPenerimaanGiRequest extends FormRequest
                     $query->where('kategori', 1);
                 })
             ],
-
+            'list_produk.*.list_area.*.id_area_stok' => [
+                'required',
+                Rule::exists('area', 'id')->where(function ($query) use($gudang) {
+                    $query->where('id_gudang', $gudang->id);
+                })
+            ],
             // 'sistro'            => 'Sistro',
             // 'approve'           => 'Approve',
             // 'dikembalikan'      => 'Dikembalikan',
@@ -64,6 +95,7 @@ class ApiAktivitasPenerimaanGiRequest extends FormRequest
             'kelayakan_after'   => 'Kelayakan After',
             'dikembalikan'      => 'Dikembalikan',
             'id_produk.*'       => 'Produk',
+            'list_produk.*.list_area.*.id_area_stok' => 'Area',
         ];
     }
 
