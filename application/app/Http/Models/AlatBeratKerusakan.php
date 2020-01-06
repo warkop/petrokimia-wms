@@ -33,7 +33,7 @@ class AlatBeratKerusakan extends Model
     {
         parent::boot();
 
-        static::updating(function ($table) {
+        static::saving(function ($table) {
             $table->updated_by = auth()->id();
             $table->updated_at = date('Y-m-d H:i:s');
         });
