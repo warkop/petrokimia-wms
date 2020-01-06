@@ -17,13 +17,7 @@ Route::get('/', 'Auth\LoginController@index');
 Route::get('/login', 'Auth\LoginController@index')->name('login');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('/authenticate', 'Auth\LoginController@authenticate')->name('authenticate');
-
-
-
-Route::get('/master-grup', function () {
-    return view('master.master-grup.grid');
-});
-
+Route::get('watch/{nama}/', 'WatchController@default');
 Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'DashboardController@index');
     
@@ -200,15 +194,6 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::patch('/{aktivitasHarian}', 'PenerimaanGpController@approve')->where('aktivitasHarian', '[0-9]+');
     });
 
-    // Route::get('/penerimaan-gp', function () {
-    //     return view('penerimaan-gp.grid');
-    // });
-    // Route::get('/penerimaan-gp/detail', function () {
-    //     return view('penerimaan-gp.detail');
-    // });
-
-    // Route::get('report/aktivitas-harian', 'ReportController@aktivitasHarian');
-
     Route::group(['prefix' => 'log-aktivitas'], function () {
         Route::get('/', 'LogAktivitasController@index');
         Route::post('/', 'LogAktivitasController@json');
@@ -222,18 +207,27 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     });
 
     Route::group(['prefix' => 'report'], function () {
-        Route::get('/laporan-aktivitas', 'ReportController@laporanAktivitas');
-        Route::get('/aktivitas-harian', 'ReportController@aktivitasHarian');
-        Route::get('/laporan-keluhan-alat-berat', 'ReportController@laporanKeluhanAlatBerat');
-        Route::get('/keluhan-alat-berat', 'ReportController@keluhanAlatBerat');
-        Route::get('/laporan-produk', 'ReportController@laporanProduk');
-        Route::get('/laporan-mutasi-pallet', 'ReportController@laporanMutasiPallet');
-        Route::get('/laporan-realisasi', 'ReportController@laporanRealisasi');
-        Route::get('/realisasi', 'ReportController@realisasi');
         Route::get('/laporan-material', 'ReportController@laporanMaterial');
-        Route::get('/material', 'ReportController@material');
         Route::get('/laporan-stok', 'ReportController@laporanStok');
+        Route::get('/laporan-absen-karyawan', 'ReportController@laporanAbsenKaryawan');
+        Route::get('/laporan-mutasi-pallet', 'ReportController@laporanMutasiPallet');
+        Route::get('/laporan-mutasi-stok', 'ReportController@laporanMutasiStok');
+        Route::get('/laporan-produk', 'ReportController@laporanProduk');
+        Route::get('/laporan-realisasi', 'ReportController@laporanRealisasi');
+        Route::get('/laporan-keluhan-alat-berat', 'ReportController@laporanKeluhanAlatBerat');
+        Route::get('/laporan-keluhan-gp', 'ReportController@laporanKeluhanGp');
+        Route::get('/laporan-aktivitas', 'ReportController@laporanAktivitas');
+        
+        Route::get('/material', 'ReportController@material');
         Route::get('/stok', 'ReportController@stok');
+        Route::get('/absen-karyawan', 'ReportController@absenKaryawan');
+        Route::get('/mutasi-pallet', 'ReportController@mutasiPallet');
+        Route::get('/mutasi-stok', 'ReportController@mutasiStok');
+        Route::get('/produk', 'ReportController@produk');
+        Route::get('/realisasi', 'ReportController@realisasi');
+        Route::get('/keluhan-alat-berat', 'ReportController@keluhanAlatBerat');
+        Route::get('/keluhan-gp', 'ReportController@keluhanGp');
+        Route::get('/aktivitas-harian', 'ReportController@aktivitasHarian');
     });
 
     Route::get('/main', function () {
@@ -241,92 +235,9 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     });
 });
 
-Route::get('watch/{nama}/', 'WatchController@default');
-
-// Route::get('/master-material', function () {
-//     return view('master.master-material.grid');
-// });
-
-// Route::get('/gudang', function () {
-//     return view('gudang.grid');
-// });
+Route::get('/master-grup', function () {
+    return view('master.master-grup.grid');
+});
 Route::get('/sub-gudang', function () {
     return view('sub-gudang.grid');
 });
-// Route::get('/master-alat-berat/list-alat-berat', function () {
-//     return view('list-alat-berat.grid');
-// });
-// Route::get('/stok-adjustment', function () {
-//     return view('stok-adjusment.grid');
-// });
-// Route::get('/gudang/list-alat-berat', function () {
-//     return view('list-alat-berat-gudang.grid');
-// });
-
-Route::get('/list-tenaga-kerja-nonorganik', function () {
-    return view('list-tenaga-kerja-nonorganik.grid');
-});
-
-Route::get('/list-area', function () {
-    return view('list-area.grid');
-});
-Route::get('/anggaran-alat-berat', function () {
-    return view('anggaran-alat-berat.grid');
-});
-Route::get('/anggaran-sdm', function () {
-    return view('anggaran-sdm.grid');
-});
-
-
-// Route::get('/rencana-harian', function () {
-//     return view('rencana-harian.grid');
-// });
-Route::get('/add-rencana-harian', function () {
-    return view('rencana-harian.add');
-});
-// Route::get('/realisasi', function () {
-//     return view('rencana-harian.realisasi');
-// });
-// Route::get('/log-aktivitas', function () {
-//     return view('aktivitas.grid');
-// });
-// Route::get('/log-aktivitas/detail', function () {
-//     return view('aktivitas.detail');
-// });
-// Route::get('/log-aktivitas/tambah', function () {
-//     return view('log-aktivitas.add');
-// });
-
-
-
-// Route::get('/log-aktivitas', function () {
-//     return view('log-aktivitas.grid');
-// });
-// Route::get('/log-aktivitas/detail', function () {
-//     return view('log-aktivitas.detail');
-// });
-
-
-Route::get('/laporan-absen-karyawan', function () {
-    return view('report.karyawan.grid');
-});
-Route::get('/laporan-mutasi-pallet', function () {
-    return view('report.mutasi-pallet.grid');
-});
-Route::get('/laporan-mutasi-stok', function () {
-    return view('report.mutasi-stok.grid');
-});
-// Route::get('/laporan-produk', function () {
-//     return view('report.produk.grid');
-// });
-Route::get('/laporan-realisasi', function () {
-    return view('report.realisasi.grid');
-});
-
-Route::get('/laporan-keluhan-gp', function () {
-    return view('report.keluhan-gp.grid');
-});
-
-// Route::get('/log-aktivitas-user', function () {
-//     return view('log-aktivitas-user.grid');
-// });
