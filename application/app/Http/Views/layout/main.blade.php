@@ -195,7 +195,7 @@
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
-                                            <a href="{{('laporan-absen-karyawan')}}" class="kt-nav__link">
+                                            <a href="{{('report/laporan-absen-karyawan')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la fa fa-fingerprint"></i>
                                                 <span class="kt-nav__link-text">Absen Karyawan</span>
                                             </a>
@@ -207,7 +207,7 @@
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
-                                            <a href="{{('laporan-mutasi-stok')}}" class="kt-nav__link">
+                                            <a href="{{('report/laporan-mutasi-stok')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon fa fa-arrows-alt-v"></i>
                                                 <span class="kt-nav__link-text">Mutasi Stok</span>
                                             </a>
@@ -231,13 +231,13 @@
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
-                                            <a href="{{('laporan-keluhan-gp')}}" class="kt-nav__link">
+                                            <a href="{{('report/laporan-keluhan-gp')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-file-archive-o"></i>
                                                 <span class="kt-nav__link-text">Keluhan GP</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
-                                            <a href="{{('laporan-aktivitas')}}" class="kt-nav__link">
+                                            <a href="{{('report/laporan-aktivitas')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-file-archive-o"></i>
                                                 <span class="kt-nav__link-text">Aktivitas</span>
                                             </a>
