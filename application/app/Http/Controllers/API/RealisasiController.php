@@ -187,7 +187,7 @@ class RealisasiController extends Controller
         $realisasi->save();
         if (!empty($housekeeper)) {
             foreach ($housekeeper as $key => $value) {
-                $temp = array_values($req->input('area_housekeeper')[$key]);
+                $temp = array_values((array)$req->input('area_housekeeper')[$key]);
                 if (!empty($temp)) {
                     foreach ($temp as $row => $hey) {
                         if (isset($key,$req->input('foto')[$key])) {

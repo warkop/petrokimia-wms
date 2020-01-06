@@ -29,7 +29,7 @@ class AktivitasKeluhanGp extends Model
         parent::boot();
 
         static::creating(function ($table) {
-            $table->created_by = \Auth::id();
+            $table->created_by = auth()->id();
             $table->created_at = now();
         });
     }

@@ -25,7 +25,7 @@ class AlatBeratRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'nomor_lambung'    => ['required', Rule::unique('alat_berat', 'nomor_lambung')->ignore(\Request::instance()->id)],
+            'nomor_lambung'    => ['required', Rule::unique('alat_berat', 'nomor_lambung')->ignore(request()->id)],
         ];
         
         return $rules;

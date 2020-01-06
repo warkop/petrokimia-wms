@@ -23,7 +23,7 @@ class MaterialAdjusmentRequest extends FormRequest
     {
         
 
-        $action = \Request::instance()->action;
+        $action = request()->action;
         if ($action == 'edit') {
             $rules['id'] = 'required';
         }

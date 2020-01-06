@@ -3,7 +3,7 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class StokMaterial extends Model
 {
@@ -40,7 +40,7 @@ class StokMaterial extends Model
                         'action' => 2,
                         'aktivitas' => 'Mengubah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' dengan ID ' . $table->id . ' pada ' . $attr . ' dari ' . $old . ' menjadi ' . $new,
                         'created_at' => now(),
-                        'created_by' => \Auth::id(),
+                        'created_by' => auth()->id(),
                     ];
                     (new LogActivity)->log($arr);
                 }
@@ -53,7 +53,7 @@ class StokMaterial extends Model
                 'action' => 1,
                 'aktivitas' => 'Menambah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' dengan nama ' . ($table->nama),
                 'created_at' => now(),
-                'created_by' => \Auth::id(),
+                'created_by' => auth()->id(),
             ];
             (new LogActivity)->log($arr);
         });

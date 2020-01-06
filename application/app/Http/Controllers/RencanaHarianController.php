@@ -19,6 +19,7 @@ use App\Http\Models\Users;
 use App\Http\Requests\RealisasiRequest;
 use App\Http\Requests\RencanaHarianRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RencanaHarianController extends Controller
 {
@@ -91,7 +92,7 @@ class RencanaHarianController extends Controller
             $rencana_harian = new RencanaHarian();
         }
 
-        $users = Users::findOrFail(\Auth::id());
+        $users = Users::findOrFail(auth()->id());
 
         $res_gudang = Gudang::where('id_karu', $users->id_karu)->first();
 
@@ -110,7 +111,7 @@ class RencanaHarianController extends Controller
                 'id_rencana' => $rencana_harian->id,
                 'id_alat_berat' => $alat_berat[$i],
             ];
-            \DB::table('rencana_alat_berat')->insert(
+            DB::table('rencana_alat_berat')->insert(
                 $arr
             );
         }
@@ -123,7 +124,7 @@ class RencanaHarianController extends Controller
                 'id_tkbm' => $value
             ];
 
-            \DB::table('rencana_tkbm')->insert(
+            DB::table('rencana_tkbm')->insert(
                 $arr
             );
         }
@@ -135,7 +136,7 @@ class RencanaHarianController extends Controller
                 'id_tkbm' => $value
             ];
 
-            \DB::table('rencana_tkbm')->insert(
+            DB::table('rencana_tkbm')->insert(
                 $arr
             );
         }
@@ -147,7 +148,7 @@ class RencanaHarianController extends Controller
                 'id_tkbm' => $value
             ];
 
-            \DB::table('rencana_tkbm')->insert(
+            DB::table('rencana_tkbm')->insert(
                 $arr
             );
         }
@@ -165,7 +166,7 @@ class RencanaHarianController extends Controller
                             'id_area' => $hey,
                         ];
         
-                        \DB::table('rencana_area_tkbm')->insert(
+                        DB::table('rencana_area_tkbm')->insert(
                             $arr
                         );
                     }
@@ -284,7 +285,7 @@ class RencanaHarianController extends Controller
 
     public function getArea($id_gudang ='')
     {
-        $users = Users::find(\Auth::id());
+        $users = Users::find(auth()->id());
         if ($id_gudang == '') {
             $gudang = Gudang::where('id_karu', $users->id_karu)->first();
             if (!empty($gudang)) {
@@ -344,7 +345,7 @@ class RencanaHarianController extends Controller
         $housekeeper = array_values($housekeeper);
         if (!empty($housekeeper)) {
             foreach ($housekeeper as $key => $value) {
-                $temp = array_values($req->input('area_housekeeper')[$key]);
+                $temp = array_values((array)$req->input('area_housekeeper')[$key]);
                 if (!empty($temp)) {
                     foreach ($temp as $row => $hey) {
                         $arr = [
@@ -353,7 +354,7 @@ class RencanaHarianController extends Controller
                             'id_area' => $hey,
                         ];
 
-                        \DB::table('realisasi_housekeeper')->insert(
+                        DB::table('realisasi_housekeeper')->insert(
                             $arr
                         );
                     }
@@ -378,7 +379,7 @@ class RencanaHarianController extends Controller
         //         'created_at' => now(),
         //     ];
 
-        //     \DB::table('realisasi_material')->insert(
+        //     DB::table('realisasi_material')->insert(
         //         $arr
         //     );
         // }
@@ -420,7 +421,7 @@ class RencanaHarianController extends Controller
 
     public function getGudang()
     {
-        $user = \Auth::user();
+        $user = auth()->user();
         
         $gudang = Gudang::where('id_karu', $user->id_karu)->get();
         $this->responseData = $gudang;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\Aktivitas;
 use App\Http\Models\AktivitasHarian;
 use App\Http\Models\Area;
+use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
 use App\Http\Models\KategoriAlatBerat;

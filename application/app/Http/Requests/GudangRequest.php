@@ -25,15 +25,15 @@ class GudangRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'id_sloc'           => Rule::unique('gudang')->ignore(\Request::instance()->id),
+            'id_sloc'           => Rule::unique('gudang')->ignore(request()->id),
             'nama'              => 'required',
             'tipe_gudang'       => 'required|numeric|digits_between:1,2',
-            'id_karu'           => [Rule::unique('gudang')->ignore(\Request::instance()->id),],
+            'id_karu'           => [Rule::unique('gudang')->ignore(request()->id),],
             'start_date'        => 'nullable|date_format:d-m-Y',
             'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
-        $action = \Request::instance()->action;
+        $action = request()->action;
         if ($action == 'edit') {
             $rules['id'] = 'required';
         }

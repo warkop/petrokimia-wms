@@ -24,7 +24,7 @@ class PemetaanSlocRequest extends FormRequest
      */
     public function rules()
     {
-        $action = \Request::instance()->action;
+        $action = request()->action;
         if ($action == 'edit') {
             $rules['id'] = 'required';
         }
@@ -35,7 +35,7 @@ class PemetaanSlocRequest extends FormRequest
             ],
             'nama'            => [
                 'required',
-                Rule::unique('pemetaan_sloc', 'nama')->ignore(\Request::instance()->id)
+                Rule::unique('pemetaan_sloc', 'nama')->ignore(request()->id)
             ],
         ];
 

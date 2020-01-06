@@ -24,7 +24,7 @@ class Controller extends BaseController
             'action'        => $action,
             'aktivitas'     => $message,
             'created_at'    => now(),
-            'created_by'    => \Auth::id(),
+            'created_by'    => auth()->id(),
         ];
         (new LogActivity)->create($arr);
     }

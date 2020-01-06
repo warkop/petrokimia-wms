@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Http\Models\Aktivitas;
 use App\Http\Models\Users;
 use App\Http\Models\AktivitasHarian;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -22,7 +23,7 @@ class AktivitasHarianPolicy
         return auth()->user()->role_id === 3;
     }
 
-    public function reply(User $user)
+    public function reply(Users $user)
     {
         if (auth()->user()->role_id < 5) {
             $this->deny('Sorry, your level is not high enough to do that!');

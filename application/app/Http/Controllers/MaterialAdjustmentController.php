@@ -12,6 +12,7 @@ use App\Http\Models\MaterialTrans;
 use App\Http\Requests\MaterialAdjusmentRequest;
 use App\Http\Requests\MaterialRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MaterialAdjustmentController extends Controller
 {
@@ -269,7 +270,7 @@ class MaterialAdjustmentController extends Controller
                 $res = $models::withoutGlobalScopes()->find($id);
     
                 if (!empty($res)) {
-                    $resProduk = \DB::table('material_adjustment as ma')
+                    $resProduk = DB::table('material_adjustment as ma')
                     ->select(
                         'ma.id',
                         'm.nama as nama',
@@ -287,7 +288,7 @@ class MaterialAdjustmentController extends Controller
                     ->where('kategori', 1)
                     ->get();
 
-                    $resPallet = \DB::table('material_adjustment as ma')
+                    $resPallet = DB::table('material_adjustment as ma')
                     ->leftJoin('material_trans as mt', 'mt.id_adjustment', '=', 'ma.id')
                     ->leftJoin('material as m', 'mt.id_material', '=', 'm.id')
                     ->where('id_adjustment', $res->id)

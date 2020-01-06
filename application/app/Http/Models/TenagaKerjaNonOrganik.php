@@ -2,7 +2,7 @@
 
 namespace App\Http\Models;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class TenagaKerjaNonOrganik extends CustomModel
 {

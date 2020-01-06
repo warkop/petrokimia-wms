@@ -43,12 +43,12 @@ class PemetaanSloc extends Model
                         'action' => 2,
                         'aktivitas' => 'Mengubah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' dengan ID ' . $table->id . ' pada ' . $attr . ' dari ' . $old . ' menjadi ' . $new,
                         'created_at' => now(),
-                        'created_by' => \Auth::id(),
+                        'created_by' => auth()->id(),
                     ];
                     (new LogActivity)->log($arr);
                 }
 
-                $table->updated_by = \Auth::id();
+                $table->updated_by = auth()->id();
             }
         });
 
@@ -58,11 +58,11 @@ class PemetaanSloc extends Model
                 'action' => 1,
                 'aktivitas' => 'Menambah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' dengan tipe ' . ($table->tipe == 1 ? ' mengurangi' : 'menambah') . ' yang berjumlah ' . ($table->jumlah),
                 'created_at' => now(),
-                'created_by' => \Auth::id(),
+                'created_by' => auth()->id(),
             ];
             (new LogActivity)->log($arr);
 
-            $table->created_by = \Auth::id();
+            $table->created_by = auth()->id();
         });
     }
 

@@ -4,7 +4,7 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class Role extends Model
 {

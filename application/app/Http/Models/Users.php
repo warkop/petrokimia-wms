@@ -45,13 +45,13 @@ class Users extends Authenticatable
                         'action' => 2,
                         'aktivitas' => 'Mengubah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' ' . $attr . ' dari ' . $old . ' menjadi ' . $new,
                         'created_at' => now(),
-                        'created_by' => \Auth::id(),
+                        'created_by' => auth()->id(),
                     ];
                     (new LogActivity)->log($arr);
                 }
             }
 
-            $table->updated_by = \Auth::id();
+            $table->updated_by = auth()->id();
             $table->updated_at = now();
         });
 
@@ -67,11 +67,11 @@ class Users extends Authenticatable
                 'action' => 1,
                 'aktivitas' => 'Menambah data ' . ucwords(str_replace('_', ' ', $table->table)).' dengan username '.$table->username,
                 'created_at' => now(),
-                'created_by' => \Auth::id(),
+                'created_by' => auth()->id(),
             ];
             (new LogActivity)->log($arr);
             
-            $table->created_by = \Auth::id();
+            $table->created_by = auth()->id();
             $table->created_at = now();
         });
 

@@ -4,6 +4,7 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 
 class AktivitasHarian extends Model
 {
@@ -71,7 +72,7 @@ class AktivitasHarian extends Model
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
-        $result = \DB::table($this->table)
+        $result = DB::table($this->table)
             ->select(
                 'aktivitas_harian.id AS id', 
                 'aktivitas.nama as nama_aktivitas',
@@ -88,10 +89,10 @@ class AktivitasHarian extends Model
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
-                $where->where(\DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere('gudang.nama', 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere('shift_kerja.nama', 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(\DB::raw("TO_CHAR(aktivitas_harian.created_at, 'DD/MM/YYYY')"), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw("TO_CHAR(aktivitas_harian.created_at, 'DD/MM/YYYY')"), 'ILIKE', '%' . strtolower($search) . '%');
             });
         }
 
@@ -112,7 +113,7 @@ class AktivitasHarian extends Model
 
     public function jsonGridGp($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
-        $result = \DB::table($this->table)
+        $result = DB::table($this->table)
             ->select(
                 'aktivitas_harian.id AS id',
                 'aktivitas.nama as nama_aktivitas',
@@ -129,10 +130,10 @@ class AktivitasHarian extends Model
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
-                $where->where(\DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere('gudang.nama', 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere('shift_kerja.nama', 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(\DB::raw("TO_CHAR(aktivitas_harian.created_at, 'DD/MM/YYYY')"), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw("TO_CHAR(aktivitas_harian.created_at, 'DD/MM/YYYY')"), 'ILIKE', '%' . strtolower($search) . '%');
             });
         }
 

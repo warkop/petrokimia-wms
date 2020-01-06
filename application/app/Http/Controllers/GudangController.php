@@ -11,6 +11,7 @@ use App\Http\Models\Karu;
 use App\Http\Models\StokMaterial;
 use App\Http\Requests\GudangRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class GudangController extends Controller
@@ -158,21 +159,21 @@ class GudangController extends Controller
     {
         $data = Material::produk()->get();
 
-        return response()->render(200, $data);
+        return response()->json($data, 200);
     }
 
     public function getArea($id_gudang)
     {
         $data = Area::where('id_gudang', $id_gudang)->get();
 
-        return response()->render(200, $data);
+        return response()->json($data, 200);
     }
 
     public function getPallet()
     {
         $data = Material::pallet()->get();
 
-        return response()->render(200, $data);
+        return response()->json($data, 200);
     }
 
     public function getAktivitas(Request $request, $id_gudang)
@@ -271,7 +272,7 @@ class GudangController extends Controller
         $pattern = '/[^a-zA-Z0-9 !@#$%^&*\/\.\,\(\)-_:;?\+=]/u';
         $search = preg_replace($pattern, '', $search);
         
-        $res = Area::where('id_gudang', $id_gudang)->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%'.strtolower($search).'%')->orderBy('nama')->get();
+        $res = Area::where('id_gudang', $id_gudang)->where(DB::raw('LOWER(nama)'), 'ILIKE', '%'.strtolower($search).'%')->orderBy('nama')->get();
 
         $this->responseData = $res;
         $this->responseCode = 200;

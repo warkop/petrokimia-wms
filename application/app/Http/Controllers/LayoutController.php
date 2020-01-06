@@ -6,6 +6,7 @@ use App\Http\Models\Area;
 use App\Http\Resources\LayoutAreaResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\DB;
 
 class LayoutController extends Controller
 {
@@ -22,7 +23,7 @@ class LayoutController extends Controller
     {
         $area = Area::select(
             '*',
-            \DB::raw('(select sum(jumlah) from area_stok where area_stok.id_area = area.id) AS terpakai')
+            DB::raw('(select sum(jumlah) from area_stok where area_stok.id_area = area.id) AS terpakai')
         )->whereNotNull('koordinat')->get();
 
         $this->responseData = LayoutAreaResource::collection($area);

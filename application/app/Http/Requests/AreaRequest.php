@@ -26,7 +26,7 @@ class AreaRequest extends FormRequest
     {
         $this->sanitize();
         
-        $action = \Request::instance()->action;
+        $action = request()->action;
         if ($action == 'edit') {
             $rules['id'] = 'required';
         }
@@ -34,7 +34,7 @@ class AreaRequest extends FormRequest
         $rules = [
             'nama'              => [
                 'required',
-                Rule::unique('area', 'nama')->ignore(\Request::instance()->id)
+                Rule::unique('area', 'nama')->ignore(request()->id)
             ],
             'kapasitas'         => 'numeric|between:0,9999.9999',
             'tipe'              => 'required',

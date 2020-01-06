@@ -55,7 +55,7 @@ class ApiAktivitasRequest extends FormRequest
     public function rules()
     {
         // $this->sanitize();
-        $request = \Request::instance();
+        $request = request();
 
         $gudang = $this->getRencana();
         
@@ -124,7 +124,7 @@ class ApiAktivitasRequest extends FormRequest
 
     public function attributes()
     {
-        $request = \Request::instance();
+        $request = request();
         $attributes = [
             'id_aktivitas'              => 'Aktivitas',
             'id_gudang'                 => 'Gudang',

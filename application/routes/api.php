@@ -10,6 +10,8 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
 Route::post('/login', 'API\AuthController@authenticate');
 Route::post('/logout', 'API\AuthController@logout');
 

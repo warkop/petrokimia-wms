@@ -4,7 +4,7 @@ namespace App\Http\Models;
 
 use App\Scopes\EndDateScope;
 use Illuminate\Database\Eloquent\Model;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class RencanaHarian extends Model
 {
@@ -33,14 +33,14 @@ class RencanaHarian extends Model
         parent::boot();
 
         static::updating(function ($table) {
-            if (\Auth::id() != null) {
-                $table->updated_by = \Auth::id();
+            if (auth()->id() != null) {
+                $table->updated_by = auth()->id();
             }
         });
 
         static::creating(function ($table) {
-            if (\Auth::id() != null) {
-                $table->created_by = \Auth::id();
+            if (auth()->id() != null) {
+                $table->created_by = auth()->id();
             }
             // ShiftKerja::whereBetween('mulai', ['']);
             
@@ -51,7 +51,7 @@ class RencanaHarian extends Model
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
-        $user = \Auth::user();
+        $user = auth()->user();
         $result = DB::table('rencana_harian as rh')
             ->select('rh.id', 'id_shift', 'sk.nama', DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\') AS tanggal'))
             ->leftJoin('shift_kerja as sk', 'rh.id_shift', '=', 'sk.id')
