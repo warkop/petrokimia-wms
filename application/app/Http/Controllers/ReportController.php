@@ -1113,8 +1113,6 @@ class ReportController extends Controller
             'gudang' => 'Gudang'
         ]);
 
-            // dd($validator;
-
         if ($validator->fails()) {
             return redirect('report/laporan-material')
                 ->withErrors($validator)
@@ -1469,12 +1467,6 @@ class ReportController extends Controller
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache");
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-
-        $writer->save(storage_path() . '/app/public/excel/' . $nama_file);
-
-        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
-        $spreadsheet = $reader->load(storage_path() . '/app/public/excel/' . $nama_file);
-        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="' . $nama_file . '"');
         $writer->save("php://output");
@@ -1501,7 +1493,7 @@ class ReportController extends Controller
             mkdir(storage_path() . '/app/public/excel', 755);
         }
 
-        $nama_file = date("YmdHis") . '_aktivitas_harian.xlsx';
+        $nama_file = date("YmdHis") . '_stok.xlsx';
         // $this->generateExcelStok($res, $nama_file, $tgl_awal, $tgl_akhir);
         dd($res);
     }
@@ -1803,7 +1795,7 @@ class ReportController extends Controller
         header("Pragma: no-cache");
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
-        // $writer->save(storage_path() . '/app/public/excel/' . $nama_file);
+        $writer->save(storage_path() . '/app/public/excel/' . $nama_file);
 
         $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
         $spreadsheet = $reader->load(storage_path() . '/app/public/excel/' . $nama_file);
