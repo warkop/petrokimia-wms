@@ -1472,15 +1472,17 @@ class AktivitasController extends Controller
         });
 
         $aktivitasHarian = AktivitasHarian::where('ref_number', $id_aktivitas_harian)->first();
-
-        $resApprove = AktivitasHarianArea::with('areaStok')
-            ->where('id_aktivitas_harian', $aktivitasHarian->id)
-            ->whereHas('areaStok', function ($query) use ($id_material) {
-                $query->where('id_material', $id_material);
-            })->get();
+        // $resApprove = [];
+        // if (!empty($aktivitasHarian)) {
+        //     $resApprove = AktivitasHarianArea::with('areaStok')
+        //         ->where('id_aktivitas_harian', $aktivitasHarian->id)
+        //         ->whereHas('areaStok', function ($query) use ($id_material) {
+        //             $query->where('id_material', $id_material);
+        //         })->get();
+        // }
 
         $obj = HistoryMaterialAreaResource::collection($res->get())->additional([
-            'dataApprove' => HistoryMaterialAreaResource::collection($resApprove),
+            // 'dataApprove' => HistoryMaterialAreaResource::collection($resApprove),
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK
