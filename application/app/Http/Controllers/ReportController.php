@@ -1248,53 +1248,76 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(15);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(35);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(25);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(35);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(40);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(40);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(20);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(20);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(20);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('K')->setWidth(20);
+        // $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(35);
+        // $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(40);
+        // $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(40);
+        // $objSpreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(20);
+        // $objSpreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(20);
+        // $objSpreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(20);
+        // $objSpreadsheet->getActiveSheet()->getColumnDimension('K')->setWidth(20);
 
         // end : title
         // start : judul kolom
         $col = 1;
         $row = 5;
-        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':A' . ($row + 1));
+        $abjadOri = 'A';
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':'. $abjadOri . ($row + 1));
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No');
+
+        $abjadOri++;
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Gudang');
-        $objSpreadsheet->getActiveSheet()->mergeCells('B' . $row . ':B' . ($row + 1));
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':'. $abjadOri . ($row + 1));
+
+        $abjadOri++;
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Material');
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':C' . ($row + 1));
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':'. $abjadOri . ($row + 1));
+        
+        $abjadOri++;
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Stok Awal');
-        $objSpreadsheet->getActiveSheet()->mergeCells('D' . $row . ':D' . ($row + 1));
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':'. $abjadOri . ($row + 1));
+
+        $abjadOri++;
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Pemasukan');
-        $objSpreadsheet->getActiveSheet()->mergeCells('E' . $row . ':G' . $row);
-        $i = 0;
+
         $gudang = Gudang::all();
+        $abjadPemasukan = $abjadOri;
+        $i = 0;
         $row = 6;
         foreach ($gudang as $key) {
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $key->nama);
             $i++;
             $col++;
+            $abjadPemasukan++;
         }
-
-        // $col = 8+$i;
+        $row = 5;
+        
+        $abjadPemasukan = chr(ord($abjadPemasukan) - 1);
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':'. $abjadPemasukan . $row);
+        
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Pengeluaran');
         $i = 0;
+        $row = 6;
+        $abjadPengeluaran = $abjadPemasukan;
         foreach ($gudang as $key) {
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $key->nama);
             $i++;
+            $col++;
+            $abjadPengeluaran++;
         }
-
-        $col += $i;
-        $col++;
+        // dd($abjadPengeluaran);
+        $row = 5;
+        $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadPemasukan . $row . ':' . $abjadPengeluaran . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Stok Akhir');
-
+        // $temp = chr(ord($abjadPemasukan) + 1);
+        // dd($abjadPengeluaran++);
+        $abjadPengeluaran++;
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row+1));
+        $abjad = 'A';
         $style_judul_kolom = array(
             'fill' => array(
                 // 'type'  => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
@@ -1314,13 +1337,12 @@ class ReportController extends Controller
             )
         );
         $row = 5;
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":I" . ($row+1))->applyFromArray($style_judul_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":". $abjadPengeluaran . ($row+1))->applyFromArray($style_judul_kolom);
         $row = 6;
         // end : judul kolom
 
         // start : isi kolom
         $no = 0;
-        // var_dump($res);
         foreach ($res as $value) {
             $no++;
             $col = 1;
@@ -1342,19 +1364,14 @@ class ReportController extends Controller
 
             );
 
-            $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":I" . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":". $abjadPengeluaran . $row)->applyFromArray($style_kolom);
 
-            $objSpreadsheet->getActiveSheet()->getStyle('A' . $row . ':I' . $row)->applyFromArray($style_ontop);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':'. $abjadPengeluaran . $row)->applyFromArray($style_ontop);
 
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
 
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->gudang->nama);
-            // if ($value->gudangStok != null) {
-            //     if ($value->gudangStok->gudang != null) {
-            //     }
-            // } else {
-            // }
 
             $material_trans = MaterialTrans::where('id_material', $value->id_material)
             ->whereNotNull('id_adjustment')
@@ -1368,28 +1385,62 @@ class ReportController extends Controller
             if (!empty($material_trans)) {
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $material_trans->jumlah);
             }
-
+            
             $aktivitasHarian = AktivitasHarian::where('id_gudang_tujuan', $value->id_gudang)->get();
-            $total = 0;
-            foreach ($aktivitasHarian as $key => $value) {
-                $materialTrans = MaterialTrans::where('id_aktivitas_harian', $key->id_aktivitas_harian)->first();
-                $total += $materialTrans->jumlah;
+            
+            $stokAkhir = $material_trans->jumlah;
+            if ($aktivitasHarian) {
+                foreach ($aktivitasHarian as $key) {
+                    foreach ($gudang as $item) {
+                        $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function($query) use ($value, $item){
+                            $query->where('id_gudang', $item->id);
+                            $query->where('id_gudang_tujuan', $value->id_gudang);
+                        })
+                        ->where('tipe', 2)
+                        ->where('id_aktivitas_harian', $key->id)
+                        ->where('id_material', $value->id_material)
+                        ->sum('jumlah');
+                        $stokAkhir += $materialTrans;
+                        $col++;
+                        // dd($col);
+                        // dd($materialTrans);
+                        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $materialTrans);
+                    }
+                }
             }
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '');
+
+            if ($aktivitasHarian) {
+                foreach ($aktivitasHarian as $key) {
+                    foreach ($gudang as $item) {
+                        $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use($item, $value) {
+                            $query->where('id_gudang_tujuan', $item->id);
+                            // $query->whereNotNull('id_gudang_tujuan');
+                        })
+                        ->where('id_aktivitas_harian', $key->id)
+                        ->where('id_material', $value->id_material)
+                        ->sum('jumlah');
+                        $stokAkhir -= $materialTrans;
+                        $col++;
+                        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $materialTrans);
+                    }
+                }
+            }
+
+            // $col++;
+            // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '');
+
+            // $col++;
+            // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '');
 
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '');
-
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '');
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $stokAkhir);
 
             $col++;
 
             $style_no['alignment'] = array(
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
             );
-            $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_no);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
             $style_isi_kolom = array(
 
@@ -1402,7 +1453,7 @@ class ReportController extends Controller
         }
 
         //Sheet Title
-        $objSpreadsheet->getActiveSheet()->setTitle("Keluhan Alat Berat");
+        $objSpreadsheet->getActiveSheet()->setTitle("Laporan Material");
         // end : isi kolom
         // end : sheet
 
