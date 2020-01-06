@@ -230,6 +230,8 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/realisasi', 'ReportController@realisasi');
         Route::get('/laporan-material', 'ReportController@laporanMaterial');
         Route::get('/material', 'ReportController@material');
+        Route::get('/laporan-stok', 'ReportController@laporanStok');
+        Route::get('/stok', 'ReportController@stok');
     });
 
     Route::get('/main', function () {
@@ -302,9 +304,7 @@ Route::get('/add-rencana-harian', function () {
 //     return view('log-aktivitas.detail');
 // });
 
-Route::get('/laporan-stok', function () {
-    return view('report.stok.grid');
-});
+
 Route::get('/laporan-absen-karyawan', function () {
     return view('report.karyawan.grid');
 });

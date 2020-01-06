@@ -189,7 +189,7 @@
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
-                                            <a href="{{('laporan-stok')}}" class="kt-nav__link">
+                                            <a href="{{url('report/laporan-stok')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-th-large"></i>
                                                 <span class="kt-nav__link-text">Stok</span>
                                             </a>

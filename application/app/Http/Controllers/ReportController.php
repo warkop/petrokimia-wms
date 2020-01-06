@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Aktivitas;
 use App\Http\Models\AktivitasHarian;
+use App\Http\Models\Area;
 use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
 use App\Http\Models\KategoriAlatBerat;
@@ -1474,5 +1475,31 @@ class ReportController extends Controller
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="' . $nama_file . '"');
         $writer->save("php://output");
+    }
+
+    public function laporanStok()
+    {
+        $data['title'] = 'Laporan Stok';
+        $data['gudang'] = Gudang::all();
+        $data['produk'] = Material::produk()->get();
+        return view('report.stok.grid', $data);
+    }
+
+    public function stok()
+    {
+        $gudang             = request()->input('gudang'); //multi
+        $produk             = request()->input('produk');
+        $pilih_produk       = request()->input('pilih_produk'); //multi
+        $tgl_awal   = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+        $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
+
+        $res = Area::with('gudang')->whereBetween('created_at', [$tgl_awal, $tgl_akhir])->get();
+        if (!is_dir(storage_path() . '/app/public/excel/')) {
+            mkdir(storage_path() . '/app/public/excel', 755);
+        }
+
+        $nama_file = date("YmdHis") . '_aktivitas_harian.xlsx';
+        // $this->generateExcelStok($res, $nama_file, $tgl_awal, $tgl_akhir);
+        dd($res);
     }
 }
