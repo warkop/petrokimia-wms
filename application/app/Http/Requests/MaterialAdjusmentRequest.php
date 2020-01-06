@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Models\Area;
+use App\Http\Models\AreaStok;
+use App\Http\Models\Material;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MaterialAdjusmentRequest extends FormRequest
@@ -32,11 +35,15 @@ class MaterialAdjusmentRequest extends FormRequest
             'action_produk.*'   => 'required|numeric|between:1,2',
             'action_pallet.*'   => 'required|numeric|between:1,2',
             'produk_jumlah.*'   => 'numeric',
-            // 'produk_alasan.*'   => 'required',
             'pallet_jumlah.*'   => 'numeric',
-            // 'pallet_alasan.*'   => 'required',
             'tanggal'           => 'required',
         ];
+
+        for ($i = 0; $i < count(request()->produk_jumlah); $i++) {
+            $area = Area::find(request()->area[$i]);
+            $areaStok = AreaStok::where('id_area', $area->id)->sum('jumlah');
+            $rules['produk_jumlah.'.$i] = 'numeric|max:'. (float)((float)$area->kapasitas - (float)$areaStok);
+        }
 
         $this->sanitize();
 
@@ -50,23 +57,39 @@ class MaterialAdjusmentRequest extends FormRequest
             'numeric'       => ':attribute harus berupa angka!',
             'between'       => ':attribute yang dimasukkan tidak valid!',
             'date_format'   => ':attribute harus dengan format tanggal-bulan-tahun!',
+            'max'           => ':attribute harus kurang dari :max!',
         ];
     }
 
     public function attributes()
     {
-        return [
+        $attributes =  [
             'produk.*'              => 'Produk',
             'area.*'                => 'Area',
             'pallet.*'              => 'Pallet',
             'action_produk.*'       => 'Jenis aksi produk',
             'action_pallet.*'       => 'Jenis aksi pallet',
-            'produk_jumlah.*'       => 'Jumlah Produk',
             'produk_alasan.*'       => 'Alasan Produk',
-            'pallet_jumlah.*'       => 'Jumlah Pallet',
             'pallet_alasan.*'       => 'Alasan Pallet',
             'tanggal'               => 'Tanggal',
         ];
+
+        if (request()->produk) {
+            for ($i = 0; $i < count(request()->produk); $i++) {
+                $material = Material::find(request()->produk[0]);
+                $area = Area::find(request()->area[0]);
+                $attributes['produk_jumlah.' . $i] =  'Jumlah Produk <strong>' . $material->nama. '</strong> pada area <strong>'. $area->nama. '</strong>';
+            }
+        }
+
+        if (request()->pallet) {
+            for ($i = 0; $i < count(request()->pallet); $i++) {
+                $material = Material::find(request()->pallet[0]);
+                $attributes['pallet_jumlah.' . $i] =  'Jumlah Pallet <strong>' . $material->nama. '</strong>';
+            }
+        }
+
+        return $attributes;
     }
 
     public function sanitize()
