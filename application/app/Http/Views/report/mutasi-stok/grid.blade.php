@@ -31,16 +31,16 @@
                 <div class="col-6">
                     <div class="kt-radio-inline">
                         <label class="kt-radio kt-radio--success">
-                            <input id="semuaCheck" type="radio" name="produk" onclick="checkSemua()"> Semua
+                            <input id="semuaCheck" type="radio" name="produk" value="1" onclick="checkSemua()"> Semua
                             <span></span>
                         </label>
                         <label class="kt-radio kt-radio--warning">
-                            <input id="myCheck" type="radio" name="produk" onclick="checkBx()"> Spesifik
+                            <input id="myCheck" type="radio" name="produk" value="2" onclick="checkBx()"> Spesifik
                             <span></span>
                         </label> 
                     </div>
                     <div class="mt1" id="textadd" style="display:none;">
-                        <select class="form-control m-select2" id="pilih" name="pilih_produk" multiple="multiple" style="width:100%">
+                        <select class="form-control m-select2" id="pilih" name="pilih_produk[]" multiple="multiple" style="width:100%">
                             @foreach ($produk as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>
                             @endforeach
@@ -55,15 +55,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Start Date</label>
-                                    <input type="text" class="form-control" id="start_date" name="start_date" readonly
+                                    <label>Tanggal Awal</label>
+                                    <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
                                         placeholder="Pilih tanggal">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>End Date</label>
-                                    <input type="text" class="form-control" id="end_date" name="end_date" readonly
+                                    <label>Tanggal Akhir</label>
+                                    <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
                                         placeholder="Pilih tanggal">
                                 </div>
                             </div>
@@ -71,6 +71,9 @@
                     </div>
                 </div>
             </div>
+            @foreach ($errors->all() as $error)
+                <div class="alert alert-danger">{{ $error }}</div>
+            @endforeach
         </div>
         <div class="kt-portlet__foot">
             <div class="kt-form__actions">
