@@ -62,6 +62,7 @@ class ReportController extends Controller
         ->with('foto')
         // ->where('id_kategori', $jenis_alat_berat)
         ->whereHas('alatBerat', function ($query) use ($jenis_alat_berat) {
+            $query->where('id_kategori', $jenis_alat_berat[0]);
             foreach ($jenis_alat_berat as $key => $value) {
                 $query->orWhere('id_kategori', $value);
             }
@@ -553,14 +554,10 @@ class ReportController extends Controller
         )
         ->with('material')
         ->with('area', 'area.gudang');
-            // ->where(function ($query) use ($gudang) {
-            //     foreach ($gudang as $key => $value) {
-            //         $query = $query->orWhere('id_gudang', $value);
-            //     }
-            // });
 
-        if (!$gudang) {
+        if ($gudang) {
             $res = $res->whereHas('area.gudang', function ($query) use ($gudang) {
+                $query = $query->where('id_gudang', $gudang[0]);
                 foreach ($gudang as $key => $value) {
                     $query = $query->orWhere('id_gudang', $value);
                 }
@@ -569,6 +566,7 @@ class ReportController extends Controller
 
         if ($produk == 2) {
             $res = $res->where(function ($query) use ($pilih_produk) {
+                $query = $query->where('id_material', $pilih_produk[0]);
                 foreach ($pilih_produk as $key => $value) {
                     $query = $query->orWhere('id_material', $value);
                 }
