@@ -152,7 +152,11 @@ let load_table = function () {
             $('[data-togle="x-tooltip"]').tooltip({
                 boundary: "window",
                 container: "body",
+<<<<<<< HEAD
+                trigger : 'hover'
+=======
                 trigger: "hover"
+>>>>>>> cbc9b62bdc08c9e3d28f21a1bfc80ef20986440b
             });
         },
         "fnHeaderCallback": function (nHead, aData, iStart, iEnd, aiDisplay) {

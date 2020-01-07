@@ -160,6 +160,7 @@ $('#end_date').datepicker({
     clearBtn:true,
     orientation: "bottom left"
 });
+$('body').tooltip({selector: '[data-togle="x-tooltip"]'});
 
 
 

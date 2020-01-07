@@ -241,3 +241,110 @@ Route::get('/master-grup', function () {
 Route::get('/sub-gudang', function () {
     return view('sub-gudang.grid');
 });
+<<<<<<< HEAD
+// Route::get('/master-alat-berat/list-alat-berat', function () {
+//     return view('list-alat-berat.grid');
+// });
+// Route::get('/stok-adjustment', function () {
+//     return view('stok-adjusment.grid');
+// });
+// Route::get('/gudang/list-alat-berat', function () {
+//     return view('list-alat-berat-gudang.grid');
+// });
+
+Route::get('/list-tenaga-kerja-nonorganik', function () {
+    return view('list-tenaga-kerja-nonorganik.grid');
+});
+
+Route::get('/list-area', function () {
+    return view('list-area.grid');
+});
+Route::get('/anggaran-alat-berat', function () {
+    return view('anggaran-alat-berat.grid');
+});
+Route::get('/anggaran-sdm', function () {
+    return view('anggaran-sdm.grid');
+});
+
+
+// Route::get('/rencana-harian', function () {
+//     return view('rencana-harian.grid');
+// });
+Route::get('/add-rencana-harian', function () {
+    return view('rencana-harian.add');
+});
+// Route::get('/realisasi', function () {
+//     return view('rencana-harian.realisasi');
+// });
+// Route::get('/log-aktivitas', function () {
+//     return view('aktivitas.grid');
+// });
+// Route::get('/log-aktivitas/detail', function () {
+//     return view('aktivitas.detail');
+// });
+// Route::get('/log-aktivitas/tambah', function () {
+//     return view('log-aktivitas.add');
+// });
+
+
+
+// Route::get('/log-aktivitas', function () {
+//     return view('log-aktivitas.grid');
+// });
+// Route::get('/log-aktivitas/detail', function () {
+//     return view('log-aktivitas.detail');
+// });
+
+
+
+
+
+
+
+Route::get('/master-pemetaan-sloc', function () {
+    return view('master.master-pemetaan-sloc.grid');
+});
+
+Route::get('/laporan-material', function () {
+    return view('report.material.grid');
+});
+Route::get('/laporan-material', function () {
+    return view('report.material.grid');
+});
+Route::get('/laporan-stok', function () {
+    return view('report.stok.grid');
+});
+Route::get('/laporan-absen-karyawan', function () {
+    return view('report.karyawan.grid');
+});
+Route::get('/laporan-mutasi-pallet', function () {
+    return view('report.mutasi-pallet.grid');
+});
+Route::get('/laporan-mutasi-stok', function () {
+    return view('report.mutasi-stok.grid');
+});
+// Route::get('/laporan-produk', function () {
+//     return view('report.produk.grid');
+// });
+Route::get('/laporan-realisasi', function () {
+    return view('report.realisasi.grid');
+});
+
+Route::get('/laporan-keluhan-gp', function () {
+    return view('report.keluhan-gp.grid');
+});
+
+// Route::get('/log-aktivitas-user', function () {
+//     return view('log-aktivitas-user.grid');
+// });
+Route::get('/401', function () {
+    return view('error.401');
+});
+Route::get('/403', function () {
+    return view('error.403');
+});
+Route::get('/404', function () {
+    return view('error.404');
+});
+=======
+>>>>>>> cbc9b62bdc08c9e3d28f21a1bfc80ef20986440b
