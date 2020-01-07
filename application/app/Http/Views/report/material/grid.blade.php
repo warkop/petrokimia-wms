@@ -15,7 +15,6 @@
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
-                    {{-- <i class="la la-group"></i> &nbsp; --}}
                     Laporan Material
                 </h4>
                 <p class="sub">
@@ -23,12 +22,6 @@
                         Petrokimia.</span>
                 </p>
             </div>
-            {{-- <div class="kt-portlet__head-toolbar">
-                <div class="kt-portlet__head-group pt-4">
-                    <a href="{{url('/add-rencana-harian')}}" class="btn btn-wms btn-elevate btn-elevate-air"><i
-                class="la la-plus"></i> Tambah Data</a>
-        </div>
-    </div> --}}
         </div>
         <form action="{{url('report/material')}}" method="GET">
         <div class="kt-portlet__body">
@@ -88,19 +81,16 @@
                     </div>
                 </div>
             </div>
-            {{-- @error('title') --}}
             @foreach ($errors->all() as $error)
-                {{-- <li>{{  }}</li> --}}
                 <div class="alert alert-danger">{{ $error }}</div>
             @endforeach
-            {{-- @enderror --}}
         </div>
         <div class="kt-portlet__foot">
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="offset-lg-2">
                         {{-- <a href="{{asset('assets/reports/material/material.xlsx')}}" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</a> --}}
-                        <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</a>
+                        <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
                     </div>
                 </div>
             </div>

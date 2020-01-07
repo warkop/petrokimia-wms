@@ -16,7 +16,6 @@
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
-                    {{-- <i class="la la-group"></i> &nbsp; --}}
                     Laporan Stok
                 </h4>
                 <p class="sub">
@@ -24,12 +23,6 @@
                         Petrokimia.</span>
                 </p>
             </div>
-            {{-- <div class="kt-portlet__head-toolbar">
-                <div class="kt-portlet__head-group pt-4">
-                    <a href="{{url('/add-rencana-harian')}}" class="btn btn-wms btn-elevate btn-elevate-air"><i
-                class="la la-plus"></i> Tambah Data</a>
-        </div>
-    </div> --}}
         </div>
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
@@ -98,7 +91,7 @@
                 <div class="row">
                     <div class="offset-lg-2">
                         {{-- <a href="{{asset('assets/reports/stok/stok.xlsx')}}" class="btn btn-success" download> <i class="fa fa-print"></i> Cetak Laporan</a> --}}
-                        <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</a>
+                        <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
                     </div>
                 </div>
             </div>
