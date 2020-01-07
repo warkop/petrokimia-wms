@@ -35,4 +35,9 @@ class MaterialTrans extends Model
     {
         return $this->belongsTo(GudangStok::class, 'id_gudang_stok', 'id');
     }
+
+    public function areaStok()
+    {
+        return $this->belongsTo(AreaStok::class, 'id_area_stok');
+    }
 }
