@@ -794,15 +794,17 @@ class ReportController extends Controller
             $col++;
             if (!empty($material_trans)) {
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $material_trans->jumlah);
+                $stokAkhir = $material_trans->jumlah;
             } else {
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 0);
+                $stokAkhir = 0;
             }
 
             // $aktivitasHarian = AktivitasHarian::where('id_gudang_tujuan', $value->area->id_gudang)
             // ->orWhere('id_gudang', $value->area->id_gudang)->get();
             // dd($aktivitasHarian->toArray());
 
-            $stokAkhir = $material_trans->jumlah;
+            
             foreach ($gudang as $item) {
                 $materialTrans = MaterialTrans::whereHas('areaStok.area', function ($query) use ($item) {
                     $query->where('id_gudang', $item->id);
@@ -1439,11 +1441,15 @@ class ReportController extends Controller
             $col++;
             if (!empty($material_trans)) {
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $material_trans->jumlah);
+                $stokAkhir = $material_trans->jumlah;
+            } else {
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 0);
+                $stokAkhir = 0;
             }
             
             $aktivitasHarian = AktivitasHarian::where('id_gudang_tujuan', $value->id_gudang)->get();
             
-            $stokAkhir = $material_trans->jumlah;
+            
             if ($aktivitasHarian) {
                 foreach ($aktivitasHarian as $key) {
                     foreach ($gudang as $item) {
