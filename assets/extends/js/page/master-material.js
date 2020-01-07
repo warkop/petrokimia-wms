@@ -151,7 +151,8 @@ let load_table = function () {
         "drawCallback": function( settings ) {
             $('[data-togle="x-tooltip"]').tooltip({
                 boundary: "window",
-                container: "body"
+                container: "body",
+                trigger : 'hover'
             });
         },
         "fnHeaderCallback": function (nHead, aData, iStart, iEnd, aiDisplay) {

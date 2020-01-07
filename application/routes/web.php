@@ -332,3 +332,12 @@ Route::get('/laporan-keluhan-gp', function () {
 // Route::get('/log-aktivitas-user', function () {
 //     return view('log-aktivitas-user.grid');
 // });
+Route::get('/401', function () {
+    return view('error.401');
+});
+Route::get('/403', function () {
+    return view('error.403');
+});
+Route::get('/404', function () {
+    return view('error.404');
+});

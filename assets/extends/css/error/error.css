@@ -1,0 +1,108 @@
+body {
+    width: 100vw;
+    max-width: 100vw;
+    min-width: 100vw;
+    overflow-x: hidden;
+}
+
+.flex-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* background-color: DodgerBlue; */
+  }
+
+.v-middle-flex-center {
+    display: flex;
+    align-items: center;
+}
+
+#_404 .row {
+   text-align: center;
+   justify-content: center;
+}
+
+#_404 img {
+    width: 35vw;
+}
+
+#_404 h3 {
+    font-weight: bold;
+    /* margin-top: -5vh; */
+}
+
+#_404 .backtohome{
+    margin-top: 2.5rem; font-size: 1.3rem; display:block; color:#171717;
+    transition: .5s;
+}
+
+#_404 a.backtohome:hover{
+    margin-top: 2.5rem; font-size: 1.3rem; display:block; color:#000000;transition: .5s;
+    text-decoration: underline;
+}
+
+#_404 .backtohome:hover span i{
+    transform: translateX(2vw);
+    transition: .5s;
+}
+
+
+#_403 .row {
+    text-align: center;
+    justify-content: center;
+ }
+ 
+ #_403 img {
+     width: 35vw;
+ }
+ 
+ #_403 h3 {
+     font-weight: bold;
+     /* margin-top: -5vh; */
+ }
+ 
+ #_403 .backtohome{
+     margin-top: 2.5rem; font-size: 1.3rem; display:block; color:#171717;
+     transition: .5s;
+ }
+ 
+ #_403 a.backtohome:hover{
+     margin-top: 2.5rem; font-size: 1.3rem; display:block; color:#000000;transition: .5s;
+     text-decoration: underline;
+ }
+ 
+ #_403 .backtohome:hover span i{
+     transform: translateX(2vw);
+     transition: .5s;
+ }
+
+
+ #_401 .row {
+    text-align: center;
+    justify-content: center;
+ }
+ 
+ #_401 img {
+     width: 35vw;
+ }
+ 
+ #_401 h3 {
+     font-weight: bold;
+     /* margin-top: -5vh; */
+ }
+ 
+ #_401 .backtohome{
+     margin-top: 2.5rem; font-size: 1.3rem; display:block; color:#171717;
+     transition: .5s;
+ }
+ 
+ #_401 a.backtohome:hover{
+     margin-top: 2.5rem; font-size: 1.3rem; display:block; color:#000000;transition: .5s;
+     text-decoration: underline;
+ }
+ 
+ #_401 .backtohome:hover span i{
+     transform: translateX(2vw);
+     transition: .5s;
+ }
