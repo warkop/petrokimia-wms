@@ -241,7 +241,6 @@ Route::get('/master-grup', function () {
 Route::get('/sub-gudang', function () {
     return view('sub-gudang.grid');
 });
-<<<<<<< HEAD
 // Route::get('/master-alat-berat/list-alat-berat', function () {
 //     return view('list-alat-berat.grid');
 // });
@@ -346,5 +345,3 @@ Route::get('/403', function () {
 Route::get('/404', function () {
     return view('error.404');
 });
-=======
->>>>>>> cbc9b62bdc08c9e3d28f21a1bfc80ef20986440b
