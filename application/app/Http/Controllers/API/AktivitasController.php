@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Aktivitas;
-use App\Http\Models\AktivitasAlatBerat;
 use App\Http\Models\Users;
 use App\Http\Models\AktivitasFoto;
 use App\Http\Models\AktivitasGudang;
@@ -21,7 +20,6 @@ use App\Http\Models\GudangStok;
 use App\Http\Models\KategoriAlatBerat;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
-use App\Http\Models\Notifications;
 use App\Http\Models\RencanaAlatBerat;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
@@ -31,32 +29,25 @@ use App\Http\Requests\ApiAktivitasPenerimaanGiRequest;
 use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Requests\ApiSaveKelayakanPhotos;
 use App\Http\Requests\ApiSavePhotosRequest;
-use App\Http\Resources\AktivitasHarianResource;
 use App\Http\Resources\AktivitasResource;
 use App\Http\Resources\AlatBeratResource;
 use App\Http\Resources\AreaPenerimaanGiResource;
-use App\Http\Resources\AreaStokResource;
-use App\Http\Resources\getAreaFromPenerimaResource;
 use App\Http\Resources\GetSistroResource;
 use App\Http\Resources\HistoryMaterialAreaResource;
 use App\Http\Resources\ListNotifikasiResource;
 use App\Notifications\Pengiriman;
-use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-
-use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Auth;
 
 class AktivitasController extends Controller
 {
     private $pembagi = 1000;
 
     private function getCheckerGudang() { //untuk memperoleh informasi checker ini sekarang berada di gudang mana
-        if (\Request::get('my_auth')->role == 3) {
+        if (request()->get('my_auth')->role == 3) {
             $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
-                ->where('id_tkbm',\Request::get('my_auth')->id_tkbm)
+                ->where('id_tkbm',request()->get('my_auth')->id_tkbm)
                 ->orderBy('rencana_harian.id', 'desc')
                 ->take(1)->first();
     
@@ -68,8 +59,8 @@ class AktivitasController extends Controller
             }
             $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
             $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
-        } else if (\Request::get('my_auth')->role == 5) {
-            $gudang = Gudang::where('id_karu', \Request::get('my_auth')->id_karu)->first();
+        } else if (request()->get('my_auth')->role == 5) {
+            $gudang = Gudang::where('id_karu', request()->get('my_auth')->id_karu)->first();
         } else {
             return false;
         }
@@ -77,13 +68,17 @@ class AktivitasController extends Controller
         return $gudang->id;
     }
 
-    private function storeNotification($aktivitasHarian, $message='') //save notifikasi
+    private function storeNotification($aktivitasHarian, $message='', $penerimaan=false) //save notifikasi
     {
-        $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
+        if ($penerimaan) {
+            $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang);
+        } else {
+            $gudang = Gudang::findOrFail($aktivitasHarian->id_gudang_tujuan);
+        }
         $gudang->notify(new Pengiriman($aktivitasHarian));
 
         $aktivitas = Aktivitas::find($aktivitasHarian->id_aktivitas);
-        $user = Users::find(\Request::get('my_auth')->id_user);
+        $user = Users::find(request()->get('my_auth')->id_user);
 
         $rencanaHarian = RencanaHarian::withoutGlobalScopes()->where('id_gudang', $aktivitasHarian->id_gudang_tujuan)
             ->orderBy('id', 'desc')
@@ -287,7 +282,7 @@ class AktivitasController extends Controller
         $search = strip_tags($req->input('search'));
 
         $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
-            ->where('id_tkbm', \Request::get('my_auth')->id_tkbm)
+            ->where('id_tkbm', request()->get('my_auth')->id_tkbm)
             ->orderBy('rencana_harian.id', 'desc')
             ->take(1)->first();
 
@@ -1047,7 +1042,7 @@ class AktivitasController extends Controller
                 if ($aktivitasGudang->aktivitas->penerimaan_gi != null) {
                     $tkbm = TenagaKerjaNonOrganik::findOrFail($res_user->id_tkbm);
                     $message = 'Pengiriman Gudang Internal pada gudang '. $gudang->nama.' berhasil di setujui oleh '.$tkbm->nama;
-                    $this->storeNotification($aktivitasHarian, $message);
+                    $this->storeNotification($aktivitasHarian, $message, true);
                 }
     
                 $this->responseCode = 200;
