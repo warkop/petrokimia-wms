@@ -833,8 +833,14 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $stokAkhir);
 
             $rusak = 0;
-            if ($value->status == 2) {
-                $rusak += $value->jumlah;
+            $materialTrans = MaterialTrans::
+                where('tipe', 1)
+                ->where('status_produk', 2)
+                ->where('id_material', $value->id_material)
+                ->sum('jumlah');
+
+            if ($materialTrans) {
+                $rusak += $materialTrans;
             }
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $rusak);
