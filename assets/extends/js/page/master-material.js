@@ -142,7 +142,7 @@ let load_table = function () {
                 "mData": "id",
                 render: function (data, type, full, meta) {
                     return `
-                        <button type = "button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-togle="x-tooltip" data-placement="top" title="Ubah Data">
+                        <button type = "button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-togle="x-tooltip" data-placement="left" title="Ubah Data">
                         <i class="flaticon-edit-1"></i> </button>
                     `;
                 },
@@ -152,7 +152,11 @@ let load_table = function () {
             $('[data-togle="x-tooltip"]').tooltip({
                 boundary: "window",
                 container: "body",
+<<<<<<< HEAD
                 trigger : 'hover'
+=======
+                trigger: "hover"
+>>>>>>> cbc9b62bdc08c9e3d28f21a1bfc80ef20986440b
             });
         },
         "fnHeaderCallback": function (nHead, aData, iStart, iEnd, aiDisplay) {
@@ -178,7 +182,7 @@ function tambah() {
         backdrop: 'static',
         keyboard: false
     }, 'show');
-    $('#start_date').val(helpDateFormat(Date.now(), 'de'));
+    $('#start_date').val(helpDateFormat(Date.now(), 'si'));
 }
 
 function pilihKategori(target) {

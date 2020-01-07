@@ -26,7 +26,7 @@ class RealisasiMaterialRequest extends FormRequest
     {
        
 
-        $action = \Request::instance()->action;
+        $action = request()->action;
         if ($action == 'edit') {
             $rules['id'] = 'required';
         }
@@ -38,7 +38,7 @@ class RealisasiMaterialRequest extends FormRequest
                     $query->where('kategori', 3);
                 }),
             ],
-            'list_material.*.jumlah'            => 'integer',
+            'list_material.*.jumlah'            => 'numeric|digits_between:1,10',
             'list_material.*.tipe'              => 'between:1,2',
         ];
 
@@ -60,9 +60,10 @@ class RealisasiMaterialRequest extends FormRequest
     {
         return [
             'required'       => ':attribute wajib diisi!',
-            'integer'        => ':attribute harus berupa angka!',
+            'numeric'        => ':attribute harus berupa angka!',
             'between'        => ':attribute tidak valid!',
             'exists'         => ':attribute tidak tersedia!',
+            'digits_between' => ':attribute harus antara :min sampai :max digits!',
         ];
     }
 

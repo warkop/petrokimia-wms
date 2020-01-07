@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -39,10 +40,6 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
-        if ($exception instanceof CustomException) {
-            //
-        }
-
         parent::report($exception);
     }
 
@@ -85,9 +82,19 @@ class Handler extends ExceptionHandler
             ], 403);
         }
 
+        if ($exception instanceof AuthorizationException && $request->wantsJson()) {
+            return response()->json([
+                'message' => 'Aksi yang Anda lakukan dilarang oleh sistem! Silahkan hubungi administrator untuk mengetahui info lebih lanjut!',
+                'status' => [
+                    'message' => 'Aksi yang Anda lakukan dilarang oleh sistem! Silahkan hubungi administrator untuk mengetahui info lebih lanjut!',
+                    'code'    => 403,
+                ],
+                'code'    => 403,
+            ], 403);
+        }
+
         if ($exception instanceof AuthorizationException) {
-            $exception = new HttpException(419, $exception->getMessage(), $exception);
-            return $exception;
+            abort(403, 'Unauthorized action.');
         }
 
         return parent::render($request, $exception);

@@ -14,7 +14,7 @@ class ApiRencanaKerjaRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return request()->get('my_auth')->role == 5;
     }
 
     /**
@@ -77,8 +77,9 @@ class ApiRencanaKerjaRequest extends FormRequest
         return [
             'required'  => ':attribute wajib diisi!',
             'numeric'   => ':attribute tidak valid!',
-            'image'    => ':attribute harus berupa gambar!',
-            'between'  => ':attribute tidak valid!',
+            'image'     => ':attribute harus berupa gambar!',
+            'between'   => ':attribute tidak valid!',
+            'exists'    => ':attribute yang dipilih tidak ditemukan!',
         ];
     }
 

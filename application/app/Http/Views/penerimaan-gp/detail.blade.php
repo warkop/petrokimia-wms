@@ -82,15 +82,21 @@
                                     <p class="kt-widget4__username">
                                         {{$item->material->nama??'-'}} - <span class="boldd">{{$item->jumlah/1000}} Ton</span>
                                     </p>
-                                    <p class="kt-widget4__text color-oren boldd">
-                                        {{$item->text_tipe}}
-                                    </p>
+                                     @if ($item->tipe == 1)
+                                        <p class="kt-widget4__text color-oren boldd">
+                                            Mengurangi    
+                                        </p>
+                                    @else 
+                                        <p class="kt-widget4__text color-green boldd">
+                                            Menambah
+                                        </p>
+                                    @endif
                                 </div>
-                                    <a href="#" class="btn btn-sm btn-brand btn-bold" data-toggle="modal"
-                                    data-target="#kt_modal" onclick="loadArea({{$item->id_material}})">Area</a>
-                                </div>
-                                    @endforeach
-                                <div class="border-pembatas mb1"></div>
+                                <a href="#" class="btn btn-sm btn-brand btn-bold" data-toggle="modal"
+                                data-target="#kt_modal" onclick="loadArea({{$item->id_material}})">Area</a>
+                            </div>
+                            @endforeach
+                            <div class="border-pembatas mb1"></div>
                         </div>
                     </div>
                     <div class="row listterplas mt2">
@@ -126,9 +132,9 @@
                     <div class="col-10">
                         @if ($aktivitasHarian->approve == null)
                         <button type="button" class="btn btn-wms btn-lg" onclick="approve()">Approve</button>
+                        @endif
                         <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
                             data-target="#kt_keluhan" onclick="loadKeluhan()">Keluhan</button>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -154,85 +160,7 @@
                     <label class="boldd">List Area</label>
                     <!--begin::Accordion-->
                     <div class="accordion accordion-light  accordion-toggle-arrow" id="tempat_card">
-                        {{-- <div class="card">
-                            <div class="card-header" id="headingOne5">
-                                <div class="card-title" data-toggle="collapse" data-target="#collapseOne5"
-                                    aria-expanded="true" aria-controls="collapseOne5">
-                                    <i class="flaticon2-shelter"></i> Area A
-                                </div>
-                            </div>
-                            <div id="collapseOne5" class="collapse" aria-labelledby="headingOne5"
-                                data-parent="#accordionExample5">
-                                <div class="card-body">
-                                    <div class="kt-widget4__item border-bottom-dash mt1">
-                                        <div class="kt-widget4__info">
-                                            <h6 class="kt-widget4__username">
-                                                20 Agustus 2019
-                                            </h6>
-                                            <p class="kt-widget4__text boldd">
-                                                20 Ton
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="kt-widget4__item border-bottom-dash mt1">
-                                        <div class="kt-widget4__info">
-                                            <h6 class="kt-widget4__username">
-                                                20 Agustus 2019
-                                            </h6>
-                                            <p class="kt-widget4__text boldd">
-                                                10 Ton
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header" id="headingTwo5">
-                                <div class="card-title collapsed" data-toggle="collapse" data-target="#collapseTwo5"
-                                    aria-expanded="false" aria-controls="collapseTwo5">
-                                    <i class="flaticon2-shelter"></i> Area B
-                                </div>
-                            </div>
-                            <div id="collapseTwo5" class="collapse" aria-labelledby="headingTwo5"
-                                data-parent="#accordionExample5">
-                                <div class="card-body">
-                                    <div class="kt-widget4__item border-bottom-dash mt1">
-                                        <div class="kt-widget4__info">
-                                            <h6 class="kt-widget4__username">
-                                                20 Agustus 2019
-                                            </h6>
-                                            <p class="kt-widget4__text boldd">
-                                                30 Ton
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header" id="headingThree5">
-                                <div class="card-title collapsed" data-toggle="collapse" data-target="#collapseThree5"
-                                    aria-expanded="false" aria-controls="collapseThree5">
-                                    <i class="flaticon2-shelter"></i> Area C
-                                </div>
-                            </div>
-                            <div id="collapseThree5" class="collapse" aria-labelledby="headingThree5"
-                                data-parent="#accordionExample5">
-                                <div class="card-body">
-                                    <div class="kt-widget4__item border-bottom-dash mt1">
-                                        <div class="kt-widget4__info">
-                                            <h6 class="kt-widget4__username">
-                                                20 Agustus 2019
-                                            </h6>
-                                            <p class="kt-widget4__text boldd">
-                                                10 Ton
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
+                        
                     </div>
 
                     <!--end::Accordion-->
@@ -272,54 +200,7 @@
                                     </a>
                                 </div>
                             @endforeach
-                            {{-- <div class="col-4">
-                                <label class="boldd">Foto Bawah</label>
-                                <a class="fancybox" rel="ligthbox"
-                                    href="{{asset('assets/main/metronic/media/products/product2.jpg')}}">
-                                    <img class="img-fluid"
-                                        src="{{asset('assets/main/metronic/media/products/product2.jpg')}}" alt=""
-                                        srcset="">
-                                </a>
-                            </div>
-                            <div class="col-4">
-                                <label class="boldd">Foto Depan</label>
-                                <a class="fancybox" rel="ligthbox"
-                                    href="{{asset('assets/main/metronic/media/products/product4.jpg')}}">
-                                    <img class="img-fluid"
-                                        src="{{asset('assets/main/metronic/media/products/product4.jpg')}}" alt=""
-                                        srcset="">
-                                </a>
-                            </div> --}}
                         </div>
-                        {{-- <div class="row mb2">
-                            <div class="col-4">
-                                <label class="boldd">Foto Belakang</label>
-                                <a class="fancybox" rel="ligthbox"
-                                    href="{{asset('assets/main/metronic/media/products/product5.jpg')}}">
-                                    <img class="img-fluid"
-                                        src="{{asset('assets/main/metronic/media/products/product5.jpg')}}" alt=""
-                                        srcset="">
-                                </a>
-                            </div>
-                            <div class="col-4">
-                                <label class="boldd">Foto Kanan</label>
-                                <a class="fancybox" rel="ligthbox"
-                                    href="{{asset('assets/main/metronic/media/products/product6.jpg')}}">
-                                    <img class="img-fluid"
-                                        src="{{asset('assets/main/metronic/media/products/product6.jpg')}}" alt=""
-                                        srcset="">
-                                </a>
-                            </div>
-                            <div class="col-4">
-                                <label class="boldd">Foto Kiri</label>
-                                <a class="fancybox" rel="ligthbox"
-                                    href="{{asset('assets/main/metronic/media/products/product6.jpg')}}">
-                                    <img class="img-fluid"
-                                        src="{{asset('assets/main/metronic/media/products/product6.jpg')}}" alt=""
-                                        srcset="">
-                                </a>
-                            </div>
-                        </div> --}}
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -346,10 +227,12 @@
                     <div class="col-8">
                         <h5 class="boldd">List Produk</h5>
                     </div>
+                     @if ($aktivitasHarian->approve == null)
                     <div class="col-4">
                         <p class="btn btn-outline-success pull-right cursor pointer" onclick="tambah()"><i class="la la-plus"></i>
                             Tambah</p>
                     </div>
+                    @endif
                 </div>
                 <div id="table_produk" style="border-bottom: 2px solid #F2F3F8">
                     <div id="belumada" class="row kel">
@@ -361,7 +244,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-clean" data-dismiss="modal">Tutup</button>
+                 @if ($aktivitasHarian->approve == null)
                 <button type="button" class="btn btn-primary ladda-button" data-style="zoom-in" id="btn_save">Simpan</button>
+                @endif
             </div>
             </form>
         </div>
@@ -372,6 +257,8 @@
 <script src="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.js')}}"></script>
 <script type="text/javascript">
 const id_gudang = "{{$id_gudang}}";
+const id_aktivitas_harian = "{{$aktivitasHarian->id}}";
+
 let datatable,
     tableTarget = "#kt_table_1",
     ajaxUrl = baseUrl + "penerimaan-gp",
@@ -379,7 +266,6 @@ let datatable,
     totalFiles = 0,
     completeFiles = 0,
     laddaButton;
-    const id_aktivitas_harian = "{{$aktivitasHarian->id}}";
 
     $(document).ready(()=>{
         $("#btn_save").on("click", function(e) {
@@ -399,47 +285,77 @@ let datatable,
     function tambah(obj='') {
         const tableId = "table_produk";
         const rows = document.getElementById(tableId).getElementsByTagName("div").length;
-        $("#table_produk").append(`
-        <div class="row mb2 produk_baris" id="baris-produk-${rows}">
-            <div class="col-3">
-                <label class="boldd-500">Pilih Produk</label>
-                <select class="form-control select2Custom m-select2" id="produk-${rows}" name="produk[]" aria-placeholder="Pilih Produk" style="width: 100%;">
-                    <option disabled selected>Pilih Produk</option>
-                </select>
+        @if ($aktivitasHarian->approve == null)
+            $("#table_produk").append(`
+            <div class="row mb2 produk_baris" id="baris-produk-${rows}">
+                <div class="col-3">
+                    <label class="boldd-500">Pilih Produk</label>
+                    <select class="form-control select2Custom m-select2" id="produk-${rows}" name="produk[]" aria-placeholder="Pilih Produk" style="width: 100%;">
+                        <option disabled selected>Pilih Produk</option>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <label class="boldd-500">Jumlah</label><br>
+                    <input type="text" id="jumlah-${rows}" name="jumlah[]" class="form-control" placeholder="Jumlah">
+                </div>
+                <div class="col-5">
+                    <label class="boldd-500">Keluhan</label>
+                    <textarea class="form-control" id="keluhan-${rows}" name="keluhan[]" rows="2"></textarea>
+                </div>
+                <div class="col-2">
+                    <label class="visibility-hide">Area</label><br>
+                    <button href="javascript:void(0)" type="button" class="btn btn-danger cursor pointer btn-elevate btn-icon button_hapus" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="Hapus"><i class="flaticon-delete"></i> </button>
+                </div>
             </div>
-            <div class="col-2">
-                <label class="boldd-500">Jumlah</label><br>
-                <input type="text" id="jumlah-${rows}" name="jumlah[]" class="form-control" placeholder="Jumlah">
+            `);
+            
+            loadProduk(rows, `#produk-${rows}`, obj)
+            $(`#produk-${rows}`).attr("readonly", false);
+        @else
+            $("#table_produk").append(`
+            <div class="row mb2 produk_baris" id="baris-produk-${rows}">
+                <div class="col-3">
+                    <label class="boldd-500">Pilih Produk</label>
+                    <select class="form-control select2Custom m-select2" id="produk-${rows}" name="produk[]" aria-placeholder="Pilih Produk" style="width: 100%;">
+                        <option disabled selected>Pilih Produk</option>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <label class="boldd-500">Jumlah</label><br>
+                    <input readonly type="text" id="jumlah-${rows}" name="jumlah[]" class="form-control" placeholder="Jumlah">
+                </div>
+                <div class="col-5">
+                    <label class="boldd-500">Keluhan</label>
+                    <textarea readonly class="form-control" id="keluhan-${rows}" name="keluhan[]" rows="2"></textarea>
+                </div>
+                <div class="col-2">
+                    <label class="visibility-hide">Area</label><br>
+                    <button href="javascript:void(0)" type="button" class="btn btn-danger cursor pointer btn-elevate btn-icon button_hapus" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="Hapus"><i class="flaticon-delete"></i> </button>
+                </div>
             </div>
-            <div class="col-5">
-                <label class="boldd-500">Keluhan</label>
-                <textarea class="form-control" id="keluhan-${rows}" name="keluhan[]" rows="2"></textarea>
-            </div>
-            <div class="col-2">
-                <label class="visibility-hide">Area</label><br>
-                <button href="javascript:void(0)" type="button" class="btn btn-danger cursor pointer btn-elevate btn-icon button_hapus" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="Hapus"><i class="flaticon-delete"></i> </button>
-            </div>
-        </div>
-        `);
+            `);
+            
+            loadProduk(rows, `#produk-${rows}`, obj, false)
 
-        loadProduk(rows, `#produk-${rows}`, obj)
+            // $(`#produk-${rows}`).attr("readonly", true);
+        @endif
         $('.select2Custom').select2({
             placeholder: "Pilih Produk",
             dropdownParent:$("#kt_keluhan")
         });
         
+         
     }
 
     $("body").on('click', '.button_hapus', function (e) {
         $(this).parent().parent().remove();
     });
 
-    function loadProduk(no, target, produk='') {
+    function loadProduk(no, target, produk='', edit=true) {
         $.ajax({
             url:  baseUrl + "penerimaan-gp" + "/" + "get-produk/"+id_aktivitas_harian,
             success: res => {
                 const obj = res.data;
-                console.log(obj);
                 let html = `<option value="">Pilih Produk</option>`;
                 obj.forEach((item, index) => {
                     html += `<option value="${item.id}">${item.nama}</option>`;
@@ -449,6 +365,12 @@ let datatable,
                 $("#produk-"+no).val(produk.id_material);
                 $("#jumlah-"+no).val(produk.jumlah);
                 $("#keluhan-"+no).html(produk.keluhan);
+
+                if (edit == false) {
+                    $("#produk-"+no).select2({
+                    disabled: true
+                    });
+                }
             },
             error: () => {}
         });
@@ -630,7 +552,7 @@ let datatable,
 
     function loadArea(id_material) {
         $.ajax({
-            url:ajaxSource+'/get-area/'+id_gudang+"/"+id_material,
+            url:ajaxSource+'/get-area/'+id_gudang+"/"+id_material+"/"+id_aktivitas_harian,
             success:(response) => {
                 let tampung_nama = "";
                 let temp_nama = "";

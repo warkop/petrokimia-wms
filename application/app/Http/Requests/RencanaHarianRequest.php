@@ -24,7 +24,7 @@ class RencanaHarianRequest extends FormRequest
      */
     public function rules()
     {
-        $id_shift = \Request::instance()->shift;
+        $id_shift = request()->shift;
         $rules = [
             'id_shift'          => [
                 'required'
@@ -41,11 +41,11 @@ class RencanaHarianRequest extends FormRequest
             'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
         ];
 
-        foreach (\Request::instance()->housekeeper as $key => $val) {
+        foreach (request()->housekeeper as $key => $val) {
             $rules['area.' . $key . '.*'] = 'required';
         }
 
-        $action = \Request::instance()->action;
+        $action = request()->action;
         if ($action == 'edit') {
             $rules['id'] = 'required';
         }

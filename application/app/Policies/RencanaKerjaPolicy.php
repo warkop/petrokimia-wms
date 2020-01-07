@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
+use App\Http\Models\RencanaHarian;
 use App\Http\Models\Users;
-use App\RencanaHarian;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class RencanaKerjaPolicy

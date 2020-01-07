@@ -3,7 +3,7 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AlatBerat extends Model
 {
@@ -30,12 +30,12 @@ class AlatBerat extends Model
         parent::boot();
 
         static::updating(function ($table) {
-            $table->updated_by = \Auth::id();
+            $table->updated_by = auth()->id();
             $table->updated_at = now();
         });
 
         static::creating(function ($table) {
-            $table->created_by = \Auth::id();
+            $table->created_by = auth()->id();
             $table->created_at = now();
         });
     }

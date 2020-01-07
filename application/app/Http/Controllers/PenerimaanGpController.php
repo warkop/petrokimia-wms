@@ -143,6 +143,7 @@ class PenerimaanGpController extends Controller
     {
         $data['title'] = 'Detail Penerimaan GP';
         $data['aktivitasHarian'] = $aktivitasHarian;
+        $data['id_aktivitas_harian'] = $aktivitasHarian->id;
         $data['aktivitasFoto'] = AktivitasFoto::withoutGlobalScopes()->where('id_aktivitas_harian', $aktivitasHarian->id)->get();
         $res = AreaStok::select(
             'id_area',
@@ -153,7 +154,10 @@ class PenerimaanGpController extends Controller
 
         $res = AreaStok::with('area')->get();
 
-        $produk = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->where('status_produk', 1)->get();
+        $produk = MaterialTrans::with('material')
+        ->where('id_aktivitas_harian', $aktivitasHarian->id)
+        ->where('status_produk', 1)
+        ->get();
         $data['produk'] = MaterialTransResource::collection($produk);
         $pallet = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_pallet')->get();
         $data['pallet'] = $pallet;
@@ -163,11 +167,14 @@ class PenerimaanGpController extends Controller
         return view('penerimaan-gp.detail', $data);
     }
 
-    public function getArea($id_gudang, $id_material)
+    public function getArea($id_gudang, $id_material, $id_aktivitas_harian)
     {
-        $areaStok = Area::with('areaStok')
+        $areaStok = Area::with('areaStok', 'areaStok.materialTrans')
         ->whereHas('areaStok', function($query) use ($id_material) {
             $query->where('id_material', $id_material);
+        })
+        ->whereHas('areaStok.materialTrans', function($query) use ($id_aktivitas_harian) {
+            $query->where('id_aktivitas_harian', $id_aktivitas_harian);
         })
         ->where('id_gudang', $id_gudang)
         ->orderBy('nama')

@@ -149,7 +149,7 @@ function tambah() {
         backdrop: 'static',
         keyboard: false
     }, 'show');
-    $('#start_date').val(helpDateFormat(Date.now(), 'de'));
+    $('#start_date').val(helpDateFormat(Date.now(), 'si'));
 }
 
 function loadPallet() {
@@ -511,17 +511,22 @@ function tambahAktivitas() {
                             type = 'warning';
 
                             obj = response.responseJSON.errors;
+                            if (obj == null) {
+                                message = response.responseJSON.message;
+                            } else {
+                                const temp = Object.values(obj);
+                                message = '';
+                                temp.forEach(element => {
+                                    element.forEach(row => {
+                                        message += row + "<br>"
+                                    });
+                                });
+                            }
                             window.onbeforeunload = false;
                             $('.btn_close_modal').removeClass('hide');
                             $('.se-pre-con').hide();
 
-                            const temp = Object.values(obj);
-                            message = '';
-                            temp.forEach(element => {
-                                element.forEach(row => {
-                                    message += row + "<br>"
-                                });
-                            });
+                            
                         }
                     }
                 }

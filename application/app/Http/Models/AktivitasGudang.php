@@ -42,7 +42,7 @@ class AktivitasGudang extends Model
                         'action' => 2,
                         'aktivitas' => 'Mengubah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' pada ' . $attr . ' dari ' . $old . ' menjadi ' . $new,
                         'created_at' => now(),
-                        'created_by' => \Auth::id(),
+                        'created_by' => auth()->id(),
                     ];
                     (new LogActivity)->log($arr);
                 }
@@ -51,14 +51,14 @@ class AktivitasGudang extends Model
 
         static::creating(function ($table) {
             
-            $table->created_by = \Auth::id();
+            $table->created_by = auth()->id();
             $table->created_at = now();
             // $arr = [
             //     'modul' => ucwords(str_replace('_', ' ', $table->table)),
             //     'action' => 1,
             //     'aktivitas' => 'Mendaftarkan aktivitas ' . $table->aktivitas->nama . ' pada gudang ' . $table->gudang->nama,
             //     'created_at' => now(),
-            //     'created_by' => \Auth::id(),
+            //     'created_by' => auth()->id(),
             // ];
             // (new LogActivity)->log($arr);
         });

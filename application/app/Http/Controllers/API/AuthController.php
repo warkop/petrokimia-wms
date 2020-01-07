@@ -6,6 +6,7 @@ use App\Http\Models\Users;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Gudang;
+use App\Http\Models\Realisasi;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -19,6 +20,12 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    protected function clean($user)
+    {
+        $user->user_gcid = null;
+        $user->save();
     }
 
     public function username()
@@ -50,8 +57,8 @@ class AuthController extends Controller
                 if (Hash::check($password, $cek_user['password'])) {
                     if ($cek_user['role_id'] == 3) {
                         $rencanaTkbm = RencanaTkbm::where('id_tkbm', $cek_user['id_tkbm'])->get();
+                        $m_user = Users::withoutGlobalScopes()->find($cek_user['id']);
                         if (!$rencanaTkbm->isEmpty()) {
-                            $m_user = Users::withoutGlobalScopes()->find($cek_user['id']);
 
                             if (empty($cek_user['api_token'])) {
                                 $access_token = 'wMs-' . rand_str(10) . date('Y') . rand_str(6) . date('m') . rand_str(6) . date('d') . rand_str(6) . date('H') . rand_str(6) . date('i') . rand_str(6) . date('s');
@@ -78,15 +85,30 @@ class AuthController extends Controller
                             if ($m_user->id_tkbm != null) {
                                 $rencanaTkbm        = RencanaTkbm::where('id_tkbm', $m_user->id_tkbm)->orderBy('id_rencana', 'desc')->first();
                                 $rencanaHarian      = RencanaHarian::findOrFail($rencanaTkbm->id_rencana);
-                                if (date('Y-m-d H:i:s', strtotime($rencanaHarian->end_date)) < date('Y-m-d H:i:s')) {
+
+                                $realisasi = Realisasi::where('id_rencana', $rencanaHarian->id)->orderBy('id', 'desc')->first();
+                                if (!empty($realisasi)) {
+                                    $this->clean($m_user);
+
                                     $this->responseCode = 403;
-                                    $this->responseMessage = 'Rencana harian dari checker ini sudah kadaluarsa!';
+                                    $this->responseMessage = 'Rencana harian dari checker ini sudah ter-realisasi!';
+
+                                    $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                                    return response()->json($response, $this->responseCode);
+                                }
+
+                                if (date('Y-m-d H:i:s', strtotime($rencanaHarian->end_date)) < date('Y-m-d H:i:s')) {
+                                    $this->clean($m_user);
+
+                                    $this->responseCode = 403;
+                                    $this->responseMessage = 'Rencana harian dari checker ini sudah kadaluarsa! Silahkan buat Rencana Harian lagi untuk checker ini!';
                                     
                                     $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                                     return response()->json($response, $this->responseCode);
                                 }
                                 $gudang             = Gudang::findOrFail($rencanaHarian->id_gudang);
                                 
+                                $arr['id_gudang'] = $gudang->id;
                                 $arr['nama_gudang'] = $gudang->nama;
                             }
 
@@ -94,11 +116,13 @@ class AuthController extends Controller
                             $this->responseData = $arr;
                             $this->responseMessage = 'Anda berhasil login';
                         } else {
+                            $this->clean($m_user);
                             $this->responseCode = 403;
                             $this->responseMessage = 'Checker tidak didaftarkan pada rencana harian!';
+
                         }
                     } else {
-                        $m_user = Users::withoutGlobalScopes()->find($cek_user['id']);
+                        $m_user = Users::find($cek_user['id']);
 
                         if (empty($cek_user['api_token'])) {
                             $access_token = 'wMs-' . rand_str(10) . date('Y') . rand_str(6) . date('m') . rand_str(6) . date('d') . rand_str(6) . date('H') . rand_str(6) . date('i') . rand_str(6) . date('s');
@@ -127,6 +151,13 @@ class AuthController extends Controller
                         $arr['nama_gudang'] = '';
                         if ($m_user->id_karu != null) {
                             $gudang = Gudang::where('id_karu', $m_user->id_karu)->first();
+                            if (empty($gudang)) {
+                                $this->responseCode = 500;
+                                $this->responseMessage = 'Karu belum terdaftar pada gudang manapun!';
+                                
+                                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                                return response()->json($response, $this->responseCode);
+                            }
                             $arr['nama_gudang'] = $gudang->nama;
                         }
 

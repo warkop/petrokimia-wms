@@ -11,17 +11,13 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', 'Auth\LoginController@index');
 Route::get('/login', 'Auth\LoginController@index')->name('login');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('/authenticate', 'Auth\LoginController@authenticate')->name('authenticate');
-
-
-
-Route::get('/master-grup', function () {
-    return view('master.master-grup.grid');
-});
-
+Route::get('watch/{nama}/', 'WatchController@default');
 Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'DashboardController@index');
     
@@ -61,6 +57,15 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::post('/', 'TenagaKerjaNonOrganikController@json');
         Route::get('/{id}', 'TenagaKerjaNonOrganikController@show')->where('id', '[0-9]+');
     });
+
+    Route::group(['prefix' => 'master-pemetaan-sloc'], function () { 
+        Route::get('/', 'PemetaanSlocController@index');
+        Route::get('/{id}', 'PemetaanSlocController@show')->where('id', '[0-9]+');
+        Route::post('/', 'PemetaanSlocController@json');
+        Route::put('/', 'PemetaanSlocController@store');
+        Route::patch('/{pemetaanSloc}', 'PemetaanSlocController@store')->where('pemetaanSloc', '[0-9]+');
+        Route::get('/load-sloc', 'PemetaanSlocController@loadSloc');
+    }); 
 
     Route::group(['prefix' => 'master-kerusakan-alat'], function () {
         Route::get('/', 'AlatBeratKerusakanController@index');
@@ -181,7 +186,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
 
     Route::group(['prefix' => 'penerimaan-gp'], function () {
         Route::get('/', 'PenerimaanGpController@index');
-        Route::get('/get-area/{id_gudang}/{id_material}', 'PenerimaanGpController@getArea')->where('id_material', '[0-9]+');
+        Route::get('/get-area/{id_gudang}/{id_material}/{id_aktivitas_harian}', 'PenerimaanGpController@getArea')->where('id_material', '[0-9]+')->where('id_gudang', '[0-9]+')->where('id_aktivitas_harian', '[0-9]+');
         Route::get('/{aktivitasHarian}', 'PenerimaanGpController@show')->where('aktivitasHarian', '[0-9]+');
         Route::get('/get-produk/{id_aktivitas_harian}', 'PenerimaanGpController@getProduk')->where('id_aktivitas_harian', '[0-9]+');
         Route::post('/', 'PenerimaanGpController@json');
@@ -189,19 +194,11 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::patch('/{aktivitasHarian}', 'PenerimaanGpController@approve')->where('aktivitasHarian', '[0-9]+');
     });
 
-    // Route::get('/penerimaan-gp', function () {
-    //     return view('penerimaan-gp.grid');
-    // });
-    // Route::get('/penerimaan-gp/detail', function () {
-    //     return view('penerimaan-gp.detail');
-    // });
-
-    // Route::get('report/aktivitas-harian', 'ReportController@aktivitasHarian');
-
     Route::group(['prefix' => 'log-aktivitas'], function () {
         Route::get('/', 'LogAktivitasController@index');
         Route::post('/', 'LogAktivitasController@json');
         Route::get('/{aktivitasHarian}', 'LogAktivitasController@show')->where('aktivitasHarian', '[0-9]+');
+        Route::get('/get-area/{id_gudang}/{id_material}/{id_aktivitas_harian}', 'LogAktivitasController@getArea')->where('id_material', '[0-9]+')->where('id_gudang', '[0-9]+')->where('id_aktivitas_harian', '[0-9]+');
     });
 
     Route::group(['prefix' => 'log-aktivitas-user'], function () {
@@ -210,14 +207,27 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     });
 
     Route::group(['prefix' => 'report'], function () {
-        Route::get('/laporan-aktivitas', 'ReportController@laporanAktivitas');
-        Route::get('/aktivitas-harian', 'ReportController@aktivitasHarian');
-        Route::get('/laporan-keluhan-alat-berat', 'ReportController@laporanKeluhanAlatBerat');
-        Route::get('/keluhan-alat-berat', 'ReportController@keluhanAlatBerat');
-        Route::get('/laporan-produk', 'ReportController@laporanProduk');
+        Route::get('/laporan-material', 'ReportController@laporanMaterial');
+        Route::get('/laporan-stok', 'ReportController@laporanStok');
+        Route::get('/laporan-absen-karyawan', 'ReportController@laporanAbsenKaryawan');
         Route::get('/laporan-mutasi-pallet', 'ReportController@laporanMutasiPallet');
+        Route::get('/laporan-mutasi-stok', 'ReportController@laporanMutasiStok');
+        Route::get('/laporan-produk', 'ReportController@laporanProduk');
         Route::get('/laporan-realisasi', 'ReportController@laporanRealisasi');
+        Route::get('/laporan-keluhan-alat-berat', 'ReportController@laporanKeluhanAlatBerat');
+        Route::get('/laporan-keluhan-gp', 'ReportController@laporanKeluhanGp');
+        Route::get('/laporan-aktivitas', 'ReportController@laporanAktivitas');
+        
+        Route::get('/material', 'ReportController@material');
+        Route::get('/stok', 'ReportController@stok');
+        Route::get('/absen-karyawan', 'ReportController@absenKaryawan');
+        Route::get('/mutasi-pallet', 'ReportController@mutasiPallet');
+        Route::get('/mutasi-stok', 'ReportController@mutasiStok');
+        Route::get('/produk', 'ReportController@produk');
         Route::get('/realisasi', 'ReportController@realisasi');
+        Route::get('/keluhan-alat-berat', 'ReportController@keluhanAlatBerat');
+        Route::get('/keluhan-gp', 'ReportController@keluhanGp');
+        Route::get('/aktivitas-harian', 'ReportController@aktivitasHarian');
     });
 
     Route::get('/main', function () {
@@ -225,18 +235,13 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     });
 });
 
-Route::get('watch/{nama}/', 'WatchController@default');
-
-// Route::get('/master-material', function () {
-//     return view('master.master-material.grid');
-// });
-
-// Route::get('/gudang', function () {
-//     return view('gudang.grid');
-// });
+Route::get('/master-grup', function () {
+    return view('master.master-grup.grid');
+});
 Route::get('/sub-gudang', function () {
     return view('sub-gudang.grid');
 });
+<<<<<<< HEAD
 // Route::get('/master-alat-berat/list-alat-berat', function () {
 //     return view('list-alat-berat.grid');
 // });
@@ -341,3 +346,5 @@ Route::get('/403', function () {
 Route::get('/404', function () {
     return view('error.404');
 });
+=======
+>>>>>>> cbc9b62bdc08c9e3d28f21a1bfc80ef20986440b

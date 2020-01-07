@@ -26,12 +26,12 @@ class Realisasi extends Model
         parent::boot();
 
         static::updating(function ($table) {
-            $table->updated_by = \Auth::id();
+            $table->updated_by = auth()->id();
             $table->updated_at = now();
         });
 
         static::creating(function ($table) {
-            $table->created_by = \Auth::id();
+            $table->created_by = auth()->id();
             $table->created_at = now();
         });
     }

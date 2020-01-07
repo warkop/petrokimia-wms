@@ -3,6 +3,7 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class LogActivity extends Model
 {
@@ -17,7 +18,7 @@ class LogActivity extends Model
 
     public function log($arr)
     {
-        \DB::table('log_activity')->insert(
+        DB::table('log_activity')->insert(
             $arr
         );
     }
@@ -41,8 +42,8 @@ class LogActivity extends Model
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
-                $where->where(\DB::raw('LOWER(aktivitas)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(\DB::raw('TO_CHAR(log_activity.created_at, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
+                $where->where(DB::raw('LOWER(aktivitas)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw('TO_CHAR(log_activity.created_at, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
             });
         }
 

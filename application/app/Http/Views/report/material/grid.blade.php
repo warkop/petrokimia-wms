@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Rencana Harian')
+@section('title', 'Laporan Material')
 
 @section('content')
 
@@ -30,14 +30,16 @@
         </div>
     </div> --}}
         </div>
+        <form action="{{url('report/material')}}" method="GET">
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row mt2">
                 <h4 class="col-2 col-form-label text-kiri">Gudang</h4>
                 <div class="col-6">
-                    <select class="form-control m-select2" id="gudang" name="param" multiple="multiple" style="width: 100%">
-                        <option value="aa">Gudang A</option>
-                        <option value="AK">Gudang B</option>
+                    <select class="form-control m-select2 @error('title') is-invalid @enderror" id="gudang" name="gudang[]" multiple="multiple" style="width: 100%">
+                        @foreach ($gudang as $item)
+                            <option value="{{$item->id}}">{{$item->nama}}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -46,19 +48,19 @@
                 <div class="col-6">
                     <div class="kt-radio-inline">
                         <label class="kt-radio kt-radio--success">
-                            <input id="semuaCheck" type="radio" name="radio2" onclick="checkSemua()"> Semua
+                            <input id="semuaCheck" type="radio" name="material" value="1" onclick="checkSemua()"> Semua
                             <span></span>
                         </label>
                         <label class="kt-radio kt-radio--warning">
-                            <input id="myCheck" type="radio" name="radio2" onclick="checkBx()"> Spesifik
+                            <input id="myCheck" type="radio" name="material" value="2" onclick="checkBx()"> Spesifik
                             <span></span>
                         </label> 
                     </div>
                     <div class="mt1" id="textadd" style="display:none;">
-                        <select class="form-control m-select2" id="material" name="param" multiple="multiple" style="width:100%">
-                            <option value="xx" disabled>Pilih material</option>
-                            <option value="aa">Pallet Plastik</option>
-                            <option value="AK">Terplas</option>
+                        <select class="form-control m-select2" id="material" name="pilih_material[]" multiple="multiple" style="width:100%">
+                            @foreach ($pallet as $item)
+                                <option value="{{$item->id}}">{{$item->nama}}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -71,14 +73,14 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Start Date</label>
-                                    <input type="text" class="form-control" id="start_date" name="start_date" readonly
+                                    <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
                                         placeholder="Pilih tanggal">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>End Date</label>
-                                    <input type="text" class="form-control" id="end_date" name="end_date" readonly
+                                    <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
                                         placeholder="Pilih tanggal">
                                 </div>
                             </div>
@@ -86,16 +88,24 @@
                     </div>
                 </div>
             </div>
+            {{-- @error('title') --}}
+            @foreach ($errors->all() as $error)
+                {{-- <li>{{  }}</li> --}}
+                <div class="alert alert-danger">{{ $error }}</div>
+            @endforeach
+            {{-- @enderror --}}
         </div>
         <div class="kt-portlet__foot">
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="offset-lg-2">
-                        <a href="{{asset('assets/reports/material/material.xlsx')}}" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</a>
+                        {{-- <a href="{{asset('assets/reports/material/material.xlsx')}}" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</a> --}}
+                        <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</a>
                     </div>
                 </div>
             </div>
         </div>
+        </form>
     </div>
 </div>
 

@@ -3,6 +3,7 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class GudangStok extends Model
 {
@@ -12,15 +13,6 @@ class GudangStok extends Model
     protected $guarded = [
         'id',
     ];
-
-    protected $hidden = [
-        'created_at',
-        'created_by',
-        'updated_at',
-        'updated_by',
-    ];
-
-    protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
     public $timestamps  = false;
 
@@ -39,9 +31,19 @@ class GudangStok extends Model
         return $query->where('status', 4);
     }
 
+    public function gudang()
+    {
+        return $this->belongsTo(Gudang::class, 'id_gudang');
+    }
+
+    public function material()
+    {
+        return $this->belongsTo(Material::class, 'id_material');
+    }
+
     public function gridJson($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition, $id_gudang)
     {
-        $result = \DB::table($this->table)
+        $result = DB::table($this->table)
             ->select(
                 'material_trans.id AS id',
                 'tanggal',
@@ -60,10 +62,10 @@ class GudangStok extends Model
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
-                $where->where(\DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(\DB::raw('LOWER(alasan)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(\DB::raw('material_trans.jumlah::varchar(255)'), 'ILIKE', '%'.strtolower($search).'%');
-                $where->orWhere(\DB::raw("TO_CHAR(material_trans.tanggal, 'DD-MM-YYYY')"), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw('LOWER(alasan)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw('material_trans.jumlah::varchar(255)'), 'ILIKE', '%'.strtolower($search).'%');
+                $where->orWhere(DB::raw("TO_CHAR(material_trans.tanggal, 'DD-MM-YYYY')"), 'ILIKE', '%' . strtolower($search) . '%');
             });
         }
 

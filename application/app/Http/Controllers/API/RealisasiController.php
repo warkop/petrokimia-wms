@@ -19,6 +19,7 @@ use App\Http\Models\Users;
 use App\Http\Requests\ApiRealisasiRequest;
 use App\Http\Requests\RealisasiMaterialRequest;
 use App\Http\Resources\AktivitasResource;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class RealisasiController extends Controller
@@ -76,12 +77,11 @@ class RealisasiController extends Controller
             'material.id',
             'id_material_sap',
             'id_plant',
-            'nama',
-            'jumlah'
+            'nama'
         )
-        ->join('gudang_stok as gs', 'gs.id_material', '=', 'material.id')
+        // ->join('gudang_stok as gs', 'gs.id_material', '=', 'material.id')
         ->lainlain()
-        ->where('id_gudang', $gudang->id)
+        // ->where('id_gudang', $gudang->id)
         ->get();
 
         return (new AktivitasResource($res))->additional([
@@ -187,7 +187,7 @@ class RealisasiController extends Controller
         $realisasi->save();
         if (!empty($housekeeper)) {
             foreach ($housekeeper as $key => $value) {
-                $temp = array_values($req->input('area_housekeeper')[$key]);
+                $temp = array_values((array)$req->input('area_housekeeper')[$key]);
                 if (!empty($temp)) {
                     foreach ($temp as $row => $hey) {
                         if (isset($key,$req->input('foto')[$key])) {
@@ -250,12 +250,17 @@ class RealisasiController extends Controller
 
     public function getRealisasiMaterial()
     {
+        $search = request()->input('search');
         $res = RealisasiMaterial::select(
             'realisasi_material.id',
             'tanggal',
             'nama'
         )
         ->leftJoin('shift_kerja', 'realisasi_material.id_shift', '=', 'shift_kerja.id')
+        ->where(function($query) use ($search){
+            $query->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+            $query->orWhere(DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
+        })
         ->orderBy('realisasi_material.created_at', 'desc')
         ->paginate(10);
         return AktivitasResource::collection($res)->additional([
@@ -350,6 +355,9 @@ class RealisasiController extends Controller
                 } else {
                     if ($tipe == 1) {
                         if ($gudangStok->jumlah - $jumlah < 0) {
+                            MaterialTrans::where('id_realisasi_material', $realisasiMaterial->id)->forceDelete();
+                            RealisasiMaterial::find($realisasiMaterial->id)->forceDelete();
+
                             $this->responseMessage = 'Jumlah yang Anda masukkan melebihi stok yang tersedia!';
                             $this->responseCode = 403;
 
@@ -364,7 +372,7 @@ class RealisasiController extends Controller
 
                 $gudangStok->id_gudang      = $gudang->id;
                 $gudangStok->id_material    = $material;
-                $gudangStok->status         = 0;
+                $gudangStok->status         = 1;
                 $gudangStok->save();
 
             }

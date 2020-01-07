@@ -23,7 +23,7 @@
                 </p>
             </div>
             <div class="kt-portlet__head-toolbar">
-                <a href="{{url('penerimaan-gp')}}" class="pointer"><span class="pull-right color-dodolo"><i class="la la-arrow-left"></i>kembali</span></a>
+                <a href="{{url('log-aktivitas')}}" class="pointer"><span class="pull-right color-dodolo"><i class="la la-arrow-left"></i>kembali</span></a>
         </div>
     </div>
     <div class="kt-portlet__body">
@@ -50,13 +50,13 @@
                 <div class="row mb1">
                     <div class="col-12">
                         <label>Paket Alat Berat</label>
-                        <h5 class="boldd"> Paket A</h5>
+                        <h5 class="boldd"> {{$$aktivitasHarian->alatBerat->nomor_lambung??'-'}}</h5>
                     </div>
                 </div>
                 <div class="row mb1">
                     <div class="col-12">
                         <label>Sistro</label>
-                        <h5 class="boldd"> {{$aktivitasHarian->sistro}}</h5>
+                        <h5 class="boldd"> {{$aktivitasHarian->sistro??'-'}}</h5>
                     </div>
                 </div>
                 <div class="row mb1">
@@ -71,56 +71,54 @@
                 <div class="row listproduk">
                     <label class="boldd mb1">List Produk</label>
                     <div class="kt-widget4 col-12 kel">
+                        @php 
+                        $total = 0;
+                        $temp_material = '';
+                        @endphp
+                        @foreach ($produk as $item)
                         <div class="kt-widget4__item border-bottom-dash">
                             <div class="kt-widget4__info">
                                 <p class="kt-widget4__username">
-                                    Pupuk Urea - <span class="boldd">100 Ton</span>
+                                    {{$item->material->nama??'-'}} - <span class="boldd">{{$item->jumlah}} Ton</span>
                                 </p>
-                                <p class="kt-widget4__text color-oren boldd">
-                                    Mengurangi
-                                </p>
+                                @if ($item->tipe == 1)
+                                    <p class="kt-widget4__text color-oren boldd">
+                                        Mengurangi    
+                                    </p>
+                                @else 
+                                    <p class="kt-widget4__text color-green boldd">
+                                        Menambah
+                                    </p>
+                                @endif
                             </div>
                             <a href="#" class="btn btn-sm btn-brand btn-bold" data-toggle="modal"
-                                data-target="#kt_modal">Area</a>
+                            data-target="#kt_modal" onclick="loadArea({{$item->id_material}})">Area</a>
                         </div>
-                        <div class="kt-widget4__item border-bottom-dash ">
-                            <div class="kt-widget4__info">
-                                <p class="kt-widget4__username">
-                                    Pupuk ZE - <span class="boldd">20 Ton</span>
-                                </p>
-                                <p class="kt-widget4__text color-oren boldd">
-                                    Mengurangi
-                                </p>
-                            </div>
-                            <a href="#" class="btn btn-sm btn-brand btn-bold" data-toggle="modal"
-                                data-target="#kt_modal">Area</a>
-                        </div>
+                        @endforeach
                         <div class="border-pembatas mb1"></div>
                     </div>
                 </div>
                 <div class="row listterplas mt2">
                     <label class="boldd mb1">List Palet</label>
                     <div class="kt-widget4 col-12 kel">
-                        <div class="kt-widget4__item border-bottom-dash">
-                            <div class="kt-widget4__info">
-                                <p class="kt-widget4__username">
-                                    Terplas - <span class="boldd">100</span>
-                                </p>
-                                <p class="kt-widget4__text color-green boldd">
-                                    Menambah
-                                </p>
-                            </div>
-                        </div>
-                        <div class="kt-widget4__item border-bottom-dash">
-                            <div class="kt-widget4__info">
-                                <p class="kt-widget4__username">
-                                    Terplas - <span class="boldd">20</span>
-                                </p>
-                                <p class="kt-widget4__text color-green boldd">
-                                    Menambah
-                                </p>
-                            </div>
-                        </div>
+                       @foreach ($pallet as $item)
+                            <div class="kt-widget4__item border-bottom-dash">
+                                <div class="kt-widget4__info">
+                                    <p class="kt-widget4__username">
+                                        {{$item->material->nama}} - <span class="boldd">{{$item->jumlah}}</span>
+                                    </p>
+                                    @if ($item->tipe == 1)
+                                        <p class="kt-widget4__text color-oren boldd">
+                                            Mengurangi    
+                                        </p>
+                                    @else 
+                                        <p class="kt-widget4__text color-green boldd">
+                                            Menambah
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>    
+                        @endforeach
                         <div class="border-pembatas mb1"></div>
                     </div>
                 </div>
@@ -147,8 +145,8 @@
                 <div class="modal-body">
                     <label class="boldd">List Area</label>
                     <!--begin::Accordion-->
-                    <div class="accordion accordion-light  accordion-toggle-arrow" id="accordionExample5">
-                        <div class="card">
+                    <div class="accordion accordion-light  accordion-toggle-arrow" id="tempat_card">
+                        {{-- <div class="card">
                             <div class="card-header" id="headingOne5">
                                 <div class="card-title" data-toggle="collapse" data-target="#collapseOne5"
                                     aria-expanded="true" aria-controls="collapseOne5">
@@ -226,7 +224,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <!--end::Accordion-->
@@ -255,44 +253,17 @@
                 <div class="modal-body">
                     <div class="kt-scroll" data-scroll="true" data-height="400">
                         <div class="row mb2">
-                            <div class="col-4">
-                                <label class="boldd">Foto Atas</label>
-                                <a class="fancybox" rel="ligthbox" href="{{asset('assets/metronic/assets/media/products/product1.jpg')}}">
-                                    <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product1.jpg')}}" alt="" srcset="">
-                                </a>
-                            </div>
-                            <div class="col-4">
-                                <label class="boldd">Foto Bawah</label>
-                                <a class="fancybox" rel="ligthbox" href="{{asset('assets/metronic/assets/media/products/product3.jpg')}}">
-                                    <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product3.jpg')}}" alt="" srcset="">
-                                </a>
-                            </div>
-                            <div class="col-4">
-                                <label class="boldd">Foto Depan</label>
-                                <a class="fancybox" rel="ligthbox" href="{{asset('assets/metronic/assets/media/products/product3.jpg')}}">
-                                    <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product3.jpg')}}" alt="" srcset="">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="row mb2">
-                            <div class="col-4">
-                                <label class="boldd">Foto Belakang</label>
-                                <a class="fancybox" rel="ligthbox" href="{{asset('assets/metronic/assets/media/products/product4.jpg')}}">
-                                    <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product4.jpg')}}" alt="" srcset="">
-                                </a>
-                            </div>
-                            <div class="col-4">
-                                <label class="boldd">Foto Kanan</label>
-                                <a class="fancybox" rel="ligthbox" href="{{asset('assets/metronic/assets/media/products/product5.jpg')}}">
-                                    <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product5.jpg')}}" alt="" srcset="">
-                                </a>
-                            </div>
-                            <div class="col-4">
-                                <label class="boldd">Foto Kiri</label>
-                                <a class="fancybox" rel="ligthbox" href="{{asset('assets/metronic/assets/media/products/product6.jpg')}}">
-                                    <img class="img-fluid" src="{{asset('assets/metronic/assets/media/products/product6.jpg')}}" alt="" srcset="">
-                                </a>
-                            </div>
+                            @foreach ($aktivitasFoto as $item)
+                                <div class="col-4">
+                                    <label class="boldd">Foto {{$item->fotoJenis->nama}}</label>
+                                    <a class="fancybox" rel="ligthbox"
+                                        href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}">
+                                        <img class="img-fluid"
+                                            src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}" alt=""
+                                            srcset="">
+                                    </a>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -307,14 +278,73 @@
 
 <script src="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.js')}}"></script>
 <script type="text/javascript">
+    const id_gudang = "{{$id_gudang}}";
+    const id_aktivitas_harian = "{{$id_aktivitas_harian}}";
 
-  $(".fancybox").fancybox({
+    let ajaxUrl = baseUrl + "log-aktivitas",
+    ajaxSource = ajaxUrl;
 
-      openEffect: "none",
+    $(".fancybox").fancybox({
+        openEffect: "none",
 
-      closeEffect: "none"
+        closeEffect: "none"
+    });
 
-  });
+    function loadArea(id_material) {
+        $.ajax({
+            url:ajaxSource+'/get-area/'+id_gudang+"/"+id_material+"/"+id_aktivitas_harian,
+            success:(response) => {
+                let tampung_nama = "";
+                let temp_nama = "";
+                let areanya = "";
+                let temp = "";
+                let i=1;
+                response.forEach(element => {
+                    temp_nama = `
+                        <div class="card-header" id="heading-${i}">
+                            <div class="card-title" data-toggle="collapse show" data-target="#collapse-${i}"
+                                aria-expanded="true" aria-controls="collapse-${i}">
+                                <i class="flaticon2-shelter"></i> Area ${element.nama}
+                            </div>
+                        </div>
+                    `;
+
+                    areanya = "";
+                    element.area_stok.forEach(element2 => {
+                        areanya += `
+                            <div class="kt-widget4__item border-bottom-dash mt1">
+                                <div class="kt-widget4__info">
+                                    <h6 class="kt-widget4__username">
+                                        ${helpDateFormat(element2.tanggal, "mi")}
+                                    </h6>
+                                    <p class="kt-widget4__text boldd">
+                                        ${element2.jumlah} Ton
+                                    </p>
+                                </div>
+                            </div>`;
+                    });
+                    if (!$.isEmptyObject(temp_nama)) {
+                        temp += `
+                                <div class="card">
+                                    <div id="collapse-${i}" class="collapse show" aria-labelledby="heading-${i}" data-parent="#tempat_card">
+                                        <div class="card-body">
+                                        ${temp_nama}
+                                        ${areanya}
+                                        </div>
+                                    </div>
+                                </div>`;
+                    }
+                });
+                console.log(temp)
+                // console.log($("#accordionExample5"));
+                $("#tempat_card").html(temp);
+                // console.log(temp);
+            },
+            error:(response) => {
+
+            }
+        });
+    }
 
 </script>
 

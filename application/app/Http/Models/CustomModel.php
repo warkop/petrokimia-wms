@@ -32,13 +32,13 @@ class CustomModel extends Model
                         'action' => 2,
                         'aktivitas' => $text,
                         'created_at' => now(),
-                        'created_by' => \Auth::id(),
+                        'created_by' => auth()->id(),
                     ];
                     (new LogActivity)->log($arr);
                 }
             }
 
-            $table->updated_by = \Auth::id();
+            $table->updated_by = auth()->id();
             $table->updated_at = now();
         });
 
@@ -54,11 +54,11 @@ class CustomModel extends Model
                 'action' => 1,
                 'aktivitas' => 'Menambah data ' . ucwords(str_replace('_', ' ', $table->table)).' dengan nama '.($table->nama),
                 'created_at' => now(),
-                'created_by' => \Auth::id(),
+                'created_by' => auth()->id(),
             ];
             (new LogActivity)->log($arr);
 
-            $table->created_by = \Auth::id();
+            $table->created_by = auth()->id();
             $table->created_at = now();
         });
 

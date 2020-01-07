@@ -86,7 +86,7 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         if(Auth::check()){
-            $this->writeLog('Logout', 4, 'User dengan username ' . \Auth::user()->username. ' berhasil logout');
+            $this->writeLog('Logout', 4, 'User dengan username ' . auth()->user()->username. ' berhasil logout');
             Auth::logout();
             $request->session()->invalidate();
         }

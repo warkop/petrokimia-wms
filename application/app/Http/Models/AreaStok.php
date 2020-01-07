@@ -33,4 +33,9 @@ class AreaStok extends Model
     {
         return $this->belongsTo('App\Http\Models\Material', 'id_material');
     }
+
+    public function materialTrans()
+    {
+        return $this->belongsTo(MaterialTrans::class, 'id', 'id_area_stok');
+    }
 }

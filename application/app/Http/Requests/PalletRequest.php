@@ -23,7 +23,7 @@ class PalletRequest extends FormRequest
      */
     public function rules()
     {
-        $action = \Request::instance()->action;
+        $action = request()->action;
         if ($action == 'edit') {
             $rules['id'] = 'required';
         }
@@ -31,7 +31,7 @@ class PalletRequest extends FormRequest
         $rules = [
             'tanggal'           => 'nullable|date_format:d-m-Y',
             'material'          => 'required',
-            'jumlah'            => 'integer',
+            'jumlah'            => 'numeric',
             'tipe'              => 'between:1,2',
             'jenis'             => 'between:1,4',
         ];
@@ -56,7 +56,7 @@ class PalletRequest extends FormRequest
     {
         return [
             'required'       => ':attribute wajib diisi!',
-            'integer'        => ':attribute harus berupa angka!',
+            'numeric'        => ':attribute harus berupa angka!',
             'between'        => ':attribute tidak valid!',
             'date_format'    => 'Tanggal :attribute harus dengan format tanggal-bulan-tahun',
         ];

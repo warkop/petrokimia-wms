@@ -3,7 +3,7 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class MaterialAdjustment extends Model
 {
@@ -37,13 +37,13 @@ class MaterialAdjustment extends Model
                         'action' => 2,
                         'aktivitas' => 'Mengubah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' dengan ID ' . $table->id . ' pada ' . $attr . ' dari ' . $old . ' menjadi ' . $new,
                         'created_at' => now(),
-                        'created_by' => \Auth::id(),
+                        'created_by' => auth()->id(),
                     ];
                     (new LogActivity)->log($arr);
                 }
             }
 
-            $table->updated_by = \Auth::id();
+            $table->updated_by = auth()->id();
             $table->updated_at = now();
         });
 
@@ -53,19 +53,20 @@ class MaterialAdjustment extends Model
                 'action' => 1,
                 'aktivitas' => 'Menambah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' dengan tanggal ' . date('d-m-Y', strtotime($table->tanggal)),
                 'created_at' => now(),
-                'created_by' => \Auth::id(),
+                'created_by' => auth()->id(),
             ];
             (new LogActivity)->log($arr);
 
-            $table->created_by = \Auth::id();
+            $table->created_by = auth()->id();
             $table->created_at = now();
         });
     }
 
-    public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
+    public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition, $id_gudang)
     {
         $result = DB::table($this->table)
-            ->select('id', 'foto', DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\') AS tanggal', 'alasan'));
+            ->select('id', 'foto', DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\') AS tanggal', 'alasan'))
+            ->where('id_gudang', $id_gudang);
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {

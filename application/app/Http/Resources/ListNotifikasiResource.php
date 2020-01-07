@@ -15,7 +15,7 @@ class ListNotifikasiResource extends Resource
      */
     public function toArray($request)
     {
-        Carbon::setLocale('id');
+        // Carbon::setLocale('id');
 
         return [
             'id_aktivitas_harian'   => $this->id,
@@ -24,7 +24,7 @@ class ListNotifikasiResource extends Resource
             'nama'                  => $this->aktivitas->nama,
             'asal_gudang'           => $this->gudang->nama,
             'gudang_tujuan'         => $this->gudangTujuan->nama,
-            'waktu'                 => $this->created_at->diffForHumans(),
+            'waktu'                 => $this->created_at,
             'created_at'            => $this->created_at,
         ];
     }

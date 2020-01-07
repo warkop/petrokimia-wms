@@ -5,7 +5,7 @@ namespace App\Http\Models;
 use App\Scopes\EndDateScope;
 use Illuminate\Database\Eloquent\Model;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AlatBeratKerusakan extends Model
 {
@@ -33,13 +33,13 @@ class AlatBeratKerusakan extends Model
     {
         parent::boot();
 
-        static::updating(function ($table) {
-            $table->updated_by = \Auth::id();
+        static::saving(function ($table) {
+            $table->updated_by = auth()->id();
             $table->updated_at = date('Y-m-d H:i:s');
         });
 
         static::creating(function ($table) {
-            $table->created_by = \Auth::id();
+            $table->created_by = auth()->id();
             $table->created_at = date('Y-m-d H:i:s');
             $table->start_date = date('Y-m-d H:i:s');
         });

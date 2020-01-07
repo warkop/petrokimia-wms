@@ -65,7 +65,7 @@ class UsersController extends Controller
 
     public function store(UserRequest $req, Users $models)
     {
-        $req->validated();
+        $req->validated($models);
         $role = $req->input('role_id');
         $id   = $req->input('id');
 

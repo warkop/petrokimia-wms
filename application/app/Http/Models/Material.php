@@ -2,7 +2,7 @@
 
 namespace App\Http\Models;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class Material extends CustomModel
 {
@@ -42,6 +42,11 @@ class Material extends CustomModel
     public function sistro()
     {
         return $this->belongsTo(Sistro::class, 'id_material_sap', 'idproduk');
+    }
+
+    public function areaStok()
+    {
+        return $this->hasMany(AreaStok::class, 'id', 'id_material');
     }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)

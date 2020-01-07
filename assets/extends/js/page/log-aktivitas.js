@@ -12,7 +12,7 @@ $(document).ready(function () {
     KTSelect2.init();
 });
 
-const load_table = function () {
+const load_table = function (id_gudang='', id_shift='') {
     datatable = $(tableTarget);
     // begin first table
     datatable.dataTable({
@@ -21,6 +21,10 @@ const load_table = function () {
         serverSide: true,
         ajax: {
             url: ajaxSource,
+            data:{
+                gudang: id_gudang,
+                shift: id_shift
+            },
             method: "POST",
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
@@ -106,6 +110,12 @@ const load_table = function () {
         }
     });
 };
+
+function pilih() {
+    const gudang = $("#gudang").val();
+    const shift = $("#shift").val();
+    load_table(gudang, shift);
+}
 
 var KTDatatablesDataSourceHtml = function () {
     var dataJSONArray = JSON.parse(

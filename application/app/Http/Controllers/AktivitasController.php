@@ -66,9 +66,15 @@ class AktivitasController extends Controller
         return response()->json($this->responseData, $this->responseCode);
     }
 
-    public function store(AktivitasRequest $req, Aktivitas $aktivitas)
+    public function store(AktivitasRequest $req, $id='')
     {
         $req->validated();
+
+        if (!empty($id)) {
+            $aktivitas = Aktivitas::withoutGlobalScopes()->find($id);
+        } else {
+            $aktivitas = new Aktivitas;
+        }
 
         $aktivitas->nama                       = $req->input('nama');
         $aktivitas->produk_stok                = $req->input('produk_stok');

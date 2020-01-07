@@ -26,7 +26,7 @@ class MaterialRequest extends FormRequest
     {
         $this->sanitize();
 
-        $action = \Request::instance()->action;
+        $action = request()->action;
         if ($action == 'edit') {
             $rules['id'] = 'required';
         }
@@ -34,7 +34,7 @@ class MaterialRequest extends FormRequest
         $rules = [
             'id_material_sap'   => [
                 'required_if:kategori,<>,1',
-                Rule::unique('material', 'id_material_sap')->ignore(\Request::instance()->id)
+                Rule::unique('material', 'id_material_sap')->ignore(request()->id)
             ],
             'nama'              => 'required',
             'kategori'          => 'integer|between:1,3',

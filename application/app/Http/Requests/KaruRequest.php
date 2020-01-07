@@ -26,7 +26,7 @@ class KaruRequest extends FormRequest
     {
         $this->sanitize();
 
-        $action = \Request::instance()->action;
+        $action = request()->action;
         if ($action == 'edit') {
             $rules['id'] = 'required';
         }
@@ -36,7 +36,7 @@ class KaruRequest extends FormRequest
             'no_hp'             => 'nullable|numeric',
             'nik'               => [
                 'nullable',
-                Rule::unique('karu', 'nik')->ignore(\Request::instance()->id)
+                Rule::unique('karu', 'nik')->ignore(request()->id)
             ],
             'start_date'        => 'nullable',
             'end_date'          => 'nullable|after:start_date',

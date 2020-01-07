@@ -4,7 +4,7 @@ namespace App\Http\Models;
 
 use App\Scopes\EndDateScope;
 use Illuminate\Database\Eloquent\Model;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Notifications\Notifiable;
 
 class Gudang extends Model
@@ -49,13 +49,13 @@ class Gudang extends Model
                         'action' => 2,
                         'aktivitas' => 'Mengubah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' dengan ID ' . $table->id . ' pada ' . $attr . ' dari ' . $old . ' menjadi ' . $new,
                         'created_at' => now(),
-                        'created_by' => \Auth::id(),
+                        'created_by' => auth()->id(),
                     ];
                     (new LogActivity)->log($arr);
                 }
             }
 
-            $table->updated_by = \Auth::id();
+            $table->updated_by = auth()->id();
             $table->updated_at = now();
         });
 
@@ -71,11 +71,11 @@ class Gudang extends Model
                 'action' => 1,
                 'aktivitas' => 'Menambah data ' . ucwords(str_replace('_', ' ', $table->table)) . ' dengan nama ' . ($table->nama),
                 'created_at' => now(),
-                'created_by' => \Auth::id(),
+                'created_by' => auth()->id(),
             ];
             (new LogActivity)->log($arr);
 
-            $table->created_by = \Auth::id();
+            $table->created_by = auth()->id();
             $table->created_at = now();
         });
 
@@ -89,7 +89,7 @@ class Gudang extends Model
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
-        $user = \Auth::user();
+        $user = auth()->user();
         $result = DB::table($this->table)
             ->select('id AS id', 'nama AS nama', 'tipe_gudang', 'id_sloc', 'id_plant', DB::raw('
             (SELECT

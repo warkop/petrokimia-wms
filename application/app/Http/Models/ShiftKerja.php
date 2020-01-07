@@ -4,7 +4,7 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Scopes\EndDateScope;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class ShiftKerja extends Model
 {

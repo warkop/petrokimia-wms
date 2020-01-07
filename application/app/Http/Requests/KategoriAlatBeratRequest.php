@@ -26,7 +26,7 @@ class KategoriAlatBeratRequest extends FormRequest
     {
         $this->sanitize();
 
-        $action = \Request::instance()->action;
+        $action = request()->action;
         if ($action == 'edit') {
             $rules['id'] = 'required';
         }
@@ -34,7 +34,7 @@ class KategoriAlatBeratRequest extends FormRequest
         $rules = [
             'nama'    => [
                 'required',
-                Rule::unique('alat_berat_kat', 'nama')->ignore(\Request::instance()->id, 'id')
+                Rule::unique('alat_berat_kat', 'nama')->ignore(request()->id, 'id')
             ],
             'start_date'                  => 'nullable|date_format:d-m-Y',
             'end_date'                    => 'nullable|date_format:d-m-Y|after:start_date',

@@ -37,7 +37,7 @@
                         <th>ID Material SAP</th>
                         <th>Nama Material</th>
                         <th>Kategori</th>
-                        <th>Berat per Kemasan</th>
+                        <th style="width:10%">Berat per Kemasan</th>
                         <th>Koefisien Pallet</th>
                         <th>Start Date</th>
                         <th>End Date</th>
