@@ -310,7 +310,7 @@ function getArea(target) {
     beforeSend: () => {},
     success: res => {
       const obj = res.data;
-
+      console.log(obj);
       let html = `<option value="">Pilih Area</option>`;
       obj.forEach((item, index) => {
         html += `<option value="${item.id}">${item.nama}</option>`;
