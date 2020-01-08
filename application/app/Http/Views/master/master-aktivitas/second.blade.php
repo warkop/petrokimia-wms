@@ -204,6 +204,14 @@
                                     </label>
                                 </div>
                             </div>
+                            <div class="row form-group mb-0 mb2">
+                                <div class="col-6 offset-col-2">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox" name="penyusutan" id="penyusutan" value="1"> Penyusutan
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-4 col-lg-4">
                             <div class="row form-group mb-0 mb2">
@@ -313,6 +321,14 @@
                                 <div class="col-12 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                         <input type="checkbox" name="butuh_biaya" id="butuh_biaya" value="1"> Butuh Biaya Alat Berat
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row form-group mb-0 mb2">
+                                <div class="col-12 offset-col-2">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox" name="so" id="so" value="1"> SO
                                         <span></span>
                                     </label>
                                 </div>
