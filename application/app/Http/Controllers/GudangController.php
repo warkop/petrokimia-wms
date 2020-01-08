@@ -158,22 +158,29 @@ class GudangController extends Controller
     public function getProduk()
     {
         $data = Material::produk()->get();
-
-        return response()->json($data, 200);
+        $this->responseData = $data;
+        $this->responseCode = 200;
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 
     public function getArea($id_gudang)
     {
         $data = Area::where('id_gudang', $id_gudang)->get();
-
-        return response()->json($data, 200);
+        $this->responseData = $data;
+        $this->responseCode = 200;
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+        // return response()->render(200, $data);
     }
 
     public function getPallet()
     {
         $data = Material::pallet()->get();
-
-        return response()->json($data, 200);
+        $this->responseData = $data;
+        $this->responseCode = 200;
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 
     public function getAktivitas(Request $request, $id_gudang)
