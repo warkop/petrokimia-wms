@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -29,6 +30,31 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
+
+    protected function invalidJson($request, ValidationException $exception)
+    {
+        $jsonResponse = parent::invalidJson($request, $exception);
+
+        $original = (array) $jsonResponse->getData();
+
+        $jsonResponse->setData(array_merge($original, [
+            'code'          => $exception->status,
+            'errors'        => Handler::expandDotNotationKeys((array) $original['errors']),
+        ]));
+
+        return $jsonResponse;
+    }
+
+    public static function expandDotNotationKeys(array $array)
+    {
+        $result = [];
+
+        foreach ($array as $key => $value) {
+            array_set($result, $key, $value);
+        }
+
+        return $result;
+    }
 
     /**
      * Report or log an exception.
