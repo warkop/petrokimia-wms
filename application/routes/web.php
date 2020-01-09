@@ -96,6 +96,14 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/{jenisFoto}', 'JenisFotoController@show')->where('jenisFoto', '[0-9]+');
     });
 
+    Route::group(['prefix' => 'master-yayasan'], function () {
+        Route::get('/', 'YayasanController@index');
+        Route::put('/', 'YayasanController@store');
+        Route::patch('/{yayasan}', 'YayasanController@store')->where('yayasan', '[0-9]+');
+        Route::post('/', 'YayasanController@json');
+        Route::get('/{yayasan}', 'YayasanController@show')->where('yayasan', '[0-9]+');
+    });
+
     Route::group(['prefix' => 'master-user'], function () {
         Route::get('/', 'UsersController@index');
         Route::get('/load-pegawai/{id_kategori}', 'UsersController@loadPegawai');
