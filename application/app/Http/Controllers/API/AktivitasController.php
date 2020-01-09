@@ -117,9 +117,9 @@ class AktivitasController extends Controller
 
     public function index(Request $req) //memuat daftar aktivitas
     {
-        $search = strip_tags($req->input('search'));
-        $user = $req->get('my_auth');
         $id_gudang = $this->getCheckerGudang();
+        $search = strip_tags($req->input('search'));
+
         $obj =  AktivitasResource::collection(AktivitasGudang::
         join('aktivitas', 'aktivitas.id', '=', 'aktivitas_gudang.id_aktivitas')
         ->where('id_gudang', $id_gudang)

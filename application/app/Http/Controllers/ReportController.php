@@ -9,6 +9,7 @@ use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
 use App\Http\Models\KategoriAlatBerat;
+use App\Http\Models\Keluhan;
 use App\Http\Models\LaporanKerusakan;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
@@ -1574,13 +1575,66 @@ class ReportController extends Controller
 
     public function laporanKeluhanGp()
     {
-        $data['title'] = 'Laporan Material';
+        $data['title']      = 'Laporan Keluhan GP';
+        $data['gudang']     = Gudang::all();
+        $data['keluhan']    = Keluhan::all();
+        $data['aktivitas']  = Aktivitas::all();
+        $data['produk']     = Material::produk()->get();
         return view('report.keluhan-gp.grid', $data);
     }
 
     public function keluhanGp()
     {
+        $gudang             = request()->input('gudang'); //multi
+        $produk             = request()->input('produk');
+        $pilih_produk       = request()->input('pilih_produk'); //multi
+        $keluhan            = request()->input('keluhan'); //multi
+        $kegiatan           = request()->input('kegiatan'); //multi
+        $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
 
+
+        // $realisasiMaterial = RealisasiMaterial::where(function ($query) use ($shift){
+        //     foreach ($shift as $key => $value) {
+        //         $query->where('id_shift', $value);
+        //     }
+        // });
+
+
+        
+
+
+        $res = AktivitaasHarian::
+            leftJoin('material_trans as mt', 'realisasi_material.id', '=', 'id_realisasi_material')
+            ->leftJoin('material as m', 'm.id', '=', 'id_material')
+            ->leftJoin('gudang_stok as gs', 'gs.id_material', '=', 'mt.id_material')
+            ->leftJoin('gudang as g', 'g.id', '=', 'gs.id_gudang')
+            ->where(function ($query) use ($keluhan) {
+                foreach ($keluhan as $key => $value) {
+                    $query->orWhere('id_shift', $value);
+                }
+            })
+            ->where(function ($query) use ($gudang) {
+                foreach ($gudang as $key => $value) {
+                    $query->orWhere('id_gudang', $value);
+                }
+            })
+            ->where(function ($query) use ($pilih_produk, $produk) {
+                if ($produk == 2) {
+                    foreach ($pilih_produk as $key => $value) {
+                        $query->orWhere('m.id', $value);
+                    }
+                }
+            });
+
+        $res = $res->get();
+        // dd($res->toArray());
+        if (!is_dir(storage_path() . '/app/public/excel/')) {
+            mkdir(storage_path() . '/app/public/excel', 755);
+        }
+
+        $nama_file = date("YmdHis") . '_realisasi.xlsx';
+        $this->generateExcelRealisasi($res, $nama_file, $tgl_awal, $tgl_akhir);
     }
 
     public function generateExcelKeluhanGp()
