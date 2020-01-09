@@ -108,15 +108,18 @@ class ApiAktivitasRequest extends FormRequest
                 $max = 0;
             }
 
-            if ($request->list_pallet[0]['tipe'] == 1) {
-                $rules['list_pallet.' . $i . '.jumlah'] = [
-                    'min:0', 'max:' . $max, 'numeric'
-                ];
-            } else {
-                $rules['list_pallet.' . $i . '.jumlah'] = [
-                    'min:0', 'numeric'
-                ];
+            foreach ($request->list_pallet as $key) {
+                if ($key['tipe'] == 1) {
+                    $rules['list_pallet.' . $i . '.jumlah'] = [
+                        'min:0', 'max:' . $max, 'numeric'
+                    ];
+                } else {
+                    $rules['list_pallet.' . $i . '.jumlah'] = [
+                        'min:0', 'numeric'
+                    ];
+                }
             }
+
 
         }
         return $rules;
