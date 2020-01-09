@@ -46,6 +46,8 @@ class CustomModel extends Model
             if ($table->start_date == null) {
                 $table->start_date = now();
             }
+
+            $table->updated_by = auth()->id();
         });
 
         static::creating(function ($table) {
