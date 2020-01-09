@@ -503,7 +503,9 @@
             $("#butuh_approval").attr('disabled', true);
         }
 
-        $("#fifo").attr('disabled',true);
+        // $("#fifo").attr('disabled',true);
+
+        $("#pengaruh_tgl_produksi").prop('checked', true);
 
         @if (!empty($id)) {
             edit({{$id}});

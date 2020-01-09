@@ -239,6 +239,8 @@ function edit(id = '') {
             }
             if (obj.data['pengaruh_tgl_produksi'] != null) {
                 $('#pengaruh_tgl_produksi').prop('checked', true);
+            } else {
+                $('#pengaruh_tgl_produksi').prop('checked', false);
             }
             
             if (obj.data['internal_gudang'] != null) {
@@ -285,6 +287,14 @@ function edit(id = '') {
 
             if (obj.data['penerimaan_gi'] != null) {
                 $('#penerimaan_gi').prop('checked', true);
+            }
+
+            if (obj.data['so'] != null) {
+                $('#so').prop('checked', true);
+            }
+
+            if (obj.data['penyusutan'] != null) {
+                $('#penyusutan').prop('checked', true);
             }
             
             if (obj.data['start_date'] != null) {

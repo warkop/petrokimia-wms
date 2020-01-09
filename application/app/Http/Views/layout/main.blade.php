@@ -124,6 +124,12 @@
                                                 <span class="kt-nav__link-text">Jenis Foto</span>
                                             </a>
                                         </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('master-yayasan')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon la la-hand-lizard-o"></i>
+                                                <span class="kt-nav__link-text">Yayasan</span>
+                                            </a>
+                                        </li>
                                         @if (session('userdata')['role_id'] == 1)
                                             <li class="kt-nav__item">
                                                 <a href="{{('master-user')}}" class="kt-nav__link">
@@ -194,12 +200,12 @@
                                                 <span class="kt-nav__link-text">Stok</span>
                                             </a>
                                         </li>
-                                        <li class="kt-nav__item">
+                                        {{-- <li class="kt-nav__item">
                                             <a href="{{('report/laporan-absen-karyawan')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la fa fa-fingerprint"></i>
                                                 <span class="kt-nav__link-text">Absen Karyawan</span>
                                             </a>
-                                        </li>
+                                        </li> --}}
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-mutasi-pallet')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon fa fa-arrows-alt-h"></i>
@@ -238,7 +244,7 @@
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-aktivitas')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-file-archive-o"></i>
+                                                <i class="kt-nav__link-icon la la-bicycle"></i>
                                                 <span class="kt-nav__link-text">Aktivitas</span>
                                             </a>
                                         </li>
