@@ -42,8 +42,22 @@ class MaterialAdjusmentRequest extends FormRequest
         for ($i = 0; $i < count(request()->produk_jumlah); $i++) {
             $area = Area::find(request()->area[$i]);
             $areaStok = AreaStok::where('id_area', $area->id)->sum('jumlah');
-            $rules['produk_jumlah.'.$i] = 'numeric|max:'. (float)((float)$area->kapasitas - (float)$areaStok);
+            if (request()->action_produk[$i] == 1) {
+                $rules['produk_jumlah.'.$i] = 'numeric|max:'. abs((float)((float)$area->kapasitas - (float)$areaStok));
+            } else {
+                $rules['produk_jumlah.' . $i] = 'numeric';
+            }
         }
+
+        // for ($i = 0; $i < count(request()->produk_jumlah); $i++) {
+        //     $area = Area::find(request()->area[$i]);
+        //     $areaStok = GudangStok::where('id_area', $area->id)->sum('jumlah');
+        //     if (request()->action_produk[$i] == 1) {
+        //         $rules['produk_jumlah.' . $i] = 'numeric|max:' . (float) ((float) $area->kapasitas - (float) $areaStok);
+        //     } else {
+        //         $rules['produk_jumlah.' . $i] = 'numeric';
+        //     }
+        // }
 
         $this->sanitize();
 
