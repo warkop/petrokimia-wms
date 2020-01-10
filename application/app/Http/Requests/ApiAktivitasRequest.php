@@ -105,9 +105,14 @@ class ApiAktivitasRequest extends FormRequest
             ];
         }
 
+        if ($aktivitas->so != null) {
+            $rules['so'] = [
+                'required',
+            ];
+        }
+
         if ($aktivitas->penyusutan != null) {
             $rules['id_yayasan'] = [
-                'nullable',
                 'exists:yayasan,id',
                 'required',
             ];
@@ -156,6 +161,7 @@ class ApiAktivitasRequest extends FormRequest
             'kelayakan_after'           => 'Kelayakan After',
             'dikembalikan'              => 'Dikembalikan',
             'alasan'                    => 'Alasan',
+            'so'                        => 'SO',
             'list_produk.*.produk'      => 'Produk',
             'list_pallet.*.pallet'      => 'Pallet',
             'list_pallet.*.status_pallet'      => 'Status Pallet',

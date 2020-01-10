@@ -1419,6 +1419,10 @@ class AktivitasController extends Controller
                 'internal_gudang',
                 'ttd',
                 'id_gudang',
+                'so',
+                'id_yayasan',
+                DB::raw('(SELECT nama FROM yayasan WHERE id = id_yayasan)
+                     AS text_yayasan'),
                 DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
                      AS text_gudang_asal'),
                 'id_gudang_tujuan',
@@ -1464,6 +1468,10 @@ class AktivitasController extends Controller
                 'internal_gudang',
                 'ttd',
                 'id_gudang',
+                'aktivitas_harian.so',
+                'id_yayasan',
+                DB::raw('(SELECT nama FROM yayasan WHERE id = id_yayasan)
+                     AS text_yayasan'),
                 DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
                      AS text_gudang_asal'),
                 'id_gudang_tujuan',
