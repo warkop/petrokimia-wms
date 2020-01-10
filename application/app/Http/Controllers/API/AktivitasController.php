@@ -1701,7 +1701,7 @@ class AktivitasController extends Controller
 
     public function allNotif()
     {
-        $gudang = Gudang::find($this->getCheckerGudang());
+        $gudang = Gudang::find($this->getCheckerGudang()->id);
         $this->responseCode = 200;
         $this->responseData = $gudang->notifications;
         $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
@@ -1710,7 +1710,7 @@ class AktivitasController extends Controller
 
     public function unreadNotif()
     {
-        $gudang = Gudang::find($this->getCheckerGudang());
+        $gudang = Gudang::find($this->getCheckerGudang()->id);
         $this->responseCode = 200;
         $this->responseData = $gudang->unreadNotifications;
         $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
@@ -1719,7 +1719,7 @@ class AktivitasController extends Controller
 
     public function readNotif()
     {
-        $gudang = Gudang::find($this->getCheckerGudang());
+        $gudang = Gudang::find($this->getCheckerGudang()->id);
         $this->responseCode = 200;
         $this->responseData = $gudang->readNotifications;
         $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
@@ -1729,7 +1729,7 @@ class AktivitasController extends Controller
     public function markAsRead(Request $request)
     {
         if ($request->has('read')) {
-            $gudang = Gudang::findOrFail($this->getCheckerGudang());
+            $gudang = Gudang::findOrFail($this->getCheckerGudang()->id);
 
             $notification = $gudang->notifications()->where('id', $request->read)->first();
             if ($notification) {
