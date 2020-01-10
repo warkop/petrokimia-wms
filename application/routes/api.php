@@ -31,6 +31,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-pindah-area', 'API\AktivitasController@pindahArea');
         Route::get('/history', 'API\AktivitasController@history');
         Route::get('/get-aktivitas', 'API\AktivitasController@getAktivitas');
+        Route::get('/get-yayasan', 'API\AktivitasController@getYayasan');
         
         Route::get('/list-notifikasi', 'API\AktivitasController@listNotifikasi');
         Route::get('/test-notif/{aktivitasHarian}', 'API\AktivitasController@testNotif');

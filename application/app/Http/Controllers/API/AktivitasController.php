@@ -25,6 +25,7 @@ use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use App\Http\Models\Sistro;
 use App\Http\Models\TenagaKerjaNonOrganik;
+use App\Http\Models\Yayasan;
 use App\Http\Requests\ApiAktivitasPenerimaanGiRequest;
 use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Requests\ApiSaveKelayakanPhotos;
@@ -1308,6 +1309,20 @@ class AktivitasController extends Controller
             ->where('id_aktivitas_harian', $id_aktivitas_harian)->get();
         return (new AktivitasResource($resource))->additional([
             'url' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_aktivitas_harian}}&ctg=kelayakan&src={{file_enc}}',
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ]
+        ], Response::HTTP_OK);
+    }
+
+    public function getYayasan()
+    {
+        $search = strip_tags(request()->input('search'));
+        $resource = Yayasan::where(function ($where) use ($search) {
+            $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        })->get();
+        return (new AktivitasResource($resource))->additional([
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK,
