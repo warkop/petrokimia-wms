@@ -120,13 +120,23 @@ class AktivitasController extends Controller
         $id_gudang = $this->getCheckerGudang();
         $search = strip_tags($req->input('search'));
 
-        $obj =  AktivitasResource::collection(AktivitasGudang::
-        join('aktivitas', 'aktivitas.id', '=', 'aktivitas_gudang.id_aktivitas')
-        ->where('id_gudang', $id_gudang)
-        ->whereNull('penerimaan_gi')
-        ->where(function ($where) use ($search) {
-            $where->where(DB::raw('nama'), 'ILIKE', '%' . strtolower($search) . '%');
-        })->orderBy('id', 'desc')->paginate(10))->additional([
+        $my_auth = request()->get('my_auth');
+        $user = Users::findOrFail($my_auth->id_user);
+        $res = AktivitasGudang::join('aktivitas', 'aktivitas.id', '=', 'aktivitas_gudang.id_aktivitas')
+            ->where('id_gudang', $id_gudang)
+            ->whereNull('penerimaan_gi')
+            ->where(function ($where) use ($search) {
+                $where->where(DB::raw('nama'), 'ILIKE', '%' . strtolower($search) . '%');
+            })
+            ->orderBy('id', 'desc');
+
+        if ($user->id_role == 5) {
+            $res = $res->whereNotNull('peminjaman');
+        } else {
+            $res = $res->whereNull('peminjaman');
+        }
+
+        $obj =  AktivitasResource::collection($res->paginate(10))->additional([
             'status' => ['message' => '',
             'code' => Response::HTTP_OK],
         ], Response::HTTP_OK);
