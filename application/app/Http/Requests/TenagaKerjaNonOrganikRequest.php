@@ -31,7 +31,7 @@ class TenagaKerjaNonOrganikRequest extends FormRequest
         $model = new TenagaKerjaNonOrganik;
         if ($action == 'edit') {
             $rules['id'] = 'required';
-            $model = TenagaKerjaNonOrganik::find(request()->id);
+            $model = TenagaKerjaNonOrganik::withoutGlobalScopes()->find(request()->id);
         }
 
         $rules = [

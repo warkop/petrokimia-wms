@@ -28,6 +28,7 @@ const dropzoneOptions = {
       }
     });
     this.on("success", function(file) {
+      datatable.api().ajax.reload();
       if (completeFiles === totalFiles) {
         /* window["myDropzone"+i+"_"+val+"_1"].removeAllFiles(); */
       }
@@ -132,6 +133,7 @@ const load_table = function() {
         render: function(data, type, full, meta) {
           let link = "";
           let image = "Tidak ada gambar";
+          console.log(full.foto);
           if (full.foto != null) {
             link =
               baseUrl +
@@ -142,6 +144,7 @@ const load_table = function() {
               full.id +
               "&ctg=material&src=" +
               full.foto;
+              
             image =
               '<a target="_blank" class="fancybox fancybox-effects-a" data-fancybox="file-' +
               full.id +
@@ -152,7 +155,8 @@ const load_table = function() {
               '"><img class="img-responsive" width="100px" src="' +
               link +
               '" alt=""></a>';
-          }
+            }
+          console.log(image);
 
           return image;
         }
@@ -660,9 +664,12 @@ function simpan() {
       myDropzone.processQueue();
 
       if (obj.status == "OK") {
-        datatable.api().ajax.reload();
-        swal.fire("Ok", "Data berhasil disimpan", "success");
-        $("#modal_form").modal("hide");
+        swal.fire("Ok", "Data berhasil disimpan", "success").then(()=>{
+          datatable.api().ajax.reload();
+          $("#modal_form").modal("hide");
+        }).catch(()=>{
+
+        });
       } else {
         swal.fire("Pemberitahuan", obj.message, "warning");
       }

@@ -13,7 +13,7 @@ class AlatBeratController extends Controller
 {
     public function index($id_kategori)
     {
-        $kategori = KategoriAlatBerat::find($id_kategori);
+        $kategori = KategoriAlatBerat::withoutGlobalScopes()->find($id_kategori);
         $data['id_kategori'] = $id_kategori;
         $data['nama_kategori'] = $kategori->nama;
         return view('list-alat-berat.grid', $data);
