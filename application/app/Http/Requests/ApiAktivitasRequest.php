@@ -11,11 +11,37 @@ use App\Http\Models\Material;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use App\Http\Models\Users;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
 class ApiAktivitasRequest extends FormRequest
 {
+    protected function failedValidation(Validator $validator)
+    {
+        // Get all the errors thrown
+        $errors = collect($validator->errors());
+        // Manipulate however you want. I'm just getting the first one here,
+        // but you can use whatever logic fits your needs.
+        // dd($errors->unique());
+        $error  = $errors->unique()->first();
+        $mess = [];
+        foreach ($errors->unique() as $key => $value) {
+            foreach ($value as $row) {
+                array_push($mess, $row);
+            }
+        }
+        $jj['message'] = "The given data was invalid.";
+        $jj['errors'] = $mess;
+        $jj['code'] = 422;
+
+        // Either throw the exception, or return it any other way.
+        throw new HttpResponseException(response(
+            $jj,
+            422
+        ));
+    }
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -268,12 +294,19 @@ class ApiAktivitasRequest extends FormRequest
             if (is_array($input[$key])) {
                 foreach ($input[$key] as $row1 => $data1) {
                     if (is_array($input[$key][$row1])) {
-                        foreach ($input[$key] as $row2 => $data2) {
+                        foreach ($input[$key][$row1] as $row2 => $data2) {
                             $input[$key][$row1][$row2] = filter_var($data2, FILTER_SANITIZE_STRING);
                             if (is_array($input[$key][$row1][$row2])) {
-                                foreach ($input[$key][$row1] as $row3 => $data3) {
-                                    $input[$key][$row1][$row2][$row3] = filter_var($data3, FILTER_SANITIZE_STRING);
+                                foreach ($input[$key][$row1][$row2] as $row3 => $data3) {
+                                    if (is_array($input[$key][$row1][$row2])) {
+                                        foreach ($input[$key][$row1][$row2] as $row3 => $data3) {
+                                        }
+                                    } else {
+                                        $input[$key][$row1][$row2][$row3] = filter_var($data3, FILTER_SANITIZE_STRING);
+                                    }
                                 }
+                            } else {
+                                $input[$key][$row1][$row2] = filter_var($data2, FILTER_SANITIZE_STRING);
                             }
                         }
                     } else {
