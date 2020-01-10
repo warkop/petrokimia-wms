@@ -27,7 +27,7 @@ class Gudang extends Model
 
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
-    public $timestamps  = false;
+    public $timestamps  = true;
 
     protected static function boot()
     {
@@ -38,9 +38,6 @@ class Gudang extends Model
 
             if ($changes) {
                 foreach ($changes as $attr => $value) {
-                    // $old = $table->getOriginal($attr)??'kosong';
-                    // $new = $table->$attr??'kosong';
-
                     $old = (new CustomModel)->specialColumn($attr, $table->getOriginal($attr));
                     $new = (new CustomModel)->specialColumn($attr, $table->$attr);
 
@@ -85,6 +82,11 @@ class Gudang extends Model
     public function karu()
     {
         return $this->belongsTo(Karu::class, 'id_karu');
+    }
+
+    public function scopeGp($query)
+    {
+        return $query->where('tipe_gudang', 2);
     }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)

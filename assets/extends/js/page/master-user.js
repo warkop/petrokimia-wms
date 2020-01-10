@@ -246,7 +246,11 @@ function loadPegawai(role='') {
         type: "get",
         success:res=>{
             const obj = res.data;
+            console.log(obj)
             let element = '<option value="">Pilih Pegawai</option>';
+            if (role == 6) {
+                element = '<option value="">Pilih Gudang Penyangga</option>';    
+            }
             const panjang = obj.length;
             for (let i=0; i<panjang; i++) {
                 element += `<option value="${obj[i].id}">${obj[i].nama}</option>`;

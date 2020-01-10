@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Models\Gudang;
 use App\Http\Models\Karu;
 use App\Http\Models\Users;
 use App\Http\Models\Role;
@@ -107,10 +108,16 @@ class UsersController extends Controller
     {
         $peg = '';
         
-        if ($kategori == 5) {
-            $peg = Karu::all();
-        } else {
-            $peg = TenagaKerjaNonOrganik::where('job_desk_id', $kategori)->get();
+        switch ($kategori) {
+            case 5:
+                $peg = Karu::all();
+                break;
+            case 6:
+                $peg = Gudang::gp()->get();
+                break;
+            default:
+                $peg = TenagaKerjaNonOrganik::where('job_desk_id', $kategori)->get();
+                break;
         }
 
         $this->responseCode     = 200;
