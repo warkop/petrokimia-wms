@@ -39,7 +39,7 @@ class Handler extends ExceptionHandler
 
         $jsonResponse->setData(array_merge($original, [
             'code'          => $exception->status,
-            'errors'        => Handler::expandDotNotationKeys((array) $original['errors'])->withoutWrapping(),
+            'errors'        => Handler::expandDotNotationKeys((array) $original['errors']),
         ]));
 
         return $jsonResponse;
