@@ -99,8 +99,8 @@ class ApiAktivitasRequest extends FormRequest
         }
 
         for ($i = 0; $i < count($request->list_pallet); $i++) {
-            $gudangStok = GudangStok::where('id_material', $request->list_pallet[0]['pallet'])
-            ->where('status', $request->list_pallet[0]['status_pallet'])
+            $gudangStok = GudangStok::where('id_material', $request->list_pallet[$i]['pallet'])
+            ->where('status', $request->list_pallet[$i]['status_pallet'])
             ->where('id_gudang', $gudang->id)->first();
             if (!empty($gudangStok)) {
                 $max = $gudangStok->jumlah;
@@ -119,8 +119,6 @@ class ApiAktivitasRequest extends FormRequest
                     ];
                 }
             }
-
-
         }
         return $rules;
     }
@@ -147,8 +145,13 @@ class ApiAktivitasRequest extends FormRequest
             'list_pallet.*.status_pallet'      => 'Status Pallet',
         ];
 
+        for ($i = 0; $i < count($request->list_produk); $i++) {
+            $material = Material::find($request->list_produk[$i]['produk']);
+            $attributes['list_produk.' . $i . '.jumlah'] =  'Jumlah Produk ' . $material->nama;
+        }
+
         for ($i = 0; $i < count($request->list_pallet); $i++) {
-            $material = Material::find($request->list_pallet[0]['pallet']);
+            $material = Material::find($request->list_pallet[$i]['pallet']);
             $attributes['list_pallet.' . $i . '.jumlah'] =  'Jumlah Pallet '.$material->nama;
         }
 
