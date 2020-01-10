@@ -55,7 +55,7 @@ class Handler extends ExceptionHandler
             echo '<br>';
             print_r($value);
             echo '<br>';
-            array_set($result, $key, $value);
+            array_set($result, $key, array_values($value));
             print_r($result);
             echo '<br>';
         }
