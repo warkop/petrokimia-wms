@@ -1604,7 +1604,7 @@ class ReportController extends Controller
         
 
 
-        $res = AktivitaasHarian::
+        $res = AktivitasHarian::
             leftJoin('material_trans as mt', 'realisasi_material.id', '=', 'id_realisasi_material')
             ->leftJoin('material as m', 'm.id', '=', 'id_material')
             ->leftJoin('gudang_stok as gs', 'gs.id_material', '=', 'mt.id_material')

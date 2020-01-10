@@ -31,14 +31,21 @@ class ApiAktivitasRequest extends FormRequest
         $my_auth = request()->get('my_auth');
         $user = Users::findOrFail($my_auth->id_user);
 
-        $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
-            ->where('id_tkbm', $user->id_tkbm)
-            ->orderBy('rencana_harian.id', 'desc')
-            ->take(1)->first();
-
-        if (!empty($rencana_tkbm)) {
-            $rencana_harian = RencanaHarian::withoutGlobalScopes()->findOrFail($rencana_tkbm->id_rencana);
-            $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
+        if ($user->role_id == 3) {
+            $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+                ->where('id_tkbm', $user->id_tkbm)
+                ->orderBy('rencana_harian.id', 'desc')
+                ->take(1)->first();
+    
+            if (!empty($rencana_tkbm)) {
+                $rencana_harian = RencanaHarian::withoutGlobalScopes()->findOrFail($rencana_tkbm->id_rencana);
+                $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
+                if (!empty($gudang)) {
+                    return $gudang;
+                }
+            }
+        } else if ($user->role_id == 5) {
+            $gudang = Gudang::where('id_karu', $user->id_karu)->first();
             if (!empty($gudang)) {
                 return $gudang;
             }
@@ -98,27 +105,35 @@ class ApiAktivitasRequest extends FormRequest
             ];
         }
 
-        for ($i = 0; $i < count($request->list_pallet); $i++) {
-            $gudangStok = GudangStok::where('id_material', $request->list_pallet[$i]['pallet'])
-            ->where('status', $request->list_pallet[$i]['status_pallet'])
-            ->where('id_gudang', $gudang->id)->first();
-            if (!empty($gudangStok)) {
-                $max = $gudangStok->jumlah;
-            } else {
-                $max = 0;
-            }
+        if ($aktivitas->penyusutan != null) {
+            $rules['id_yayasan'] = [
+                'nullable',
+                'exists:yayasan,id',
+                'required',
+            ];
+        }
 
-            // foreach ($request->list_pallet as $key) {
-            if ($request->list_pallet[$i]['tipe'] == 1) {
-                $rules['list_pallet.' . $i . '.jumlah'] = [
-                    'min:0', 'max:' . $max, 'numeric'
-                ];
-            } else {
-                $rules['list_pallet.' . $i . '.jumlah'] = [
-                    'min:0', 'numeric'
-                ];
+        if ($request->list_pallet) {
+            for ($i = 0; $i < count($request->list_pallet); $i++) {
+                $gudangStok = GudangStok::where('id_material', $request->list_pallet[$i]['pallet'])
+                ->where('status', $request->list_pallet[$i]['status_pallet'])
+                ->where('id_gudang', $gudang->id)->first();
+                if (!empty($gudangStok)) {
+                    $max = $gudangStok->jumlah;
+                } else {
+                    $max = 0;
+                }
+
+                if ($request->list_pallet[$i]['tipe'] == 1) {
+                    $rules['list_pallet.' . $i . '.jumlah'] = [
+                        'min:0', 'max:' . $max, 'numeric'
+                    ];
+                } else {
+                    $rules['list_pallet.' . $i . '.jumlah'] = [
+                        'min:0', 'numeric'
+                    ];
+                }
             }
-            // }
         }
         return $rules;
     }
@@ -130,6 +145,7 @@ class ApiAktivitasRequest extends FormRequest
             'id_aktivitas'              => 'Aktivitas',
             'id_gudang'                 => 'Gudang',
             'id_gudang_tujuan'          => 'Gudang Tujuan',
+            'id_yayasan'                => 'Yayasan',
             'ref_number'                => 'Nomor Referensi',
             'id_pindah_area'            => 'Pindah Area',
             'id_alat_berat'             => 'Alat Berat',
@@ -145,14 +161,18 @@ class ApiAktivitasRequest extends FormRequest
             'list_pallet.*.status_pallet'      => 'Status Pallet',
         ];
 
-        for ($i = 0; $i < count($request->list_produk); $i++) {
-            $material = Material::find($request->list_produk[$i]['produk']);
-            $attributes['list_produk.' . $i . '.jumlah'] =  'Jumlah Produk ' . $material->nama;
+        if ($request->list_produk) {
+            for ($i = 0; $i < count($request->list_produk); $i++) {
+                $material = Material::find($request->list_produk[$i]['produk']);
+                $attributes['list_produk.' . $i . '.jumlah'] =  'Jumlah Produk ' . $material->nama;
+            }
         }
 
-        for ($i = 0; $i < count($request->list_pallet); $i++) {
-            $material = Material::find($request->list_pallet[$i]['pallet']);
-            $attributes['list_pallet.' . $i . '.jumlah'] =  'Jumlah Pallet '.$material->nama;
+        if ($request->list_pallet) {
+            for ($i = 0; $i < count($request->list_pallet); $i++) {
+                $material = Material::find($request->list_pallet[$i]['pallet']);
+                $attributes['list_pallet.' . $i . '.jumlah'] =  'Jumlah Pallet '.$material->nama;
+            }
         }
 
         return $attributes;

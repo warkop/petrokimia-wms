@@ -66,7 +66,7 @@ class AktivitasController extends Controller
             return false;
         }
 
-        return $gudang->id;
+        return $gudang;
     }
 
     private function storeNotification($aktivitasHarian, $message='', $penerimaan=false) //save notifikasi
@@ -118,20 +118,20 @@ class AktivitasController extends Controller
 
     public function index(Request $req) //memuat daftar aktivitas
     {
-        $id_gudang = $this->getCheckerGudang();
+        $gudang = $this->getCheckerGudang();
         $search = strip_tags($req->input('search'));
 
         $my_auth = request()->get('my_auth');
         $user = Users::findOrFail($my_auth->id_user);
         $res = AktivitasGudang::join('aktivitas', 'aktivitas.id', '=', 'aktivitas_gudang.id_aktivitas')
-            ->where('id_gudang', $id_gudang)
+            ->where('id_gudang', $gudang->id)
             ->whereNull('penerimaan_gi')
             ->where(function ($where) use ($search) {
                 $where->where(DB::raw('nama'), 'ILIKE', '%' . strtolower($search) . '%');
             })
             ->orderBy('id', 'desc');
 
-        if ($user->id_role == 5) {
+        if ($user->role_id == 5) {
             $res = $res->whereNotNull('peminjaman');
         } else {
             $res = $res->whereNull('peminjaman');
@@ -190,7 +190,7 @@ class AktivitasController extends Controller
     public function getArea(Request $req, $id_aktivitas, $id_material, $pindah=false) //memuat area
     {
         $user = $req->get('my_auth');
-        $id_gudang = $this->getCheckerGudang();
+        $gudang = $this->getCheckerGudang();
 
         $search = strip_tags($req->input('search'));
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
@@ -206,7 +206,7 @@ class AktivitasController extends Controller
                 DB::raw('COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.'),0) as jumlah')
             )
             ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
-            ->where('id_gudang', $id_gudang);
+            ->where('id_gudang', $gudang->id);
 
             if ($pindah == false) {
                 $resource = $resource->where('id_material', $id_material);
@@ -223,7 +223,7 @@ class AktivitasController extends Controller
             ->where(function ($where) use ($search) {
                 $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             })
-            ->where('id_gudang', $id_gudang)
+            ->where('id_gudang', $gudang->id)
             ->get();
         }
         return (new AktivitasResource($resource))->additional([
@@ -305,11 +305,6 @@ class AktivitasController extends Controller
             return response()->json($response, $this->responseCode);
         }
         $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
-
-        // $resource = AktivitasAlatBerat::
-        // with('kategoriAlatBerat', 'kategoriAlatBerat.alatBerat')
-        // ->where('id_aktivitas', $id_aktivitas)
-        // ->get();
 
         $resource = RencanaAlatBerat::distinct()->select(
             'alat_berat.id',
@@ -395,6 +390,8 @@ class AktivitasController extends Controller
         $aktivitasHarian->kelayakan_after   = $req->input('kelayakan_after');
         $aktivitasHarian->dikembalikan      = $req->input('dikembalikan');
         $aktivitasHarian->alasan            = $req->input('alasan');
+        $aktivitasHarian->so                = $req->input('so');
+        $aktivitasHarian->id_yayasan        = $req->input('id_yayasan');
         $aktivitasHarian->created_by        = $res_user->id;
         $aktivitasHarian->created_at        = date('Y-m-d H:i:s');
 
@@ -1083,9 +1080,9 @@ class AktivitasController extends Controller
 
     public function getAktivitas()
     {
-        $id_gudang = $this->getCheckerGudang();
+        $gudang = $this->getCheckerGudang();
 
-        $res=  AktivitasGudang::where('id_gudang', $id_gudang)->get();
+        $res=  AktivitasGudang::where('id_gudang', $gudang->id)->get();
         foreach ($res as $key) {
             $aktivitas = Aktivitas::find($key->id_aktivitas);
 
@@ -1342,30 +1339,55 @@ class AktivitasController extends Controller
 
     public function history(Request $req) //memuat history
     {
-        $id_gudang = $this->getCheckerGudang();
+        $gudang = $this->getCheckerGudang();
         $search = $req->input('search');
+        $my_auth = $req->get('my_auth');
+        $user = Users::findOrFail($my_auth->id_user);
 
-        $res = AktivitasHarian::select(
-            'aktivitas_harian.id',
-            'aktivitas.nama as nama_aktivitas',
-            'gudang.nama as nama_gudang',
-            DB::raw('CASE WHEN approve IS NOT NULL OR internal_gudang IS NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
-            'aktivitas_harian.created_at',
-            'aktivitas_harian.created_by'
-        )
-        ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-        ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
-        ->where(function ($where) use ($id_gudang) {
-            $where->where('id_gudang', $id_gudang);
-            $where->orWhere('id_gudang_tujuan', $id_gudang);
-        })
-        ->whereNull('ref_number')
-        ->where(function ($where) use ($search) {
-            $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-            $where->orWhere(DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-        })
-        ->orderBy('created_at', 'desc')
-        ;
+        if ($user->role_id == 3) {
+            $res = AktivitasHarian::select(
+                'aktivitas_harian.id',
+                'aktivitas.nama as nama_aktivitas',
+                'gudang.nama as nama_gudang',
+                DB::raw('CASE WHEN approve IS NOT NULL OR internal_gudang IS NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
+                'aktivitas_harian.created_at',
+                'aktivitas_harian.created_by'
+            )
+                ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
+                ->where(function ($where) use ($gudang) {
+                    $where->where('id_gudang', $gudang->id);
+                    $where->orWhere('id_gudang_tujuan', $gudang->id);
+                })
+                ->whereNull('ref_number')
+                ->where(function ($where) use ($search) {
+                    $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                    $where->orWhere(DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                })
+                ->orderBy('created_at', 'desc');
+        } else {
+            $res = AktivitasHarian::select(
+                'aktivitas_harian.id',
+                'aktivitas.nama as nama_aktivitas',
+                'gudang.nama as nama_gudang',
+                DB::raw('CASE WHEN approve IS NOT NULL OR internal_gudang IS NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
+                'aktivitas_harian.created_at',
+                'aktivitas_harian.created_by'
+            )
+                ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
+                ->where(function ($where) use ($gudang) {
+                    $where->where('id_gudang', $gudang->id);
+                    $where->orWhere('id_gudang_tujuan', $gudang->id);
+                })
+                ->whereNull('ref_number')
+                ->whereNotNull('peminjaman')
+                ->where(function ($where) use ($search) {
+                    $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                    $where->orWhere(DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                })
+                ->orderBy('created_at', 'desc');
+        }
 
         $obj =  AktivitasResource::collection($res->paginate(10))->additional([
             'status' => [
@@ -1379,51 +1401,101 @@ class AktivitasController extends Controller
 
     public function detailHistory($id) //memuat detail history
     {
-        $id_gudang = $this->getCheckerGudang();
-        $res = AktivitasHarian::select(
-            'aktivitas_harian.id',
-            'aktivitas_harian.id_aktivitas',
-            'aktivitas.nama as nama_aktivitas',
-            DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
-                 AS text_gudang'),
-            'nomor_lambung',
-             DB::raw('(SELECT nama FROM alat_berat_kat WHERE id = id_kategori)
-                 AS kategori'),
-            'sistro',
-            'internal_gudang',
-            'ttd',
-            'id_gudang',
-            DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
-                 AS text_gudang_asal'),
-            'id_gudang_tujuan',
-            DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang_tujuan)
-                 AS text_gudang_tujuan'),
-            'butuh_approval',
-            DB::raw('
-                CASE
-                    WHEN internal_gudang IS NOT NULL AND butuh_approval IS NOT NULL THEN true AND id_gudang_tujuan = '.$id_gudang.'
-                ELSE false
-            END AS tombol_approval'),
-            DB::raw('
-                CASE 
-                WHEN pindah_area IS NOT NULL AND internal_gudang IS NOT NULL THEN
-                    \'Pindah Area\'
-                WHEN internal_gudang IS NOT NULL THEN
-                    \'Pengiriman Gudang Internal\'
-                WHEN pengiriman IS NOT NULL THEN
-                    \'Pengiriman GP\'
-                WHEN peminjaman IS NOT NULL THEN
-                    \'Peminjaman\'
-            END AS jenis_aktivitas'),
-            DB::raw('CASE WHEN approve IS NOT NULL OR internal_gudang IS NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
-            'aktivitas_harian.created_at',
-            'aktivitas_harian.created_by' 
-        )
-        ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-        ->leftJoin('alat_berat', 'aktivitas_harian.id_alat_berat', '=', 'alat_berat.id')
-        ->where('aktivitas_harian.id', $id)
-        ->orderBy('aktivitas_harian.id', 'desc')
-        ;
+        $gudang = $this->getCheckerGudang();
+        $my_auth = request()->get('my_auth');
+        $user = Users::findOrFail($my_auth->id_user);
+
+        if ($user->role_id == 5) {
+            $res = AktivitasHarian::select(
+                'aktivitas_harian.id',
+                'aktivitas_harian.id_aktivitas',
+                'aktivitas.nama as nama_aktivitas',
+                DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
+                     AS text_gudang'),
+                'nomor_lambung',
+                DB::raw('(SELECT nama FROM alat_berat_kat WHERE id = id_kategori)
+                     AS kategori'),
+                'sistro',
+                'internal_gudang',
+                'ttd',
+                'id_gudang',
+                DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
+                     AS text_gudang_asal'),
+                'id_gudang_tujuan',
+                DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang_tujuan)
+                     AS text_gudang_tujuan'),
+                'butuh_approval',
+                DB::raw('
+                    CASE
+                        WHEN internal_gudang IS NOT NULL AND butuh_approval IS NOT NULL THEN true AND id_gudang_tujuan = ' . $gudang->id . '
+                    ELSE false
+                END AS tombol_approval'),
+                DB::raw('
+                    CASE 
+                    WHEN pindah_area IS NOT NULL AND internal_gudang IS NOT NULL THEN
+                        \'Pindah Area\'
+                    WHEN internal_gudang IS NOT NULL THEN
+                        \'Pengiriman Gudang Internal\'
+                    WHEN pengiriman IS NOT NULL THEN
+                        \'Pengiriman GP\'
+                    WHEN peminjaman IS NOT NULL THEN
+                        \'Peminjaman\'
+                END AS jenis_aktivitas'),
+                DB::raw('CASE WHEN approve IS NOT NULL OR internal_gudang IS NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
+                'aktivitas_harian.created_at',
+                'aktivitas_harian.created_by'
+            )
+                ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->leftJoin('alat_berat', 'aktivitas_harian.id_alat_berat', '=', 'alat_berat.id')
+                ->where('aktivitas_harian.id', $id)
+                ->whereNotNull('peminjaman')
+                ->orderBy('aktivitas_harian.id', 'desc');
+        } else {
+            $res = AktivitasHarian::select(
+                'aktivitas_harian.id',
+                'aktivitas_harian.id_aktivitas',
+                'aktivitas.nama as nama_aktivitas',
+                DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
+                     AS text_gudang'),
+                'nomor_lambung',
+                 DB::raw('(SELECT nama FROM alat_berat_kat WHERE id = id_kategori)
+                     AS kategori'),
+                'sistro',
+                'internal_gudang',
+                'ttd',
+                'id_gudang',
+                DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
+                     AS text_gudang_asal'),
+                'id_gudang_tujuan',
+                DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang_tujuan)
+                     AS text_gudang_tujuan'),
+                'butuh_approval',
+                DB::raw('
+                    CASE
+                        WHEN internal_gudang IS NOT NULL AND butuh_approval IS NOT NULL THEN true AND id_gudang_tujuan = '.$gudang->id.'
+                    ELSE false
+                END AS tombol_approval'),
+                DB::raw('
+                    CASE 
+                    WHEN pindah_area IS NOT NULL AND internal_gudang IS NOT NULL THEN
+                        \'Pindah Area\'
+                    WHEN internal_gudang IS NOT NULL THEN
+                        \'Pengiriman Gudang Internal\'
+                    WHEN pengiriman IS NOT NULL THEN
+                        \'Pengiriman GP\'
+                    WHEN peminjaman IS NOT NULL THEN
+                        \'Peminjaman\'
+                END AS jenis_aktivitas'),
+                DB::raw('CASE WHEN approve IS NOT NULL OR internal_gudang IS NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
+                'aktivitas_harian.created_at',
+                'aktivitas_harian.created_by' 
+            )
+            ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+            ->leftJoin('alat_berat', 'aktivitas_harian.id_alat_berat', '=', 'alat_berat.id')
+            ->where('aktivitas_harian.id', $id)
+            ->orderBy('aktivitas_harian.id', 'desc')
+            ;
+        }
 
         $res_produk = MaterialTrans::select(
             'material.id as id_material',
@@ -1549,10 +1621,10 @@ class AktivitasController extends Controller
 
     public function listNotifikasi()
     {
-        $id_gudang = $this->getCheckerGudang();
+        $gudang = $this->getCheckerGudang();
         $res = AktivitasHarian::with(['aktivitas', 'gudang', 'gudangTujuan'])->whereHas('aktivitas', function ($query) {
             $query->whereNotNull('internal_gudang');
-        })->where('id_gudang_tujuan', $id_gudang)->get();
+        })->where('id_gudang_tujuan', $gudang->id)->get();
 
         $obj = ListNotifikasiResource::collection($res)->additional([
             'status' => [
