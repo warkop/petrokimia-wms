@@ -48,7 +48,7 @@ class Handler extends ExceptionHandler
     public static function expandDotNotationKeys(array $array)
     {
         $result = [];
-        $no = 1;
+        // $no = 1;
         foreach ($array as $key => $value) {
             // print_r($result);
             // echo '<br>';
@@ -60,9 +60,9 @@ class Handler extends ExceptionHandler
             // print_r(unset($result[$no]));
             // echo '<br>';
             // array_map("unserialize", array_unique(array_map("serialize", $tampung)));
-            $no++;
+            // $no++;
         }
-        $result = array_map("unserialize", array_unique(array_map("serialize", $result)));
+        // $result = array_map("unserialize", array_unique(array_map("serialize", $result)));
         return $result;
     }
 
