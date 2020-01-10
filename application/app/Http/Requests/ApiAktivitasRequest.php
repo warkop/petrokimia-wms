@@ -23,7 +23,7 @@ class ApiAktivitasRequest extends FormRequest
     {
         $my_auth = request()->get('my_auth');
         $res_user = Users::findOrFail($my_auth->id_user);
-        return $res_user->role_id == 3;
+        return $res_user->role_id == 3 || $res_user->role_id == 5;
     }
 
     public function getRencana()
@@ -108,17 +108,17 @@ class ApiAktivitasRequest extends FormRequest
                 $max = 0;
             }
 
-            foreach ($request->list_pallet as $key) {
-                if ($key['tipe'] == 1) {
-                    $rules['list_pallet.' . $i . '.jumlah'] = [
-                        'min:0', 'max:' . $max, 'numeric'
-                    ];
-                } else {
-                    $rules['list_pallet.' . $i . '.jumlah'] = [
-                        'min:0', 'numeric'
-                    ];
-                }
+            // foreach ($request->list_pallet as $key) {
+            if ($request->list_pallet[$i]['tipe'] == 1) {
+                $rules['list_pallet.' . $i . '.jumlah'] = [
+                    'min:0', 'max:' . $max, 'numeric'
+                ];
+            } else {
+                $rules['list_pallet.' . $i . '.jumlah'] = [
+                    'min:0', 'numeric'
+                ];
             }
+            // }
         }
         return $rules;
     }
