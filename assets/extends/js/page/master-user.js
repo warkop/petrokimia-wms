@@ -246,7 +246,6 @@ function loadPegawai(role='') {
         type: "get",
         success:res=>{
             const obj = res.data;
-            console.log(obj)
             let element = '<option value="">Pilih Pegawai</option>';
             if (role == 6) {
                 element = '<option value="">Pilih Gudang Penyangga</option>';    
@@ -262,7 +261,7 @@ function loadPegawai(role='') {
             let head = 'Maaf',
                 message = 'Terjadi kesalahan koneksi',
                 type = 'error';
-            laddaButton.stop();
+            // laddaButton.stop();
             window.onbeforeunload = false;
             $('.btn_close_modal').removeClass('hide');
             $('.se-pre-con').hide();
