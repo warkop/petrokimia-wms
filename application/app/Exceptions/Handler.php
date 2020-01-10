@@ -36,7 +36,7 @@ class Handler extends ExceptionHandler
         $jsonResponse = parent::invalidJson($request, $exception);
 
         $original = (array) $jsonResponse->getData();
-
+        
         $jsonResponse->setData(array_merge($original, [
             'code'          => $exception->status,
             'errors'        => Handler::expandDotNotationKeys((array) $original['errors']),
@@ -48,11 +48,10 @@ class Handler extends ExceptionHandler
     public static function expandDotNotationKeys(array $array)
     {
         $result = [];
-
         foreach ($array as $key => $value) {
             array_set($result, $key, $value);
         }
-
+        
         return $result;
     }
 
