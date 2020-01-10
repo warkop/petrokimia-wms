@@ -52,7 +52,7 @@ class Handler extends ExceptionHandler
             array_set($result, $key, $value);
         }
         
-        return $result;
+        return json_decode($result);
     }
 
     /**
