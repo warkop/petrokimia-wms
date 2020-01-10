@@ -354,33 +354,27 @@ class AktivitasController extends Controller
 
         $user       = $req->get('my_auth');
         $res_user   = Users::findOrFail($user->id_user);
-
-        $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
-            ->where('id_tkbm', $user->id_tkbm)
-            ->orderBy('rencana_harian.id', 'desc')
-            ->take(1)->first();
-
-        if (empty($rencana_tkbm)) {
-            $this->responseCode     = 500;
-            $this->responseMessage  = 'Checker tidak terdaftar pada rencana harian apapun!';
-            $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-            return response()->json($response, $this->responseCode);
-        }
-
-        $rencana_harian = RencanaHarian::withoutGlobalScopes()->findOrFail($rencana_tkbm->id_rencana);
-        $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
-        if (empty($gudang)) {
-            $this->responseCode     = 500;
-            $this->responseMessage  = 'Gudang tidak tersedia!';
-            $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-            return response()->json($response, $this->responseCode);
-        }
+        $gudang     = $this->getCheckerGudang();
 
         //simpan aktivitas
+        if ($res_user->role_id == 3) {
+            $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+                ->where('id_tkbm', $user->id_tkbm)
+                ->orderBy('rencana_harian.id', 'desc')
+                ->take(1)->first();
+
+            if (empty($rencana_tkbm)) {
+                $this->responseCode     = 500;
+                $this->responseMessage  = 'Checker tidak terdaftar pada rencana harian apapun!';
+                $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+            $aktivitasHarian->id_shift          = $rencana_tkbm->id_shift;
+        }
+
         $aktivitasHarian->id_aktivitas      = $req->input('id_aktivitas');
         $aktivitasHarian->id_gudang         = $gudang->id;
         $aktivitasHarian->id_karu           = $gudang->id_karu;
-        $aktivitasHarian->id_shift          = $rencana_tkbm->id_shift;
         $aktivitasHarian->id_gudang_tujuan  = $req->input('id_gudang_tujuan');
         $aktivitasHarian->ref_number        = $req->input('ref_number');
         $aktivitasHarian->id_alat_berat     = $req->input('id_alat_berat');
@@ -436,23 +430,9 @@ class AktivitasController extends Controller
 
                             if (!empty($area_stok)) {
                                 if ($tipe == 1) {
-                                    if ($area_stok->jumlah >= $list_jumlah[$k]['jumlah']) {
-                                        $area_stok->jumlah = $area_stok->jumlah-$list_jumlah[$k]['jumlah'];
-                                    } else {
-                                        AktivitasHarian::find($aktivitasHarian->id)->forceDelete();
-                                        AktivitasHarianArea::where('id_aktivitas_harian', $aktivitasHarian->id)->forceDelete();
-                                        MaterialTrans::where('id_aktivitas_harian', $aktivitasHarian->id);
-
-                                        $temp_area = Area::find($id_area);
-                                        $temp_material = Material::find($produk);
-
-                                        $this->responseCode     = 500;
-                                        $this->responseMessage  = 'Jumlah yang Anda masukkan pada area '.$temp_area->nama.' dengan nama material '. $temp_material->nama.' melebihi jumlah ketersediaan yaitu '. $area_stok->jumlah.'!';
-                                        $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                                        return response()->json($response, $this->responseCode);
-                                    }
+                                    $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
                                 } else {
-                                    $area_stok->jumlah = $area_stok->jumlah+$list_jumlah[$k]['jumlah'];
+                                    $area_stok->jumlah = $area_stok->jumlah + $list_jumlah[$k]['jumlah'];
                                 }
 
                                 $area_stok->status      = $status_produk;
@@ -517,35 +497,13 @@ class AktivitasController extends Controller
                                     ->where('status', $status_produk)
                                     ->first();
 
+                                if (empty($area_stok)) {
+                                    $area_stok = new AreaStok();
+                                }
 
                                 if ($tipe == 1) {
-                                    if (empty($area_stok)) {
-                                        $area_stok = new AreaStok();
-                                    }
-                                    if ($area_stok->jumlah >= $list_jumlah[$k]['jumlah']) {
-                                        $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
-                                    } else {
-                                        AktivitasHarian::find($aktivitasHarian->id)->forceDelete();
-
-                                        $temp_area = Area::find($id_area);
-                                        $temp_material = Material::find($produk);
-
-                                        $area_stok = AreaStok::where('id_area', $id_area)
-                                            ->where('id_material', $produk)
-                                            ->where('tanggal', date('Y-m-d'))
-                                            ->where('status', $status_produk)
-                                            ->first();
-
-                                        $this->responseCode     = 500;
-                                        $this->responseMessage  = 'Jumlah yang Anda masukkan pada area ' . $temp_area->nama . ' dengan nama material ' . $temp_material->nama . ' melebihi jumlah ketersediaan!';
-                                        $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                                        return response()->json($response, $this->responseCode);
-                                    }
+                                    $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
                                 } else {
-                                    if (empty($area_stok)) {
-                                        $area_stok = new AreaStok();
-                                    }
-
                                     $area_stok->jumlah = $area_stok->jumlah + $list_jumlah[$k]['jumlah'];
                                 }
 

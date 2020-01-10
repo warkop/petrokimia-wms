@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Http\Models\Aktivitas;
+use App\Http\Models\Area;
+use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
 use App\Http\Models\Material;
@@ -118,6 +120,59 @@ class ApiAktivitasRequest extends FormRequest
             ];
         }
 
+        for ($i = 0; $i < count($request->list_produk); $i++) {
+            $list_area = $request->list_produk[$i]['list_area'];
+            for ($j = 0; $j < count($list_area); $j++) {
+                $list_jumlah = $list_area[$j]['list_jumlah'];
+                for ($k = 0; $k < count($list_jumlah); $k++) {
+                    if ($aktivitas->pengaruh_tgl_produksi != null) {
+                        $area_stok = AreaStok::where('id_area', $list_area[$j]['id_area_stok'])
+                            ->where('id_material', $request->list_produk[$i]['produk'])
+                            ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                            ->where('status', $request->list_produk[$i]['status_produk'])
+                            ->orderBy('tanggal', 'asc')
+                            ->first();
+                        $area = Area::find($list_area[$j]['id_area_stok']);
+                        if (!empty($area_stok)) {
+                            if ($list_area[$j]['tipe'] == 1) {
+                                $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
+                                    'min:0', 
+                                    'max:' . $area_stok->jumlah, 
+                                    'numeric'
+                                ];
+                            } else {
+                                $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
+                                    'min:0', 
+                                    'max:'.abs($area->kapasitas - $area_stok->jumlah),
+                                    'numeric'
+                                ];
+                            }
+                        } else {
+                            $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
+                                'min:0',
+                                'max:' . $area->kapasitas,
+                                'numeric'
+                            ];
+                        }
+                    } else {
+                        $area = Area::find($list_area[$j]['id_area_stok']);
+                        $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
+                            'min:0',
+                            'max:' . $area->kapasitas,
+                            'numeric',
+                            Rule::unique('area_stok')->where(function ($query) use ($list_area, $list_jumlah, $request, $i, $j, $k) {
+                                return $query
+                                ->where('id_area', $list_area[$j]['id_area_stok'])
+                                ->where('id_material', $request->list_produk[$i]['produk'])
+                                ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                ;
+                            }),
+                        ];
+                    }
+                }
+            }
+        }
+
         if ($request->list_pallet) {
             for ($i = 0; $i < count($request->list_pallet); $i++) {
                 $gudangStok = GudangStok::where('id_material', $request->list_pallet[$i]['pallet'])
@@ -170,7 +225,13 @@ class ApiAktivitasRequest extends FormRequest
         if ($request->list_produk) {
             for ($i = 0; $i < count($request->list_produk); $i++) {
                 $material = Material::find($request->list_produk[$i]['produk']);
-                $attributes['list_produk.' . $i . '.jumlah'] =  'Jumlah Produk ' . $material->nama;
+                $list_area = $request->list_produk[$i]['list_area'];
+                for ($j = 0; $j < count($list_area); $j++) {
+                    $list_jumlah = $list_area[$j]['list_jumlah'];
+                    for ($k = 0; $k < count($list_jumlah); $k++) {
+                        $attributes['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = 'Jumlah Produk '. $material->nama;
+                    }
+                }
             }
         }
 
@@ -192,7 +253,8 @@ class ApiAktivitasRequest extends FormRequest
             'image'         => ':attribute harus berupa gambar!',
             'exists'        => ':attribute yang dipilih tidak ditemukan!',
             'between'       => ':attribute tidak valid!',
-            'max'           => ':attribute melebihi kapasitas di gudang yaitu :max pcs!',
+            'list_produk.*.list_area.*.list_jumlah.*.jumlah.max'            => ':attribute melebihi kapasitas di area yaitu :max ton!',
+            'list_pallet.*.jumlah.max'                                      => ':attribute melebihi kapasitas di gudang yaitu :max pcs!',
             'min'           => ':attribute harus minimal :max pcs!',
             'date_format'   => ':attribute tanggal harus dengan format tanggal-bulan-tahun, contoh: 13-05-2018',
         ];
