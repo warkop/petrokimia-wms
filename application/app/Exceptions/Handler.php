@@ -49,9 +49,14 @@ class Handler extends ExceptionHandler
     {
         $result = [];
         foreach ($array as $key => $value) {
+            print_r($result);
+            echo '<br>';
+            print_r($key);
+            echo '<br>';
+            print_r($value);
+            echo '<br>';
             array_set($result, $key, $value);
         }
-        print_r($result);
         return $result;
     }
 
