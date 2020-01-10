@@ -34,7 +34,7 @@ class Handler extends ExceptionHandler
     protected function invalidJson($request, ValidationException $exception)
     {
         $jsonResponse = parent::invalidJson($request, $exception);
-
+        
         $original = (array) $jsonResponse->getData();
         
         $jsonResponse->setData(array_merge($original, [
@@ -48,21 +48,9 @@ class Handler extends ExceptionHandler
     public static function expandDotNotationKeys(array $array)
     {
         $result = [];
-        // $no = 1;
         foreach ($array as $key => $value) {
-            // print_r($result);
-            // echo '<br>';
-            // print_r($key);
-            // echo '<br>';
-            // print_r($value);
-            // echo '<br>';
             array_set($result, $key, $value);
-            // print_r(unset($result[$no]));
-            // echo '<br>';
-            // array_map("unserialize", array_unique(array_map("serialize", $tampung)));
-            // $no++;
         }
-        // $result = array_map("unserialize", array_unique(array_map("serialize", $result)));
         return $result;
     }
 
