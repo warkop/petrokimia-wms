@@ -48,6 +48,7 @@ class Handler extends ExceptionHandler
     public static function expandDotNotationKeys(array $array)
     {
         $result = [];
+        $no = 1;
         foreach ($array as $key => $value) {
             print_r($result);
             echo '<br>';
@@ -56,8 +57,9 @@ class Handler extends ExceptionHandler
             print_r($value);
             echo '<br>';
             array_set($result, $key, array_values($value));
-            print_r($result);
+            print_r(unset($result[$no]));
             echo '<br>';
+            $no++;
         }
         return $result;
     }
