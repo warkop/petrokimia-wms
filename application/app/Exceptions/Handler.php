@@ -51,7 +51,7 @@ class Handler extends ExceptionHandler
         foreach ($array as $key => $value) {
             array_set($result, $key, $value);
         }
-        dd($result);
+        print_r($result);
         return $result;
     }
 
