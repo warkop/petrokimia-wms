@@ -59,8 +59,10 @@ class Handler extends ExceptionHandler
             array_set($result, $key, $value);
             // print_r(unset($result[$no]));
             // echo '<br>';
+            // array_map("unserialize", array_unique(array_map("serialize", $tampung)));
             $no++;
         }
+        $result = array_map("unserialize", array_unique(array_map("serialize", $result)));
         return $result;
     }
 
