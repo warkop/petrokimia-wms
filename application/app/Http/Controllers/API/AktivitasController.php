@@ -257,7 +257,7 @@ class AktivitasController extends Controller
                 'area.nama',
                 'area.kapasitas',
                 DB::raw("TO_CHAR(now(),'YYYY-MM-DD') as tanggal"),
-                DB::raw('0 as jumlah')
+                DB::raw("COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = " . $id_material . " and tanggal = TO_CHAR(now(),'YYYY-MM-DD')),0) as jumlah")
             )
             ->where(function ($where) use ($search) {
                 $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
