@@ -41,6 +41,11 @@ class GudangStok extends Model
         return $this->belongsTo(Material::class, 'id_material');
     }
 
+    public function materialTrans()
+    {
+        return $this->hasMany(MaterialTrans::class, 'id_gudang_stok', 'id');
+    }
+
     public function gridJson($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition, $id_gudang)
     {
         $result = DB::table($this->table)

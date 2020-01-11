@@ -43,8 +43,6 @@ use Illuminate\Support\Facades\Storage;
 
 class AktivitasController extends Controller
 {
-    private $pembagi = 1000;
-
     private function getCheckerGudang() { //untuk memperoleh informasi checker ini sekarang berada di gudang mana
         if (request()->get('my_auth')->role == 3) {
             $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
@@ -553,7 +551,6 @@ class AktivitasController extends Controller
                 $jumlah         = $list_pallet[$i]['jumlah'];
                 $status_pallet  = $list_pallet[$i]['status_pallet'];
                 $tipe           = $list_pallet[$i]['tipe'];
-                
 
                 $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('status', $status_pallet)->where('id_material', $pallet)->first();
 
@@ -580,12 +577,9 @@ class AktivitasController extends Controller
                     'jumlah'                    => $jumlah,
                     'tipe'                      => $tipe,
                     'status_pallet'             => $status_pallet,
-                    'id_gudang_stok'            => $gudangStok->id,
                 ];
 
-                $materialTrans = new MaterialTrans;
-
-                $materialTrans->create($arr);
+                $gudangStok->materialTrans()->create($arr);
             }
         }
 

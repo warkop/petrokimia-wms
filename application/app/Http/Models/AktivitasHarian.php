@@ -64,7 +64,12 @@ class AktivitasHarian extends Model
 
     public function aktivitasHarianArea()
     {
-        return $this->hasMany(AktivitasHarianArea::class, 'id', 'id_aktivitas_harian');
+        return $this->hasMany(AktivitasHarianArea::class, 'id_aktivitas_harian', 'id');
+    }
+
+    public function materialTrans()
+    {
+        return $this->hasMany(MaterialTrans::class, 'id_aktivitas_harian', 'id');
     }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
