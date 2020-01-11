@@ -83,35 +83,36 @@ class AktivitasController extends Controller
             ->orderBy('id', 'desc')
             ->first();
 
-        $rencanaTkbm = RencanaTkbm::where('id_rencana', $rencanaHarian->id)
-        ->join('rencana_harian', 'rencana_tkbm.id_rencana', '=', 'rencana_harian.id')
-        ->where(function ($query) {
-            $query->where('end_date');
-            $query->orWhere('end_date', '>=', now());
-        })
-        ->get();
-        
-        foreach ($rencanaTkbm as $key) {
-            $user = Users::where('id_tkbm', $key->id_tkbm)->first();
-            if (!empty($user)) {
-                send_firebase(
-                    $user->user_gcid, 
-                    [
-                        'title' => $aktivitas->nama,
-                        'message' => $message,
-                        'meta' => [
-                            'id' => $aktivitasHarian->id,
-                            'id_aktivitas'      => $aktivitasHarian->id_aktivitas,
-                            'kode_aktivitas'    => $aktivitasHarian->kode_aktivitas,
-                            'approve'           => $aktivitasHarian->approve,
-                            'pengiriman_gi'     => $aktivitasHarian->aktivitas->pengiriman_gi,
-                            'penerimaan_gi'     => $aktivitasHarian->aktivitas->penerimaan_gi,
-                        ],
-                    ]
-                );
+        if ($rencanaHarian) {
+            $rencanaTkbm = RencanaTkbm::where('id_rencana', $rencanaHarian->id)
+                ->join('rencana_harian', 'rencana_tkbm.id_rencana', '=', 'rencana_harian.id')
+                ->where(function ($query) {
+                    $query->where('end_date');
+                    $query->orWhere('end_date', '>=', now());
+                })
+                ->get();
+
+            foreach ($rencanaTkbm as $key) {
+                $user = Users::where('id_tkbm', $key->id_tkbm)->first();
+                if (!empty($user)) {
+                    send_firebase(
+                        $user->user_gcid,
+                        [
+                            'title' => $aktivitas->nama,
+                            'message' => $message,
+                            'meta' => [
+                                'id' => $aktivitasHarian->id,
+                                'id_aktivitas'      => $aktivitasHarian->id_aktivitas,
+                                'kode_aktivitas'    => $aktivitasHarian->kode_aktivitas,
+                                'approve'           => $aktivitasHarian->approve,
+                                'pengiriman_gi'     => $aktivitasHarian->aktivitas->pengiriman_gi,
+                                'penerimaan_gi'     => $aktivitasHarian->aktivitas->penerimaan_gi,
+                            ],
+                        ]
+                    );
+                }
             }
         }
-
     }
 
     public function index(Request $req) //memuat daftar aktivitas
