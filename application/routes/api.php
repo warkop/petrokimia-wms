@@ -54,6 +54,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::put('/{aktivitas?}', 'API\AktivitasController@store')->where('aktivitas', '[0-9]+');
         Route::post('/{aktivitas?}', 'API\AktivitasController@storePhotos')->where('aktivitas', '[0-9]+');
         Route::post('/kelayakan', 'API\AktivitasController@storeKelayakanPhotos');
+        Route::put('/save-pengembalian', 'API\AktivitasController@storePengembalian');
         
         Route::post('/test-save/{kategoriAlatBerat}', 'API\AktivitasController@testSave');
     });
