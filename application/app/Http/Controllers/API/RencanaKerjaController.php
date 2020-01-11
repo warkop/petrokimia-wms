@@ -142,7 +142,7 @@ class RencanaKerjaController extends Controller
         ], 200);
     }
 
-    public function store(ApiRencanaKerjaRequest $req)
+    public function store(ApiRencanaKerjaRequest $req, RencanaHarian $rencanaHarian)
     {
         $req->validated();
 
