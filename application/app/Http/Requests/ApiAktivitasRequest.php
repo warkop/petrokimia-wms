@@ -120,7 +120,7 @@ class ApiAktivitasRequest extends FormRequest
         if ($aktivitas->fifo != null) {
             $rules['alasan'] = [
                 'nullable',
-                'required',
+                // 'required',
             ];
         }
 
