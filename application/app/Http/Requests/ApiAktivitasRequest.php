@@ -98,10 +98,16 @@ class ApiAktivitasRequest extends FormRequest
             'id_aktivitas'      => 'required|exists:aktivitas,id',
             'id_gudang_tujuan'  => 'nullable|exists:gudang,id',
             'id_alat_berat'     => 'nullable|exists:alat_berat,id',
+            'id_tkbm'           => [
+                'nullable',
+                Rule::exists('tenaga_kerja_non_organik', 'id')->where(function($query) {
+                    $query->where('job_desk_id', 2);
+                }),
+            ],
             'list_produk.*.produk'       => [
                 Rule::exists('material', 'id')->where(function ($query) {
                     $query->where('kategori', 1);
-                })
+                }),
             ],
             'list_produk.*.status_produk'    => 'between:1,2',
             'list_produk.*.list_area.*.tipe' => 'between:1,2',
@@ -110,7 +116,7 @@ class ApiAktivitasRequest extends FormRequest
             'list_pallet.*.pallet' => [
                 Rule::exists('material', 'id')->where(function ($query) {
                     $query->where('kategori', 2);
-                })
+                }),
             ],
             'list_pallet.*.tipe'    => 'between:1,2',
             'list_pallet.*.status_pallet'  => 'between:1,4',

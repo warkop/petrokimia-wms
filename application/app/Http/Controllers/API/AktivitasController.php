@@ -188,6 +188,44 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
+    public function getTkbm(Request $req) //memuat tkbm
+    {
+        $search = strip_tags($req->input('search'));
+
+        $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+            ->where('id_tkbm', request()->get('my_auth')->id_tkbm)
+            ->orderBy('rencana_harian.id', 'desc')
+            ->first();
+
+        if (empty($rencana_tkbm)) {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+
+        $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
+
+        $resource = RencanaTkbm::select(
+            'tenaga_kerja_non_organik.id',
+            'tenaga_kerja_non_organik.nama'
+        )
+        ->join('tenaga_kerja_non_organik', 'tenaga_kerja_non_organik.id', '=', 'rencana_tkbm.id_tkbm')
+        ->where('job_desk_id', 2)
+        ->where(function ($where) use ($search) {
+            $where->where(DB::raw('LOWER(tenaga_kerja_non_organik.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        })
+        ->where('id_rencana', $rencana_harian->id)
+        ->get();
+
+        return (new AktivitasResource($resource))->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK,
+            ]
+        ], Response::HTTP_OK);
+    }
+
     public function getArea(Request $req, $id_aktivitas, $id_material, $pindah=false) //memuat area
     {
         $user = $req->get('my_auth');
@@ -387,6 +425,7 @@ class AktivitasController extends Controller
         $aktivitasHarian->alasan            = $req->input('alasan');
         $aktivitasHarian->so                = $req->input('so');
         $aktivitasHarian->id_yayasan        = $req->input('id_yayasan');
+        $aktivitasHarian->id_tkbm           = $req->input('id_tkbm');
         $aktivitasHarian->created_by        = $res_user->id;
         $aktivitasHarian->created_at        = date('Y-m-d H:i:s');
 
@@ -1461,6 +1500,7 @@ class AktivitasController extends Controller
             'gudang.nama as nama_gudang',
             'peminjaman',
             'dikembalikan',
+            'draft',
             DB::raw('CASE WHEN approve IS NOT NULL OR internal_gudang IS NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
             DB::raw('CASE WHEN dikembalikan IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_peminjaman'),
             'aktivitas_harian.created_at',
