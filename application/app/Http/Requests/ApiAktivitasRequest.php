@@ -24,7 +24,6 @@ class ApiAktivitasRequest extends FormRequest
         $errors = collect($validator->errors());
         // Manipulate however you want. I'm just getting the first one here,
         // but you can use whatever logic fits your needs.
-        // dd($errors->unique());
         $error  = $errors->unique()->first();
         $mess = [];
         foreach ($errors->unique() as $key => $value) {
@@ -32,13 +31,13 @@ class ApiAktivitasRequest extends FormRequest
                 array_push($mess, $row);
             }
         }
-        $jj['message'] = "The given data was invalid.";
-        $jj['errors'] = $mess;
-        $jj['code'] = 422;
+        $responses['message'] = "The given data was invalid.";
+        $responses['errors'] = $mess;
+        $responses['code'] = 422;
 
         // Either throw the exception, or return it any other way.
         throw new HttpResponseException(response(
-            $jj,
+            $responses,
             422
         ));
     }

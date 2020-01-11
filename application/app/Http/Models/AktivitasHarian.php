@@ -16,10 +16,7 @@ class AktivitasHarian extends Model
         'id',
     ];
 
-    protected $hidden = [
-        // 'created_at',
-        // 'created_by',
-    ];
+    protected $hidden = [];
 
     protected $dates = ['created_at'];
 
@@ -65,10 +62,10 @@ class AktivitasHarian extends Model
         return $this->hasManyThrough(Material::class, MaterialTrans::class, 'id_aktivitas_harian', 'id', 'id', 'id_material');
     }
 
-    // public function notifications()
-    // {
-    //     return $this->morphMany(Notifications::class, 'notifiable');
-    // }
+    public function aktivitasHarianArea()
+    {
+        return $this->hasMany(AktivitasHarianArea::class, 'id', 'id_aktivitas_harian');
+    }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
