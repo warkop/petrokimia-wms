@@ -49,6 +49,11 @@ class Material extends CustomModel
         return $this->hasMany(AreaStok::class, 'id', 'id_material');
     }
 
+    public function materialTrans()
+    {
+        return $this->hasMany(MaterialTrans::class, 'id_material', 'id');
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('material')

@@ -1305,7 +1305,7 @@ class AktivitasController extends Controller
             return response()->json($response, $this->responseCode);
         }
 
-        // $shiftKerja = ShiftKerja::whereBetween('mulai');
+        $shiftKerja = new ShiftKerja;
 
         $wannaSave = new AktivitasHarian;
         $wannaSave->ref_number        = $aktivitasHarian->id;
@@ -1325,145 +1325,69 @@ class AktivitasController extends Controller
         $aktivitasHarian->dikembalikan = date('Y-m-d H:i:s');
         $aktivitasHarian->save();
 
-        if ($aktivitasHarian->pengaruh_tgl_produksi != null) { //jika tidak pengaruh tanggal produksi dicentang
-            $list_produk = $req->input('list_produk');
+        $list_produk = $req->input('list_produk');
+        $produk = [];
 
-            if (!empty($list_produk)) {
-                $jums_list_produk = count($list_produk);
+        if (!empty($list_produk)) {
+            $jums_list_produk = count($list_produk);
 
-                for ($i = 0; $i < $jums_list_produk; $i++) {
-                    $produk = $list_produk[$i]['produk'];
-                    $status_produk = $list_produk[$i]['status_produk'];
-                    $list_area = $list_produk[$i]['list_area'];
-                    $jums_list_area = count($list_area);
+            for ($i = 0; $i < $jums_list_produk; $i++) {
+                $produk = $list_produk[$i]['produk'];
+                $status_produk = $list_produk[$i]['status_produk'];
+                $list_area = $list_produk[$i]['list_area'];
+                $jums_list_area = count($list_area);
 
-                    for ($j = 0; $j < $jums_list_area; $j++) {
-                        $tipe = $list_area[$j]['tipe'];
-                        $id_area = $list_area[$j]['id_area_stok'];
-                        $list_jumlah = $list_area[$j]['list_jumlah'];
-                        $jums_list_jumlah = count($list_jumlah);
+                for ($j = 0; $j < $jums_list_area; $j++) {
+                    $tipe = $list_area[$j]['tipe'];
+                    $id_area = $list_area[$j]['id_area_stok'];
+                    $list_jumlah = $list_area[$j]['list_jumlah'];
+                    $jums_list_jumlah = count($list_jumlah);
 
-                        for ($k = 0; $k < $jums_list_jumlah; $k++) {
-                            $area_stok = AreaStok::where('id_area', $id_area)
-                                ->where('id_material', $produk)
-                                ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                ->first();
+                    for ($k = 0; $k < $jums_list_jumlah; $k++) {
+                        $area_stok = AreaStok::where('id_area', $id_area)
+                            ->where('id_material', $produk)
+                            ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                            ->first();
 
-                            if (!empty($area_stok)) {
-                                if ($tipe == 1) {
-                                    $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
-                                } else {
-                                    $area_stok->jumlah = $area_stok->jumlah + $list_jumlah[$k]['jumlah'];
-                                }
-
-                                $area_stok->save();
+                        if (!empty($area_stok)) {
+                            if ($tipe == 1) {
+                                $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
                             } else {
-                                $area_stok = new AreaStok;
-                                $area_stok->id_area = $id_area;
-                                $area_stok->id_material = $produk;
-                                $area_stok->tanggal = date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']));
-                                $area_stok->jumlah = $list_jumlah[$k]['jumlah'];
-                                $area_stok->save();
+                                $area_stok->jumlah = $area_stok->jumlah + $list_jumlah[$k]['jumlah'];
                             }
 
-                            $material_trans = new MaterialTrans;
-
-                            $array = [
-                                'id_material'           => $produk,
-                                'id_aktivitas_harian'   => $wannaSave->id,
-                                'tanggal'               => date('Y-m-d H:i:s'),
-                                'tipe'                  => $tipe,
-                                'jumlah'                => $list_jumlah[$k]['jumlah'],
-                                'status_produk'         => $status_produk,
-                                'id_area_stok'          => $area_stok->id,
-                            ];
-
-                            $material_trans->create($array);
-
-                            (new AktivitasHarianArea)->create([
-                                'id_aktivitas_harian'   => $wannaSave->id,
-                                'id_area_stok'          => $area_stok->id,
-                                'jumlah'                => $list_jumlah[$k]['jumlah'],
-                                'tipe'                  => $tipe,
-                                'created_at'            => date('Y-m-d H:i:s'),
-                                'created_by'            => $res_user->id,
-                            ]);
+                            $area_stok->save();
+                        } else {
+                            $area_stok = new AreaStok;
+                            $area_stok->id_area = $id_area;
+                            $area_stok->id_material = $produk;
+                            $area_stok->tanggal = date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']));
+                            $area_stok->jumlah = $list_jumlah[$k]['jumlah'];
+                            $area_stok->save();
                         }
-                    }
-                }
-            }
-        } else { //jika tidak pengaruh tanggal produksi tidak dicentang
-            $list_produk = $req->input('list_produk');
 
-            if (!empty($list_produk)) {
-                $jums_list_produk = count($list_produk);
+                        $material_trans = new MaterialTrans;
 
-                for ($i = 0; $i < $jums_list_produk; $i++) {
-                    $produk = $list_produk[$i]['produk'];
-                    $status_produk = $list_produk[$i]['status_produk'];
+                        $array = [
+                            'id_material'           => $produk,
+                            'id_aktivitas_harian'   => $wannaSave->id,
+                            'tanggal'               => date('Y-m-d H:i:s'),
+                            'tipe'                  => $tipe,
+                            'jumlah'                => $list_jumlah[$k]['jumlah'],
+                            'status_produk'         => $status_produk,
+                            'id_area_stok'          => $area_stok->id,
+                        ];
 
-                    $list_area = $list_produk[$i]['list_area'];
-                    if (!empty($list_area)) {
-                        $jums_list_area = count($list_area);
-                        for ($j = 0; $j < $jums_list_area; $j++) {
-                            $tipe = $list_area[$j]['tipe'];
-                            $id_area = $list_area[$j]['id_area_stok'];
-                            $list_jumlah = $list_area[$j]['list_jumlah'];
-                            $jums_list_jumlah = count($list_jumlah);
+                        $material_trans->create($array);
 
-                            for ($k = 0; $k < $jums_list_jumlah; $k++) {
-                                $area_stok = AreaStok::where('id_area', $id_area)
-                                    ->where('id_material', $produk)
-                                    ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                    ->first();
-
-                                if (empty($area_stok)) {
-                                    $area_stok = new AreaStok();
-                                }
-
-                                if ($area_stok->jumlah > $list_jumlah[$k]['jumlah']) {
-                                    $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
-                                } else {
-                                    AktivitasHarian::find($aktivitasHarian->id)->forceDelete();
-
-                                    $temp_area = Area::find($id_area);
-                                    $temp_material = Material::find($produk);
-
-                                    $this->responseCode     = 500;
-                                    $this->responseMessage  = 'Jumlah yang Anda masukkan pada area ' . $temp_area->nama . ' dengan nama material ' . $temp_material->nama . ' melebihi jumlah ketersediaan!';
-                                    $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                                    return response()->json($response, $this->responseCode);
-                                }
-
-                                $area_stok->id_material   = $produk;
-                                $area_stok->id_area       = $id_area;
-                                $area_stok->tanggal       = date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']));
-
-                                $area_stok->save();
-
-                                $material_trans = new MaterialTrans;
-
-                                $array = [
-                                    'id_material'           => $produk,
-                                    'id_aktivitas_harian'   => $aktivitasHarian->id,
-                                    'tanggal'               => date('Y-m-d H:i:s'),
-                                    'tipe'                  => $tipe,
-                                    'jumlah'                => $list_jumlah[$k]['jumlah'],
-                                    'status_produk'         => $status_produk,
-                                    'id_area_stok'          => $area_stok->id,
-                                ];
-                                $material_trans->create($array);
-
-                                (new AktivitasHarianArea)->create([
-                                    'id_aktivitas_harian'   => $aktivitasHarian->id,
-                                    'id_area_stok'          => $area_stok->id,
-                                    'jumlah'                => $list_jumlah[$k]['jumlah'],
-                                    'tipe'                  => $tipe,
-                                    'created_at'            => date('Y-m-d H:i:s'),
-                                    'created_by'            => $res_user->id,
-                                ]);
-                            }
-                        }
+                        (new AktivitasHarianArea)->create([
+                            'id_aktivitas_harian'   => $wannaSave->id,
+                            'id_area_stok'          => $area_stok->id,
+                            'jumlah'                => $list_jumlah[$k]['jumlah'],
+                            'tipe'                  => $tipe,
+                            'created_at'            => date('Y-m-d H:i:s'),
+                            'created_by'            => $res_user->id,
+                        ]);
                     }
                 }
             }
@@ -1509,13 +1433,14 @@ class AktivitasController extends Controller
         $this->responseCode = 200;
         $this->responseData = [
             'data'      => $wannaSave,
-            'produk'    => $produk,
-            'pallet'    => $pallet,
         ];
-        if ($produk) {
+
+        // dd($produk);
+
+        if ($produk != null) {
             $this->responseData['produk']    = $produk;
         }
-        if ($pallet) {
+        if ($pallet != null) {
             $this->responseData['pallet']    = $pallet;
         }
         $this->responseMessage = 'Data berhasil disimpan!';
