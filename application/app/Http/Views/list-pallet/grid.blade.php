@@ -14,6 +14,18 @@
                 <div class="kt-portlet__body kt-portlet__body--fluid">
                     <div class="kt-widget26">
                         <div class="kt-widget26__content">
+                            <span class="kt-widget26__number">{{$stok->total??0}}</span>
+                            <span class="kt-widget26__desc" style="color: white;">Pallet Stok</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3">
+            <div class="kt-portlet kt-portlet--height-fluid-half kt-portlet--border-bottom-green bg-green-custom" style="height: 150px;">
+                <div class="kt-portlet__body kt-portlet__body--fluid">
+                    <div class="kt-widget26">
+                        <div class="kt-widget26__content">
                             <span class="kt-widget26__number">{{$dipakai->total??0}}</span>
                             <span class="kt-widget26__desc" style="color: white;">Pallet Dipakai</span>
                         </div>

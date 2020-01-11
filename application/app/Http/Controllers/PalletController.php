@@ -8,36 +8,41 @@ use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
 use App\Http\Requests\PalletRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PalletController extends Controller
 {
     public function index($id_gudang)
     {
-        $gudang = Gudang::find($id_gudang);
+        $gudang = Gudang::findOrFail($id_gudang);
+
+        $data['stok'] = GudangStok::select(
+            DB::raw('SUM(jumlah) as total')
+        )
+        ->where('id_gudang', $id_gudang)
+        ->where('status', 1)
+        ->first();
 
         $data['dipakai'] = GudangStok::select(
-            \DB::raw('SUM(jumlah) as total')
+            DB::raw('SUM(jumlah) as total')
         )
         ->where('id_gudang', $id_gudang)
         ->where('status', 2)
         ->first();
         
         $data['kosong'] = GudangStok::select(
-            \DB::raw('SUM(jumlah) as total')
+            DB::raw('SUM(jumlah) as total')
         )
         ->where('status', 3)
         ->where('id_gudang', $id_gudang)
         ->first();
         
         $data['rusak'] = GudangStok::select(
-            \DB::raw('SUM(jumlah) as total')
+            DB::raw('SUM(jumlah) as total')
         )
         ->where('status', 4)
         ->where('id_gudang', $id_gudang)
         ->first();
-        // dump($data['dipakai']->total);
-        // dump($data['kosong']);
-        // dump($data['rusak']);
         $data['nama_gudang'] = $gudang->nama;
         $data['id_gudang'] = $id_gudang;
         return view('list-pallet.grid', $data);
@@ -156,7 +161,7 @@ class PalletController extends Controller
                 $res = MaterialTrans::find($id);
 
                 if (!empty($res)) {
-                    $resProduk = \DB::table('gudang_stok as ma')
+                    $resProduk = DB::table('gudang_stok as ma')
                         ->leftJoin('material_trans as mt', 'mt.id_gudang_stok', '=', 'ma.id')
                         ->leftJoin('material as m', 'mt.id_material', '=', 'm.id')
                         ->where('mt.id', $id)
