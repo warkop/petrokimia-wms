@@ -63,15 +63,12 @@ var load_table = function () {
             {
                 "mData": "tipe_gudang"
             },
-            // {
-            //     "mData": "jumlah"
-            // },
             {
                 "mData": "id"
             }
         ],
         "aaSorting": [
-            [1, 'asc']
+            [4, 'asc']
         ],
         "lengthMenu": [10, 25, 50, 75, 100],
         "pageLength": 10,
@@ -89,8 +86,8 @@ var load_table = function () {
                 }
             },
             {
-                "aTargets": [4],
-                // title: 'Jumlah Pupuk',
+                "aTargets": -2,
+                "mData": 'tipe_gudang',
                 "orderable": true,
                 render: function (data, type, full, meta) {
                     let result = '';
