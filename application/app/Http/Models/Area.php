@@ -44,7 +44,7 @@ class Area extends CustomModel
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
                 $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere('kapasitas', 'ILIKE', '%' . $search . '%');
+                $where->orWhere(DB::raw('kapasitas::text'), 'ILIKE', '%' . $search . '%');
             });
         }
 
