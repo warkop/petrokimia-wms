@@ -34,7 +34,9 @@ class AreaRequest extends FormRequest
         $rules = [
             'nama'              => [
                 'required',
-                Rule::unique('area', 'nama')->ignore(request()->id)
+                Rule::unique('area', 'nama')->where(function ($query) {
+                    $query->where('id_gudang', '=', request()->id_gudang);
+                })->ignore(request()->id)
             ],
             'kapasitas'         => 'numeric|between:0,9999.9999',
             'tipe'              => 'required',

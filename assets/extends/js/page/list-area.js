@@ -57,6 +57,9 @@ const load_table = function () {
                 "mData": "kapasitas"
             },
             {
+                "mData": "jenis"
+            },
+            {
                 "mData": "id"
             }
         ],
@@ -77,6 +80,18 @@ const load_table = function () {
 
                     return counter;
                 }
+            },
+            {
+                "aTargets": -2,
+                "mData": "jenis",
+                "orderable": false,
+                render: function (data, type, full, meta) {
+                    let text = "Outdoor";
+                    if (full.tipe == 1) {
+                        text = "Indoor";
+                    }
+                    return `<span class="label label-success">${text}</span>`;
+                },
             },
             {
                 "aTargets": -1,

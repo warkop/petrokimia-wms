@@ -389,8 +389,9 @@ function loadListAktivitas(id_gudang) {
     $.ajax({
         url: ajaxUrl + '/load-aktivitas-gudang/' + id_gudang,
         success: (response) => {
-            const obj = response.data;
-
+            const obj = response.data.data;
+            console.log(obj.data);
+            $("#label_aktivitas_gudang").html("Aktivitas Gudang <strong>" + response.data.nama_gudang +"</strong>");
             let html = "";
             obj.forEach(element => {
                 html += `<tr>

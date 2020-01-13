@@ -31,6 +31,7 @@
                         <th>No</th>
                         <th>Nama area</th>
                         <th>Kapasitas (Ton)</th>
+                        <th>Jenis</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -90,6 +91,7 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                     <button type="button" class="btn btn-wms ladda-button" data-style="zoom-in" id="btn_save">Simpan data</button>
                 </div>
+                <input type="hidden" class="form-control" id="id_gudang" name="id_gudang" value="{{$id_gudang}}">
             </form>
         </div>
     </div>

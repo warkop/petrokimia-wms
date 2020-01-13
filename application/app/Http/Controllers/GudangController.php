@@ -259,7 +259,8 @@ class GudangController extends Controller
     public function getAktivitasGudang($id_gudang)
     {
         $res = AktivitasGudang::with('aktivitas')->where('id_gudang', $id_gudang)->get();
-        $this->responseData = $res;
+        $gudang = Gudang::find($id_gudang);
+        $this->responseData = ['data' => $res, 'nama_gudang' => $gudang->nama];
         $this->responseCode = 200;
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);

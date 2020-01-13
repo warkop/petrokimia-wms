@@ -266,12 +266,12 @@
 
 
 <!--begin::Modal jaktivitas gudang -->
-<div class="modal fade" id="modalAktivitasGudang" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="modalAktivitasGudang" role="dialog" aria-labelledby="label_aktivitas_gudang"
     aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Aktivitas Gudang</h5>
+                <h5 class="modal-title" id="label_aktivitas_gudang">Aktivitas Gudang</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>

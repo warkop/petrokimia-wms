@@ -28,7 +28,7 @@ class GudangRequest extends FormRequest
             'id_sloc'           => Rule::unique('gudang')->ignore(request()->id),
             'nama'              => 'required',
             'tipe_gudang'       => 'required|numeric|digits_between:1,2',
-            'id_karu'           => [Rule::unique('gudang')->ignore(request()->id),],
+            // 'id_karu'           => [Rule::unique('gudang')->ignore(request()->id),],
             'start_date'        => 'nullable|date_format:d-m-Y',
             'end_date'          => 'nullable|date_format:d-m-Y|after:start_date',
         ];
