@@ -35,7 +35,7 @@ class UserCheckerSeeder extends Seeder
                 'name'      => $keyChecker->nama,
                 'username'  => $username.$keyChecker->id,
                 'password'  => bcrypt('qwerty123456'),
-                'email'     => $username.'@gmail.com',
+                'email'     => $username . $keyChecker->id.'@gmail.com',
                 'start_date'    => now(),
             ])->save();
         }

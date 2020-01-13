@@ -35,7 +35,7 @@ class UserKaruSeeder extends Seeder
                 'name'      => $keyKaru->nama,
                 'username'  => $username.$keyKaru->id,
                 'password'  => 'qwerty123456',
-                'email'     => $username . '@gmail.com',
+                'email'     => $username . $keyKaru->id . '@gmail.com',
             ])->save();
         }
     }
