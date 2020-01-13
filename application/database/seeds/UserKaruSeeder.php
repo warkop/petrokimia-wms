@@ -34,8 +34,9 @@ class UserKaruSeeder extends Seeder
                 'role_id'   => 5,
                 'name'      => $keyKaru->nama,
                 'username'  => $username.$keyKaru->id,
-                'password'  => 'qwerty123456',
+                'password'  => bcrypt('qwerty123456'),
                 'email'     => $username . $keyKaru->id . '@gmail.com',
+                'start_date'    => now(),
             ])->save();
         }
     }
