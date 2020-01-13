@@ -241,11 +241,14 @@ class AktivitasController extends Controller
                 'area.nama',
                 'area.kapasitas',
                 'area_stok.tanggal',
+                'area.tipe',
                 'area_stok.id_material',
                 DB::raw('COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.'),0) as jumlah')
             )
             ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
-            ->where('id_gudang', $gudang->id);
+            ->where('id_gudang', $gudang->id)
+            ->where('area_stok.status', 1)
+            ;
 
             if ($pindah == false) {
                 $resource = $resource->where('id_material', $id_material);
@@ -1840,5 +1843,40 @@ class AktivitasController extends Controller
         $alatBerat = new AlatBerat(['nomor_lambung' => $nomor_lambung, 'created_by' =>auth()->id()]);
 
         $kategoriAlatBerat->alatBerat()->save($alatBerat);
+    }
+
+    public function isiStok($hapus=false)
+    {
+        
+        $material = Material::produk()->get();
+        $area = Area::all();
+
+        if ($hapus) {
+            AreaStok::truncate();
+        }
+
+        foreach ($area as $keyArea) {
+            foreach ($material as $keyMaterial) {
+                $areaStok = new AreaStok;
+                $areaStok->fill([
+                    'id_area'       => $keyArea->id,
+                    'id_material'   => $keyMaterial->id,
+                    'tanggal'       => '2019-12-20',
+                    'jumlah'        => 100
+                ])->save();
+
+                $areaStok = new AreaStok;
+                $areaStok->fill([
+                    'id_area'       => $keyArea->id,
+                    'id_material'   => $keyMaterial->id,
+                    'tanggal'       => '2019-12-25',
+                    'jumlah'        => 100
+                ])->save();
+
+                // $areaStok->materialTrans()->saveMany([
+                //     new MaterialTrans()
+                // ]);
+            }
+        }
     }
 }

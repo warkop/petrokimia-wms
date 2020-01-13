@@ -96,7 +96,9 @@ class LayoutController extends Controller
         )
         ->leftJoin('material', 'area_stok.id_material', '=', 'material.id')
         ->leftJoin('area', 'area_stok.id_area', '=', 'area.id')
-        ->where('id_area',$id_area)->get();
+        ->where('id_area',$id_area)
+        ->where('area_stok.status', 1)
+        ->get();
 
         $obj =  AktivitasResource::collection($res)->additional([
             'status' => [

@@ -32,7 +32,7 @@ class RencanaHarian extends Model
     {
         parent::boot();
 
-        static::updating(function ($table) {
+        static::saving(function ($table) {
             if (auth()->id() != null) {
                 $table->updated_by = auth()->id();
             }
@@ -47,6 +47,21 @@ class RencanaHarian extends Model
         });
 
         // static::addGlobalScope(new EndDateScope);
+    }
+
+    public function rencanaTkbm()
+    {
+        return $this->belongsToMany(TenagaKerjaNonOrganik::class, 'rencana_tkbm', 'id_rencana', 'id_tkbm');
+    }
+
+    public function rencanaAlatBerat()
+    {
+        return $this->belongsToMany(AlatBerat::class, 'rencana_alat_berat', 'id_rencana', 'id_alat_berat');
+    }
+
+    public function rencanaAreaTkbm()
+    {
+        return $this->belongsToMany(TenagaKerjaNonOrganik::class, 'rencana_area_tkbm', 'id_rencana', 'id_tkbm');
     }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)

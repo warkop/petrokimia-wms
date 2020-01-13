@@ -58,6 +58,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::put('/save-pengembalian', 'API\AktivitasController@storePengembalian');
         
         Route::post('/test-save/{kategoriAlatBerat}', 'API\AktivitasController@testSave');
+        Route::get('/isi-stok/{hapus?}', 'API\AktivitasController@isiStok');
     });
     
     Route::group(['prefix' => 'alat-berat'], function () {
@@ -89,7 +90,8 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-shift', 'API\RencanaKerjaController@getShift');
         Route::get('/get-tkbm/{id}', 'API\RencanaKerjaController@getTkbm')->where('id', '[0-9]+');
         Route::get('/get-area/{id?}', 'API\RencanaKerjaController@getArea')->where('id', '[0-9]+');
-        Route::put('/', 'API\RencanaKerjaController@store');
+        Route::put('/{draft?}', 'API\RencanaKerjaController@store');
+        Route::patch('/{draft?}/{rencanaHarian}', 'API\RencanaKerjaController@store');
     });
 
     Route::group(['prefix' => 'realisasi'], function () {
