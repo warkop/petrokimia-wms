@@ -30,7 +30,7 @@ class UserKaruSeeder extends Seeder
             }
 
             $users->fill([
-                'id_tkbm'   => $keyKaru->id,
+                'id_karu'   => $keyKaru->id,
                 'role_id'   => 5,
                 'name'      => $keyKaru->nama,
                 'username'  => $username.$keyKaru->id,
