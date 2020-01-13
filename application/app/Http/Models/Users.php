@@ -25,7 +25,7 @@ class Users extends Authenticatable
 
     protected $dates = ['start_date', 'end_date'];
 
-    public $timestamps  = false;
+    public $timestamps  = true;
 
     protected static function boot()
     {
