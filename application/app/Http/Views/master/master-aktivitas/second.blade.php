@@ -52,7 +52,7 @@
                             <div class="row">
                                 <div class="col-4 col-form-label">
                                     <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="radio" name="selector" value="1" id="selector_produk_stok"> Produk
+                                        <input type="checkbox" name="selector" value="1" id="selector_produk_stok"> Produk
                                         <span></span>
                                     </label>
                                 </div>
@@ -68,7 +68,7 @@
                             <div class="row">
                                 <div class="col-4 col-form-label">
                                     <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="radio" name="selector" value="2" id="selector_produk_rusak"> Produk rusak
+                                        <input type="checkbox" name="selector" value="2" id="selector_produk_rusak"> Produk rusak
                                         <span></span>
                                     </label>
                                 </div>
@@ -521,19 +521,42 @@
         orientation: "top left"
     });
 
-    $('input[type=radio][name=selector]').change(function() {
-        if (this.value == 1) {
+    // $('input[type=radio][name=selector]').change(function() {
+    //     if (this.value == 1) {
+    //         $("#produk_stok").attr('disabled',false);
+    //         $("#produk_stok").selectpicker('refresh');
+    //         $("#produk_rusak").val("");
+    //         $("#produk_rusak").attr('disabled',true);
+    //         $("#produk_rusak").selectpicker('refresh');
+    //     } 
+    //     if (this.value == 2) {
+    //         $("#produk_rusak").attr('disabled',false);
+    //         $("#produk_rusak").selectpicker('refresh');
+    //         $("#produk_stok").val("");
+    //         $("#produk_stok").attr('disabled',true);
+    //         $("#produk_stok").selectpicker('refresh');
+    //     }
+    // });
+
+    $("#selector_produk_stok").change(function() {
+        if(this.checked) {
             $("#produk_stok").attr('disabled',false);
             $("#produk_stok").selectpicker('refresh');
-            $("#produk_rusak").val("");
-            $("#produk_rusak").attr('disabled',true);
-            $("#produk_rusak").selectpicker('refresh');
-        } else if (this.value == 2) {
-            $("#produk_rusak").attr('disabled',false);
-            $("#produk_rusak").selectpicker('refresh');
-            $("#produk_stok").val("");
+        } else {
+            $("#produk_stok").val("").change();
             $("#produk_stok").attr('disabled',true);
             $("#produk_stok").selectpicker('refresh');
+        }
+    });
+
+    $("#selector_produk_rusak").change(function() {
+        if(this.checked) {
+            $("#produk_rusak").attr('disabled',false);
+            $("#produk_rusak").selectpicker('refresh');
+        } else {
+            $("#produk_rusak").val("").change();
+            $("#produk_rusak").attr('disabled',true);
+            $("#produk_rusak").selectpicker('refresh');
         }
     });
 

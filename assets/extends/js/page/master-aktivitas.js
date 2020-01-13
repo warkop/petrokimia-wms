@@ -180,8 +180,8 @@ function edit(id = '') {
             $('#kode_aktivitas').val(obj.data['kode_aktivitas']);
             $('#nama').val(obj.data['nama']);
             if (obj.data['produk_stok'] != null) {
-                $("#produk_rusak").attr('disabled', true);
-                $("#produk_rusak").selectpicker('refresh');
+                // $("#produk_rusak").attr('disabled', true);
+                // $("#produk_rusak").selectpicker('refresh');
 
                 $("#produk_stok").attr('disabled', false);
                 $("#produk_stok").selectpicker('refresh');
@@ -190,8 +190,8 @@ function edit(id = '') {
             }
 
             if (obj.data['produk_rusak'] != null) {
-                $("#produk_stok").attr('disabled', true);
-                $("#produk_stok").selectpicker('refresh');
+                // $("#produk_stok").attr('disabled', true);
+                // $("#produk_stok").selectpicker('refresh');
 
                 $("#produk_rusak").attr('disabled', false);
                 $("#produk_rusak").selectpicker('refresh');
