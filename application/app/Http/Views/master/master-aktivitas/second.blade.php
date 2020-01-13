@@ -87,7 +87,7 @@
                             <div class="row">
                                 <div class="col-4 col-form-label">
                                     <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="checkbox" id="selector_pallet_stok"> Pallet stok
+                                        <input class="select-pallet" type="checkbox" id="selector_pallet_stok"> Pallet stok
                                         <span></span>
                                     </label>
                                 </div>
@@ -102,7 +102,7 @@
                             <div class="row">
                                 <div class="col-4 col-form-label">
                                     <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="checkbox" id="selector_pallet_dipakai"> Pallet dipakai
+                                        <input class="select-pallet" type="checkbox" id="selector_pallet_dipakai"> Pallet dipakai
                                         <span></span>
                                     </label>
                                 </div>
@@ -117,7 +117,7 @@
                             <div class="row">
                                 <div class="col-4 col-form-label">
                                     <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="checkbox" id="selector_pallet_kosong"> Pallet kosong
+                                        <input class="select-pallet" type="checkbox" id="selector_pallet_kosong"> Pallet kosong
                                         <span></span>
                                     </label>
                                 </div>
@@ -132,7 +132,7 @@
                             <div class="row">
                                 <div class="col-4 col-form-label">
                                     <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="checkbox" id="selector_pallet_rusak"> Pallet rusak
+                                        <input class="select-pallet" type="checkbox" id="selector_pallet_rusak"> Pallet rusak
                                         <span></span>
                                     </label>
                                 </div>
@@ -474,11 +474,15 @@
         <!--End::Dashboard 6-->
     </div>
     <!-- end:: Content -->
+    <input type="hidden" name="pallet_dump">
 </form>
 
 <script src="{{asset('assets/extends/js/page/master-aktivitas.js')}}" type="text/javascript"></script>
 <script>
+const limit = 2;
+let now = 0;
     $(document).ready(()=>{
+
         $("#produk_stok").attr('disabled',true);
         $("#produk_stok").selectpicker('refresh');
 
@@ -511,6 +515,13 @@
             edit({{$id}});
         }
         @endif
+
+        $('input.select-pallet').on('change', function(evt) {
+            console.log($(this).siblings(':checked').length);
+            if($(this).siblings(':checked').length >= limit) {
+                this.checked = false;
+            }
+        });
     });
     $('.kt-selectpicker').selectpicker();
     $('#end_date').datepicker({
@@ -552,7 +563,9 @@
         if(this.checked) {
             $("#pallet_dipakai").attr('disabled',false);
             $("#pallet_dipakai").selectpicker('refresh');
+            now++;
         } else {
+            now--;
             $("#pallet_dipakai").val("").change();
             $("#pallet_dipakai").attr('disabled',true);
             $("#pallet_dipakai").selectpicker('refresh');
@@ -563,7 +576,9 @@
         if(this.checked) {
             $("#pallet_kosong").attr('disabled',false);
             $("#pallet_kosong").selectpicker('refresh');
+            now++;
         } else {
+            now--;
             $("#pallet_kosong").val("").change();
             $("#pallet_kosong").attr('disabled',true);
             $("#pallet_kosong").selectpicker('refresh');
@@ -574,7 +589,9 @@
         if(this.checked) {
             $("#pallet_rusak").attr('disabled',false);
             $("#pallet_rusak").selectpicker('refresh');
+            now++;
         } else {
+            now--;
             $("#pallet_rusak").val("").change();
             $("#pallet_rusak").attr('disabled',true);
             $("#pallet_rusak").selectpicker('refresh');

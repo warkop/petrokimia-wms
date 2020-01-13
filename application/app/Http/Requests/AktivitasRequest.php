@@ -37,6 +37,7 @@ class AktivitasRequest extends FormRequest
             'pallet_stok'               => 'nullable|numeric',
             'pallet_dipakai'            => 'nullable|numeric',
             'pallet_kosong'             => 'nullable|numeric',
+            'pallet_rusak'              => 'nullable|numeric',
             'connect_sistro'            => 'nullable|numeric',
             'pengiriman'                => 'nullable|numeric',
             'fifo'                      => 'nullable|numeric',
@@ -56,8 +57,26 @@ class AktivitasRequest extends FormRequest
             'kode_aktivitas'            => 'nullable|size:3',
         ];
 
-        
+        $limit=1;
+        $jumlah = 0;
+        if (request()->pallet_stok != null) {
+            $jumlah++;
+        }
 
+        if (request()->pallet_dipakai != null) {
+            $jumlah++;
+        }
+        if (request()->pallet_kosong != null) {
+            $jumlah++;
+        }
+        if (request()->pallet_rusak != null) {
+            $jumlah++;
+        }
+
+        request()->pallet_dump = $jumlah;
+        
+        $rules['pallet_dump'] = 'max:'.$limit;
+        // dd($rules);
         return $rules;
     }
 
@@ -71,6 +90,7 @@ class AktivitasRequest extends FormRequest
             'pallet_stok'               => 'Pallet Stok',
             'pallet_dipakai'            => 'Pallet Dipakai',
             'pallet_kosong'             => 'Pallet Kosong',
+            'pallet_rusak'              => 'Pallet Rusak',
             'upload_foto'               => 'Upload Foto',
             'connect_sistro'            => 'Connect Sistro',
             'pengiriman'                => 'Pengiriman',
@@ -88,6 +108,7 @@ class AktivitasRequest extends FormRequest
             'upload_foto.*'             => 'Upload Foto',
             'alat_berat.*'              => 'Alat Berat',
             'anggaran.*'                => 'Anggaran',
+            'pallet_dump'               => 'Pallet',
         ];
     }
 
@@ -95,6 +116,7 @@ class AktivitasRequest extends FormRequest
     {
         return [
             'required'                  => ':attribute wajib diisi!',
+            'max'                       => 'pilihan :attribute hanya boleh maksimal :max jenis!',
             'numeric'                   => 'Inputan :attribute tidak valid!',
             'size'                      => ':attribute harus :size karakter!',
             'start_date.date_format'    => 'Tanggal harus dengan format tanggal-bulan-tahun',
