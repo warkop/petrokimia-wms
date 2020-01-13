@@ -16,7 +16,7 @@ class UserKaruSeeder extends Seeder
         $karu = Karu::get();
 
         foreach ($karu as $keyKaru) {
-            $users = Users::where('id_tkbm', $keyKaru->id)->first();
+            $users = Users::where('id_karu', $keyKaru->id)->first();
 
             $username = trim(str_replace(' ', '', strtolower($keyKaru->nama)));
             $username = str_replace('.', '', $username);
