@@ -391,6 +391,7 @@ function loadListAktivitas(id_gudang) {
             $("#label_aktivitas_gudang").html("Aktivitas Gudang <strong>" + response.data.nama_gudang +"</strong>");
             let html = "";
             obj.forEach(element => {
+                console.log(element);
                 html += `<tr>
                             <td class="text-left">${element.aktivitas.nama}</td>
                             <td>
