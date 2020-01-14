@@ -26,7 +26,6 @@ class AktivitasHarian extends Model
     protected static function boot()
     {
         parent::boot();
-        static::addGlobalScope(new EndDateScope);
     }
 
     public function aktivitas()

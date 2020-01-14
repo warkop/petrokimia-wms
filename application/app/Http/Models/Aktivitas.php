@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use App\Scopes\EndDateScope;
 use Illuminate\Support\Facades\DB;
 
 class Aktivitas extends CustomModel
@@ -23,6 +24,12 @@ class Aktivitas extends CustomModel
     protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
     public $timestamps  = false;
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new EndDateScope);
+    }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
