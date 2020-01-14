@@ -390,12 +390,14 @@ function loadListAktivitas(id_gudang) {
             $("#label_aktivitas_gudang").html("Aktivitas Gudang <strong>" + response.data.nama_gudang +"</strong>");
             let html = "";
             obj.forEach(element => {
-                html += `<tr>
-                            <td class="text-left">${element.aktivitas.nama}</td>
-                            <td>
-                                <button type="button" class="btn btn-danger btn-sm _btnHapus" onclick="removeAktivitas(${element.id_gudang}, ${element.id_aktivitas})" ><i class="fa fa-trash"></i> Hapus</button>
-                            </td>
-                        </tr>`;
+                if (element.aktivitas != null) {
+                    html += `<tr>
+                                <td class="text-left">${element.aktivitas.nama}</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm _btnHapus" onclick="removeAktivitas(${element.id_gudang}, ${element.id_aktivitas})" ><i class="fa fa-trash"></i> Hapus</button>
+                                </td>
+                            </tr>`;
+                }
             });
 
             $("#list_aktivitas").html(html);
