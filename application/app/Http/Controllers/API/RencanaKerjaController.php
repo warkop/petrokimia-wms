@@ -142,9 +142,21 @@ class RencanaKerjaController extends Controller
         ], 200);
     }
 
-    public function store(ApiRencanaKerjaRequest $req, $draft = 0, RencanaHarian $rencanaHarian)
+    public function store(ApiRencanaKerjaRequest $req, $draft = 0, $id='')
     {
         $req->validated();
+
+        if (!empty($id)) {
+            $rencanaHarian = RencanaHarian::find($id);
+            if (!empty($rencanaHarian) && $rencanaHarian->draft == 0) {
+                $this->responseCode = 403;
+                $this->responseMessage = 'Rencana Kerja tidak dalam status draft, Anda tidak bisa mengubahnya.';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+        } else {
+            $rencanaHarian = new RencanaHarian;
+        }
 
         $user = $req->get('my_auth');
 
