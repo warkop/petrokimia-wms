@@ -51,7 +51,7 @@
                     </div>
                     <div class="mt1" id="textadd" style="display:none;">
                         <select class="form-control m-select2" id="material" name="pilih_material[]" multiple="multiple" style="width:100%">
-                            @foreach ($pallet as $item)
+                            @foreach ($produk as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>
                             @endforeach
                         </select>

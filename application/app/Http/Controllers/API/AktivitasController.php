@@ -218,6 +218,10 @@ class AktivitasController extends Controller
             $where->where(DB::raw('LOWER(tenaga_kerja_non_organik.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })
         ->where('id_rencana', $rencana_harian->id)
+        ->where(function($query) {
+            $query->where('tenaga_kerja_non_organik.end_date', null)
+            ->orWhere('tenaga_kerja_non_organik.end_date', '>=', now());
+        })
         ->get();
 
         return (new AktivitasResource($resource))->additional([
@@ -362,6 +366,10 @@ class AktivitasController extends Controller
         ->join('aktivitas_alat_berat', 'alat_berat_kat.id', '=', 'aktivitas_alat_berat.id_kategori_alat_berat')
         ->where('id_aktivitas', $id_aktivitas)
         ->where('id_rencana', $rencana_harian->id)
+        ->where(function($query){
+            $query->where('alat_berat_kat.end_date', null);
+            $query->orWhere('alat_berat_kat.end_date', '>=', now());
+        })
         ->orderBy('alat_berat.id', 'asc')
         ->get()
         ;
