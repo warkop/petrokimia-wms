@@ -127,6 +127,8 @@ class AktivitasController extends Controller
         $res = AktivitasGudang::join('aktivitas', 'aktivitas.id', '=', 'aktivitas_gudang.id_aktivitas')
             ->where('id_gudang', $gudang->id)
             ->whereNull('penerimaan_gi')
+            ->where('end_date', null)
+            ->orWhere('end_date', '>=', now())
             ->where(function ($where) use ($search) {
                 $where->where(DB::raw('nama'), 'ILIKE', '%' . strtolower($search) . '%');
             })
