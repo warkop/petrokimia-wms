@@ -387,11 +387,9 @@ function loadListAktivitas(id_gudang) {
         url: ajaxUrl + '/load-aktivitas-gudang/' + id_gudang,
         success: (response) => {
             const obj = response.data.data;
-            console.log(obj.data);
             $("#label_aktivitas_gudang").html("Aktivitas Gudang <strong>" + response.data.nama_gudang +"</strong>");
             let html = "";
             obj.forEach(element => {
-                console.log(element);
                 html += `<tr>
                             <td class="text-left">${element.aktivitas.nama}</td>
                             <td>
