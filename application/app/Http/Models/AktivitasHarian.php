@@ -2,6 +2,7 @@
 
 namespace App\Http\Models;
 
+use App\Scopes\EndDateScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,12 @@ class AktivitasHarian extends Model
     protected $dates = ['created_at'];
 
     public $timestamps  = false;
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new EndDateScope);
+    }
 
     public function aktivitas()
     {
