@@ -142,7 +142,7 @@ class RencanaKerjaController extends Controller
         ], 200);
     }
 
-    public function store(ApiRencanaKerjaRequest $req, $draft = false, RencanaHarian $rencanaHarian)
+    public function store(ApiRencanaKerjaRequest $req, $draft = 0, RencanaHarian $rencanaHarian)
     {
         $req->validated();
 
@@ -152,17 +152,6 @@ class RencanaKerjaController extends Controller
         RencanaAreaTkbm::where('id_rencana', $rencanaHarian->id)->forceDelete();
         RencanaAlatBerat::where('id_rencana', $rencanaHarian->id)->forceDelete();
         RencanaTkbm::where('id_rencana', $rencanaHarian->id)->forceDelete();
-        // if (!empty($id)) {
-        //     $rencana_harian = RencanaHarian::find($req->input('id'));
-        //     $rencana_harian->updated_by = $user->id_user;
-
-        //     RencanaAlatBerat::where('id_rencana', $rencana_harian->id)->forceDelete();
-        //     RencanaTkbm::where('id_rencana', $rencana_harian->id)->forceDelete();
-        //     RencanaAreaTkbm::where('id_rencana', $rencana_harian->id)->forceDelete();
-        // } else {
-        //     $rencana_harian = new RencanaHarian();
-        //     $rencana_harian->created_by             = $user->id_user;
-        // }
 
         $res_gudang = Gudang::where('id_karu', $res_user->id_karu)->first();
         if (empty($res_gudang)) {
@@ -184,7 +173,7 @@ class RencanaKerjaController extends Controller
         $rencanaHarian->id_shift               = $req->input('id_shift');
         $rencanaHarian->id_gudang              = $res_gudang->id;
         $rencanaHarian->start_date             = date("Y-m-d H:i:s");
-        
+        $rencanaHarian->draft                  = $draft;
         $rencanaHarian->save();
 
         //rencana alat berat
