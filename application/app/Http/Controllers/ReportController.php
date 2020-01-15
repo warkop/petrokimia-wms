@@ -888,7 +888,7 @@ class ReportController extends Controller
     public function laporanMutasiPallet()
     {
         $data['title'] = 'Laporan Pallet';
-        $data['gudang'] = Gudang::all();
+        $data['gudang'] = Gudang::internal()->get();
         $data['pallet'] = Material::pallet()->get();
         return view('report.mutasi-pallet.grid', $data);
     }
@@ -903,10 +903,12 @@ class ReportController extends Controller
 
         $res = new GudangStok;
         $res = $res->with('gudang');
+        // dd($gudang);
         if ($gudang) {
             $res = $res->where(function ($query) use ($gudang) {
+                // $query->where('id_gudang', $gudang[0]);
                 foreach ($gudang as $key => $value) {
-                    $query->where('id_gudang', $value);
+                    $query->orWhere('id_gudang', $value);
                 }
             });
         }
@@ -923,11 +925,13 @@ class ReportController extends Controller
             });
         }
 
+        // $res = $res->whereBetween('tanggal')
+
         $res = $res->orderBy('id_gudang', 'asc')->get();
 
         $nama_file = date("YmdHis") . '_mutasi_pallet.xlsx';
-        $this->generateExcelMutasiPallet($res, $nama_file, $tgl_awal, $tgl_akhir);
         // dd($res->toArray());
+        $this->generateExcelMutasiPallet($res, $nama_file, $tgl_awal, $tgl_akhir);
     }
 
     public function generateExcelMutasiPallet($res, $nama_file, $tgl_awal, $tgl_akhir)
@@ -1063,7 +1067,7 @@ class ReportController extends Controller
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Pemasukan');
 
-        $gudang = Gudang::all();
+        $gudang = Gudang::internal()->get();
         $abjadPemasukan = $abjadOri;
         $i = 0;
         $row = 6;
@@ -1155,18 +1159,23 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':' . $abjadPengeluaran . $row)->applyFromArray($style_ontop);
 
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
+            $objSpreadsheet->getActiveSheet()->mergeCells($abjad . $row . ':' . $abjad . ($row+3));
 
             $col++;
+            $abjad = chr(ord($abjad) + 1);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->gudang->nama); //nama gudang
+            $objSpreadsheet->getActiveSheet()->mergeCells($abjad . $row . ':' . $abjad . ($row + 3));
 
             $col++;
+            $abjad = chr(ord($abjad) + 1);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->material->nama); //nama pallet
-
+            $objSpreadsheet->getActiveSheet()->mergeCells($abjad . $row . ':' . $abjad . ($row + 3));
+            $abjad = 'A';
             $kondisi = [
                 'Terpakai',
                 'Tidak Terpakai',
-                'Dasaran',
                 'Rusak',
+                'Dasaran',
             ];
 
             $col++;
@@ -1898,7 +1907,7 @@ class ReportController extends Controller
     public function laporanMaterial()
     {
         $data['title'] = 'Laporan Material';
-        $data['gudang'] = Gudang::all();
+        $data['gudang'] = Gudang::internal()->get();
         $data['produk'] = Material::produk()->get();
         return view('report.material.grid', $data);
     }
@@ -1994,7 +2003,7 @@ class ReportController extends Controller
         // dd($res->toArray());
     }
 
-    public function generateExcelMaterial($res, $nama_file)
+    public function generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir)
     {
         $objSpreadsheet = new Spreadsheet();
 
@@ -2072,6 +2081,9 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Material');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
 
+        $row++;
+        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Peridode: '.date('d/m/Y', strtotime($tgl_awal)).' - ' . date('d/m/Y', strtotime($tgl_akhir)));
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
 
         $col = 1;
@@ -2083,8 +2095,8 @@ class ReportController extends Controller
 
 
         $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(15);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(15);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(35);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(35);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(15);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(25);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(25);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(25);
@@ -2242,18 +2254,21 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Totak Stok');    
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalStok);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_judul_kolom);
 
         $row++;
         $col = 1;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Totak Rusak');
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalRusak);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_judul_kolom);
 
         $row++;
         $col = 1;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Totak Normal');
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalNormal);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_judul_kolom);
 
         // $abjad++;
         $abjad2 = chr(ord($abjad) + 1);
