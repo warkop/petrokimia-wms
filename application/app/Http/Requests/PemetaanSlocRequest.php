@@ -72,7 +72,7 @@ class PemetaanSlocRequest extends FormRequest
                     $input[$key][$row] = filter_var($nilai, FILTER_SANITIZE_STRING);
                 }
             } else {
-                $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
+                $input[$key] = strip_tags($value);
             }
         }
 

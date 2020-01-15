@@ -63,7 +63,7 @@ class MaterialRequest extends FormRequest
     {
         $input = $this->all();
 
-        $input['nama'] = filter_var($input['nama'], FILTER_SANITIZE_STRING);
+        $input['nama'] = strip_tags($input['nama']);
         $input['start_date'] = filter_var(
             $input['start_date'],
             FILTER_SANITIZE_STRING

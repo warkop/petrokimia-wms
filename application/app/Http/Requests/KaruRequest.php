@@ -60,7 +60,7 @@ class KaruRequest extends FormRequest
     {
         $input = $this->all();
 
-        $input['nama'] = filter_var($input['nama'], FILTER_SANITIZE_STRING);
+        $input['nama'] = strip_tags($input['nama']);
         $input['nik'] = filter_var($input['nik'], FILTER_SANITIZE_STRING);
         $input['no_hp'] = filter_var($input['no_hp'], FILTER_SANITIZE_STRING);
         $input['nik'] = filter_var($input['nik'], FILTER_SANITIZE_STRING);

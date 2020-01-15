@@ -75,7 +75,7 @@ class UserRequest extends FormRequest
         $input = $this->all();
 
         foreach ($input as $key => $value) {
-            $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
+            $input[$key] = strip_tags($value);
         }
 
         if ($input['end_date'] != '') {
