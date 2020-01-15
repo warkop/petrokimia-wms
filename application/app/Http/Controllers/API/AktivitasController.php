@@ -1631,7 +1631,8 @@ class AktivitasController extends Controller
         ->join('material', 'material_trans.id_material', '=', 'material.id')
         ->where('id_aktivitas_harian', $id)
         ->where('kategori', 2)
-        ->orderBy('status_pallet', 'asc')
+        ->where('status_pallet', 1)
+        ->orderBy('material.nama', 'asc')
         ->get();
 
         $foto = AktivitasFoto::select(
