@@ -23,11 +23,6 @@ class AktivitasHarian extends Model
 
     public $timestamps  = false;
 
-    protected static function boot()
-    {
-        parent::boot();
-    }
-
     public function aktivitas()
     {
         return $this->hasOne(Aktivitas::class, 'id', 'id_aktivitas');
@@ -76,6 +71,11 @@ class AktivitasHarian extends Model
     public function materialTrans()
     {
         return $this->hasMany(MaterialTrans::class, 'id_aktivitas_harian', 'id');
+    }
+
+    public function aktivitasKeluhanGp()
+    {
+        return $this->hasMany(AktivitasKeluhanGp::class, 'id_aktivitas_harian', 'id');
     }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
