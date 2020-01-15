@@ -1905,24 +1905,24 @@ class ReportController extends Controller
 
     public function material(Request $request)
     {
-        $validator = Validator::make(
-            $request->all(),[
-            'gudang' => 'required',
-        ],[
-            'required' => ':attribute wajib diisi!',
-        ],[
-            'gudang' => 'Gudang'
-        ]);
+        // $validator = Validator::make(
+        //     $request->all(),[
+        //     'gudang' => 'required',
+        // ],[
+        //     'required' => ':attribute wajib diisi!',
+        // ],[
+        //     'gudang' => 'Gudang'
+        // ]);
 
-        if ($validator->fails()) {
-            return redirect('report/laporan-material')
-                ->withErrors($validator)
-                ->withInput();
-        }
+        // if ($validator->fails()) {
+        //     return redirect('report/laporan-material')
+        //         ->withErrors($validator)
+        //         ->withInput();
+        // }
 
         $gudang             = request()->input('gudang'); //multi
-        $pallet             = request()->input('pallet');
-        $pilih_pallet       = request()->input('pilih_pallet'); //multi
+        $material             = request()->input('material');
+        $pilih_material       = request()->input('pilih_material'); //multi
         $tgl_awal           = request()->input('tgl_awal') == null? '' : date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir          = request()->input('tgl_awal') == null ? '' : date('Y-m-d', strtotime(request()->input('tgl_akhir')));
 
@@ -1953,13 +1953,36 @@ class ReportController extends Controller
 
         // $res = $res->orderBy('id_gudang')->get();
 
-        $res = MaterialTrans::with('aktivitasHarian', 'aktivitasHarian.gudang', 'aktivitasHarian.gudangTujuan')->with('material')
+        $res = MaterialTrans::with('aktivitasHarian', 'aktivitasHarian.gudang', 'aktivitasHarian.gudangTujuan')
+        ->with('material')
         ->whereNotNull('id_aktivitas_harian')
         ->whereHas('material', function($query) {
             $query->where('kategori', 1);
         })
-        // ->orderBy('aktivitas_harian.id_gudang', 'asc')
+        
+        ->whereBetween('tanggal', [date('Y-m-d', strtotime($tgl_awal)), date('Y-m-d', strtotime($tgl_akhir))])
+        ->orderBy('id', 'asc')
         ;
+
+        if ($gudang != null) {
+            $res = $res->whereHas('aktivitasHarian', function ($query) use ($gudang) {
+                foreach ($gudang as $key => $value) {
+                    $query = $query->orWhere('id_gudang', $value);
+                }
+            });
+        }
+
+        if ($material == 2) {
+            $res = $res->where(function ($query) use ($pilih_material) {
+                foreach ($pilih_material as $key => $value) {
+                    $query = $query->orWhere('id_material', $value);
+                }
+            });
+        } else {
+            $res = $res->whereHas('material', function ($query) {
+                $query = $query->where('kategori', 1);
+            });
+        }
 
         $res = $res->get();
         // dd($res->toArray());
@@ -2059,10 +2082,13 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
 
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(7);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(15);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(15);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(35);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(25);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(25);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(25);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(25);
 
         // end : title
         // start : judul kolom
@@ -2139,8 +2165,8 @@ class ReportController extends Controller
         // $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row+1));
         $abjad = 'A';
         
-        // $row = 5;
-        // $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":". $abjadPengeluaran . ($row+1))->applyFromArray($style_judul_kolom);
+        $row = 5;
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":". $abjadOri . $row)->applyFromArray($style_judul_kolom);
         // $row = 6;
         // end : judul kolom
 
@@ -2178,6 +2204,19 @@ class ReportController extends Controller
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, (!empty($value->aktivitasHarian->gudangTujuan))?$value->aktivitasHarian->gudangTujuan->nama:'');
 
+            if ($value->tipe == 1) {
+                $totalStok -= $value->jumlah;
+            } else {
+                $totalStok += $value->jumlah;
+            }
+
+            if ($value->status_produk == 2) {
+                if ($value->tipe == 1) {
+                    $totalRusak -= $value->jumlah;
+                } else {
+                    $totalRusak += $value->jumlah;
+                }
+            }
 
             $style_no['alignment'] = array(
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
@@ -2193,6 +2232,9 @@ class ReportController extends Controller
                 )
             );
         }
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . 5 . ":" . $abjadOri . $row)->applyFromArray($style_kolom);
+
+        $totalNormal = $totalStok-$totalRusak;
         
         $row++;
         $row++;
@@ -2212,6 +2254,10 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Totak Normal');
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalNormal);
+
+        // $abjad++;
+        $abjad2 = chr(ord($abjad) + 1);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . ($row - 2) . ":" . $abjad2 . $row)->applyFromArray($style_kolom);
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle("Laporan Material");
         // end : isi kolom
