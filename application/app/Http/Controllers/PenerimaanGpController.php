@@ -109,16 +109,18 @@ class PenerimaanGpController extends Controller
 
         if (!empty($req->input('produk'))) {
             $produk = $req->input('produk');
-            foreach ($produk as $key => $value) {
-                $arr = [
-                    'id_aktivitas_harian'   => $aktivitasHarian->id,
-                    'id_material'           => $req->input('produk')[$key],
-                    'jumlah'                => $req->input('jumlah')[$key],
-                    'keluhan'               => $req->input('keluhan')[$key],
+            $arr = [];
+            AktivitasKeluhanGp::where('id_aktivitas_harian', $aktivitasHarian->id)->delete();
+            foreach ($produk as $key) {
+                $temp = [
+                    'id_material'   => $req->input('produk')[$key],
+                    'jumlah'        => $req->input('jumlah')[$key],
+                    'keluhan'       => $req->input('keluhan')[$key],
                 ];
+                array_push($arr, new AktivitasKeluhanGp($temp));
             }
-    
-            (new AktivitasKeluhanGp)->create($arr);
+
+            $aktivitasHarian->aktivitasKeluhanGp()->saveMany($arr);
         }
 
         return response()->json($req->all(), 200);
