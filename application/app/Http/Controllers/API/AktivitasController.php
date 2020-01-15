@@ -127,15 +127,17 @@ class AktivitasController extends Controller
         $res = AktivitasGudang::join('aktivitas', 'aktivitas.id', '=', 'aktivitas_gudang.id_aktivitas')
             ->where('id_gudang', $gudang->id)
             ->whereNull('penerimaan_gi')
-            ->where('end_date', null)
-            ->orWhere('end_date', '>=', now())
+            ->where(function($query){
+                $query->where('end_date', null);
+                $query->orWhere('end_date', '>=', now());
+            })
             ->where(function ($where) use ($search) {
                 $where->where(DB::raw('nama'), 'ILIKE', '%' . strtolower($search) . '%');
             })
             ->orderBy('id', 'desc');
 
         if ($user->role_id == 5) {
-            $res = $res->whereNotNull('peminjaman');
+            $res = $res->whereNotNull('aktivitas.peminjaman');
         } else {
             $res = $res->whereNull('peminjaman');
         }
