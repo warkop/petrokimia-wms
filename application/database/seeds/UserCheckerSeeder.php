@@ -13,7 +13,7 @@ class UserCheckerSeeder extends Seeder
      */
     public function run()
     {
-        $checker = TenagaKerjaNonOrganik::get();
+        $checker = TenagaKerjaNonOrganik::checker()->get();
 
         foreach ($checker as $keyChecker) {
             $users = Users::where('id_tkbm', $keyChecker->id)->first();
