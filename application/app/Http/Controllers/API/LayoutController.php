@@ -69,7 +69,13 @@ class LayoutController extends Controller
                 $where->where(DB::raw('LOWER(area.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('LOWER(g.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
             })
-            ->orderBy('area.created_at', 'asc')            
+            ->orderBy('area.created_at', 'asc')           
+            ->where(function($query){
+                $query->where('area.end_date', null)->orWhere('area.end_date', '>=', now());
+            })
+            ->where(function ($query) {
+                $query->where('g.end_date', null)->orWhere('g.end_date', '>=', now());
+            })
             ->withoutGlobalScopes()
             ->paginate(10);
 
