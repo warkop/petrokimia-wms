@@ -258,7 +258,7 @@
 <script src="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.js')}}"></script>
 <script type="text/javascript">
 const id_gudang = "{{$id_gudang}}";
-const id_aktivitas_harian = "{{$aktivitasHarian->id}}";
+const id_aktivitas_harian = "{{$id_aktivitas_harian}}";
 
 let datatable,
     tableTarget = "#kt_table_1",
