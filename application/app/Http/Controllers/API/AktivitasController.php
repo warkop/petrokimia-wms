@@ -251,7 +251,8 @@ class AktivitasController extends Controller
                 'area_stok.tanggal',
                 'area.tipe',
                 'area_stok.id_material',
-                DB::raw('COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.'),0) as jumlah')
+                DB::raw('COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.'),0) as jumlah'),
+                'area_stok.jumlah as jumlah_area',
             )
             ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
             ->where('id_gudang', $gudang->id)
