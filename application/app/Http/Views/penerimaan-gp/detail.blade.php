@@ -474,7 +474,7 @@ let datatable,
 
     function approve() {
          swal.fire({
-            title: 'Apakah Anda yakin ingin menyetujui keluhan ini?',
+            title: 'Apakah Anda yakin?',
             text: "Data yang sudah disetujui tidak bisa dibatalkan.",
             type: 'warning',
             showCancelButton: true,

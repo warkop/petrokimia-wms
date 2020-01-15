@@ -200,7 +200,7 @@ class GudangController extends Controller
         } else {
             $this->responseData = [];
             $this->responseStatus = 'No Data Available';
-            $this->responseMessage = 'Data Jalan tidak tersedia';
+            $this->responseMessage = 'Data Aktivitas tidak tersedia';
         }
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);

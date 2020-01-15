@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Models\Gudang;
 use App\Http\Models\Karu;
 use App\Http\Requests\KaruRequest;
 use App\Scopes\EndDateScope;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class KaruController extends Controller
 {
@@ -14,6 +16,7 @@ class KaruController extends Controller
         $data['title'] = 'Master Kepala Regu';
         $data['menu_active'] = 'master';
         $data['sub_menu_active'] = 'kepala regu';
+        $data['gudang'] = Gudang::internal()->get();
         return view('master.master-karu.grid', $data);
     }
 
@@ -69,6 +72,7 @@ class KaruController extends Controller
             'nama'      => $req->nama,
             'nik'       => $req->nik,
             'no_hp'     => $req->no_hp,
+            'id_gudang' => $req->gudang,
             'start_date'=> $req->start_date,
             'end_date'  => $req->end_date,
         ])->save();
@@ -106,6 +110,30 @@ class KaruController extends Controller
             $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
             return response()->json($response, $this->responseCode);
         }
+    }
+
+    public function getGudang(Request $req)
+    {
+        $search = $req->input('term');
+        $pattern = '/[^a-zA-Z0-9 !@#$%^&*\/\.\,\(\)-_:;?\+=]/u';
+        $search = preg_replace($pattern, '', $search);
+
+        $res = Gudang::internal()
+        ->where(DB::raw('LOWER(nama)'), 'LIKE', "%" . strtolower($search) . "%")
+        ->get();
+
+        if (!empty($res)) {
+            $this->responseCode = 200;
+            $this->responseMessage = 'Data tersedia.';
+            $this->responseData = $res;
+        } else {
+            $this->responseData = [];
+            $this->responseStatus = 'No Data Available';
+            $this->responseMessage = 'Data Karu tidak tersedia';
+        }
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 
     /**

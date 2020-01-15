@@ -36,6 +36,7 @@
                         <th>Nama</th>
                         <th>NIK</th>
                         <th>No. Hp</th>
+                        <th>Gudang</th>
                         <th>Start Date</th>
                         <th>End Date</th>
 						<th>Actions</th>
@@ -76,6 +77,15 @@
                             <div class="form-group">
                                 <label>Nomor Hp</label>
                                 <input type="text" class="form-control" id="no_hp" name="no_hp" placeholder="Masukkan nomor hp">
+                            </div>
+                            <div class="form-group" id="_pilih_gudang">
+                                <label>Pilih Gudang</label>
+                                <select class="form-control select2Custom m-select2" id="gudang" name="gudang" aria-placeholder="Pilih Gudang" style="width: 100%;">
+                                    <option disabled selected>Pilih Gudang</option>
+                                    @foreach ($gudang as $item)
+                                        <option value="{{$item->id}}">{{$item->nama}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -152,8 +162,9 @@
 
 <script src="{{asset('assets/extends/js/page/master-karu.js')}}" type="text/javascript"></script>
 <script>
-$('#kt_select2_1').select2({
-    placeholder: "Pilih job desk"
+$('#gudang').select2({
+    placeholder: "Pilih Gudang",
+    dropdownParent: $("#_pilih_gudang")
 });
 $('#end_date').datepicker({
     rtl: KTUtil.isRTL(),

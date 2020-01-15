@@ -84,6 +84,11 @@ class Gudang extends Model
         return $this->belongsTo(Karu::class, 'id_karu');
     }
 
+    public function scopeInternal($query)
+    {
+        return $query->where('tipe_gudang', 1);
+    }
+
     public function scopeGp($query)
     {
         return $query->where('tipe_gudang', 2);

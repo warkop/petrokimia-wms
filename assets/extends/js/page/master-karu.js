@@ -59,6 +59,9 @@ let load_table = function () {
                 "mData": "no_hp"
             },
             {
+                "mData": "nama_gudang"
+            },
+            {
                 "mData": "start_date"
             },
             {
@@ -121,7 +124,33 @@ function tambah() {
         backdrop: 'static',
         keyboard: false
     }, 'show');
+    // loadGudang();
     $('#start_date').val(helpDateFormat(Date.now(), 'si'));
+}
+
+function loadGudang(id='') {
+    $.ajax({
+        url: ajaxUrl + "/" + "get-gudang/",
+        success: res => {
+            const obj = res.data;
+            let html = `<option value="">Pilih Gudang</option>`;
+            obj.forEach((item, index) => {
+                html += `<option value="${item.id}">${item.nama}</option>`;
+            });
+
+            $("#gudang").html(html);
+            if (id) {
+                $("#gudang").val(produk.id_material);
+            }
+
+            // if (edit == false) {
+            //     $("#produk-" + no).select2({
+            //         disabled: true
+            //     });
+            // }
+        },
+        error: () => { }
+    });
 }
 
 function edit(id = '') {
@@ -155,6 +184,10 @@ function edit(id = '') {
                 $('#nama').val(obj.data['nama']);
                 $('#nik').val(obj.data['nik']);
                 $('#no_hp').val(obj.data['no_hp']);
+                $('#gudang').val(obj.data['id_gudang']).trigger('change.select2');;
+
+                // loadGudang(obj.data['id_gudang']);
+
                 if (obj.data['start_date'] != null) {
                     $('#start_date').val(helpDateFormat(obj.data['start_date'], 'si'));
                 }
@@ -291,6 +324,8 @@ function reset_form(method = '') {
     $('#nama').change();
     $('#nik').val('');
     $('#nik').change();
+    $('#gudang').val('');
+    $('#gudang').change();
     $('#no_hp').val('');
     $('#no_hp').change();
     $('#end_date').val('');

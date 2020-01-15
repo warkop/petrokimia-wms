@@ -35,6 +35,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
 
     Route::group(['prefix' => 'master-karu'], function () {
         Route::get('/', 'KaruController@index');
+        Route::get('/get-gudang', 'KaruController@getGudang');
         Route::put('/', 'KaruController@store');
         Route::patch('/{karu}', 'KaruController@store')->where('karu', '[0-9]+');
         Route::post('/', 'KaruController@json');
