@@ -7,6 +7,7 @@ use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
+use App\Http\Models\Karu;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
 use App\Http\Models\RencanaHarian;
@@ -60,7 +61,8 @@ class ApiAktivitasPengembalianRequest extends FormRequest
         $my_auth = request()->get('my_auth');
         $user = Users::findOrFail($my_auth->id_user);
 
-        $gudang = Gudang::where('id_karu', $user->id_karu)->first();
+        $karu = Karu::find($user->id_karu);
+        $gudang = Gudang::find($karu->id_gudang);
 
         return $gudang;
     }

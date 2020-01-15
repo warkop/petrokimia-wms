@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\AlatBerat;
 use App\Http\Models\Area;
 use App\Http\Models\Gudang;
+use App\Http\Models\Karu;
 use App\Http\Models\Material;
 use App\Http\Models\Realisasi;
 use App\Http\Models\RealisasiHousekeeper;
@@ -94,7 +95,8 @@ class RencanaHarianController extends Controller
 
         $users = Users::findOrFail(auth()->id());
 
-        $res_gudang = Gudang::where('id_karu', $users->id_karu)->first();
+        $karu = Karu::find($users->id_karu);
+        $res_gudang = Gudang::find($karu->id_gudang);
 
         //rencana harian
         $rencana_harian->tanggal                = date('Y-m-d');
@@ -287,7 +289,8 @@ class RencanaHarianController extends Controller
     {
         $users = Users::find(auth()->id());
         if ($id_gudang == '') {
-            $gudang = Gudang::where('id_karu', $users->id_karu)->first();
+            $karu = Karu::find($users->id_karu);
+            $gudang = Gudang::find($karu->id_gudang);
             if (!empty($gudang)) {
                 $res = Area::where('id_gudang', $gudang->id)->get();
         
@@ -422,8 +425,9 @@ class RencanaHarianController extends Controller
     public function getGudang()
     {
         $user = auth()->user();
-        
-        $gudang = Gudang::where('id_karu', $user->id_karu)->get();
+
+        $karu = Karu::find($user->id_karu);
+        $gudang = Gudang::find($karu->id_gudang);
         $this->responseData = $gudang;
         $this->responseCode = 200;
 

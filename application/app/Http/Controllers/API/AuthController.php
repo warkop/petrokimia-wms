@@ -6,6 +6,7 @@ use App\Http\Models\Users;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Gudang;
+use App\Http\Models\Karu;
 use App\Http\Models\Realisasi;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
@@ -150,7 +151,8 @@ class AuthController extends Controller
 
                         $arr['nama_gudang'] = '';
                         if ($m_user->id_karu != null) {
-                            $gudang = Gudang::where('id_karu', $m_user->id_karu)->first();
+                            $karu = Karu::find($m_user->id_karu);
+                            $gudang = Gudang::find($karu->id_gudang);
                             if (empty($gudang)) {
                                 $this->responseCode = 500;
                                 $this->responseMessage = 'Karu belum terdaftar pada gudang manapun!';

@@ -7,6 +7,7 @@ use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
+use App\Http\Models\Karu;
 use App\Http\Models\Material;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
@@ -72,7 +73,8 @@ class ApiAktivitasRequest extends FormRequest
                 }
             }
         } else if ($user->role_id == 5) {
-            $gudang = Gudang::where('id_karu', $user->id_karu)->first();
+            $karu = Karu::find($user->id_karu);
+            $gudang = Gudang::find($karu->id_gudang);
             if (!empty($gudang)) {
                 return $gudang;
             }

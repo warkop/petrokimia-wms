@@ -8,6 +8,7 @@ use App\Http\Models\Area;
 use App\Http\Models\AreaHousekeeperFoto;
 use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
+use App\Http\Models\Karu;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
 use App\Http\Models\Realisasi;
@@ -71,7 +72,8 @@ class RealisasiController extends Controller
     {
         $user = $req->get('my_auth');
         $users = Users::findOrFail($user->id_user);
-        $gudang = Gudang::where('id_karu', $users->id_karu)->first();
+        $karu = Karu::findOrFail($users->id_karu);
+        $gudang = Gudang::findOrFail($karu->id_gudang);
 
         $res = Material::select(
             'material.id',
@@ -98,7 +100,8 @@ class RealisasiController extends Controller
 
         $users = Users::findOrFail($user->id_user);
         if ($id_gudang == '') {
-            $gudang = Gudang::where('id_karu', $users->id_karu)->first();
+            $karu = Karu::find($users->id_karu);
+            $gudang = Gudang::find($karu->id_gudang);
             if (!empty($gudang)) {
                 $res = Area::where('id_gudang', $gudang->id)->get();
 
@@ -302,7 +305,8 @@ class RealisasiController extends Controller
     {
         $req->validate();
         $user = $req->get('my_auth');
-        $gudang = Gudang::where('id_karu', $user->id_karu)->first();
+        $karu = Karu::find($user->id_karu);
+        $gudang = Gudang::find($karu->id_gudang)->first();
         $rencana_harian = RencanaHarian::where('id_gudang', $gudang->id)->orderBy('id', 'desc')->first();
 
         if (empty($rencana_harian)) {

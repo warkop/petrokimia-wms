@@ -433,7 +433,7 @@ class AktivitasController extends Controller
 
         $aktivitasHarian->id_aktivitas      = $req->input('id_aktivitas');
         $aktivitasHarian->id_gudang         = $gudang->id;
-        $aktivitasHarian->id_karu           = $gudang->id_karu;
+        // $aktivitasHarian->id_karu           = $gudang->id_karu;
         $aktivitasHarian->id_gudang_tujuan  = $req->input('id_gudang_tujuan');
         $aktivitasHarian->ref_number        = $req->input('ref_number');
         $aktivitasHarian->id_alat_berat     = $req->input('id_alat_berat');
@@ -831,7 +831,7 @@ class AktivitasController extends Controller
                 $wannaSave->ref_number        = $aktivitasHarian->id;
                 $wannaSave->id_aktivitas      = $aktivitasGudang->id_aktivitas;
                 $wannaSave->id_gudang         = $gudang->id;
-                $wannaSave->id_karu           = $gudang->id_karu;
+                // $wannaSave->id_karu           = $gudang->id_karu;
                 $wannaSave->id_shift          = $rencana_tkbm->id_shift;
                 $wannaSave->id_area           = $req->input('id_pindah_area');
                 $wannaSave->id_alat_berat     = $req->input('id_alat_berat');
@@ -1370,7 +1370,7 @@ class AktivitasController extends Controller
         $wannaSave->ref_number        = $aktivitasHarian->id;
         $wannaSave->id_aktivitas      = $aktivitasHarian->id_aktivitas;
         $wannaSave->id_gudang         = $gudang->id;
-        $wannaSave->id_karu           = $gudang->id_karu;
+        // $wannaSave->id_karu           = $gudang->id_karu;
         // $wannaSave->id_shift          = $rencana_tkbm->id_shift;
         $wannaSave->id_area           = $req->input('id_pindah_area');
         $wannaSave->id_alat_berat     = $req->input('id_alat_berat');

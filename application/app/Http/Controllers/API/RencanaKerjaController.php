@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\AlatBerat;
 use App\Http\Models\Area;
 use App\Http\Models\Gudang;
+use App\Http\Models\Karu;
 use App\Http\Models\RencanaAlatBerat;
 use App\Http\Models\RencanaAreaTkbm;
 use App\Http\Models\RencanaHarian;
@@ -27,7 +28,8 @@ class RencanaKerjaController extends Controller
     {
         $user = $req->get('my_auth');
         $res_user = Users::findOrFail($user->id_user);
-        $res_gudang = Gudang::where('id_karu', $res_user->id_karu)->first();
+        $karu = Karu::find($res_user->id_karu);
+        $res_gudang = Gudang::find($karu->id_gudang);
 
         $search = $req->input('search');
 
@@ -165,7 +167,8 @@ class RencanaKerjaController extends Controller
         RencanaAlatBerat::where('id_rencana', $rencanaHarian->id)->forceDelete();
         RencanaTkbm::where('id_rencana', $rencanaHarian->id)->forceDelete();
 
-        $res_gudang = Gudang::where('id_karu', $res_user->id_karu)->first();
+        $karu = Karu::find($res_user->id_karu);
+        $res_gudang = Gudang::find($karu->id_gudang);
         if (empty($res_gudang)) {
             $this->responseCode = 403;
             $this->responseMessage = 'Karu ini tidak terdaftar pada gudang manapun! Silahkan daftarkan terlebih dahulu.';
@@ -293,7 +296,7 @@ class RencanaKerjaController extends Controller
 
     public function getShift()
     {
-        $res = ShiftKerja::get();
+        $res = ShiftKerja::orderBy('id')->get();
 
         $this->responseCode = 200;
         $this->responseMessage = 'Data tersedia.';
@@ -349,7 +352,8 @@ class RencanaKerjaController extends Controller
         $users = Users::findOrFail($user->id_user);
 
         if ($id_gudang == '') {
-            $gudang = Gudang::where('id_karu', $users->id_karu)->first();
+            $karu = Karu::find($users->id_karu);
+            $gudang = Gudang::find($karu->id_gudang);
             if (!empty($gudang)) {
                 $res = Area::where('id_gudang', $gudang->id)->get();
 

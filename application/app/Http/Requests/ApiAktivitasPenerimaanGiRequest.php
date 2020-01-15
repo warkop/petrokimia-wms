@@ -44,7 +44,9 @@ class ApiAktivitasPenerimaanGiRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        $my_auth = request()->get('my_auth');
+        $res_user = Users::findOrFail($my_auth->id_user);
+        return $res_user->role_id == 3;
     }
 
     public function getRencana()

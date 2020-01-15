@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
+use App\Http\Models\Karu;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use App\Http\Resources\AktivitasResource;
@@ -32,7 +33,8 @@ class LayoutController extends Controller
             $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
             $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
         } else if (request()->get('my_auth')->role == 5) {
-            $gudang = Gudang::where('id_karu', request()->get('my_auth')->id_karu)->first();
+            $karu   = Karu::find(request()->get('my_auth')->id_karu);
+            $gudang = Gudang::find($karu->id_gudang);
         } else {
             return false;
         }
