@@ -17,6 +17,7 @@ use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
+use App\Http\Models\Karu;
 use App\Http\Models\KategoriAlatBerat;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
@@ -61,7 +62,8 @@ class AktivitasController extends Controller
             $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
             $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
         } else if (request()->get('my_auth')->role == 5) {
-            $gudang = Gudang::where('id_karu', request()->get('my_auth')->id_karu)->first();
+            $karu   = Karu::find(request()->get('my_auth')->id_karu);
+            $gudang = Gudang::find($karu->id_gudang);
         } else {
             return false;
         }
@@ -252,7 +254,7 @@ class AktivitasController extends Controller
                 'area.tipe',
                 'area_stok.id_material',
                 DB::raw('COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.'),0) as jumlah'),
-                'area_stok.jumlah as jumlah_area',
+                'area_stok.jumlah as jumlah_area'
             )
             ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
             ->where('id_gudang', $gudang->id)
