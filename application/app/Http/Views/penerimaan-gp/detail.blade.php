@@ -80,7 +80,7 @@
                             <div class="kt-widget4__item border-bottom-dash">
                                 <div class="kt-widget4__info">
                                     <p class="kt-widget4__username">
-                                        {{$item->material->nama??'-'}} - <span class="boldd">{{$item->jumlah/1000}} Ton</span>
+                                        {{$item->material->nama??'-'}} - <span class="boldd">{{$item->jumlah}} Ton</span>
                                     </p>
                                      @if ($item->tipe == 1)
                                         <p class="kt-widget4__text color-oren boldd">
@@ -221,8 +221,9 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>
+            <span class="kt-badge kt-badge--warning kt-badge--inline">Untuk angka desimal pemisahnya menggunakan simbol titik</span>
             <form id="form1">
-            <div class="modal-body">
+                <div class="modal-body">
                 <div class="row mb2">
                     <div class="col-8">
                         <h5 class="boldd">List Produk</h5>
@@ -341,7 +342,7 @@ let datatable,
         @endif
         $('.select2Custom').select2({
             placeholder: "Pilih Produk",
-            dropdownParent:$("#kt_keluhan")
+            dropdownParent:$(`#baris-produk-${rows}`)
         });
         
          
@@ -358,7 +359,7 @@ let datatable,
                 const obj = res.data;
                 let html = `<option value="">Pilih Produk</option>`;
                 obj.forEach((item, index) => {
-                    html += `<option value="${item.id}">${item.nama}</option>`;
+                    html += `<option value="${item.material.id}">${item.material.nama}</option>`;
                 });
 
                 $(target).html(html);
@@ -595,7 +596,6 @@ let datatable,
                                 </div>`;
                     }
                 });
-                console.log(temp)
                 // console.log($("#accordionExample5"));
                 $("#tempat_card").html(temp);
                 // console.log(temp);

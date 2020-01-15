@@ -74,8 +74,18 @@ class PenerimaanGpController extends Controller
         if ($id_aktivitas_harian) {
             $keluhan = AktivitasKeluhanGp::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
         }
-        $data = Material::where('nama', 'ILIKE', '%'.strtolower($search).'%')->where('kategori', 1)->orderBy('nama', 'asc')->get();
+        // $data = Material::where('nama', 'ILIKE', '%'.strtolower($search).'%')->where('kategori', 1)->orderBy('nama', 'asc')->get();
         
+        $data = MaterialTrans::
+        with('material')
+        ->whereHas('aktivitasHarian.aktivitas', function($query) {
+            $query->whereNotNull('pengiriman');
+        })
+        ->whereHas('material', function($query) use($search) {
+            $query->where('kategori', 1);
+            $query->where('nama', 'ILIKE', '%' . strtolower($search) . '%');
+        })
+        ->get();
         
         return response()->json(['data' => $data, 'keluhan' => $keluhan], 200);
     }
@@ -145,18 +155,18 @@ class PenerimaanGpController extends Controller
         $data['aktivitasHarian'] = $aktivitasHarian;
         $data['id_aktivitas_harian'] = $aktivitasHarian->id;
         $data['aktivitasFoto'] = AktivitasFoto::withoutGlobalScopes()->where('id_aktivitas_harian', $aktivitasHarian->id)->get();
-        $res = AreaStok::select(
-            'id_area',
-            'nama',
-            'jumlah'
-        )
-        ->leftJoin('area', 'area.id', '=', 'area_stok.id_area');
+        // $res = AreaStok::select(
+        //     'id_area',
+        //     'nama',
+        //     'jumlah'
+        // )
+        // ->leftJoin('area', 'area.id', '=', 'area_stok.id_area');
 
-        $res = AreaStok::with('area')->get();
+        // $res = AreaStok::with('area')->get();
 
         $produk = MaterialTrans::with('material')
         ->where('id_aktivitas_harian', $aktivitasHarian->id)
-        ->where('status_produk', 1)
+        ->whereNotNull('status_produk')
         ->get();
         $data['produk'] = MaterialTransResource::collection($produk);
         $pallet = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_pallet')->get();
