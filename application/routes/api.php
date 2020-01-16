@@ -52,7 +52,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/history/{id}', 'API\AktivitasController@detailHistory')->where('id', '[0-9]+');
         Route::get('/history/{id}/{id_material}', 'API\AktivitasController@historyMaterialArea')->where(['id' => '[0-9]+', 'id_material' => '[0-9]+']);
         Route::get('/{aktivitas}', 'API\AktivitasController@show')->where('aktivitas', '[0-9]+');
-        Route::put('/{aktivitas?}', 'API\AktivitasController@store')->where('aktivitas', '[0-9]+');
+        Route::put('/{draft?}/{id?}', 'API\AktivitasController@store')->where('id', '[0-9]+')->where('draft', '[0-1]+');
         Route::post('/{aktivitas?}', 'API\AktivitasController@storePhotos')->where('aktivitas', '[0-9]+');
         Route::post('/kelayakan', 'API\AktivitasController@storeKelayakanPhotos');
         Route::put('/save-pengembalian', 'API\AktivitasController@storePengembalian');

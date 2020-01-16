@@ -407,13 +407,28 @@ class AktivitasController extends Controller
         }
     }
 
-    public function store(ApiAktivitasRequest $req, AktivitasHarian $aktivitasHarian) //menyimpan aktivitas harian secara reguler
+    public function store(ApiAktivitasRequest $req, $draft=0, $id='') //menyimpan aktivitas harian secara reguler
     {
         $req->validated();
 
         $user       = $req->get('my_auth');
         $res_user   = Users::findOrFail($user->id_user);
         $gudang     = $this->getCheckerGudang();
+
+        if (!empty($id)) {
+            $aktivitasHarian = AktivitasHarian::find($id);
+            if (!empty($aktivitasHarian) && $aktivitasHarian->draft == 0) {
+                $this->responseCode = 403;
+                $this->responseMessage = 'Aktivitas tidak dalam status draft, Anda tidak bisa mengubahnya.';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+            $aktivitasHarian->updated_by = $res_user->id;
+        } else {
+            $aktivitasHarian = new AktivitasHarian;
+            $aktivitasHarian->created_by        = $res_user->id;
+            $aktivitasHarian->updated_by        = $res_user->id;
+        }
 
         //simpan aktivitas
         if ($res_user->role_id == 3) {
@@ -446,8 +461,7 @@ class AktivitasController extends Controller
         $aktivitasHarian->so                = $req->input('so');
         $aktivitasHarian->id_yayasan        = $req->input('id_yayasan');
         $aktivitasHarian->id_tkbm           = $req->input('id_tkbm');
-        $aktivitasHarian->created_by        = $res_user->id;
-        $aktivitasHarian->created_at        = date('Y-m-d H:i:s');
+        $aktivitasHarian->draft             = $draft;
 
         $aktivitasHarian->save();
 
@@ -1559,17 +1573,26 @@ class AktivitasController extends Controller
             'aktivitas_harian.id',
             'aktivitas_harian.id_aktivitas',
             'aktivitas.nama as nama_aktivitas',
-            DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
-                    AS text_gudang'),
             'nomor_lambung',
-                DB::raw('(SELECT nama FROM alat_berat_kat WHERE id = id_kategori)
-                    AS kategori'),
             'sistro',
             'internal_gudang',
             'ttd',
             'id_gudang',
+            'id_alat_berat',
+            'approve',
+            'id_gudang_tujuan',
             'aktivitas_harian.so',
             'id_yayasan',
+            'aktivitas.peminjaman',
+            'aktivitas_harian.dikembalikan',
+            'id_tkbm',
+            'alasan',
+            'ttd',
+            'draft',
+            DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
+                    AS text_gudang'),
+            DB::raw('(SELECT nama FROM alat_berat_kat WHERE id = id_kategori)
+                    AS kategori'),
             DB::raw('(SELECT nama FROM yayasan WHERE id = id_yayasan)
                     AS text_yayasan'),
             DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
@@ -1594,8 +1617,6 @@ class AktivitasController extends Controller
                 WHEN peminjaman IS NOT NULL THEN
                     \'Peminjaman\'
             END AS jenis_aktivitas'),
-            'aktivitas.peminjaman',
-            'aktivitas_harian.dikembalikan',
             DB::raw('CASE WHEN dikembalikan IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_peminjaman'),
             DB::raw('CASE WHEN approve IS NOT NULL OR internal_gudang IS NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
             'aktivitas_harian.created_at',

@@ -21,7 +21,7 @@ class AktivitasHarian extends Model
 
     protected $dates = ['created_at'];
 
-    public $timestamps  = false;
+    public $timestamps  = true;
 
     public function aktivitas()
     {
