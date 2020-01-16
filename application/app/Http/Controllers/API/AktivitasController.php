@@ -1655,7 +1655,7 @@ class AktivitasController extends Controller
         ->join('material', 'material_trans.id_material', '=', 'material.id')
         ->where('id_aktivitas_harian', $id)
         ->where('kategori', 2)
-        ->where('status_pallet', 1)
+        ->whereNotNull('status_pallet')
         ->orderBy('material.nama', 'asc')
         ->get();
 
