@@ -179,7 +179,7 @@ class RealisasiController extends Controller
         }
 
         $housekeeper    = $req->input('housekeeper');
-        $housekeeper    = array_values($housekeeper);
+        $housekeeper    = array_values((array)$housekeeper);
 
        
 
