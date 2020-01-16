@@ -9,25 +9,19 @@
 </script>
 
 
+
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
     <div class="kt-portlet">
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
-                    {{-- <i class="la la-group"></i> &nbsp; --}}
                     Laporan Keluhan GP
                 </h4>
                 <p class="sub">
                     Berikut ini adalah form report keluhan gp pada <span class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
                 </p>
             </div>
-            {{-- <div class="kt-portlet__head-toolbar">
-                <div class="kt-portlet__head-group pt-4">
-                    <a href="{{url('/add-rencana-harian')}}" class="btn btn-wms btn-elevate btn-elevate-air"><i
-                class="la la-plus"></i> Tambah Data</a>
-        </div>
-    </div> --}}
         </div>
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
@@ -111,7 +105,11 @@
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="offset-lg-2">
-                        <a href="{{asset('assets/reports/keluhan-gp/keluhan-gp.xlsx')}}" class="btn btn-success" download> <i class="fa fa-print"></i> Cetak Laporan</a>
+                        <form action="{{ url('report/keluhan-gp') }}" method="GET">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-print"></i> Cetak Laporan
+                        </button>
+                    </form>
                     </div>
                 </div>
             </div>

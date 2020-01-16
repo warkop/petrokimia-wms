@@ -111,7 +111,7 @@ class PenerimaanGpController extends Controller
             $produk = $req->input('produk');
             $arr = [];
             AktivitasKeluhanGp::where('id_aktivitas_harian', $aktivitasHarian->id)->delete();
-            foreach ($produk as $key) {
+            foreach ($produk as $key => $value) {
                 $temp = [
                     'id_material'   => $req->input('produk')[$key],
                     'jumlah'        => $req->input('jumlah')[$key],
