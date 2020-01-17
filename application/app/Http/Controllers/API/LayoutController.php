@@ -79,7 +79,7 @@ class LayoutController extends Controller
                 $query->where('g.end_date', null)->orWhere('g.end_date', '>=', now());
             })
             ->withoutGlobalScopes()
-            ->get();
+            ->paginate(10);
 
         $obj =  AktivitasResource::collection($res)->additional([
             'status' => [
