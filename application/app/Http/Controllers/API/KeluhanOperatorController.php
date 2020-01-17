@@ -4,10 +4,15 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Models\Karu;
 use App\Http\Models\Keluhan;
 use App\Http\Models\KeluhanOperator;
+use App\Http\Models\Realisasi;
+use App\Http\Models\RencanaHarian;
+use App\Http\Models\RencanaTkbm;
 use App\Http\Models\TenagaKerjaNonOrganik;
 use App\Http\Requests\KeluhanOperatorRequest;
+use App\Http\Resources\KeluhanGetOperatorResource;
 use App\Http\Resources\KeluhanOperatorResource;
 use Illuminate\Support\Facades\DB;
 
@@ -69,17 +74,50 @@ class KeluhanOperatorController extends Controller
 
     public function getOperator()
     {
-        $res = TenagaKerjaNonOrganik::operatorAlatBerat()->get();
+        $my_auth = request()->get('my_auth');
+        $karu = Karu::find($my_auth->id_karu);
+        $rencanaHarian = RencanaHarian::where('id_gudang', $karu->id_gudang)
+        ->where('start_date', '<', date('Y-m-d H:i:s'))
+        ->where('end_date', '>', date('Y-m-d H:i:s'))
+        ->where('id_gudang', $karu->id_gudang)
+        ->orderBy('id', 'desc')
+        ->first();
 
-        $data = [
-            'data' => $res,
-            'status' => [
-                'message' => '',
-                'code' => 200,
-            ],
-        ];
+        if (empty($rencanaHarian)) {
+            $data = [
+                'data' => [],
+                'status' => [
+                    'message' => 'Rencana Kerja tidak ditemukan!',
+                    'code' => 403,
+                ],
+            ];
 
-        return response()->json($data, 200);
+            return response()->json($data, 403);
+        }
+
+        $realisasi = Realisasi::where('id_rencana', $rencanaHarian->id)->first();
+        if (empty($realisasi)) {
+            $res = RencanaTkbm::operator()->with('tkbm')->where('id_rencana', $rencanaHarian->id)->get();
+            $data = [
+                'data' => KeluhanGetOperatorResource::collection($res),
+                'status' => [
+                    'message' => '',
+                    'code' => 200,
+                ],
+            ];
+    
+            return response()->json($data, 200);
+        } else {
+            $data = [
+                'data' => [],
+                'status' => [
+                    'message' => 'Rencana Kerja sudah terealisasi!',
+                    'code' => 403,
+                ],
+            ];
+
+            return response()->json($data, 403);
+        }
     }
 
     public function store(KeluhanOperatorRequest $req, KeluhanOperator $keluhanOperator)
@@ -117,8 +155,6 @@ class KeluhanOperatorController extends Controller
 
             return response()->json($data, 500);
         }
-        
-
         
     }
 }

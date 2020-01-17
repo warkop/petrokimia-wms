@@ -19,22 +19,7 @@ class Realisasi extends Model
 
     protected $dates = ['created_at', 'updated_at'];
 
-    public $timestamps  = false;
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::updating(function ($table) {
-            $table->updated_by = auth()->id();
-            $table->updated_at = now();
-        });
-
-        static::creating(function ($table) {
-            $table->created_by = auth()->id();
-            $table->created_at = now();
-        });
-    }
+    public $timestamps  = true;
 
     public function realisasiHousekeeper()
     {
