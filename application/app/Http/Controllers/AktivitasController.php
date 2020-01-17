@@ -27,6 +27,7 @@ class AktivitasController extends Controller
         $data['aktivitas_alat_berat']   = '';
         $data['aktivitas_master_foto']  = null;
         $data['aktivitas']              = '';
+        $data['anggaran_pallet']        = '';
         return view('master.master-aktivitas.second', $data);
     }
 
@@ -100,6 +101,7 @@ class AktivitasController extends Controller
         $aktivitas->penyusutan                 = $req->input('penyusutan');
         $aktivitas->kode_aktivitas             = $req->input('kode_aktivitas');
         $aktivitas->penerimaan_gi              = $req->input('penerimaan_gi');
+        $aktivitas->biaya_pallet               = $req->input('biaya_pallet');
         $aktivitas->start_date                 = $req->input('start_date');
         $aktivitas->end_date                   = $req->input('end_date');
 
@@ -107,6 +109,11 @@ class AktivitasController extends Controller
         $anggaran_tkbm = str_replace('.', '', $anggaran_tkbm);
         $temp_tkbm = explode(',', $anggaran_tkbm);
         $aktivitas->anggaran_tkbm = $temp_tkbm[0];
+
+        $anggaran_pallet = ($req->input('anggaran_pallet') ? $req->input('anggaran_pallet') : 0);
+        $anggaran_pallet = str_replace('.', '', $anggaran_pallet);
+        $temp_pallet = explode(',', $anggaran_pallet);
+        $aktivitas->anggaran_pallet = $temp_pallet[0];
 
         $aktivitas->save();
 
@@ -185,7 +192,8 @@ class AktivitasController extends Controller
         $data['alat_berat']             = KategoriAlatBerat::get();
         $data['aktivitas_alat_berat']   = AktivitasAlatBerat::where('id_aktivitas', $id)->get();
         $data['aktivitas_master_foto']  = AktivitasMasterFoto::where('id_aktivitas', $id)->get();
-        $data['aktivitas']              = Aktivitas::withoutGlobalScopes()->find($id);
+        $data['aktivitas']              = $aktivitas;
+        $data['anggaran_pallet']        = $aktivitas->anggaran_pallet;
         return view('master.master-aktivitas.second', $data);
     }
 

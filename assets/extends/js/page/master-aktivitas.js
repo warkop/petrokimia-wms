@@ -274,6 +274,11 @@ function edit(id = '') {
             if (obj.data['butuh_biaya'] != null) {
                 $('#butuh_biaya').prop('checked', true);
             }
+            console.log(obj);
+            if (obj.data['biaya_pallet'] != null) {
+                $('#biaya_pallet').prop('checked', true);
+            }
+
             if (obj.data['kelayakan'] != null) {
                 $('#kelayakan').prop('checked', true);
             }

@@ -254,14 +254,28 @@
                                     </label>
                                 </div>
                             </div>
-                            {{-- <div class="row form-group mb-0 mb2">
-                                <div class="col-6 offset-col-2">
+                            @if (!empty($anggaran_pallet))
+                                @php 
+                                    $show_biaya_pallet = 'display:block'; 
+                                    $checked = 'checked'; 
+                                @endphp
+                            @else
+                                @php 
+                                    $show_biaya_pallet = 'display:none'; 
+                                    $checked = ''; 
+                                @endphp
+                            @endif
+                            <div class="row form-group mb-0 mb2">
+                                <div class="col-12 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="pindah_area" id="pindah_area" value="1"> Pindah Area
+                                        <input type="checkbox" name="biaya_pallet" id="biaya_pallet" value="1"> Biaya Pallet
                                         <span></span>
                                     </label>
                                 </div>
-                            </div> --}}
+                            </div>
+                            <div class="col-3">
+                                <span id="biaya_pallet-label" onclick="showModalPallet()" class="pull-right pointer kt-font-success kt-font-bold undelinehov" style="{{$show_biaya_pallet}}">Lihat</span>
+                            </div>
                             
                         </div>
                         <div class="col-md-4 col-lg-4">
@@ -449,6 +463,31 @@
                                     <div id="tempat_anggaran" class="form-group">
                                         <small for="idAForklift">Masukkan Anggaran</small>
                                         <input type="text" class="form-control anggaran" name="anggaran_tkbm" id="anggaran_tkbm" value="{{$anggaran_tkbm}}" placeholder="Masukkan Anggaran TKBM">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modalPallet" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Biaya Pallet</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="tempat_pallet" class="form-group">
+                                        <small for="idAForklift">Masukkan Pallet</small>
+                                        <input type="text" class="form-control anggaran" name="anggaran_pallet" id="anggaran_pallet" value="{{$anggaran_pallet}}" placeholder="Masukkan Biaya Pallet">
                                     </div>
                                 </div>
                             </div>
@@ -659,6 +698,16 @@ let now = 0;
         }
     });
 
+    $('#biaya_pallet').on('change', function(e){
+        if(e.target.checked){
+            $('#modalPallet').modal();
+            $('#biaya_pallet-label').show('slow');
+        } else {
+            $('#anggaran_pallet').val('');
+            $('#biaya_pallet-label').hide();
+        }
+    });
+
     function showModalAlatBerat(){
         $('#modalAlatBerat').modal();
         const id = $("#id").val();
@@ -680,8 +729,10 @@ let now = 0;
 
     function showModalTkbm(){
         $('#modalTkbm').modal();
-        // const id = $("#id").val();
-        
+    }
+
+    function showModalPallet(){
+        $('#modalPallet').modal();
     }
 
     function loadAnggaran(id) {
