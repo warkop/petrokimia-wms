@@ -8,6 +8,7 @@ use App\Http\Models\AlatBerat;
 use App\Http\Models\Area;
 use App\Http\Models\Gudang;
 use App\Http\Models\Karu;
+use App\Http\Models\Realisasi;
 use App\Http\Models\RencanaAlatBerat;
 use App\Http\Models\RencanaAreaTkbm;
 use App\Http\Models\RencanaHarian;
@@ -150,6 +151,21 @@ class RencanaKerjaController extends Controller
         $user = $req->get('my_auth');
 
         $res_user = Users::findOrFail($user->id_user);
+
+        $tempRencana = RencanaHarian::where('start_date', '<', date('Y-m-d H:i:s'))
+        ->where('end_date', '>', date('Y-m-d H:i:s'))
+        ->first();
+        if (!empty($tempRencana)) {
+            $realisasi = Realisasi::where('id_rencana', $tempRencana->id)->get();
+    
+            if (!empty($realisasi)) {
+                $this->responseCode = 403;
+                $this->responseMessage = 'Tidak diizinkan untuk menambah Rencana Kerja baru karena Rencana Kerja sudah ada dan dalam status progress!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+        }
+
         if (!empty($id)) {
             $rencanaHarian = RencanaHarian::find($id);
             if (!empty($rencanaHarian) && $rencanaHarian->draft == 0) {
@@ -189,7 +205,7 @@ class RencanaKerjaController extends Controller
         $rencanaHarian->tanggal                = date('Y-m-d');
         $rencanaHarian->id_shift               = $req->input('id_shift');
         $rencanaHarian->id_gudang              = $res_gudang->id;
-        $rencanaHarian->start_date             = date("Y-m-d H:i:s");
+        $rencanaHarian->start_date             = date('Y-m-d H:i:s', strtotime($shift->mulai));
         $rencanaHarian->draft                  = $draft;
         $rencanaHarian->save();
 
@@ -276,7 +292,6 @@ class RencanaKerjaController extends Controller
 
     public function jam()
     {
-        // dd(new DateTime());
         $shift = ShiftKerja::find(3);
         $date1 = new DateTime($shift->mulai);
         $date2 = new DateTime($shift->akhir);
@@ -291,9 +306,6 @@ class RencanaKerjaController extends Controller
         } else {
             echo date('Y-m-d H:i:s', strtotime($shift->akhir));
         }
-
-        // dd($shift->mulai> $shift->akhir);
-        // echo date("Y-m-d H:i:s", strtotime('+'.$hours.' hours'));
     }
 
     public function getShift()
@@ -380,7 +392,6 @@ class RencanaKerjaController extends Controller
 
     public function getHousekeeper($id_rencana)
     {
-        // $id_rencana = $req->get('id_rencana');
         if (is_numeric($id_rencana)) {
             $this->responseData = RencanaAreaTkbm::select('id_tkbm', 'nama')
                 ->where('id_rencana', $id_rencana)
