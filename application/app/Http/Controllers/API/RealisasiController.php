@@ -181,12 +181,11 @@ class RealisasiController extends Controller
         $housekeeper    = $req->input('housekeeper');
         $housekeeper    = array_values((array)$housekeeper);
 
-       
-
         $realisasi->id_rencana  = $id_rencana;
         $realisasi->tanggal     = now();
         $realisasi->created_at  = now();
         $realisasi->created_by  = $user->id_user;
+        $realisasi->updated_by  = $user->id_user;
         $realisasi->save();
         if (!empty($housekeeper)) {
             foreach ($housekeeper as $key => $value) {
