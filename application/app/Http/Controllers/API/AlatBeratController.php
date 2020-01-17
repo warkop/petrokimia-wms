@@ -68,9 +68,11 @@ class AlatBeratController extends Controller
                 $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
             })
-            ->where(function($query) use ($rencanaHarian){
-                $query->where('rh.id', $rencanaHarian->id);
-                $query->orWhere('status', 0);
+            ->where('rh.id', $rencanaHarian->id)
+            ->orWhere(function($query) use ($rencanaHarian){
+                $query->where('status', 0);
+                $query->where('rh.id_gudang', $rencanaHarian->id_gudang);
+                $query->where('rab.id_alat_berat', DB::raw('alat_berat.id'));
             })
             ->orderBy('alat_berat.id', 'desc')
             ->paginate(10);
