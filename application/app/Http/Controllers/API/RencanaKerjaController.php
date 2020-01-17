@@ -147,7 +147,9 @@ class RencanaKerjaController extends Controller
     public function store(ApiRencanaKerjaRequest $req, $draft = 0, $id='')
     {
         $req->validated();
+        $user = $req->get('my_auth');
 
+        $res_user = Users::findOrFail($user->id_user);
         if (!empty($id)) {
             $rencanaHarian = RencanaHarian::find($id);
             if (!empty($rencanaHarian) && $rencanaHarian->draft == 0) {
@@ -156,13 +158,13 @@ class RencanaKerjaController extends Controller
                 $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                 return response()->json($response, $this->responseCode);
             }
+            $rencanaHarian->updated_by  = $res_user->id;
         } else {
             $rencanaHarian = new RencanaHarian;
+            $rencanaHarian->created_by  = $res_user->id;
+            $rencanaHarian->updated_by  = $res_user->id;
         }
 
-        $user = $req->get('my_auth');
-
-        $res_user = Users::findOrFail($user->id_user);
         RencanaAreaTkbm::where('id_rencana', $rencanaHarian->id)->forceDelete();
         RencanaAlatBerat::where('id_rencana', $rencanaHarian->id)->forceDelete();
         RencanaTkbm::where('id_rencana', $rencanaHarian->id)->forceDelete();
@@ -180,7 +182,7 @@ class RencanaKerjaController extends Controller
         if ($shift->mulai>$shift->akhir) {
             $rencanaHarian->end_date   = date('Y-m-d H:i:s', strtotime($shift->akhir . '+1 day'));
         } else {
-            $rencanaHarian->end_date   = date('Y-m-d H:i:s', strtotime($shift->akhir));
+            $rencanaHarian->end_date    = date('Y-m-d H:i:s', strtotime($shift->akhir));
         }
 
         //rencana harian

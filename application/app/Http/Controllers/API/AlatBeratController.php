@@ -9,6 +9,7 @@ use App\Http\Models\AlatBeratKerusakan;
 use App\Http\Models\Karu;
 use App\Http\Models\LaporanKerusakan;
 use App\Http\Models\LaporanKerusakanFoto;
+use App\Http\Models\Realisasi;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use App\Http\Models\ShiftKerja;
@@ -27,8 +28,20 @@ class AlatBeratController extends Controller
         $my_auth = request()->get('my_auth');
         $karu = Karu::find($my_auth->id_karu);
 
-        // $rencanaHarian = RencanaHarian::select('*')->get();
-        // return $rencanaHarian;
+        $rencanaHarian = RencanaHarian::select('*')->where('created_by', $my_auth->id_user)->where('tanggal', date('Y-m-d'))->orderBy('id', 'desc')->first();
+
+        if (empty($rencanaHarian)) {
+            $this->responseMessage = 'Karu tidak memiliki Rencana Harian untuk hari ini!';
+            $this->responseCode = 403;
+
+            $response = [
+                'data' => $this->responseData,
+                'message' => $this->responseMessage,
+                'errors' => '',
+                'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]
+            ];
+            return response()->json($response, $this->responseCode);
+        }
 
         $res = AlatBerat::
             distinct()->select(
@@ -50,7 +63,8 @@ class AlatBeratController extends Controller
                 $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
             })
-            ->where('rh.id_gudang', $karu->id_gudang)
+            // ->where('rh.id_gudang', $karu->id_gudang)
+            ->where('rh.id', $rencanaHarian->id)
             ->orderBy('alat_berat.id', 'desc')
             ->paginate(10);
 
