@@ -24,12 +24,17 @@ class GetSistroResource extends Resource
         return [
             'id'                => $this->id,
             'id_material_sap'   => $this->id_material_sap,
-            'sistro_qty'        => $this->sistro->qty,
             'kategori'          => $this->kategori,
             'text_kategori'     => $text_kategori,
             'berat'             => $this->berat,
             'koefisien_pallet'  => $this->koefisien_pallet,
             'nama'              => $this->nama,
+            'booking_no'        => $this->sistro->bookingno,
+            'tiket_no'          => $this->sistro->tiketno,
+            'nopol'             => $this->sistro->nopol,
+            'driver'            => $this->sistro->driver,
+            'sistro_qty'        => $this->sistro->qty,
+            'tanggal'           => $this->sistro->tanggal,
         ];
     }
 }
