@@ -222,7 +222,9 @@ class ReportController extends Controller
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->gudang->nama);
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->checker->nama);
+            if (!empty($value->checker)) {
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->checker->nama);
+            }
             $col++;
             $temp = '';
             foreach ($value->produk as $key) {
