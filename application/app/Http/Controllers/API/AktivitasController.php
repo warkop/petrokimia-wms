@@ -423,6 +423,9 @@ class AktivitasController extends Controller
                 $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                 return response()->json($response, $this->responseCode);
             }
+            MaterialTrans::where('id_aktivitas_harian', $aktivitasHarian->id)->forceDelete();
+            AktivitasHarianArea::where('id_aktivitas_harian',  $aktivitasHarian->id)->forceDelete();
+
             $aktivitasHarian->updated_by = $res_user->id;
         } else {
             $aktivitasHarian = new AktivitasHarian;
@@ -451,7 +454,7 @@ class AktivitasController extends Controller
         // $aktivitasHarian->id_karu           = $gudang->id_karu;
         $aktivitasHarian->id_gudang_tujuan  = $req->input('id_gudang_tujuan');
         $aktivitasHarian->ref_number        = $req->input('ref_number');
-        $aktivitasHarian->id_alat_berat     = $req->input('id_alat_berat');
+        // $aktivitasHarian->id_alat_berat     = $req->input('id_alat_berat');
         $aktivitasHarian->sistro            = $req->input('sistro');
         $aktivitasHarian->approve           = $req->input('approve');
         $aktivitasHarian->kelayakan_before  = $req->input('kelayakan_before');
@@ -518,8 +521,11 @@ class AktivitasController extends Controller
                                 $area_stok->status      = $status_produk;
                                 $area_stok->jumlah      = $list_jumlah[$k]['jumlah'];
                             }
-                            
-                            $area_stok->save();
+
+                            if ($aktivitasHarian->draft == 0) {
+                                $area_stok->save();
+                            }
+
 
                             $material_trans = new MaterialTrans;
                             $array = [
@@ -586,8 +592,9 @@ class AktivitasController extends Controller
                                 $area_stok->tanggal       = date('Y-m-d');
                                 $area_stok->status        = $status_produk;
 
-                                $area_stok->save();
-
+                                if ($aktivitasHarian->draft == 0) {
+                                    $area_stok->save();
+                                }
 
                                 $material_trans = new MaterialTrans;
 
@@ -644,7 +651,10 @@ class AktivitasController extends Controller
                 $gudangStok->id_gudang     = $gudang->id;
                 $gudangStok->id_material   = $pallet;
                 $gudangStok->status        = $status_pallet;
-                $gudangStok->save();
+
+                if ($aktivitasHarian->draft == 0) {
+                    $gudangStok->save();
+                }
 
                 $arr = [
                     'id_aktivitas_harian'       => $aktivitasHarian->id,
@@ -657,6 +667,17 @@ class AktivitasController extends Controller
 
                 $gudangStok->materialTrans()->create($arr);
             }
+        }
+
+        $list_alat_berat = $req->input('list_alat_berat');
+        if (!empty($list_alat_berat)) {
+            $jums_list_alat_berat = count($list_alat_berat);
+            $toBeSave = [];
+            for ($i = 0; $i < $jums_list_alat_berat; $i++) {
+                $id_alat_berat  = $list_alat_berat[$i]['id_alat_berat'];
+                $toBeSave[$i] = $id_alat_berat;
+            }
+            $aktivitasHarian->aktivitasHarianAlatBerat()->sync($toBeSave);
         }
 
         if ($res_aktivitas->internal_gudang != null) {
