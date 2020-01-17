@@ -151,9 +151,10 @@ class RencanaKerjaController extends Controller
         $user = $req->get('my_auth');
 
         $res_user = Users::findOrFail($user->id_user);
-
+        $karu = Karu::find($res_user->id_karu);
         $tempRencana = RencanaHarian::where('start_date', '<', date('Y-m-d H:i:s'))
         ->where('end_date', '>', date('Y-m-d H:i:s'))
+        ->where('id_gudang', $karu->id_gudang)
         ->first();
         if (!empty($tempRencana)) {
             $realisasi = Realisasi::where('id_rencana', $tempRencana->id)->get();
