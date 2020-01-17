@@ -19,7 +19,7 @@ class AktivitasHarian extends Model
 
     protected $hidden = [];
 
-    protected $dates = ['created_at'];
+    protected $dates = ['created_at', 'updated_at'];
 
     public $timestamps  = true;
 
@@ -76,6 +76,11 @@ class AktivitasHarian extends Model
     public function aktivitasKeluhanGp()
     {
         return $this->hasMany(AktivitasKeluhanGp::class, 'id_aktivitas_harian', 'id');
+    }
+
+    public function aktivitasHarianAlatBerat()
+    {
+        return $this->belongsToMany(AlatBerat::class, 'aktivitas_harian_alat_berat', 'id_aktivitas_harian', 'id_alat_berat');
     }
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
