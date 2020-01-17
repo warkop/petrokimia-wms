@@ -525,7 +525,7 @@ class AktivitasController extends Controller
                             $array = [
                                 'id_material'           => $produk,
                                 'id_aktivitas_harian'   => $aktivitasHarian->id,
-                                'tanggal'               => date('Y-m-d H:i:s'),
+                                'tanggal'               => date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])),
                                 'tipe'                  => $tipe,
                                 'jumlah'                => $list_jumlah[$k]['jumlah'],
                                 'status_produk'         => $status_produk,
