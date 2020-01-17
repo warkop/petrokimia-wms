@@ -28,6 +28,11 @@ class RencanaTkbm extends Model
     public $timestamps  = false;
     public $incrementing = false;
 
+    public function scopeOperator($query)
+    {
+        return $query->where('tipe', 2);
+    }
+
     public function tkbm()
     {
         return $this->belongsTo(TenagaKerjaNonOrganik::class, 'id_tkbm');
