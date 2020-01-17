@@ -1530,6 +1530,7 @@ class AktivitasController extends Controller
 
         $res = AktivitasHarian::select(
             'aktivitas_harian.id',
+            'aktivitas.id as id_aktivitas',
             'aktivitas.nama as nama_aktivitas',
             'gudang.nama as nama_gudang',
             'peminjaman',
