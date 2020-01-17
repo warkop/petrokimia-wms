@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\AlatBerat;
 use App\Http\Models\AlatBeratKerusakan;
+use App\Http\Models\Karu;
 use App\Http\Models\LaporanKerusakan;
 use App\Http\Models\LaporanKerusakanFoto;
+use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use App\Http\Models\ShiftKerja;
 use App\Http\Models\Users;
@@ -22,6 +24,11 @@ class AlatBeratController extends Controller
     public function index(Request $req)
     {
         $search = strip_tags($req->input('search'));
+        $my_auth = request()->get('my_auth');
+        $karu = Karu::find($my_auth->id_karu);
+
+        // $rencanaHarian = RencanaHarian::select('*')->get();
+        // return $rencanaHarian;
 
         $res = AlatBerat::
             distinct()->select(
@@ -38,10 +45,12 @@ class AlatBeratController extends Controller
             )
             ->join('alat_berat_kat as abk', 'alat_berat.id_kategori', '=', 'abk.id')
             ->join('rencana_alat_berat as rab', 'alat_berat.id', '=', 'rab.id_alat_berat')
+            ->join('rencana_harian as rh', 'rh.id', '=', 'rab.id_rencana')
             ->where(function ($where) use ($search) {
                 $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
             })
+            ->where('rh.id_gudang', $karu->id_gudang)
             ->orderBy('alat_berat.id', 'desc')
             ->paginate(10);
 

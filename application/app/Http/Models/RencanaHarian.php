@@ -49,6 +49,11 @@ class RencanaHarian extends Model
         // static::addGlobalScope(new EndDateScope);
     }
 
+    public function realisasi()
+    {
+        return $this->hasOne(Realisasi::class, 'id_rencana', 'id');
+    }
+
     public function rencanaTkbm()
     {
         return $this->belongsToMany(TenagaKerjaNonOrganik::class, 'rencana_tkbm', 'id_rencana', 'id_tkbm');

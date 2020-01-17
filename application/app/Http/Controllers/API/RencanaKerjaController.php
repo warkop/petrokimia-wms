@@ -47,7 +47,7 @@ class RencanaKerjaController extends Controller
         $data = RencanaHarian::select(
             '*',
             DB::raw("
-            CASE WHEN (SELECT id FROM realisasi where id_rencana = rencana_harian.id) IS NOT NULL
+            CASE WHEN (SELECT id FROM realisasi WHERE id_rencana = rencana_harian.id ORDER BY id DESC LIMIT 1) IS NOT NULL
             THEN 'Done' ELSE 'Progress'
             END AS status")
         )
