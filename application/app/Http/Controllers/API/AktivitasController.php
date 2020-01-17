@@ -9,6 +9,7 @@ use App\Http\Models\Users;
 use App\Http\Models\AktivitasFoto;
 use App\Http\Models\AktivitasGudang;
 use App\Http\Models\AktivitasHarian;
+use App\Http\Models\AktivitasHarianAlatBerat;
 use App\Http\Models\AktivitasHarianArea;
 use App\Http\Models\AktivitasKelayakanFoto;
 use App\Http\Models\AktivitasMasterFoto;
@@ -1696,9 +1697,19 @@ class AktivitasController extends Controller
         ->orderBy('id_foto_jenis', 'asc')
         ->get();
 
+        $list_alat_berat = AktivitasHarianAlatBerat::select(
+            'alat_berat.*',
+            'alat_berat_kat.nama as nama_kategori'
+        )
+        ->join('alat_berat', 'aktivitas_harian_alat_berat.id_alat_berat', '=', 'alat_berat.id')
+        ->join('alat_berat_kat', 'alat_berat.id_kategori', '=', 'alat_berat_kat.id')
+        ->where('alat_berat.status', 1)
+        ->get();
+
         $obj = (new AktivitasResource($res->get()))->additional([
             'produk' => $res_produk,
             'pallet' => $res_pallet,
+            'alat_berat' => $list_alat_berat,
             'file' => $foto,
             'url' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_aktivitas_harian}}&ctg=aktivitas_harian&src={{foto}}',
             'status' => [
