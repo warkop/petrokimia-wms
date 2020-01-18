@@ -21,7 +21,7 @@ Route::get('watch/{nama}/', 'WatchController@default');
 Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     Route::get('/', 'DashboardController@index');
     
-    Route::group(['prefix' => 'master-aktivitas'], function () {
+    Route::group(['prefix' => 'master-aktivitas', 'middleware' => 'can:data-master'], function () {
         Route::get('/', 'AktivitasController@index');
         Route::get('/tambah', 'AktivitasController@create');
         Route::get('/edit/{id}', 'AktivitasController@edit')->where('id', '[0-9]+');
@@ -33,7 +33,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/get-alat-berat/{id}', 'AktivitasController@getAlatBeratOfAktivitas')->where('id', '[0-9]+');
     });
 
-    Route::group(['prefix' => 'master-karu'], function () {
+    Route::group(['prefix' => 'master-karu', 'middleware' => 'can:data-master'], function () {
         Route::get('/', 'KaruController@index');
         Route::get('/get-gudang', 'KaruController@getGudang');
         Route::put('/', 'KaruController@store');
@@ -42,7 +42,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/{id}', 'KaruController@show')->where('id', '[0-9]+');
     });
 
-    Route::group(['prefix' => 'master-material'], function () {
+    Route::group(['prefix' => 'master-material', 'middleware' => 'can:data-master'], function () {
         Route::get('/', 'MaterialController@index');
         Route::put('/', 'MaterialController@store');
         Route::patch('/{material}', 'MaterialController@store')->where('material', '[0-9]+');
@@ -52,14 +52,14 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/get-material-sap/{id}', 'MaterialController@getMaterialSap')->where('id', '[0-9]+');
     });
 
-    Route::group(['prefix' => 'master-tenaga-kerja-nonorganik'], function () {
+    Route::group(['prefix' => 'master-tenaga-kerja-nonorganik', 'middleware' => 'can:data-master'], function () {
         Route::get('/', 'TenagaKerjaNonOrganikController@index');
         Route::put('/', 'TenagaKerjaNonOrganikController@store');
         Route::post('/', 'TenagaKerjaNonOrganikController@json');
         Route::get('/{id}', 'TenagaKerjaNonOrganikController@show')->where('id', '[0-9]+');
     });
 
-    Route::group(['prefix' => 'master-pemetaan-sloc'], function () { 
+    Route::group(['prefix' => 'master-pemetaan-sloc', 'middleware' => 'can:data-master'], function () { 
         Route::get('/', 'PemetaanSlocController@index');
         Route::get('/{id}', 'PemetaanSlocController@show')->where('id', '[0-9]+');
         Route::post('/', 'PemetaanSlocController@json');
@@ -68,28 +68,28 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/load-sloc', 'PemetaanSlocController@loadSloc');
     }); 
 
-    Route::group(['prefix' => 'master-kerusakan-alat'], function () {
+    Route::group(['prefix' => 'master-kerusakan-alat', 'middleware' => 'can:data-master'], function () {
         Route::get('/', 'AlatBeratKerusakanController@index');
         Route::put('/', 'AlatBeratKerusakanController@store');
         Route::post('/', 'AlatBeratKerusakanController@json');
         Route::get('/{id}', 'AlatBeratKerusakanController@show')->where('id', '[0-9]+');
     });
 
-    Route::group(['prefix' => 'master-kategori-alat-berat'], function () {
+    Route::group(['prefix' => 'master-kategori-alat-berat', 'middleware' => 'can:data-master'], function () {
         Route::get('/', 'KategoriAlatBeratController@index');
         Route::put('/', 'KategoriAlatBeratController@store');
         Route::post('/', 'KategoriAlatBeratController@json');
         Route::get('/{id}', 'KategoriAlatBeratController@show')->where('id', '[0-9]+');
     });
 
-    Route::group(['prefix' => 'list-alat-berat'], function () {
+    Route::group(['prefix' => 'list-alat-berat', 'middleware' => 'can:data-master'], function () {
         Route::get('/{id}', 'AlatBeratController@index')->where('id', '[0-9]+');
         Route::put('/{id}', 'AlatBeratController@store')->where('id', '[0-9]+');
         Route::post('/{id}', 'AlatBeratController@json')->where('id', '[0-9]+');
         Route::get('/{kategoriAlatBerat}/{alatBerat}', 'AlatBeratController@show')->where(['kategoriAlatBerat' => '[0-9]+', 'alatBerat' => '[0-9]+']);
     });
 
-    Route::group(['prefix' => 'master-jenis-foto'], function () {
+    Route::group(['prefix' => 'master-jenis-foto', 'middleware' => 'can:data-master'], function () {
         Route::get('/', 'JenisFotoController@index');
         Route::put('/', 'JenisFotoController@store');
         Route::patch('/{jenisFoto}', 'JenisFotoController@store')->where('jenisFoto', '[0-9]+');
@@ -97,7 +97,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/{jenisFoto}', 'JenisFotoController@show')->where('jenisFoto', '[0-9]+');
     });
 
-    Route::group(['prefix' => 'master-yayasan'], function () {
+    Route::group(['prefix' => 'master-yayasan', 'middleware' => 'can:data-master'], function () {
         Route::get('/', 'YayasanController@index');
         Route::put('/', 'YayasanController@store');
         Route::patch('/{yayasan}', 'YayasanController@store')->where('yayasan', '[0-9]+');
@@ -105,7 +105,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/{yayasan}', 'YayasanController@show')->where('yayasan', '[0-9]+');
     });
 
-    Route::group(['prefix' => 'master-user'], function () {
+    Route::group(['prefix' => 'master-user', 'middleware' => 'can:data-master-user'], function () {
         Route::get('/', 'UsersController@index');
         Route::get('/load-pegawai/{id_kategori}', 'UsersController@loadPegawai');
         Route::put('/', 'UsersController@store');
@@ -215,7 +215,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::post('/', 'LogAktivitasUserController@json');
     });
 
-    Route::group(['prefix' => 'report'], function () {
+    Route::group(['prefix' => 'report', 'middleware' => ['eauth:1&7']], function () {
         Route::get('/laporan-material', 'ReportController@laporanMaterial');
         Route::get('/laporan-stok', 'ReportController@laporanStok');
         Route::get('/laporan-absen-karyawan', 'ReportController@laporanAbsenKaryawan');
