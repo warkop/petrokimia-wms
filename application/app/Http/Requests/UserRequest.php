@@ -31,6 +31,7 @@ class UserRequest extends FormRequest
                 Rule::unique('users', 'username')->ignore(request()->id),
             ],
             'email'         => [
+                'nullable',
                 'email',
                 Rule::unique('users', 'email')->ignore(request()->id),
             ],
