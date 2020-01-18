@@ -76,10 +76,11 @@ class KeluhanOperatorController extends Controller
     {
         $my_auth = request()->get('my_auth');
         $karu = Karu::find($my_auth->id_karu);
-        $rencanaHarian = RencanaHarian::where('id_gudang', $karu->id_gudang)
+        $gudang = $this->getCheckerGudang();
+        $rencanaHarian = RencanaHarian::where('id_gudang', $gudang->id)
         ->where('start_date', '<', date('Y-m-d H:i:s'))
         ->where('end_date', '>', date('Y-m-d H:i:s'))
-        ->where('id_gudang', $karu->id_gudang)
+        ->where('id_gudang', $gudang->id)
         ->orderBy('id', 'desc')
         ->first();
 
