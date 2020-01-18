@@ -23,7 +23,6 @@ class PenerimaanGpController extends Controller
      */
     public function index()
     {
-        $this->authorize('viewPenyangga', Gudang::class);
         $data['title'] = 'Penerimaan GP';
         return view('penerimaan-gp.grid', $data);
     }

@@ -193,7 +193,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/detail-area/{id}', 'LayoutController@detailArea')->where('id', '[0-9]+');
     });
 
-    Route::group(['prefix' => 'penerimaan-gp'], function () {
+    Route::group(['prefix' => 'penerimaan-gp', 'middleware' => 'can:penerimaan-gp'], function () {
         Route::get('/', 'PenerimaanGpController@index');
         Route::get('/get-area/{id_gudang}/{id_material}/{id_aktivitas_harian}', 'PenerimaanGpController@getArea')->where('id_material', '[0-9]+')->where('id_gudang', '[0-9]+')->where('id_aktivitas_harian', '[0-9]+');
         Route::get('/{aktivitasHarian}', 'PenerimaanGpController@show')->where('aktivitasHarian', '[0-9]+');
