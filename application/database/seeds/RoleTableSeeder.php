@@ -49,6 +49,12 @@ class RoleTableSeeder extends Seeder
                 'start_date'    => date('Y-m-d'),
                 'created_at'    => date('Y-m-d'),
             ],
+            [
+                'id'            => 7,
+                'nama'          => 'Admin Gudang',
+                'start_date'    => date('Y-m-d'),
+                'created_at'    => date('Y-m-d'),
+            ],
         ];
 
         Role::truncate();
