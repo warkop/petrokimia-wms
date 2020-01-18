@@ -3,10 +3,13 @@
 namespace App\Providers;
 
 use App\Http\Models\AktivitasHarian;
+use App\Http\Models\Gudang;
 use App\Http\Models\RencanaHarian;
 use App\Policies\ApiAktivitasHarianPolicy;
+use App\Policies\GudangPolicy;
 use App\Policies\RencanaHarianPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,7 @@ class AuthServiceProvider extends ServiceProvider
         // 'App\Model' => 'App\Policies\ModelPolicy',
         RencanaHarian::class => RencanaHarianPolicy::class,
         AktivitasHarian::class => ApiAktivitasHarianPolicy::class,
+        Gudang::class => GudangPolicy::class,
     ];
 
     /**
@@ -29,10 +33,32 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        // \Auth::viaRequest('access_token', function ($request) {
-        //     Users::where('api_token', $request->access_token)->first();
-        //     return true;
-        // });
+        Gate::define('dashboard', function ($user) {
+            return $user->role_id === 1 || $user->role_id === 2;
+        });
+        Gate::define('layout', function ($user) {
+            return $user->role_id === 1 || $user->role_id === 5 || $user->role_id === 7;
+        });
+        Gate::define('gudang', function ($user) {
+            return $user->role_id === 1 || $user->role_id === 5;
+        });
+        Gate::define('penerimaan-gp', function ($user) {
+            return $user->role_id === 1 || $user->role_id === 6;
+        });
+        Gate::define('log-aktivitas', function ($user) {
+            return $user->role_id === 1 || $user->role_id === 3 || $user->role_id === 5;
+        });
+        Gate::define('log-aktivitas-user', function ($user) {
+            return $user->role_id === 1;
+        });
+        Gate::define('data-master', function ($user) {
+            return $user->role_id === 1 || $user->role_id === 5;
+        });
+        Gate::define('data-master-user', function ($user) {
+            return $user->role_id === 1;
+        });
+        Gate::define('report', function ($user) {
+            return $user->role_id === 1 || $user->role_id === 5 || $user->role_id === 7;
+        });
     }
 }
