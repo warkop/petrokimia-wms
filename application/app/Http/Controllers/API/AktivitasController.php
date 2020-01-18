@@ -557,6 +557,7 @@ class AktivitasController extends Controller
                                 'jumlah'                => $list_jumlah[$k]['jumlah'],
                                 'status_produk'         => $status_produk,
                                 'id_area_stok'          => $area_stok->id,
+                                'id_area'               => $id_area,
                             ];
                             $material_trans->create($array);
 
@@ -627,6 +628,7 @@ class AktivitasController extends Controller
                                     'jumlah'                => $list_jumlah[$k]['jumlah'],
                                     'status_produk'         => $status_produk,
                                     'id_area_stok'          => $area_stok->id,
+                                    'id_area'               => $id_area,
                                 ];
                                 $material_trans->create($array);
                                 
@@ -961,6 +963,7 @@ class AktivitasController extends Controller
                                         'jumlah'                => $list_jumlah[$k]['jumlah'],
                                         'status_produk'         => $status_produk,
                                         'id_area_stok'          => $area_stok->id,
+                                        'id_area'               => $id_area,
                                     ];
     
                                     $material_trans->create($array);
@@ -1062,6 +1065,7 @@ class AktivitasController extends Controller
                                             'jumlah'                => $list_jumlah[$k]['jumlah'],
                                             'status_produk'         => $status_produk,
                                             'id_area_stok'          => $area_stok->id,
+                                            'id_area'               => $id_area,
                                         ];
                                         $material_trans->create($array);
     
@@ -1492,6 +1496,7 @@ class AktivitasController extends Controller
                             'jumlah'                => $list_jumlah[$k]['jumlah'],
                             'status_produk'         => $status_produk,
                             'id_area_stok'          => $area_stok->id,
+                            'id_area'               => $id_area,
                         ];
 
                         $material_trans->create($array);
@@ -1685,7 +1690,8 @@ class AktivitasController extends Controller
             'status_produk',
             DB::raw('CASE WHEN status_produk=1 THEN \'Produk Stok\' ELSE \'Produk Rusak\' END AS text_status_produk'),
             DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
-            'jumlah'
+            'jumlah',
+            'id_area'
         )
         ->join('material', 'material_trans.id_material', '=', 'material.id')
         ->where('id_aktivitas_harian', $id)
