@@ -28,7 +28,7 @@ class EnergeekAuthMiddleware
 
                 $alerts[] = array('error', 'Anda tidak dapat mengakses halaman ini, silahkan hubungi Administrator', 'Peringatan!');
                 session()->flash('alerts', $alerts);
-                return $request->expectsJson() ? response()->json(helpResponse(403, [], 'Anda tidak dapat mengakses halaman ini, silahkan hubungi Administrator'), 403) : redirect()->to(route('/'));
+                return $request->expectsJson() ? response()->json(helpResponse(403, [], 'Anda tidak dapat mengakses halaman ini, silahkan hubungi Administrator'), 403) : abort(403);
             }else{
                 return $next($request);
             }
