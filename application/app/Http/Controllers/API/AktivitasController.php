@@ -324,6 +324,7 @@ class AktivitasController extends Controller
                         area.nama,
                         area.kapasitas,
                         area_stok.tanggal,
+                        area_stok.status,
                         area_stok.jumlah'
             )
                 ->from('area_stok')
