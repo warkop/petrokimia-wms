@@ -19,7 +19,7 @@ class RencanaHarianPolicy
      */
     public function view(Users $user)
     {
-        return $user->role_id === 5;
+        return $user->role_id === 5 || $user->role_id === 1;
     }
 
     /**

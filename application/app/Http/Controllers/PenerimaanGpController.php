@@ -7,6 +7,7 @@ use App\Http\Models\AktivitasHarian;
 use App\Http\Models\AktivitasKeluhanGp;
 use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
+use App\Http\Models\Gudang;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
 use App\Http\Requests\AktivitasKeluhanGpRequest;
@@ -22,6 +23,7 @@ class PenerimaanGpController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewPenyangga', Gudang::class);
         $data['title'] = 'Penerimaan GP';
         return view('penerimaan-gp.grid', $data);
     }

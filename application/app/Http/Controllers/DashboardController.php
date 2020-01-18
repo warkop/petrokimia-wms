@@ -11,6 +11,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // $this->authorize('dashboard');
         $data['title'] = 'Dashboard';
         $laporan_kerusakan = [];
 
