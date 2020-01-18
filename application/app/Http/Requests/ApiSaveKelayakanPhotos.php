@@ -2,10 +2,35 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ApiSaveKelayakanPhotos extends FormRequest
 {
+    protected function failedValidation(Validator $validator)
+    {
+        // Get all the errors thrown
+        $errors = collect($validator->errors());
+        // Manipulate however you want. I'm just getting the first one here,
+        // but you can use whatever logic fits your needs.
+        $error  = $errors->unique()->first();
+        $mess = [];
+        foreach ($errors->unique() as $key => $value) {
+            foreach ($value as $row) {
+                array_push($mess, $row);
+            }
+        }
+        $responses['message'] = "The given data was invalid.";
+        $responses['errors'] = $mess;
+        $responses['code'] = 422;
+
+        // Either throw the exception, or return it any other way.
+        throw new HttpResponseException(response(
+            $responses,
+            422
+        ));
+    }
     /**
      * Determine if the user is authorized to make this request.
      *
