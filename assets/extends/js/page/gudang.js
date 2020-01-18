@@ -389,12 +389,15 @@ function loadListAktivitas(id_gudang) {
             const obj = response.data.data;
             $("#label_aktivitas_gudang").html("Aktivitas Gudang <strong>" + response.data.nama_gudang +"</strong>");
             let html = "";
+            let link = "";
             obj.forEach(element => {
+                link = baseUrl + "master-aktivitas/edit/" + element.id_aktivitas;
                 if (element.aktivitas != null) {
                     html += `<tr>
                                 <td class="text-left">${element.aktivitas.nama}</td>
                                 <td>
-                                    <button type="button" class="btn btn-danger btn-sm _btnHapus" onclick="removeAktivitas(${element.id_gudang}, ${element.id_aktivitas})" ><i class="fa fa-trash"></i> Hapus</button>
+                                    <a class="btn btn-primary btn-sm" target="_blank" href="${link}" data-toggle="kt-tooltip" data-placement="top" title="Ke halaman ubah aktivitas"><i class="fa fa-clipboard-list"></i></a>
+                                    <button type="button" class="btn btn-danger btn-sm _btnHapus" onclick="removeAktivitas(${element.id_gudang}, ${element.id_aktivitas})" data-toggle="kt-tooltip" data-placement="top" title="Hapus dari daftar"><i class="fa fa-trash"></i></button>
                                 </td>
                             </tr>`;
                 }
