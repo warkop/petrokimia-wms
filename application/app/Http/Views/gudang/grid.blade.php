@@ -83,13 +83,13 @@
                                 <input type="text" class="form-control" name="nama" id="nama" placeholder="Masukkan nama gudang">
                             </div>
                             <div class="form-group">
-                                <label for="exampleSelect1">Pilih Gudang</label>
+                                <label for="exampleSelect1">Pilih Jenis Gudang</label>
                                 <select class="form-control" id="tipe_gudang" name="tipe_gudang" placeholder="Pilih tipe gudang">
                                     <option value="1">Internal</option>
                                     <option value="2">Eksternal</option>
                                 </select>
                             </div>
-                            <div class="form-group" id="pilih_karu">
+                            {{-- <div class="form-group" id="pilih_karu">
                                 <label>Kepala Regu</label>
                                 <select class="form-control m-select2" id="id_karu" name="id_karu" aria-placeholder="Pilih Kepala Regu" style="width: 100%;">
                                     <option value="">Pilih Kepala Regu</option>
@@ -97,7 +97,7 @@
                                         <option value="{{$item->id}}">{{$item->nama}}</option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> --}}
 
                             {{-- <label class="boldd-500">Jumlah Minimal Palet</label>
                             @php $i=0 @endphp
