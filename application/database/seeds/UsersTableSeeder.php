@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class UsersTableSeeder extends Seeder
 {
@@ -15,8 +16,8 @@ class UsersTableSeeder extends Seeder
             'role_id' => 1,
             'name' => 'Administrator',
             'username' => 'admin',
-            'email' => str_random(10).'@gmail.com',
-            'password' => bcrypt('3n3rg33k'),
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('qwerty123456'),
             'created_at' => date('Y-m-d H:i:s'),
         ]);
     }
