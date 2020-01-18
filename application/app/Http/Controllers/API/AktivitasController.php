@@ -330,6 +330,15 @@ class AktivitasController extends Controller
                 ->join('area', 'area.id', '=', 'area_stok.id_area')
                 ->where('id_material', $id_material)
                 ->where('area_stok.id_area', $id_area);
+            if ($aktivitas->produk_rusak != 2) {
+                $detail = $detail->where('area_stok.status = 1');
+            } else if ($aktivitas->produk_rusak != 1) {
+                $detail = $detail->where('area_stok.status = 2');
+            } else {
+                if ($aktivitas->produk_stok != null) {
+                    $detail = $detail->where('area_stok.status = 1');
+                }
+            }
             if ($aktivitas->fifo != null) {
                 $detail = $detail->orderBy('tanggal', 'ASC');
             } else {
