@@ -142,7 +142,7 @@ class MaterialAdjustmentController extends Controller
                 $materialTrans->jumlah          = $produk_jumlah[$i];
                 $materialTrans->alasan          = $produk_alasan[$i];
                 $materialTrans->id_area_stok    = $areaStok->id;
-                $materialTrans->status_proudk   = 1;
+                $materialTrans->status_produk   = 1;
                 $materialTrans->save();
             }
         }
