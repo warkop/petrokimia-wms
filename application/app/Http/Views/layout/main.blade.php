@@ -55,21 +55,20 @@
                                 monitoring aktivitas gudang.</p>
                         </div>
                         <div class="row">
+                            @if (auth()->user()->can('dashboard'))
                             <div class="col-6 mb2">
                                 <button onclick="location.href='{{url('/')}}'" type="button"
                                     class="btn btn-elevate btn-outline-success btn-icon-sm" style="width: 100%;"> <i class="la la-desktop"></i>
                                     Dashboard</button>
                             </div>
+                            @endif
+                            @if (auth()->user()->can('data-master'))
                             <div class="col-6 mb2">
                                 <button type="button" class="btn btn-outline-success btn-icon-sm dropdown-toggle"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%;"> <i
                                         class="la la-archive"></i> Masters </button>
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <ul class="kt-nav">
-                                        {{-- <li class="kt-nav__section kt-nav__section--first">
-                                                <span class="kt-nav__section-text">Choose an
-                                                    option</span>
-                                            </li> --}}
                                         <li class="kt-nav__item">
                                             <a href="{{('master-aktivitas')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-line-chart"></i>
@@ -94,12 +93,6 @@
                                                 <span class="kt-nav__link-text">Tenaga Kerja Non Organik</span>
                                             </a>
                                         </li>
-                                        {{-- <li class="kt-nav__item">
-                                            <a href="{{('master-pekerjaan')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-suitcase"></i>
-                                                <span class="kt-nav__link-text">Job Desk</span>
-                                            </a>
-                                        </li> --}}
                                         <li class="kt-nav__item">
                                             <a href="{{('master-pemetaan-sloc')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-building"></i>
@@ -130,7 +123,7 @@
                                                 <span class="kt-nav__link-text">Yayasan</span>
                                             </a>
                                         </li>
-                                        @if (session('userdata')['role_id'] == 1)
+                                        @if (auth()->user()->can('data-master-user'))
                                             <li class="kt-nav__item">
                                                 <a href="{{('master-user')}}" class="kt-nav__link">
                                                     <i class="kt-nav__link-icon la la-users"></i>
@@ -141,6 +134,7 @@
                                     </ul>
                                 </div>
                             </div>
+                            @endif
                             <div class="col-6 mb2">
                                 <button type="button" class="btn btn-outline-success btn-icon-sm dropdown-toggle"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
@@ -153,35 +147,50 @@
                                                 <span class="kt-nav__link-text">Layout</span>
                                             </a>
                                         </li>
+                                        @if (auth()->user()->can('gudang'))
                                         <li class="kt-nav__item">
                                             <a href="{{('gudang')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-institution"></i>
                                                 <span class="kt-nav__link-text">Gudang</span>
                                             </a>
                                         </li>
-                                        @if (session('userdata')['role_id'] == 5)
+                                        @endif
+                                        @can ('view', App\Http\Models\RencanaHarian::class)
                                         <li class="kt-nav__item">
                                             <a href="{{('rencana-harian')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la la-calendar"></i>
                                                 <span class="kt-nav__link-text">Rencana Harian</span>
                                             </a>
                                         </li>
-                                        @endif
+                                        @endcan
+                                        @if (auth()->user()->can('penerimaan-gp'))
                                         <li class="kt-nav__item">
                                             <a href="{{('penerimaan-gp')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-columns"></i>
                                                 <span class="kt-nav__link-text">Penerimaan GP</span>
                                             </a>
                                         </li>
+                                        @endif
+                                        @if (auth()->user()->can('log-aktivitas'))
                                         <li class="kt-nav__item">
                                             <a href="{{('log-aktivitas')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-line-chart"></i>
                                                 <span class="kt-nav__link-text">Log Aktivitas</span>
                                             </a>
                                         </li>
+                                        @endif
+                                        @if (auth()->user()->can('log-aktivitas-user'))
+                                        <li class="kt-nav__item">
+                                            <a href="{{('/log-aktivitas-user')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon la la-line-chart"></i>
+                                                <span class="kt-nav__link-text">Log Aktivitas</span>
+                                            </a>
+                                        </li>
+                                        @endif
                                     </ul>
                                 </div>
                             </div>
+                            @if (auth()->user()->can('report'))
                             <div class="col-6 mb2">
                                 <button type="button" class="btn btn-outline-success btn-icon-sm dropdown-toggle"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%"> <i
@@ -251,6 +260,7 @@
                                     </ul>
                                 </div>
                             </div>
+                            @endif
                             <div class="col-6">
                                 <button onclick="location.href='{{url('/logout')}}'" type="button" class="btn btn-outline-danger btn-icon-sm" style="width: 100%;"> <i class="la la-times-circle-o"></i> Keluar</button>
                             </div>

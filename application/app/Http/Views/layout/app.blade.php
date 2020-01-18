@@ -108,18 +108,28 @@ License: You must have a valid license purchased only from themeforest(the above
 					<div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper">
 						<div id="kt_aside_menu" class="kt-aside-menu " data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500">
 							<ul class="kt-menu__nav ">
+								@if (auth()->user()->can('dashboard'))
 								<li id="dashboard-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-area-chart"></span><span class="kt-menu__link-text">Dashboard</span></a></li>
-								<li id="layout-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/layout')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-map"></span><span class="kt-menu__link-text">Layout</span></a>
-								</li>
-								<li id="gudang-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/gudang')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-institution"></span><span class="kt-menu__link-text">Gudang</span></a>
-								</li>
-								@if (session('userdata')['role_id'] == 5)
-								</li>
-								<li id="rencanaHarian-nav" class="kt-menu__item rencanaHarian-nav" aria-haspopup="true"><a href="{{url('/rencana-harian')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-calendar"></span><span class="kt-menu__link-text">Rencana Harian</span></a></li>
 								@endif
+								@if (auth()->user()->can('layout'))
+								<li id="layout-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/layout')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-map"></span><span class="kt-menu__link-text">Layout</span></a></li>
+								@endif
+								@if (auth()->user()->can('gudang'))
+								<li id="gudang-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/gudang')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-institution"></span><span class="kt-menu__link-text">Gudang</span></a></li>
+								@endif
+								@can ('view', App\Http\Models\RencanaHarian::class)
+								<li id="rencanaHarian-nav" class="kt-menu__item rencanaHarian-nav" aria-haspopup="true"><a href="{{url('/rencana-harian')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-calendar"></span><span class="kt-menu__link-text">Rencana Harian</span></a></li>
+								@endcan
+								@if (auth()->user()->can('penerimaan-gp'))
 								<li id="pGP-nav" class="kt-menu__item aktivitas-nav" aria-haspopup="true"><a href="{{url('/penerimaan-gp')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-columns"></span><span class="kt-menu__link-text">Penerimaan GP</span></a></li>
+								@endcan
+								@if (auth()->user()->can('log-aktivitas'))
 								<li id="log-aktivitas-nav" class="kt-menu__item pGP-nav" aria-haspopup="true"><a href="{{url('/log-aktivitas')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-line-chart"></span><span class="kt-menu__link-text">Log Aktivitas</span></a></li>
+								@endif
+								@if (auth()->user()->can('log-aktivitas-user'))
 								<li id="log-aktivitas-user-nav" class="kt-menu__item pGP-nav" aria-haspopup="true"><a href="{{url('/log-aktivitas-user')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-list"></span><span class="kt-menu__link-text">Log Aktivitas User</span></a></li>
+								@endif
+								@if (auth()->user()->can('data-master'))
 								<li class="kt-menu__section ">
 									<h4 class="kt-menu__section-text">DATA MASTER</h4>
 									<i class="kt-menu__section-icon flaticon-more-v2"></i>
@@ -133,20 +143,19 @@ License: You must have a valid license purchased only from themeforest(the above
 											<li id="master-karu-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-karu')}}" class="kt-menu__link" ><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kepala Regu</span></a></li>
 											<li id="master-material-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-material')}}" class="kt-menu__link" ><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Material</span></a></li>
 											<li id="master-tenagaNO-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-tenaga-kerja-nonorganik')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Tenaga Kerja Non Organik</span></a></li>
-											{{-- <li id="master-pekerjaan-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-pekerjaan')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Job Desk</span></a></li> --}}
 											<li id="master-pemetaanSloc-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-pemetaan-sloc')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Pemetaan Sloc</span></a></li>
-											{{-- <li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-shift-kerja')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Shift Kerja</span></a></li> --}}
 											<li id="master-K-Berat-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-kerusakan-alat')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kerusakan Alat Berat</span></a></li>
 											<li id="master-K-A-B-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-kategori-alat-berat')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kategori Alat Berat</span></a></li>
-											{{-- <li class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-grup')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Grup</span></a></li> --}}
 											<li id="master-jenisFoto-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-jenis-foto')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Jenis Foto</span></a></li>
 											<li id="master-yayasan-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-yayasan')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Yayasan</span></a></li>
-											@if (session('userdata')['role_id'] == 1)
+											@if (auth()->user()->can('data-master-user'))
 											<li id="master-user-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-user')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">User</span></a></li>
 											@endif
 										</ul>
 									</div>
 								</li>
+								@endif
+								@if (auth()->user()->can('report'))
 								<li class="kt-menu__section ">
 									<h4 class="kt-menu__section-text">REPORTS</h4>
 									<i class="kt-menu__section-icon flaticon-more-v2"></i>
@@ -169,6 +178,7 @@ License: You must have a valid license purchased only from themeforest(the above
 										</ul>
 									</div>
 								</li>
+								@endif
 							</ul>
 						</div>
 					</div>
