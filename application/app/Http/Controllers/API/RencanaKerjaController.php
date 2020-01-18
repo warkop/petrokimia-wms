@@ -158,7 +158,7 @@ class RencanaKerjaController extends Controller
         if (!empty($tempRencana)) {
             $realisasi = Realisasi::where('id_rencana', $tempRencana->id)->get();
     
-            if (!empty($realisasi)) {
+            if (empty($realisasi)) {
                 $this->responseCode = 403;
                 $this->responseMessage = 'Tidak diizinkan untuk menambah Rencana Kerja baru karena Rencana Kerja sudah ada dan dalam status progress!';
                 $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
