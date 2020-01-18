@@ -246,12 +246,12 @@ class AktivitasController extends Controller
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
         $condition = '';
         if ($aktivitas->produk_rusak != 2) {
-            $condition = ' and area_stok.tipe = 1';
+            $condition = ' and area_stok.status = 1';
         } else if ($aktivitas->produk_rusak != 1) {
-            $condition = ' and area_stok.tipe = 2';
+            $condition = ' and area_stok.status = 2';
         } else {
             if ($aktivitas->produk_stok != null) {
-                $condition = ' and area_stok.tipe = 1';
+                $condition = ' and area_stok.status = 1';
             }
         }
         
