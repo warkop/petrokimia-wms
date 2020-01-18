@@ -85,7 +85,15 @@ class AuthController extends Controller
                             ];
                             if ($m_user->id_tkbm != null) {
                                 $rencanaTkbm        = RencanaTkbm::where('id_tkbm', $m_user->id_tkbm)->orderBy('id_rencana', 'desc')->first();
-                                $rencanaHarian      = RencanaHarian::where('id', $rencanaTkbm->id_rencana)->where('draft', 0)->firstOrFail();
+                                $rencanaHarian      = RencanaHarian::where('id', $rencanaTkbm->id_rencana)->where('start_date', '<', date('Y-m-d H:i:s'))
+                                    ->where('end_date', '>', date('Y-m-d H:i:s'))->where('draft', 0)->first();
+                                if (empty($rencanHarian)) {
+                                    $this->responseCode = 403;
+                                    $this->responseMessage = 'Rencana harian belum ada atau belum terjadwal untuk shift saat ini!';
+
+                                    $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                                    return response()->json($response, $this->responseCode);
+                                }
 
                                 $realisasi = Realisasi::where('id_rencana', $rencanaHarian->id)->orderBy('id', 'desc')->first();
                                 if (!empty($realisasi)) {
