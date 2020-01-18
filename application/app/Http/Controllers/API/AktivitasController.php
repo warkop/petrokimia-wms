@@ -244,6 +244,16 @@ class AktivitasController extends Controller
 
         $search = strip_tags($req->input('search'));
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
+        $condition = '';
+        if ($aktivitas->produk_rusak != 2) {
+            $condition = ' and area_stok.tipe = 1';
+        } else if ($aktivitas->produk_rusak != 1) {
+            $condition = ' and area_stok.tipe = 2';
+        } else {
+            if ($aktivitas->produk_stok != null) {
+                $condition = ' and area_stok.tipe = 1';
+            }
+        }
         
         if ($aktivitas->pengaruh_tgl_produksi != null) {
             $resource = Area::
@@ -254,7 +264,7 @@ class AktivitasController extends Controller
                 'area_stok.tanggal',
                 'area.tipe',
                 'area_stok.id_material',
-                DB::raw('COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.'),0) as jumlah'),
+                DB::raw('COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.$condition.'),0) as jumlah'),
                 'area_stok.jumlah as jumlah_area'
             )
             ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
