@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\AlatBerat;
 use App\Http\Models\AlatBeratKerusakan;
+use App\Http\Models\Gudang;
 use App\Http\Models\Karu;
 use App\Http\Models\LaporanKerusakan;
 use App\Http\Models\LaporanKerusakanFoto;
@@ -22,21 +23,45 @@ use Illuminate\Support\Facades\Storage;
 
 class AlatBeratController extends Controller
 {
+    private function getCheckerGudang() { //untuk memperoleh informasi checker ini sekarang berada di gudang mana
+        if (request()->get('my_auth')->role == 3) {
+            $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+                ->where('id_tkbm',request()->get('my_auth')->id_tkbm)
+                ->orderBy('rencana_harian.id', 'desc')
+                ->take(1)->first();
+    
+            if (empty($rencana_tkbm)) {
+                $this->responseCode = 500;
+                $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+            $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
+            $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
+        } else if (request()->get('my_auth')->role == 5) {
+            $karu   = Karu::find(request()->get('my_auth')->id_karu);
+            $gudang = Gudang::find($karu->id_gudang);
+        } else {
+            return false;
+        }
+
+        return $gudang;
+    }
+
     public function index(Request $req)
     {
         $search = strip_tags($req->input('search'));
-        $my_auth = request()->get('my_auth');
-        $karu = Karu::find($my_auth->id_karu);
+        $gudang = $this->getCheckerGudang();
 
-        $rencanaHarian = RencanaHarian::where('id_gudang', $karu->id_gudang)
+        $rencanaHarian = RencanaHarian::where('id_gudang', $gudang->id)
         ->where('start_date', '<', date('Y-m-d H:i:s'))
         ->where('end_date', '>', date('Y-m-d H:i:s'))
-        ->where('id_gudang', $karu->id_gudang)
+        ->where('id_gudang', $gudang->id)
         ->orderBy('id', 'desc')
         ->first();
 
         if (empty($rencanaHarian)) {
-            $this->responseMessage = 'Karu tidak memiliki Rencana Harian untuk hari ini!';
+            $this->responseMessage = 'Tidak ada Rencana Harian untuk hari ini!';
             $this->responseCode = 403;
 
             $response = [
