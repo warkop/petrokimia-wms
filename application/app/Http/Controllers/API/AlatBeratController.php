@@ -27,9 +27,10 @@ class AlatBeratController extends Controller
         if (request()->get('my_auth')->role == 3) {
             $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
                 ->where('id_tkbm',request()->get('my_auth')->id_tkbm)
+                ->where('start_date', '<', date('Y-m-d H:i:s'))
+                ->where('end_date', '>', date('Y-m-d H:i:s'))
                 ->orderBy('rencana_harian.id', 'desc')
-                ->take(1)->first();
-    
+                ->first();
             if (empty($rencana_tkbm)) {
                 $this->responseCode = 500;
                 $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
