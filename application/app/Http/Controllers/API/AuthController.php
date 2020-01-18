@@ -85,7 +85,7 @@ class AuthController extends Controller
                             ];
                             if ($m_user->id_tkbm != null) {
                                 $rencanaTkbm        = RencanaTkbm::where('id_tkbm', $m_user->id_tkbm)->orderBy('id_rencana', 'desc')->first();
-                                $rencanaHarian      = RencanaHarian::findOrFail($rencanaTkbm->id_rencana);
+                                $rencanaHarian      = RencanaHarian::where($rencanaTkbm->id_rencana)->where('draft', 0)->first();
 
                                 $realisasi = Realisasi::where('id_rencana', $rencanaHarian->id)->orderBy('id', 'desc')->first();
                                 if (!empty($realisasi)) {
