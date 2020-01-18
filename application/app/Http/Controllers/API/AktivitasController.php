@@ -803,7 +803,8 @@ class AktivitasController extends Controller
                 $foto = AktivitasKelayakanFoto::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
             }
 
-            return (new AktivitasResource($foto))->additional([
+            return response()->json([
+                'data' => $foto,
                 'status' => [
                     'message' => '',
                     'code' => Response::HTTP_CREATED,
