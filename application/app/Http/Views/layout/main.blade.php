@@ -209,12 +209,6 @@
                                                 <span class="kt-nav__link-text">Stok</span>
                                             </a>
                                         </li>
-                                        {{-- <li class="kt-nav__item">
-                                            <a href="{{('report/laporan-absen-karyawan')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la fa fa-fingerprint"></i>
-                                                <span class="kt-nav__link-text">Absen Karyawan</span>
-                                            </a>
-                                        </li> --}}
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-mutasi-pallet')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon fa fa-arrows-alt-h"></i>
