@@ -32,7 +32,7 @@ class UserRequest extends FormRequest
             ],
             'email'         => [
                 'nullable',
-                'email',
+                // 'email',
                 // Rule::unique('users', 'email')->ignore(request()->id),
             ],
             'role_id'       => 'required',
