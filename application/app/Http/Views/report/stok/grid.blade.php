@@ -29,7 +29,7 @@
             <div class="form-group row mt2">
                 <h4 class="col-2 col-form-label text-kiri">Gudang</h4>
                 <div class="col-6">
-                    <select class="form-control m-select2" id="gudang" name="gudang" multiple="multiple" style="width: 100%">
+                    <select class="form-control m-select2" id="gudang" name="gudang[]" multiple="multiple" style="width: 100%">
                         @foreach ($gudang as $item)
                             <option value="{{$item->id}}">{{$item->nama}}</option>
                         @endforeach
@@ -50,7 +50,7 @@
                         </label> 
                     </div>
                     <div class="mt1" id="textadd" style="display:none;">
-                        <select class="form-control m-select2" id="pilih" name="pilih_produk" multiple="multiple" style="width:100%">
+                        <select class="form-control m-select2" id="pilih" name="pilih_produk[]" multiple="multiple" style="width:100%">
                             @foreach ($produk as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>
                             @endforeach

@@ -94,6 +94,11 @@ class Gudang extends Model
         return $query->where('tipe_gudang', 2);
     }
 
+    public function area()
+    {
+        return $this->hasMany(Area::class, 'id_gudang', 'id');
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $user = auth()->user();

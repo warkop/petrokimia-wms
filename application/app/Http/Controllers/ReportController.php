@@ -1588,9 +1588,9 @@ class ReportController extends Controller
     public function laporanKeluhanGp()
     {
         $data['title']      = 'Laporan Keluhan GP';
-        $data['gudang']     = Gudang::all();
+        $data['gudang']     = Gudang::gp()->get();
         $data['keluhan']    = Keluhan::all();
-        $data['aktivitas']  = Aktivitas::all();
+        $data['aktivitas']  = Aktivitas::whereNotNull('pengiriman')->get();
         $data['produk']     = Material::produk()->get();
         return view('report.keluhan-gp.grid', $data);
     }
@@ -1604,9 +1604,8 @@ class ReportController extends Controller
         $kegiatan           = request()->input('kegiatan'); //multi
         $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
-        // dd($keluhan);
         $res = AktivitasKeluhanGp::select(
-            'aktivitas_keluhan_gp.*',
+            'aktivitas_keluhan_gps.*',
             'g.nama as nama_gudang',
             'm.nama as nama_material',
             'ah.created_at as tanggal'
@@ -1624,18 +1623,29 @@ class ReportController extends Controller
             })
             ;
 
-        if ($keluhan != null) {
+        if (count($keluhan) > 0) {
             $res = $res->whereHas('aktivitasHarian', function ($query) use ($keluhan) {
+                $query->where('id', $keluhan[0]);
                 foreach ($keluhan as $key => $value) {
                     $query->orWhere('id', $value);
                 }
             });
         }
 
-        if ($gudang != null) {
+        if (count($gudang) > 0) {
             $res = $res->where(function ($query) use ($gudang) {
+                $query->where('id_gudang', $gudang[0]);
                 foreach ($gudang as $key => $value) {
                     $query->orWhere('id_gudang', $value);
+                }
+            });
+        }
+
+        if (count($kegiatan) > 0) {
+            $res = $res->where(function ($query) use ($kegiatan) {
+                $query->where('id_aktivitas', $kegiatan[0]);
+                foreach ($kegiatan as $key => $value) {
+                    $query->orWhere('id_aktivitas', $value);
                 }
             });
         }
@@ -1643,7 +1653,6 @@ class ReportController extends Controller
         $res = $res->get();
 
         $nama_file = date("YmdHis") . '_keluhan_gp.xlsx';
-        // dd($res->toArray());
         $this->generateExcelKeluhanGp($res, $nama_file, $tgl_awal, $tgl_akhir);
     }
 
@@ -2237,16 +2246,228 @@ class ReportController extends Controller
         $tgl_awal   = date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
 
-        $res = Area::with('gudang')->whereBetween('created_at', [$tgl_awal, $tgl_akhir])->get();
+        $res = Gudang::with('area')
+        ->whereBetween('created_at', [$tgl_awal, $tgl_akhir]);
+        
+        if ($gudang) {
+            $res = $res->where(function ($query) use ($gudang) {
+                $query->where('id', $gudang[0]);
+                foreach ($gudang as $key => $value) {
+                    $query->where('id', $value);
+                }
+            });
+        } else {
+            $res = $res->where('tipe_gudang', 1);
+        }
+
+        if ($produk == 2) {
+            $res = $res->where(function ($query) use ($pilih_produk) {
+                foreach ($pilih_produk as $key => $value) {
+                    $query = $query->orWhere('id_material', $value);
+                }
+            });
+        } else {
+            $res = $res->whereHas('area.areaStok.material', function ($query) {
+                $query = $query->where('kategori', 1);
+            });
+        }
+
+        $res = $res->get();
 
         $nama_file = date("YmdHis") . '_stok.xlsx';
-        // $this->generateExcelStok($res, $nama_file, $tgl_awal, $tgl_akhir);
-        dd($res);
+        $this->generateExcelStok($res, $nama_file, $tgl_awal, $tgl_akhir);
+        // dd($res->toArray());
     }
 
     public function generateExcelStok($res, $nama_file, $tgl_awal, $tgl_akhir)
     {
-        
+        $objSpreadsheet = new Spreadsheet();
+
+        $sheetIndex = 0;
+
+        //start: style
+        $style_note = array(
+            'font' => array(
+                'bold' => true
+            )
+        );
+        $style_judul_kolom = array(
+            'fill' => array(
+                // 'type'  => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'color' => array('rgb' => 'D3D3D3')
+            ),
+            'font' => array(
+                'bold' => true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                )
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            )
+        );
+        $style_acara = array(
+            'font' => array(
+                'size' => 14,
+                'bold' => true
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            )
+        );
+        $style_title = array(
+            'font' => array(
+                // 'size' => 18,
+                'bold' => true
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            )
+        );
+        $style_isi_kolom = array(
+
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                )
+            )
+        );
+        $style_ontop = array(
+            'alignment' => array(
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
+            )
+        );
+        $style_kolom = array(
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                )
+            ),
+        );
+        $style_no['alignment'] = array(
+            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+        );
+        //end: style
+
+        // start : sheet
+        $objSpreadsheet->createSheet($sheetIndex);
+        $objSpreadsheet->setActiveSheetIndex($sheetIndex);
+        // start : title
+        $col = 3;
+        $row = 1;
+        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Stok (Bulan)');
+        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+
+        $col = 1;
+        $row++;
+
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_acara);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
+
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(7);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(15);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(35);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(25);
+
+        // end : title
+        // start : judul kolom
+        $col = 1;
+        $row = 5;
+        $abjadOri = 'A';
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row + 1));
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No');
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Area');
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row + 1));
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Kapasitas');
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row + 1));
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Produk');
+
+        $produk = Material::produk()->get();
+        $abjadPemasukan = $abjadOri;
+        $i = 0;
+        $row = 6;
+        foreach ($produk as $key) {
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $key->nama);
+            $i++;
+            $col++;
+            $abjadPemasukan++;
+        }
+
+        // $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
+        // $objSpreadsheet->getActiveSheet()->mergeCells($abjadPemasukan . ($row - 1) . ':' . $abjadPengeluaran . ($row - 1));       
+
+        $abjad = 'A';
+
+        $row = 5;
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadPemasukan . ($row + 1))->applyFromArray($style_judul_kolom);
+        $row = 6;
+        // end : judul kolom
+
+        // start : isi kolom
+        $no = 0;
+        foreach ($res as $value) {
+            $no++;
+            $col = 1;
+            $row++;
+
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadPemasukan . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':' . $abjadPemasukan . $row)->applyFromArray($style_ontop);
+
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
+
+            $col++;
+            $abjad = chr(ord($abjad) + 1);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama); //nama area
+
+            $col++;
+            $abjad = chr(ord($abjad) + 1);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->area->sum('kapasitas')); //kapasitas
+
+            foreach ($produk as $key) {
+                foreach ($value->area as $row2) {
+                    // dd($key->id);
+                    $areaStok = AreaStok::where('id_area', $row2->id)->where('id_material', $key->id)->sum('jumlah');
+                    // dd($areaStok);
+                }
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $areaStok); //kapasitas
+            }
+            $col++;
+
+            $abjad = 'A';
+
+            //stok awal
+            
+        }
+
+        //Sheet Title
+        $objSpreadsheet->getActiveSheet()->setTitle('Laporan Stok');
+        // end : isi kolom
+        // end : sheet
+
+        #### END : SHEET SESI ####
+        $writer = new Xlsx($objSpreadsheet);
+
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: no-store, no-cache, must-revalidate');
+        header('Cache-Control: post-check=0, pre-check=0', false);
+        header('Pragma: no-cache');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+        $writer->save('php://output');
     }
     
     public function laporanAbsenKaryawan()

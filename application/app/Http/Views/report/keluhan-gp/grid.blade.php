@@ -9,7 +9,6 @@
 </script>
 
 
-
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
     <div class="kt-portlet">
@@ -23,6 +22,8 @@
                 </p>
             </div>
         </div>
+        
+        <form action="{{ url('report/keluhan-gp') }}" method="GET"></form>
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row">
@@ -105,15 +106,12 @@
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="offset-lg-2">
-                        <form action="{{ url('report/keluhan-gp') }}" method="GET">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fa fa-print"></i> Cetak Laporan
-                        </button>
-                    </form>
+                        <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
                     </div>
                 </div>
             </div>
         </div>
+        </form>
     </div>
 </div>
 
