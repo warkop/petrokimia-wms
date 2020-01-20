@@ -1575,7 +1575,7 @@ class AktivitasController extends Controller
         $search = $req->input('search');
         $my_auth = $req->get('my_auth');
         $user = Users::findOrFail($my_auth->id_user);
-
+        dd($gudang);
         $res = AktivitasHarian::select(
             'aktivitas_harian.id',
             'aktivitas.id as id_aktivitas',
