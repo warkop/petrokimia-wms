@@ -1802,7 +1802,7 @@ class AktivitasController extends Controller
     public function getSistro(Request $req)
     {
         $tiketnumber = $req->input('tiketnumber');
-        $sistro = Sistro::where('tiketno', $tiketnumber)->first();
+        $sistro = Sistro::where('tiketno', $tiketnumber)->firstOrFail();
         $res = Material::with('sistro')->where('id_material_sap', $sistro->idproduk)->get();
 
         $obj = GetSistroResource::collection($res)->additional([
