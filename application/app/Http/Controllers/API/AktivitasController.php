@@ -269,11 +269,10 @@ class AktivitasController extends Controller
             )
             ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
             ->where('id_gudang', $gudang->id)
-            ->where('area_stok.status', 1)
             ;
 
             if ($pindah == false) {
-                $resource = $resource->where('id_material', $id_material);
+                $resource = $resource->where('id_material', $id_material)->where('area_stok.status', 1);
             }
             $resource = $resource->get();
         } else {
