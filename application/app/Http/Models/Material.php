@@ -73,6 +73,7 @@ class Material extends CustomModel
                 $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
                 $where->orWhere(DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
+                $where->orWhere(DB::raw('id_material_sap::text'), 'ILIKE', '%' . $search . '%');
             });
         }
 
