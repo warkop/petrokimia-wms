@@ -246,8 +246,10 @@ function loadPegawai(role='') {
         type: "get",
         success:res=>{
             const obj = res.data;
+            $("#label_pilih").html("Pilih Pegawai");
             let element = '<option value="">Pilih Pegawai</option>';
             if (role == 6) {
+                $("#label_pilih").html("Pilih Gudang Penyangga");
                 element = '<option value="">Pilih Gudang Penyangga</option>';    
             }
             const panjang = obj.length;

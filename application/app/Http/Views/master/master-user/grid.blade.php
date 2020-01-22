@@ -94,7 +94,7 @@
                                 @endforeach
                             </div>
                             <div class="form-group" id="pilih_pegawai">
-                                <label>Pilih Pegawai</label><br>
+                                <label id="label_pilih">Pilih Pegawai</label><br>
                                 <select class="form-control" id="pilih" name="pilih" style="width: 100%;">
 
                                 </select>
@@ -141,7 +141,7 @@ $('#end_date').datepicker({
 });
 
 $('#pilih').select2({
-    placeholder: "Pilih Pegawai",
+    placeholder: "Silahkan pilih",
     dropdownParent:$("#pilih_pegawai")
 });
 
