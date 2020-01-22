@@ -13,7 +13,9 @@ class MaterialTrans extends Model
         'id',
     ];
 
-    public $timestamps  = false;
+    protected $dates = ['created_at', 'updated_at'];
+
+    public $timestamps  = true;
 
     public function material()
     {
