@@ -1802,16 +1802,37 @@ class AktivitasController extends Controller
     {
         $tiketnumber = $req->input('tiketnumber');
         $sistro = Sistro::where('tiketno', $tiketnumber)->firstOrFail();
-        $res = Material::with('sistro')->where('id_material_sap', $sistro->idproduk)->get();
+        $res = Material::with('sistro')
+        ->where('id_material_sap', $sistro->idproduk)->firstOrFail();
 
-        $obj = GetSistroResource::collection($res)->additional([
-            'status' => [
-                'message' => '',
-                'code' => Response::HTTP_OK
-            ],
-        ], Response::HTTP_OK);
+        if ($res->kategori == 1) {
+            $text_kategori = 'Produk';
+        } else if ($res->kategori == 2) {
+            $text_kategori = 'Pallet';
+        } else {
+            $text_kategori = 'Lain-lain';
+        }
 
-        return $obj;
+        $data = [
+            'id'                => $res->id,
+            'id_material_sap'   => $res->id_material_sap,
+            'kategori'          => $res->kategori,
+            'text_kategori'     => $text_kategori,
+            'berat'             => $res->berat,
+            'koefisien_pallet'  => $res->koefisien_pallet,
+            'nama'              => $res->nama,
+            'booking_no'        => $sistro->bookingno,
+            'tiket_no'          => $sistro->tiketno,
+            'nopol'             => $sistro->nopol,
+            'driver'            => $sistro->driver,
+            'sistro_qty'        => $sistro->qty,
+            'tanggal'           => $sistro->tanggal,
+        ];
+
+        return response()->json(['data' => $data, 'status' => [
+            'message' => '',
+            'code' => Response::HTTP_OK
+        ]],Response::HTTP_OK);
     }
 
     public function testFirebase()
