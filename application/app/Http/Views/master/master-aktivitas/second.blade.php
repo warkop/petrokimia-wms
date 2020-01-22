@@ -347,7 +347,14 @@
                                     </label>
                                 </div>
                             </div>
-                            
+                            <div class="row form-group mb-0 mb2">
+                                <div class="col-12 offset-col-2">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox" name="tanpa_tanggal" id="tanpa_tanggal" value="1"> Tanpa Tanggal Produksi
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -556,7 +563,7 @@ let now = 0;
         @endif
 
         $('input.select-pallet').on('change', function(evt) {
-            console.log($(this).siblings(':checked').length);
+            console.log($(this));
             if($(this).siblings(':checked').length >= limit) {
                 this.checked = false;
             }

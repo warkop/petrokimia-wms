@@ -297,6 +297,10 @@ function edit(id = '') {
             if (obj.data['so'] != null) {
                 $('#so').prop('checked', true);
             }
+            
+            if (obj.data['tanpa_tanggal'] != null) {
+                $('#tanpa_tanggal').prop('checked', true);
+            }
 
             if (obj.data['penyusutan'] != null) {
                 $('#penyusutan').prop('checked', true);
