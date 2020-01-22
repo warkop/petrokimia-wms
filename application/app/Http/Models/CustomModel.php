@@ -46,7 +46,7 @@ class CustomModel extends Model
             if ($table->start_date == null) {
                 $table->start_date = now();
             }
-
+            $table->updated_at = now();
             $table->updated_by = auth()->id();
         });
 
