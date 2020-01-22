@@ -41,11 +41,11 @@
                 <div class="col-6">
                     <div class="kt-radio-inline">
                         <label class="kt-radio kt-radio--success">
-                            <input id="semuaCheck" type="radio" name="produk" onclick="checkSemua()"> Semua
+                            <input id="semuaCheck" type="radio" name="produk" value="1" onclick="checkSemua()"> Semua
                             <span></span>
                         </label>
                         <label class="kt-radio kt-radio--warning">
-                            <input id="myCheck" type="radio" name="produk" onclick="checkBx()"> Spesifik
+                            <input id="myCheck" type="radio" name="produk" value="2" onclick="checkBx()"> Spesifik
                             <span></span>
                         </label> 
                     </div>
