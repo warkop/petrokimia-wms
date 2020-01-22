@@ -196,6 +196,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/', 'PenerimaanGpController@index');
         Route::get('/get-area/{id_gudang}/{id_material}/{id_aktivitas_harian}', 'PenerimaanGpController@getArea')->where('id_material', '[0-9]+')->where('id_gudang', '[0-9]+')->where('id_aktivitas_harian', '[0-9]+');
         Route::get('/{aktivitasHarian}', 'PenerimaanGpController@show')->where('aktivitasHarian', '[0-9]+');
+        Route::get('/list-keluhan/{id}', 'PenerimaanGpController@getListKeluhanGP')->where('id', '[0-9]+');
         Route::get('/get-produk/{id_aktivitas_harian}', 'PenerimaanGpController@getProduk')->where('id_aktivitas_harian', '[0-9]+');
         Route::post('/', 'PenerimaanGpController@json');
         Route::put('/{aktivitasHarian}', 'PenerimaanGpController@store')->where('aktivitasHarian', '[0-9]+');

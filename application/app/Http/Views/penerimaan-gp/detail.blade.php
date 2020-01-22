@@ -254,6 +254,41 @@
     </div>
 </div>
 
+<div class="modal fade btn_close_modal" id="modal_detail" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Detail Data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">                
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h5 class="mb-3">List produk</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama produk</th>
+                                    <th>Jumlah</th>
+                                    <th>Keluhan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tubuh_produk">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script src="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.js')}}"></script>
 <script type="text/javascript">
@@ -605,6 +640,142 @@ let datatable,
             }
         });
     }
+
+function detail(id) {
+    $("#modal_detail").modal(
+    {
+      backdrop: "static",
+      keyboard: false
+    },
+    "show"
+  );
+
+  $.ajax({
+    type: "GET",
+    url: ajaxUrl + "//" + id_gudang + "/" + id,
+    beforeSend: function () {
+      preventLeaving();
+      $(".btn_close_modal").addClass("hide");
+      $(".se-pre-con").show();
+    },
+    success: function (response) {
+      window.onbeforeunload = false;
+      $(".btn_close_modal").removeClass("hide");
+      $(".se-pre-con").hide();
+
+      let obj_adjustment = response.data.material_adjustment;
+      let obj_produk = response.data.produk;
+      let obj_pallet = response.data.pallet;
+
+      if (obj_adjustment.tanggal != null) {
+        $("#tempat_tanggal").html(helpDateFormat(obj_adjustment.tanggal, "li"));
+      }
+
+      if (obj_adjustment.foto != null) {
+        let html =
+          '<a id="gambar" target="_blank" href="' +
+          baseUrl +
+          /watch/ +
+          obj_adjustment.foto +
+          "?" +
+          "un=" +
+          obj_adjustment.id +
+          "&ctg=material&src=" +
+          obj_adjustment.foto +
+          '">' +
+          obj_adjustment.foto +
+          "</a>";
+
+          const link = baseUrl + /watch/ + obj_adjustment.foto + "?" + "un=" + obj_adjustment.id + "&ctg=material&src=" + obj_adjustment.foto
+
+          $("#tempat_link_gambar").prop("href", link);
+          $("#tempat_muncul_gambar").prop("src", link);
+
+        $("#list").html(html);
+      } else {
+        $("#tempat_link_gambar").prop("href", "");
+        $("#tempat_muncul_gambar").prop("src", "");
+        $("#list").html("Tidak ada gambar");
+      }
+
+        let text = "";
+        let i=1;
+        obj_produk.forEach(element => {
+            let text_tipe = "";
+            if (element.tipe == 1) {
+                text_tipe = "Mengurangi";
+            } else if (element.tipe == 2) {
+                text_tipe = "Menambah";
+            }
+            text += `
+                <tr>
+                    <td>${i}</td>
+                    <td>${element.nama}</td>
+                    <td>${element.nama_area}</td>
+                    <td>${helpDateFormat(element.tanggal, "li")}</td>
+                    <td>${text_tipe}</td>
+                    <td>${element.jumlah} Ton</td>
+                    <td>${element.alasan ? element.alasan : ''}</td>
+                </tr>
+            `;
+            i++;
+        });
+        $("#tubuh_produk").html(text);
+        text = "";
+        i=1;
+        obj_pallet.forEach(element => {
+            let text_tipe = "";
+            if (element.tipe == 1) {
+                text_tipe = "Mengurangi";
+            } else if (element.tipe == 2) {
+                text_tipe = "Menambah";
+            }
+            text += `
+                <tr>
+                    <td>${i}</td>
+                    <td>${element.nama}</td>
+                    <td>${text_tipe}</td>
+                    <td>${element.jumlah} pcs</td>
+                    <td>${element.alasan ? element.alasan:''}</td>
+                </tr>
+            `;
+            i++;
+        });
+        $("#tubuh_pallet").html(text);
+        
+    },
+    error: function (response) {
+      let head = "Maaf",
+        message = "Terjadi kesalahan koneksi",
+        type = "error";
+      window.onbeforeunload = false;
+      $(".btn_close_modal").removeClass("hide");
+      $(".se-pre-con").hide();
+
+      if (response["status"] == 401 || response["status"] == 419) {
+        location.reload();
+      } else {
+        if (response["status"] != 404 && response["status"] != 500) {
+          let obj = JSON.parse(response["responseText"]);
+
+          if (!$.isEmptyObject(obj.message)) {
+            if (obj.code > 400) {
+              head = "Maaf";
+              message = obj.message;
+              type = "error";
+            } else {
+              head = "Pemberitahuan";
+              message = obj.message;
+              type = "warning";
+            }
+          }
+        }
+
+        swal.fire(head, message, type);
+      }
+    }
+  });
+}
 </script>
 
 @stop

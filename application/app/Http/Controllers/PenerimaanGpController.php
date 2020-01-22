@@ -154,8 +154,12 @@ class PenerimaanGpController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(AktivitasHarian $aktivitasHarian)
+    public function show($id)
     {
+        $aktivitasHarian = AktivitasHarian::where('id', $id)
+        ->whereHas('aktivitas', function($query){
+            $query->whereNotNull('pengiriman');
+        })->firstOrFail();
         $data['title'] = 'Detail Penerimaan GP';
         $data['aktivitasHarian'] = $aktivitasHarian;
         $data['id_aktivitas_harian'] = $aktivitasHarian->id;
@@ -180,6 +184,14 @@ class PenerimaanGpController extends Controller
 
         $data['list_produk'] = Material::produk()->get();
         return view('penerimaan-gp.detail', $data);
+    }
+
+    public function getListKeluhanGP($id)
+    {
+        $aktivitasKeluhanGp = AktivitasKeluhanGp::with('material')
+        ->where('id_aktivitas_harian', $id)
+        ->get();
+        return response()->json($aktivitasKeluhanGp, 200);
     }
 
     public function getArea($id_gudang, $id_material, $id_aktivitas_harian)
