@@ -1829,7 +1829,7 @@ class AktivitasController extends Controller
             'tanggal'           => $sistro->tanggal,
         ];
 
-        return response()->json(['data' => $data, 'status' => [
+        return response()->json(['data' => [$data], 'status' => [
             'message' => '',
             'code' => Response::HTTP_OK
         ]],Response::HTTP_OK);
