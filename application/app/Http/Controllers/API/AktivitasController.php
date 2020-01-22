@@ -1802,6 +1802,7 @@ class AktivitasController extends Controller
     {
         $tiketnumber = $req->input('tiketnumber');
         $sistro = Sistro::where('tiketno', $tiketnumber)->orWhere('bookingno', $tiketnumber)->firstOrFail();
+        $gudangTujuan = Gudang::where('id_plant', $sistro->tujuan)->first();
         $res = Material::with('sistro')
         ->where('id_material_sap', $sistro->idproduk)->firstOrFail();
 
@@ -1827,6 +1828,8 @@ class AktivitasController extends Controller
             'driver'            => $sistro->driver,
             'sistro_qty'        => $sistro->qty,
             'tanggal'           => $sistro->tanggal,
+            'tujuan'            => $gudangTujuan->id,
+            'nama_tujuan'       => $gudangTujuan->nama,
         ];
 
         return response()->json(['data' => [$data], 'status' => [
