@@ -1638,6 +1638,7 @@ class AktivitasController extends Controller
             'approve',
             'id_gudang_tujuan',
             'aktivitas_harian.so',
+            'tanpa_tanggal',
             'id_yayasan',
             'aktivitas.peminjaman',
             'aktivitas_harian.dikembalikan',
