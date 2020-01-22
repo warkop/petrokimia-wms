@@ -525,7 +525,7 @@
 
 <script src="{{asset('assets/extends/js/page/master-aktivitas.js')}}" type="text/javascript"></script>
 <script>
-const limit = 2;
+const limit = 3;
 let now = 0;
     $(document).ready(()=>{
 
@@ -562,11 +562,58 @@ let now = 0;
         }
         @endif
 
-        $('input.select-pallet').on('change', function(evt) {
-            console.log($(this));
-            if($(this).siblings(':checked').length >= limit) {
+        $('.select-pallet').on('change', function(evt) {
+            if($('.select-pallet:checkbox:checked').length >= limit) {
                 this.checked = false;
+                $(this.id).val("").change();
+                $(this.id).attr('disabled',true);
+                $(this.id).selectpicker('refresh');
             }
+
+            $("#selector_pallet_stok").change(function() {
+                if(this.checked) {
+                    $("#pallet_stok").attr('disabled',false);
+                    $("#pallet_stok").selectpicker('refresh');
+                } else {
+                    $("#pallet_stok").val("").change();
+                    $("#pallet_stok").attr('disabled',true);
+                    $("#pallet_stok").selectpicker('refresh');
+                }
+            });
+
+            $("#selector_pallet_dipakai").change(function() {
+                if(this.checked) {
+                    console.log('dasar')
+                    $("#pallet_dipakai").attr('disabled',false);
+                    $("#pallet_dipakai").selectpicker('refresh');
+                } else {
+                    $("#pallet_dipakai").val("").change();
+                    $("#pallet_dipakai").attr('disabled',true);
+                    $("#pallet_dipakai").selectpicker('refresh');
+                }
+            });
+
+            $("#selector_pallet_kosong").change(function() {
+                if(this.checked) {
+                    $("#pallet_kosong").attr('disabled',false);
+                    $("#pallet_kosong").selectpicker('refresh');
+                } else {
+                    $("#pallet_kosong").val("").change();
+                    $("#pallet_kosong").attr('disabled',true);
+                    $("#pallet_kosong").selectpicker('refresh');
+                }
+            });
+
+            $("#selector_pallet_rusak").change(function() {
+                if(this.checked) {
+                    $("#pallet_rusak").attr('disabled',false);
+                    $("#pallet_rusak").selectpicker('refresh');
+                } else {
+                    $("#pallet_rusak").val("").change();
+                    $("#pallet_rusak").attr('disabled',true);
+                    $("#pallet_rusak").selectpicker('refresh');
+                }
+            });
         });
     });
     $('.kt-selectpicker').selectpicker();
@@ -591,56 +638,6 @@ let now = 0;
             $("#produk_stok").val("");
             $("#produk_stok").attr('disabled',true);
             $("#produk_stok").selectpicker('refresh');
-        }
-    });
-
-    $("#selector_pallet_stok").change(function() {
-        if(this.checked) {
-            $("#pallet_stok").attr('disabled',false);
-            $("#pallet_stok").selectpicker('refresh');
-        } else {
-            $("#pallet_stok").val("").change();
-            $("#pallet_stok").attr('disabled',true);
-            $("#pallet_stok").selectpicker('refresh');
-        }
-    });
-
-    $("#selector_pallet_dipakai").change(function() {
-        if(this.checked) {
-            $("#pallet_dipakai").attr('disabled',false);
-            $("#pallet_dipakai").selectpicker('refresh');
-            now++;
-        } else {
-            now--;
-            $("#pallet_dipakai").val("").change();
-            $("#pallet_dipakai").attr('disabled',true);
-            $("#pallet_dipakai").selectpicker('refresh');
-        }
-    });
-
-    $("#selector_pallet_kosong").change(function() {
-        if(this.checked) {
-            $("#pallet_kosong").attr('disabled',false);
-            $("#pallet_kosong").selectpicker('refresh');
-            now++;
-        } else {
-            now--;
-            $("#pallet_kosong").val("").change();
-            $("#pallet_kosong").attr('disabled',true);
-            $("#pallet_kosong").selectpicker('refresh');
-        }
-    });
-
-    $("#selector_pallet_rusak").change(function() {
-        if(this.checked) {
-            $("#pallet_rusak").attr('disabled',false);
-            $("#pallet_rusak").selectpicker('refresh');
-            now++;
-        } else {
-            now--;
-            $("#pallet_rusak").val("").change();
-            $("#pallet_rusak").attr('disabled',true);
-            $("#pallet_rusak").selectpicker('refresh');
         }
     });
 
