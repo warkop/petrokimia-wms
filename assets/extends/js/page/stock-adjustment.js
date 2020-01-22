@@ -120,10 +120,6 @@ const load_table = function() {
           return `
                 <button type = "button" onclick="detail(${full.id})" class="btn btn-primary btn-elevate btn-icon" data-toggle="modal" data-target="#modal_detail" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Detail">
                     <i class="flaticon-medical"></i></button>`;
-
-          // <button type = "button" class="btn btn-orens btn-elevate btn-icon" onclick="edit(${full.id})" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Edit">
-          //     <i class="flaticon-edit-1"></i> </button>
-          // <button type = "button" onclick="hapus(${full.id})" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Hapus"><i class="flaticon-delete"></i> </button>
         }
       },
       {
@@ -201,6 +197,9 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
                         </select>
                     </td>
                     <td>
+                        <input class="form-control pilih_tanggal" id="tanggal-${rows}" name="tanggal_produksi[]" aria-placeholder="Pilih Tanggal Produksi" style="width: 100%;">
+                    </td>
+                    <td>
                         <select class="form-control" name="action_produk[]" id="produk-status-${rows}" style="width: 100%;">
                         <option value="1">Mengurangi</option>
                         <option value="2">Menambah</option>
@@ -220,6 +219,14 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
   $(".pilih_produk").select2({
     placeholder: "Pilih Produk",
     dropdownParent: $(`#tempat-produk-${rows}`)
+  });
+
+  $(`#tanggal-${rows}`).datepicker({
+    rtl: KTUtil.isRTL(),
+    todayHighlight: true,
+    format: 'dd-mm-yyyy',
+    clearBtn: true,
+    orientation: "bottom left"
   });
 
   // $('#produk-' + rows).select2({
@@ -314,7 +321,6 @@ function getArea(target) {
     beforeSend: () => {},
     success: res => {
       const obj = res.data;
-      console.log(obj);
       let html = `<option value="">Pilih Area</option>`;
       obj.forEach((item, index) => {
         html += `<option value="${item.id}">${item.nama}</option>`;
@@ -572,6 +578,7 @@ function detail(id) {
                     <td>${i}</td>
                     <td>${element.nama}</td>
                     <td>${element.nama_area}</td>
+                    <td>${helpDateFormat(element.tanggal, "li")}</td>
                     <td>${text_tipe}</td>
                     <td>${element.jumlah} Ton</td>
                     <td>${element.alasan ? element.alasan : ''}</td>
@@ -751,36 +758,6 @@ function reset_form(method = "") {
     $("#table_pallet tbody").html("");
     $("#list").html("");
     myDropzone.removeAllFiles();
-}
-
-function hapus(id) {
-  swal
-    .fire({
-      title: "Are you sure?",
-      text: "Data yang sudah dihapus tidak bisa dibatalkan.",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Ya, hapus data!"
-    })
-    .then(function(result) {
-      if (result.value) {
-        $.ajax({
-          url: ajaxSource + "/stock-adjustment/" + id_gudang + "/" + id,
-          headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-          },
-          method: "DELETE",
-          success: res => {
-            const head = "Pemberitahuan",
-              message = "Data berhasil dihapus",
-              type = "success";
-            swal.fire(head, message, type);
-            datatable.api().ajax.reload();
-          },
-          error: () => {}
-        });
-      }
-    });
 }
 
 var KTDatatablesDataSourceHtml = (function() {

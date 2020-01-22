@@ -62,6 +62,11 @@ class MaterialAdjustment extends Model
         });
     }
 
+    public function materialTrans()
+    {
+        return $this->hasMany(MaterialTrans::class, 'id_adjustment', 'id');
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition, $id_gudang)
     {
         $result = DB::table($this->table)

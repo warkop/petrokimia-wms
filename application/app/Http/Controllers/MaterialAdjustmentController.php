@@ -86,47 +86,29 @@ class MaterialAdjustmentController extends Controller
         //material trans
         $produk        = $req->input('produk');
         $area          = $req->input('area');
+        $tanggal       = $req->input('tanggal_produksi');
         $action_produk = $req->input('action_produk');
         $produk_jumlah = $req->input('produk_jumlah');
         $produk_alasan = $req->input('produk_alasan');
         if (!empty($produk)) {
             $panjang          = count($produk);
-            $produk           = array_values($produk);
-            $area             = array_values($area);
-            $action_produk    = array_values($action_produk);
-            $produk_jumlah    = array_values($produk_jumlah);
-            $produk_alasan    = array_values($produk_alasan);
+            $produk           = array_values((array)$produk);
+            $area             = array_values((array)$area);
+            $tanggal          = array_values((array)$tanggal);
+            $action_produk    = array_values((array)$action_produk);
+            $produk_jumlah    = array_values((array)$produk_jumlah);
+            $produk_alasan    = array_values((array)$produk_alasan);
 
             for ($i = 0; $i < $panjang; $i++) {
-                $areaStok = AreaStok::where('id_area', $area[$i])->where('id_material', $produk[$i])->where('tanggal', $materialAdjustment->tanggal)->first();
+                $areaStok = AreaStok::where('id_area', $area[$i])->where('id_material', $produk[$i])->where('tanggal', date('Y-m-d', strtotime($tanggal[$i])))->first();
                 if (empty($areaStok)) {
-                    if ($action_produk[$i] == 1) {
-                        $materialAdjustment->forceDelete();
-                        $temp_p = Material::find($produk[$i]);
-                        $temp_a = Area::find($area[$i]);
-                        $this->responseMessage = 'Stok produk '.$temp_p->nama.' belum tersedia pada area '.$temp_a->nama.' jadi Anda hanya diizinkan untuk menambah!';
-                        $this->responseCode = 403;
-                        
-                        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
-                        return response()->json($response, $this->responseCode);
-                    }
                     $areaStok = new AreaStok;
                     $areaStok->id_area      = $area[$i];
                     $areaStok->id_material  = $produk[$i];
-                    $areaStok->tanggal      = $materialAdjustment->tanggal;
+                    $areaStok->tanggal      = date('Y-m-d', strtotime($tanggal[$i]));
                     $areaStok->jumlah       = $produk_jumlah[$i];
                 } else {
                     if ($action_produk[$i] == 1) {
-                        if ($areaStok->jumlah - $produk_jumlah[$i] < 0) {
-                            $materialAdjustment->forceDelete();
-                            $temp_p = Material::find($produk[$i]);
-                            $temp_a = Area::find($area[$i]);
-                            $this->responseMessage = 'Jumlah yang Anda masukkan untuk produk '.$temp_p->nama.' pada area '.$temp_a->nama.' melebihi stok yang tersedia!';
-                            $this->responseCode = 403;
-
-                            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
-                            return response()->json($response, $this->responseCode);
-                        }
                         $areaStok->jumlah         = $areaStok->jumlah - $produk_jumlah[$i];
                     } else if ($action_produk[$i] == 2) {
                         $areaStok->jumlah         = $areaStok->jumlah + $produk_jumlah[$i];
@@ -142,6 +124,7 @@ class MaterialAdjustmentController extends Controller
                 $materialTrans->jumlah          = $produk_jumlah[$i];
                 $materialTrans->alasan          = $produk_alasan[$i];
                 $materialTrans->id_area_stok    = $areaStok->id;
+                $materialTrans->tanggal         = $tanggal[$i];
                 $materialTrans->status_produk   = 1;
                 $materialTrans->save();
             }
@@ -154,23 +137,14 @@ class MaterialAdjustmentController extends Controller
 
         if (!empty($pallet)) {
             $panjang          = count($pallet);
-            $pallet           = array_values($pallet);
-            $action_pallet    = array_values($action_pallet);
-            $pallet_jumlah    = array_values($pallet_jumlah);
-            $pallet_alasan    = array_values($pallet_alasan);
+            $pallet           = array_values((array)$pallet);
+            $action_pallet    = array_values((array)$action_pallet);
+            $pallet_jumlah    = array_values((array)$pallet_jumlah);
+            $pallet_alasan    = array_values((array)$pallet_alasan);
 
             for ($i = 0; $i < $panjang; $i++) {
                 $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('id_material', $pallet[$i])->first();
                 if (empty($gudangStok)) {
-                    if ($action_pallet[$i] == 1) {
-                        $materialAdjustment->forceDelete();
-                        $temp_p = Material::find($pallet[$i]);
-                        $this->responseMessage = 'Stok pallet '.$temp_p->nama.' belum tersedia jadi Anda hanya diizinkan untuk menambah!';
-                        $this->responseCode = 403;
-
-                        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
-                        return response()->json($response, $this->responseCode);
-                    }
                     $gudangStok = new GudangStok;
                     $gudangStok->id_gudang      = $gudang->id;
                     $gudangStok->id_material    = $pallet[$i];
@@ -178,15 +152,6 @@ class MaterialAdjustmentController extends Controller
                     $gudangStok->jumlah         = $pallet_jumlah[$i];
                 } else {
                     if ($action_pallet[$i] == 1) {
-                        if ($gudangStok->jumlah - $pallet_jumlah[$i] < 0) {
-                            $materialAdjustment->forceDelete();
-                            $temp_p = Material::find($pallet[$i]);
-                            $this->responseMessage = 'Jumlah yang Anda masukkan untuk pallet ' . $temp_p->nama . ' melebihi stok yang tersedia!';
-                            $this->responseCode = 403;
-
-                            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
-                            return response()->json($response, $this->responseCode);
-                        }
                         $gudangStok->jumlah         = $gudangStok->jumlah - $pallet_jumlah[$i];
                     } else if ($action_pallet[$i] == 2) {
                         $gudangStok->jumlah         = $gudangStok->jumlah + $pallet_jumlah[$i];
@@ -277,6 +242,7 @@ class MaterialAdjustmentController extends Controller
                         'm.nama as nama',
                         'm.id as id_produk',
                         'a.nama as nama_area',
+                        'ars.tanggal',
                         'mt.tipe',
                         'alasan',
                         'mt.jumlah'
@@ -315,11 +281,5 @@ class MaterialAdjustmentController extends Controller
             $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
             return response()->json($response, $this->responseCode);
         }
-    }
-
-    public function destroy($id_gudang, MaterialAdjustment $materialAdjustment)
-    {
-        MaterialTrans::where('id_adjustment', $materialAdjustment->id)->forceDelete();
-        $materialAdjustment->forceDelete();
     }
 }

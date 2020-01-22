@@ -62,7 +62,7 @@ lines {
 				<thead>
 					<tr>
 						<th>No</th>
-                        <th>Tanggal</th>
+                        <th>Tanggal Kejadian</th>
                         <th>Foto</th>
 						<th>Actions</th>
 					</tr>
@@ -92,7 +92,7 @@ lines {
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Tanggal</label>
+                                <label>Tanggal Kejadian</label>
                                 <input type="text" class="form-control" name="tanggal" id="tanggal" readonly placeholder="Pilih tanggal" value="{{date('d-m-Y')}}">
                             </div>
                         </div>
@@ -111,10 +111,10 @@ lines {
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>List Foto</label>
+                                {{-- <label>List Foto</label>
                                 <div id="list">
                                             
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -125,8 +125,9 @@ lines {
                                 <tr>
                                     <th>No</th>
                                     <th width="20%">Nama</th>
-                                    <th width="20%">Area</th>
-                                    <th width="20%">Jenis</th>
+                                    <th>Area</th>
+                                    <th>Tanggal Produksi</th>
+                                    <th>Jenis</th>
                                     <th>Jumlah</th>
                                     <th>Alasan</th>
                                     <th><button type="button" class="btn btn-success btn-elevate btn-icon btn-sm" onclick="tambahProduk()"><i class="la la-plus"></i></button></th>
@@ -157,6 +158,7 @@ lines {
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <input type="hidden" class="form-control" id="id_gudang" name="id_gudang" value="{{$id_gudang}}">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                     <button type="button" class="btn btn-wms ladda-button" data-style="zoom-in" id="btn_save">Simpan data</button>
                 </div>
@@ -177,10 +179,9 @@ lines {
                 </button>
             </div>
             <div class="modal-body">
-
                 <div class="row mb-5">
                     <div class="col-md-6">
-                        <label for="">Tanggal</label>
+                        <label for="">Tanggal Kejadian</label>
                         <h5 id="tempat_tanggal"></h5>
                     </div>
                     <div class="col-md-6">
@@ -197,6 +198,7 @@ lines {
                                     <th>No</th>
                                     <th>Nama produk</th>
                                     <th>Area</th>
+                                    <th>Tanggal Produksi</th>
                                     <th>Jenis aktivitas</th>
                                     <th>Jumlah</th>
                                     <th>Alasan</th>

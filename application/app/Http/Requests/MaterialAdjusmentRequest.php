@@ -4,8 +4,10 @@ namespace App\Http\Requests;
 
 use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
+use App\Http\Models\GudangStok;
 use App\Http\Models\Material;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Validator;
 
 class MaterialAdjusmentRequest extends FormRequest
 {
@@ -31,6 +33,7 @@ class MaterialAdjusmentRequest extends FormRequest
         $rules = [
             'produk.*'          => 'required',
             'area.*'            => 'required',
+            'tanggal_produksi.*'=> 'required',
             'pallet.*'          => 'required',
             'action_produk.*'   => 'required|numeric|between:1,2',
             'action_pallet.*'   => 'required|numeric|between:1,2',
@@ -39,25 +42,36 @@ class MaterialAdjusmentRequest extends FormRequest
             'tanggal'           => 'required',
         ];
 
-        for ($i = 0; $i < count(request()->produk_jumlah); $i++) {
-            $area = Area::find(request()->area[$i]);
-            $areaStok = AreaStok::where('id_area', $area->id)->sum('jumlah');
-            if (request()->action_produk[$i] == 1) {
-                $rules['produk_jumlah.'.$i] = 'numeric|max:'. abs((float)((float)$area->kapasitas - (float)$areaStok));
-            } else {
-                $rules['produk_jumlah.' . $i] = 'numeric';
+        if (request()->produk_jumlah) {
+            for ($i = 0; $i < count(request()->produk_jumlah); $i++) {
+                $area = Area::find(request()->area[$i]);
+                if (request()->action_produk[$i] == 1) {
+                    $areaStok = AreaStok::where('id_area', $area->id)
+                    ->where('id_material', request()->produk[$i])
+                    ->where('tanggal', date('Y-m-d', strtotime(request()->tanggal_produksi[$i])))
+                    ->where('status', 1)
+                    ->sum('jumlah');
+                    $rules['produk_jumlah.' . $i] = 'numeric|max:'. (float)$areaStok;
+                } else {
+                    $areaStok = AreaStok::where('id_area', $area->id)
+                    ->where('status', 1)
+                    ->sum('jumlah');
+                    $rules['produk_jumlah.'.$i] = 'numeric|max:'. abs((float)((float)$area->kapasitas - (float)$areaStok));
+                }
             }
         }
 
-        // for ($i = 0; $i < count(request()->produk_jumlah); $i++) {
-        //     $area = Area::find(request()->area[$i]);
-        //     $areaStok = GudangStok::where('id_area', $area->id)->sum('jumlah');
-        //     if (request()->action_produk[$i] == 1) {
-        //         $rules['produk_jumlah.' . $i] = 'numeric|max:' . (float) ((float) $area->kapasitas - (float) $areaStok);
-        //     } else {
-        //         $rules['produk_jumlah.' . $i] = 'numeric';
-        //     }
-        // }
+        if (request()->pallet_jumlah) {
+            for ($i = 0; $i < count(request()->pallet_jumlah); $i++) {
+                if (request()->action_pallet[$i] == 1) {
+                    $gudangStok = GudangStok::where('id_gudang', request()->id_gudang)
+                    ->where('id_material', request()->pallet[$i])
+                    ->where('status', 1)
+                    ->sum('jumlah');
+                    $rules['pallet_jumlah.' . $i] = 'numeric|max:' . (float) $gudangStok;
+                }
+            }
+        }
 
         $this->sanitize();
 
@@ -71,7 +85,8 @@ class MaterialAdjusmentRequest extends FormRequest
             'numeric'       => ':attribute harus berupa angka!',
             'between'       => ':attribute yang dimasukkan tidak valid!',
             'date_format'   => ':attribute harus dengan format tanggal-bulan-tahun!',
-            'max'           => ':attribute harus kurang dari :max!',
+            'produk_jumlah.max'           => ':attribute melebihi kapasitas area atau tidak tersedia pada stok!',
+            'pallet_jumlah.*.max'           => ':attribute melebihi jumlah yang tersedia di gudang!',
         ];
     }
 
@@ -81,6 +96,7 @@ class MaterialAdjusmentRequest extends FormRequest
             'produk.*'              => 'Produk',
             'area.*'                => 'Area',
             'pallet.*'              => 'Pallet',
+            'tanggal_produksi.*'    => 'Tanggal Produksi',
             'action_produk.*'       => 'Jenis aksi produk',
             'action_pallet.*'       => 'Jenis aksi pallet',
             'produk_alasan.*'       => 'Alasan Produk',
@@ -90,8 +106,9 @@ class MaterialAdjusmentRequest extends FormRequest
 
         if (request()->produk) {
             for ($i = 0; $i < count(request()->produk); $i++) {
-                $material = Material::find(request()->produk[0]);
-                $area = Area::find(request()->area[0]);
+                $material = Material::find(request()->produk[$i]);
+                $area = Area::find(request()->area[$i]);
+
                 $attributes['produk_jumlah.' . $i] =  'Jumlah Produk <strong>' . $material->nama. '</strong> pada area <strong>'. $area->nama. '</strong>';
             }
         }
@@ -113,10 +130,10 @@ class MaterialAdjusmentRequest extends FormRequest
         foreach ($input as $key => $value) {
             if (is_array($input[$key])) {
                 foreach ($input[$key] as $row => $nilai) {
-                    $input[$key][$row] = filter_var($nilai, FILTER_SANITIZE_STRING);
+                    $input[$key][$row] = strip_tags($nilai);
                 }
             } else {
-                $input[$key] = filter_var($value, FILTER_SANITIZE_STRING);
+                $input[$key] = strip_tags($value);
             }
         }
 
