@@ -1826,7 +1826,7 @@ class AktivitasController extends Controller
             'tiket_no'          => $sistro->tiketno,
             'nopol'             => $sistro->nopol,
             'driver'            => $sistro->driver,
-            'sistro_qty'        => $sistro->qty,
+            'sistro_qty'        => (double)$sistro->qty,
             'tanggal'           => $sistro->tanggal,
             'tujuan'            => $gudangTujuan->id,
             'nama_tujuan'       => $gudangTujuan->nama,
