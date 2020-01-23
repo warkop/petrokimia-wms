@@ -124,7 +124,7 @@ class MaterialAdjustmentController extends Controller
                 $materialTrans->jumlah          = $produk_jumlah[$i];
                 $materialTrans->alasan          = $produk_alasan[$i];
                 $materialTrans->id_area_stok    = $areaStok->id;
-                $materialTrans->tanggal         = $tanggal[$i];
+                $materialTrans->tanggal         = date('Y-m-d', strtotime($tanggal[$i]));
                 $materialTrans->status_produk   = 1;
                 $materialTrans->save();
             }
