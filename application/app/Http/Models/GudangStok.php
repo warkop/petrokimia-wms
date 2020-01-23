@@ -14,7 +14,7 @@ class GudangStok extends Model
         'id',
     ];
 
-    public $timestamps  = false;
+    public $timestamps  = true;
 
     public function scopeDipakai($query)
     {
