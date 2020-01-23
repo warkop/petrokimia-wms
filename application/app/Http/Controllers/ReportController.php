@@ -1605,7 +1605,7 @@ class ReportController extends Controller
         $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
         $res = AktivitasKeluhanGp::select(
-            'aktivitas_keluhan_gps.*',
+            'aktivitas_keluhan_gp.*',
             'g.nama as nama_gudang',
             'm.nama as nama_material',
             'ah.created_at as tanggal'
@@ -1613,7 +1613,7 @@ class ReportController extends Controller
             ->leftJoin('aktivitas_harian as ah', 'aktivitas_keluhan_gp.id_aktivitas_harian', '=', 'ah.id')
             ->leftJoin('material as m', 'm.id', '=', 'aktivitas_keluhan_gp.id_material')
             ->leftJoin('gudang as g', 'g.id', '=', 'ah.id_gudang')
-            // ->leftJoin('keluhan as k', 'k.id', '=', 'aktivitas_keluhan_gp.id_material')
+            ->whereBetween('ah.created_at', [date('Y-m-d', strtotime($tgl_awal)), date('Y-m-d', strtotime($tgl_akhir))])
             ->where(function ($query) use ($pilih_produk, $produk) {
                 if ($produk == 2) {
                     foreach ($pilih_produk as $key => $value) {
@@ -1622,8 +1622,8 @@ class ReportController extends Controller
                 }
             })
             ;
-
-        if (count($keluhan) > 0) {
+            
+        if ($keluhan) {
             $res = $res->whereHas('aktivitasHarian', function ($query) use ($keluhan) {
                 $query->where('id', $keluhan[0]);
                 foreach ($keluhan as $key => $value) {
@@ -1632,7 +1632,7 @@ class ReportController extends Controller
             });
         }
 
-        if (count($gudang) > 0) {
+        if ($gudang) {
             $res = $res->where(function ($query) use ($gudang) {
                 $query->where('id_gudang', $gudang[0]);
                 foreach ($gudang as $key => $value) {
@@ -1640,9 +1640,9 @@ class ReportController extends Controller
                 }
             });
         }
-
-        if (count($kegiatan) > 0) {
-            $res = $res->where(function ($query) use ($kegiatan) {
+        
+        if ($kegiatan) {
+            $res = $res->where('aktivitasHarian.aktivitas',function ($query) use ($kegiatan) {
                 $query->where('id_aktivitas', $kegiatan[0]);
                 foreach ($kegiatan as $key => $value) {
                     $query->orWhere('id_aktivitas', $value);
@@ -1650,8 +1650,7 @@ class ReportController extends Controller
             });
         }
 
-        $res = $res->get();
-
+        $res = $res->orderBy('ah.created_at')->get();
         $nama_file = date("YmdHis") . '_keluhan_gp.xlsx';
         $this->generateExcelKeluhanGp($res, $nama_file, $tgl_awal, $tgl_akhir);
     }
@@ -1789,7 +1788,7 @@ class ReportController extends Controller
 
         $abjad = 'A';
         $row = 5;
-        // $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . ($row + 1))->applyFromArray($style_judul_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row . ":" . 'F' . $row)->applyFromArray($style_judul_kolom);
         // $row = 6;
         // end : judul kolom
 
