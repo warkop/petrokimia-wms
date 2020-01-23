@@ -51,10 +51,12 @@
                     <div class="col-12">
                         <label>Paket Alat Berat</label>
                         @php $no = 1; @endphp
-                        <h5 class="boldd"> @foreach ($aktivitasHarian->aktivitasHarianAlatBerat as $key)
+                        <h5 class="boldd"> 
+                            @foreach ($aktivitasHarian->aktivitasHarianAlatBerat as $key)
                             {{ $no.'. '.$key->nomor_lambung}} <br>
                             @php $no++ @endphp
-                        @endforeach</h5>
+                            @endforeach
+                        </h5>
                     </div>
                 </div>
                 <div class="row mb1">
