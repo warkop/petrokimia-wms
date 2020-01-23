@@ -34,6 +34,11 @@ class AktivitasKeluhanGp extends Model
         });
     }
 
+    public function aktivitasHarian()
+    {
+        return $this->belongsTo(AktivitasHarian::class, 'id_aktivitas_harian');
+    }
+
     public function material()
     {
         return $this->belongsTo(Material::class, 'id_material');
