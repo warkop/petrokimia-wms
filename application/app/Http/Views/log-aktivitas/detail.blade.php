@@ -50,7 +50,11 @@
                 <div class="row mb1">
                     <div class="col-12">
                         <label>Paket Alat Berat</label>
-                        <h5 class="boldd"> {{$$aktivitasHarian->alatBerat->nomor_lambung??'-'}}</h5>
+                        @php $no = 1; @endphp
+                        <h5 class="boldd"> @foreach ($aktivitasHarian->aktivitasHarianAlatBerat as $key)
+                            {{ $no.'. '.$key->nomor_lambung}} <br>
+                            @php $no++ @endphp
+                        @endforeach</h5>
                     </div>
                 </div>
                 <div class="row mb1">
@@ -105,7 +109,17 @@
                             <div class="kt-widget4__item border-bottom-dash">
                                 <div class="kt-widget4__info">
                                     <p class="kt-widget4__username">
-                                        {{$item->material->nama}} - <span class="boldd">{{$item->jumlah}}</span>
+                                    {{$item->material->nama}} - <span class="boldd">{{$item->jumlah}} (
+                                        @if ($item->status_pallet == 1) 
+                                            {{ 'Pallet Stok' }} 
+                                        @elseif ($item->status_pallet == 2) 
+                                            {{ 'Pallet Terpakai' }} 
+                                        @elseif ($item->status_pallet == 3) 
+                                            {{ 'Pallet Kosong' }} 
+                                        @elseif ($item->status_pallet == 4) 
+                                            {{ 'Pallet Rusak' }} 
+                                        @endif
+                                    )</span>
                                     </p>
                                     @if ($item->tipe == 1)
                                         <p class="kt-widget4__text color-oren boldd">
@@ -304,25 +318,26 @@
                         <div class="card-header" id="heading-${i}">
                             <div class="card-title" data-toggle="collapse show" data-target="#collapse-${i}"
                                 aria-expanded="true" aria-controls="collapse-${i}">
-                                <i class="flaticon2-shelter"></i> Area ${element.nama}
+                                <i class="flaticon2-shelter"></i> Area ${element.area_stok.area.nama}
                             </div>
                         </div>
                     `;
 
                     areanya = "";
-                    element.area_stok.forEach(element2 => {
+                    // console.log(element);
+                    // element.forEach(element2 => {
                         areanya += `
                             <div class="kt-widget4__item border-bottom-dash mt1">
                                 <div class="kt-widget4__info">
                                     <h6 class="kt-widget4__username">
-                                        ${helpDateFormat(element2.tanggal, "mi")}
+                                        ${helpDateFormat(element.tanggal, "mi")}
                                     </h6>
                                     <p class="kt-widget4__text boldd">
-                                        ${element2.jumlah} Ton
+                                        ${element.jumlah} Ton
                                     </p>
                                 </div>
                             </div>`;
-                    });
+                    // });
                     if (!$.isEmptyObject(temp_nama)) {
                         temp += `
                                 <div class="card">
@@ -335,7 +350,6 @@
                                 </div>`;
                     }
                 });
-                console.log(temp)
                 // console.log($("#accordionExample5"));
                 $("#tempat_card").html(temp);
                 // console.log(temp);

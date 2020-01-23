@@ -16,4 +16,14 @@ class AktivitasHarianAlatBerat extends Model
 
     public $timestamps  = false;
     public $incrementing = false;
+
+    public function alatBerat()
+    {
+        return $this->belongsTo(AlatBerat::class, 'id_alat_berat');
+    }
+
+    public function aktivitasHarian()
+    {
+        return $this->belongsTo(aktivitasHarian::class, 'id_aktivitas_harian');
+    }
 }

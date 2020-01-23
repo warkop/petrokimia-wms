@@ -110,10 +110,16 @@ class LogAktivitasController extends Controller
             })
             ->whereHas('areaStok.materialTrans', function ($query) use ($id_aktivitas_harian) {
                 $query->where('id_aktivitas_harian', $id_aktivitas_harian);
+                $query->whereNotNull('id_area_stok');
             })
             ->where('id_gudang', $id_gudang)
             ->orderBy('nama')
             ->get();
+
+        $areaStok = MaterialTrans::with('areaStok.area')
+        ->where('id_aktivitas_harian', $id_aktivitas_harian)
+        ->where('id_material', $id_material)
+        ->get();
         return response()->json($areaStok, 200);
     }
 }
