@@ -84,9 +84,9 @@ class AuthController extends Controller
                                 'user_gcid'     => $m_user->user_gcid,
                             ];
                             if ($m_user->id_tkbm != null) {
-                                $rencanaTkbm        = RencanaTkbm::where('id_tkbm', $m_user->id_tkbm)->orderBy('id_rencana', 'desc')->first();
+                                $rencanaTkbm        = RencanaTkbm::where('id_tkbm', $m_user->id_tkbm)->orderBy('id_rencana', 'desc')->firstOrFail();
                                 $rencanaHarian      = RencanaHarian::where('id', $rencanaTkbm->id_rencana)->where('start_date', '<', date('Y-m-d H:i:s'))
-                                    ->where('end_date', '>', date('Y-m-d H:i:s'))->where('draft', 0)->first();
+                                    ->where('end_date', '>', date('Y-m-d H:i:s'))->where('draft', 0)->firstOrFail();
                                 if (empty($rencanaHarian)) {
                                     $this->responseCode = 403;
                                     $this->responseMessage = 'Rencana harian belum ada atau belum terjadwal untuk shift saat ini!';
