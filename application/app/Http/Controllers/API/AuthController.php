@@ -51,6 +51,11 @@ class AuthController extends Controller
             $password   = $request->input('password');
             $device_id  = $request->input('device');
             $user_gcid  = $request->input('user_gcid');
+            $os_type    = $request->input('os_type');
+            $imei       = $request->input('imei');
+            $build_number   = $request->input('build_number');
+            $ip_address     = $request->input('ip_address');
+            $mac_address    = $request->input('mac_address');
 
             $cek_user = Users::where('username', $username)->endDate()->first();
 
@@ -69,8 +74,13 @@ class AuthController extends Controller
                                 $access_token = $cek_user['api_token'];
                             }
 
-                            $m_user->device = $device_id;
-                            $m_user->user_gcid = $user_gcid;
+                            $m_user->device         = $device_id;
+                            $m_user->user_gcid      = $user_gcid;
+                            $m_user->os_type        = $os_type;
+                            $m_user->imei           = $imei;
+                            $m_user->build_number   = $build_number;
+                            $m_user->ip_address     = $ip_address;
+                            $m_user->mac_address    = $mac_address;
                             $m_user->save();
 
                             $arr = [
@@ -143,8 +153,13 @@ class AuthController extends Controller
                             $access_token = $cek_user['api_token'];
                         }
 
-                        $m_user->device = $device_id;
-                        $m_user->user_gcid = $user_gcid;
+                        $m_user->device         = $device_id;
+                        $m_user->user_gcid      = $user_gcid;
+                        $m_user->os_type        = $os_type;
+                        $m_user->imei           = $imei;
+                        $m_user->build_number   = $build_number;
+                        $m_user->ip_address     = $ip_address;
+                        $m_user->mac_address    = $mac_address;
                         $m_user->save();
                         
 
