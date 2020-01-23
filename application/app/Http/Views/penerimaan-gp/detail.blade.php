@@ -51,7 +51,7 @@
                     <div class="row mb1">
                         <div class="col-12">
                             <label>Paket Alat Berat</label>
-                            <h5 class="boldd"> {{$$aktivitasHarian->alatBerat->nomor_lambung??'-'}}</h5>
+                            <h5 class="boldd"> {{$aktivitasHarian->alatBerat->nomor_lambung??'-'}}</h5>
                         </div>
                     </div>
                     <div class="row mb1">
@@ -130,11 +130,10 @@
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="col-10">
-                        @if ($aktivitasHarian->approve == null)
+                        @empty($aktivitasHarian->approve)
                         <button type="button" class="btn btn-wms btn-lg" onclick="approve()">Approve</button>
-                        @endif
-                        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
-                            data-target="#kt_keluhan" onclick="loadKeluhan()">Keluhan</button>
+                        @endempty
+                        <button type="button" class="btn btn-primary btn-lg" onclick="@if($aktivitasHarian->approve == null)loadKeluhan()@else loadDetail()@endif">Keluhan</button>
                     </div>
                 </div>
             </div>
@@ -190,6 +189,7 @@
                     <div class="kt-scroll" data-scroll="true" data-height="400">
                         <div class="row mb2">
                             @foreach ($aktivitasFoto as $item)
+                                @if ($item->fotoJenis)
                                 <div class="col-4">
                                     <label class="boldd">Foto {{$item->fotoJenis->nama}}</label>
                                     <a class="fancybox" rel="ligthbox"
@@ -199,6 +199,7 @@
                                             srcset="">
                                     </a>
                                 </div>
+                                @endif
                             @endforeach
                         </div>
                     </div>
@@ -228,12 +229,12 @@
                     <div class="col-8">
                         <h5 class="boldd">List Produk</h5>
                     </div>
-                     @if ($aktivitasHarian->approve == null)
+                    @empty($aktivitasHarian->approve)
                     <div class="col-4">
                         <p class="btn btn-outline-success pull-right cursor pointer" onclick="tambah()"><i class="la la-plus"></i>
                             Tambah</p>
                     </div>
-                    @endif
+                    @endempty
                 </div>
                 <div id="table_produk" style="border-bottom: 2px solid #F2F3F8">
                     <div id="belumada" class="row kel">
@@ -245,9 +246,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-clean" data-dismiss="modal">Tutup</button>
-                 @if ($aktivitasHarian->approve == null)
+                 @empty ($aktivitasHarian->approve)
                 <button type="button" class="btn btn-primary ladda-button" data-style="zoom-in" id="btn_save">Simpan</button>
-                @endif
+                @endempty
             </div>
             </form>
         </div>
@@ -266,7 +267,7 @@
             <div class="modal-body">                
                 <div class="row mb-4">
                     <div class="col-md-12">
-                        <h5 class="mb-3">List produk</h5>
+                        <h5 class="mb-3">List keluhan</h5>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -487,11 +488,12 @@ let datatable,
     }
 
     function loadKeluhan(){
+        $("#kt_keluhan").modal("show");
         $.ajax({
             url: "{{ url('penerimaan-gp') }}/get-produk/"+id_aktivitas_harian,
             success:res=>{
                 
-                if (res.keluhan !== '') {
+                if (res.keluhan != '') {
                     $("#table_produk").html('');
                     const obj = res.keluhan;
                     obj.forEach(element => {
@@ -501,8 +503,52 @@ let datatable,
                     document.getElementById("belumada").remove();
                 }
             },
-            error:()=>{
+            error:response=>{
+                let head = 'Maaf',
+                    message = 'Terjadi kesalahan koneksi',
+                    type = 'error';
+                window.onbeforeunload = false;
+                $('.btn_close_modal').removeClass('hide');
+                $('.se-pre-con').hide();
 
+                if (response['status'] == 401 || response['status'] == 419) {
+                    location.reload();
+                } else {
+                    if (response['status'] != 404 && response['status'] != 500) {
+                        let obj = JSON.parse(response['responseText']);
+
+                        if (!$.isEmptyObject(obj.message)) {
+                            if (obj.code > 450) {
+                                head = 'Maaf';
+                                message = obj.message;
+                                type = 'error';
+                            } else {
+                                head = 'Pemberitahuan';
+                                type = 'warning';
+                                obj = response.responseJSON.errors;
+                                message = '';
+                                if (obj == null) {
+                                    message = response.responseJSON.message;
+                                } else {
+                                    const temp = Object.values(obj);
+                                    
+                                    temp.forEach(element => {
+                                        element.forEach(row => {
+                                            message += row + "<br>"
+                                        });
+                                    });
+                                }
+
+                                // laddaButton.stop();
+                                window.onbeforeunload = false;
+                                $('.btn_close_modal').removeClass('hide');
+                                $('.se-pre-con').hide();
+                            }
+                        }
+                    }
+
+                    swal.fire(head, message, type);
+                }
             }
         });
     }
@@ -571,9 +617,6 @@ let datatable,
                                         window.onbeforeunload = false;
                                         $('.btn_close_modal').removeClass('hide');
                                         $('.se-pre-con').hide();
-                                        
-
-                                        
                                     }
                                 }
                             }
@@ -631,9 +674,7 @@ let datatable,
                                 </div>`;
                     }
                 });
-                // console.log($("#accordionExample5"));
                 $("#tempat_card").html(temp);
-                // console.log(temp);
             },
             error:(response) => {
 
@@ -641,140 +682,70 @@ let datatable,
         });
     }
 
-function detail(id) {
-    $("#modal_detail").modal(
-    {
-      backdrop: "static",
-      keyboard: false
-    },
-    "show"
-  );
+function loadDetail() {
+    $("#modal_detail").modal({backdrop: "static", keyboard: false},"show");
 
-  $.ajax({
-    type: "GET",
-    url: ajaxUrl + "//" + id_gudang + "/" + id,
-    beforeSend: function () {
-      preventLeaving();
-      $(".btn_close_modal").addClass("hide");
-      $(".se-pre-con").show();
-    },
-    success: function (response) {
-      window.onbeforeunload = false;
-      $(".btn_close_modal").removeClass("hide");
-      $(".se-pre-con").hide();
+    $.ajax({
+        type: "GET",
+        url: ajaxUrl + "/list-keluhan/"+ id_aktivitas_harian,
+        beforeSend: function () {
+        preventLeaving();
+            $(".btn_close_modal").addClass("hide");
+            $(".se-pre-con").show();
+        },
+        success: function (response) {
+            window.onbeforeunload = false;
+            $(".btn_close_modal").removeClass("hide");
+            $(".se-pre-con").hide();
 
-      let obj_adjustment = response.data.material_adjustment;
-      let obj_produk = response.data.produk;
-      let obj_pallet = response.data.pallet;
+            let obj_produk = response.data;
 
-      if (obj_adjustment.tanggal != null) {
-        $("#tempat_tanggal").html(helpDateFormat(obj_adjustment.tanggal, "li"));
-      }
+            let text = "";
+            let i=1;
+            obj_produk.forEach(element => {
+                text += `
+                    <tr>
+                        <td>${i}</td>
+                        <td>${element.material.nama}</td>
+                        <td>${element.jumlah}</td>
+                        <td>${element.keluhan} Ton</td>
+                    </tr>
+                `;
+                i++;
+            });
+            $("#tubuh_produk").html(text);
+        },
+        error: function (response) {
+            let head = "Maaf",
+                message = "Terjadi kesalahan koneksi",
+                type = "error";
+            window.onbeforeunload = false;
+            $(".btn_close_modal").removeClass("hide");
+            $(".se-pre-con").hide();
 
-      if (obj_adjustment.foto != null) {
-        let html =
-          '<a id="gambar" target="_blank" href="' +
-          baseUrl +
-          /watch/ +
-          obj_adjustment.foto +
-          "?" +
-          "un=" +
-          obj_adjustment.id +
-          "&ctg=material&src=" +
-          obj_adjustment.foto +
-          '">' +
-          obj_adjustment.foto +
-          "</a>";
-
-          const link = baseUrl + /watch/ + obj_adjustment.foto + "?" + "un=" + obj_adjustment.id + "&ctg=material&src=" + obj_adjustment.foto
-
-          $("#tempat_link_gambar").prop("href", link);
-          $("#tempat_muncul_gambar").prop("src", link);
-
-        $("#list").html(html);
-      } else {
-        $("#tempat_link_gambar").prop("href", "");
-        $("#tempat_muncul_gambar").prop("src", "");
-        $("#list").html("Tidak ada gambar");
-      }
-
-        let text = "";
-        let i=1;
-        obj_produk.forEach(element => {
-            let text_tipe = "";
-            if (element.tipe == 1) {
-                text_tipe = "Mengurangi";
-            } else if (element.tipe == 2) {
-                text_tipe = "Menambah";
-            }
-            text += `
-                <tr>
-                    <td>${i}</td>
-                    <td>${element.nama}</td>
-                    <td>${element.nama_area}</td>
-                    <td>${helpDateFormat(element.tanggal, "li")}</td>
-                    <td>${text_tipe}</td>
-                    <td>${element.jumlah} Ton</td>
-                    <td>${element.alasan ? element.alasan : ''}</td>
-                </tr>
-            `;
-            i++;
-        });
-        $("#tubuh_produk").html(text);
-        text = "";
-        i=1;
-        obj_pallet.forEach(element => {
-            let text_tipe = "";
-            if (element.tipe == 1) {
-                text_tipe = "Mengurangi";
-            } else if (element.tipe == 2) {
-                text_tipe = "Menambah";
-            }
-            text += `
-                <tr>
-                    <td>${i}</td>
-                    <td>${element.nama}</td>
-                    <td>${text_tipe}</td>
-                    <td>${element.jumlah} pcs</td>
-                    <td>${element.alasan ? element.alasan:''}</td>
-                </tr>
-            `;
-            i++;
-        });
-        $("#tubuh_pallet").html(text);
-        
-    },
-    error: function (response) {
-      let head = "Maaf",
-        message = "Terjadi kesalahan koneksi",
-        type = "error";
-      window.onbeforeunload = false;
-      $(".btn_close_modal").removeClass("hide");
-      $(".se-pre-con").hide();
-
-      if (response["status"] == 401 || response["status"] == 419) {
-        location.reload();
-      } else {
-        if (response["status"] != 404 && response["status"] != 500) {
-          let obj = JSON.parse(response["responseText"]);
-
-          if (!$.isEmptyObject(obj.message)) {
-            if (obj.code > 400) {
-              head = "Maaf";
-              message = obj.message;
-              type = "error";
+            if (response["status"] == 401 || response["status"] == 419) {
+                location.reload();
             } else {
-              head = "Pemberitahuan";
-              message = obj.message;
-              type = "warning";
-            }
-          }
-        }
+                if (response["status"] != 404 && response["status"] != 500) {
+                let obj = JSON.parse(response["responseText"]);
 
-        swal.fire(head, message, type);
-      }
-    }
-  });
+                if (!$.isEmptyObject(obj.message)) {
+                    if (obj.code > 400) {
+                    head = "Maaf";
+                    message = obj.message;
+                    type = "error";
+                    } else {
+                    head = "Pemberitahuan";
+                    message = obj.message;
+                    type = "warning";
+                    }
+                }
+                }
+
+                swal.fire(head, message, type);
+            }
+        }
+    });
 }
 </script>
 

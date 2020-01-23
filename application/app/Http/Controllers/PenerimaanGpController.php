@@ -159,19 +159,12 @@ class PenerimaanGpController extends Controller
         $aktivitasHarian = AktivitasHarian::where('id', $id)
         ->whereHas('aktivitas', function($query){
             $query->whereNotNull('pengiriman');
+            $query->whereNotNull('pengaruh_tgl_produksi');
         })->firstOrFail();
         $data['title'] = 'Detail Penerimaan GP';
         $data['aktivitasHarian'] = $aktivitasHarian;
         $data['id_aktivitas_harian'] = $aktivitasHarian->id;
         $data['aktivitasFoto'] = AktivitasFoto::withoutGlobalScopes()->where('id_aktivitas_harian', $aktivitasHarian->id)->get();
-        // $res = AreaStok::select(
-        //     'id_area',
-        //     'nama',
-        //     'jumlah'
-        // )
-        // ->leftJoin('area', 'area.id', '=', 'area_stok.id_area');
-
-        // $res = AreaStok::with('area')->get();
 
         $produk = MaterialTrans::with('material')
         ->where('id_aktivitas_harian', $aktivitasHarian->id)
@@ -191,7 +184,11 @@ class PenerimaanGpController extends Controller
         $aktivitasKeluhanGp = AktivitasKeluhanGp::with('material')
         ->where('id_aktivitas_harian', $id)
         ->get();
-        return response()->json($aktivitasKeluhanGp, 200);
+        $this->responseCode = 200;
+        $this->responseData = $aktivitasKeluhanGp;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 
     public function getArea($id_gudang, $id_material, $id_aktivitas_harian)
