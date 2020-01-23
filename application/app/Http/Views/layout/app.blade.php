@@ -118,7 +118,7 @@ License: You must have a valid license purchased only from themeforest(the above
 								<li id="gudang-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/gudang')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-institution"></span><span class="kt-menu__link-text">Gudang</span></a></li>
 								@endif
 								@can ('view', App\Http\Models\RencanaHarian::class)
-								<li id="rencanaHarian-nav" class="kt-menu__item rencanaHarian-nav" aria-haspopup="true"><a href="{{url('/rencana-harian')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-calendar"></span><span class="kt-menu__link-text">Rencana Harian</span></a></li>
+								{{-- <li id="rencanaHarian-nav" class="kt-menu__item rencanaHarian-nav" aria-haspopup="true"><a href="{{url('/rencana-harian')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-calendar"></span><span class="kt-menu__link-text">Rencana Harian</span></a></li> --}}
 								@endcan
 								@if (auth()->user()->can('penerimaan-gp'))
 								<li id="pGP-nav" class="kt-menu__item aktivitas-nav" aria-haspopup="true"><a href="{{url('/penerimaan-gp')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-columns"></span><span class="kt-menu__link-text">Penerimaan GP</span></a></li>

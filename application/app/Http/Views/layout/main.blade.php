@@ -156,12 +156,12 @@
                                         </li>
                                         @endif
                                         @can ('view', App\Http\Models\RencanaHarian::class)
-                                        <li class="kt-nav__item">
+                                        {{-- <li class="kt-nav__item">
                                             <a href="{{('rencana-harian')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la la-calendar"></i>
                                                 <span class="kt-nav__link-text">Rencana Harian</span>
                                             </a>
-                                        </li>
+                                        </li> --}}
                                         @endcan
                                         @if (auth()->user()->can('penerimaan-gp'))
                                         <li class="kt-nav__item">
