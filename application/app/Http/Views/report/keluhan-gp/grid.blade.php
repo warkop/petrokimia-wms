@@ -23,7 +23,7 @@
             </div>
         </div>
         
-        <form action="{{ url('report/keluhan-gp') }}" method="GET"></form>
+        <form action="{{ url('report/keluhan-gp') }}" method="GET">
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row">
@@ -84,16 +84,16 @@
                 <div class="col-6">
                     <div class="kt-radio-inline">
                         <label class="kt-radio kt-radio--success">
-                            <input id="semuaCheck" type="radio" name="produk" onclick="checkSemua()"> Semua
+                            <input id="semuaCheck" type="radio" name="produk" value="1" onclick="checkSemua()"> Semua
                             <span></span>
                         </label>
                         <label class="kt-radio kt-radio--warning">
-                            <input id="myCheck" type="radio" name="produk" onclick="checkBx()"> Spesifik
+                            <input id="myCheck" type="radio" name="produk" value="2" onclick="checkBx()"> Spesifik
                             <span></span>
                         </label> 
                     </div>
                     <div class="mt1" id="textadd" style="display:none;">
-                        <select class="form-control m-select2" required name="pilih_produk[]" id="produk" name="param" multiple="multiple" style="width:100%">
+                        <select class="form-control m-select2" name="pilih_produk[]" id="produk" name="param" multiple="multiple" style="width:100%">
                             @foreach ($produk as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>
                             @endforeach
