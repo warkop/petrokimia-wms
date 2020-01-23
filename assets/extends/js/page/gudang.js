@@ -488,7 +488,9 @@ function tambahAktivitas() {
                 message = response.message,
                 type = 'success';
 
-            swal.fire(head, message, type);
+            swal.fire(head, message, type).then(()=>{
+                $("#aktivitas_gudang").select2("val", "")
+            });
             loadListAktivitas(id_gudang);
         },
         error:(response)=>{
