@@ -1777,14 +1777,14 @@ class ReportController extends Controller
             })
             ;
 
-        if ($keluhan) {
-            $res = $res->whereHas('aktivitasHarian', function ($query) use ($keluhan) {
-                $query->where('id', $keluhan[0]);
-                foreach ($keluhan as $key => $value) {
-                    $query->orWhere('id', $value);
-                }
-            });
-        }
+        // if ($keluhan) {
+        //     // $res = $res->whereHas('keluhan', function ($query) use ($keluhan) {
+        //         $res = $res->where('id_keluhan', $keluhan[0]);
+        //         foreach ($keluhan as $key => $value) {
+        //             $res = $res->orWhere('id_keluhan', $value);
+        //         }
+        //     // });
+        // }
 
         if ($gudang) {
             $res = $res->where(function ($query) use ($gudang) {
@@ -1796,15 +1796,17 @@ class ReportController extends Controller
         }
         
         if ($kegiatan) {
-            $res = $res->where('aktivitasHarian.aktivitas',function ($query) use ($kegiatan) {
-                $query->where('id_aktivitas', $kegiatan[0]);
+            // $res = $res->where('aktivitasHarian.aktivitas',function ($query) use ($kegiatan) {
+                $res = $res->where('ah.id_aktivitas', $kegiatan[0]);
                 foreach ($kegiatan as $key => $value) {
-                    $query->orWhere('id_aktivitas', $value);
+                    $res = $res->orWhere('ah.id_aktivitas', $value);
                 }
-            });
+            // });
         }
 
         $res = $res->orderBy('ah.created_at')->get();
+
+
         $nama_file = date("YmdHis") . '_keluhan_gp.xlsx';
         $this->generateExcelKeluhanGp($res, $nama_file, $tgl_awal, $tgl_akhir);
     }
@@ -1952,6 +1954,7 @@ class ReportController extends Controller
         // start : isi kolom
         $no = 0;
         foreach ($res as $value) {
+            $abjad = 'A';
             $no++;
             $col = 1;
             $row++;
@@ -1964,18 +1967,28 @@ class ReportController extends Controller
 
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d/m/Y', strtotime($value->tanggal)));
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama_gudang);
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->keluhan);
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama_material);
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->jumlah);
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
