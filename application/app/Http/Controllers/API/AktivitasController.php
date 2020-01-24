@@ -1690,6 +1690,7 @@ class AktivitasController extends Controller
             'material.nama as nama_material',
             'tipe',
             'status_produk',
+            'koefisien_pallet',
             DB::raw('CASE WHEN status_produk=1 THEN \'Produk Stok\' ELSE \'Produk Rusak\' END AS text_status_produk'),
             DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
             'jumlah',
