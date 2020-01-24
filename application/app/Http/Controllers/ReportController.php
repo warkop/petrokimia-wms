@@ -72,7 +72,7 @@ class ReportController extends Controller
         ->with('shift')
         ->with('operator')
         ->with('foto')
-        // ->where('id_kategori', $jenis_alat_berat)
+        ->has('kerusakan')
         ->whereHas('alatBerat', function ($query) use ($jenis_alat_berat) {
             $query->where('id_kategori', $jenis_alat_berat[0]);
             foreach ($jenis_alat_berat as $key => $value) {
@@ -469,7 +469,7 @@ class ReportController extends Controller
                     $y += $objDrawing->getHeight();
                     $objSpreadsheet->getActiveSheet()->getRowDimension($row)->setRowHeight($y);
                 } else {
-                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "File tidak ada di server ". $value->id);
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "File tidak ada di server ");
                 }
             }
             // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $temp);
