@@ -97,7 +97,7 @@ class AktivitasHarian extends Model
             ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
             ->join('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
             ->join('shift_kerja', 'shift_kerja.id', '=', 'aktivitas_harian.id_shift')
-            // ->whereNotNull('pengaruh_tgl_produksi')
+            ->where('draft', 0)
             ;
 
         if (!empty($search)) {
