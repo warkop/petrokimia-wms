@@ -2063,17 +2063,28 @@ class ReportController extends Controller
         ->whereHas('material', function($query) {
             $query->where('kategori', 1);
         })
+        ->whereHas('aktivitasHarian', function($query) {
+            $query->where('draft', 0);
+        })
         
         ->whereBetween('tanggal', [date('Y-m-d', strtotime($tgl_awal)), date('Y-m-d', strtotime($tgl_akhir))])
         ->orderBy('id', 'asc')
         ;
 
+        // $resGudang = Gudang::internal()->get();
         if ($gudang != null) {
             $res = $res->whereHas('aktivitasHarian', function ($query) use ($gudang) {
                 foreach ($gudang as $key => $value) {
                     $query = $query->orWhere('id_gudang', $value);
                 }
             });
+
+            // $resGudang = Gudang::where(function ($query) use ($gudang) {
+            //     $query->where('id', $gudang[0]);
+            //     foreach ($gudang as $key => $value) {
+            //         $query->orWhere('id', $value);
+            //     }
+            // })->get();
         }
 
         if ($material == 2) {
