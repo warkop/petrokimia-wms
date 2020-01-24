@@ -1738,7 +1738,7 @@ class AktivitasController extends Controller
         )
         ->join('alat_berat', 'aktivitas_harian_alat_berat.id_alat_berat', '=', 'alat_berat.id')
         ->join('alat_berat_kat', 'alat_berat.id_kategori', '=', 'alat_berat_kat.id')
-        ->where('alat_berat.status', 1)
+        // ->where('alat_berat.status', 1)
         ->where('id_aktivitas_harian', $id)
         ->get();
 
