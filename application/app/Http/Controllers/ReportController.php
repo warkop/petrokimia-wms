@@ -946,7 +946,7 @@ class ReportController extends Controller
 
         $res = $res
         // ->where('created_at', '<=', date('Y-m-d', strtotime($tgl_awal)))
-        ->orderBy('id_gudang', 'asc')->get();
+        ->orderBy('id_gudang', 'asc')->get()->groupBy('id_material');
 
         $nama_file = date("YmdHis") . '_mutasi_pallet.xlsx';
         // dd($res->toArray());
@@ -1123,10 +1123,11 @@ class ReportController extends Controller
         $abjadPengeluaran++;
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPemasukan . ($row - 1) . ':' . $abjadPengeluaran . ($row - 1));
-        
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, ($row - 1), 'Penyusutan');
+
         $i = 0;
         $row = 6;
-        $abjadPengeluaran = $abjadPemasukan;
+        $abjadPemasukan = $abjadPengeluaran;
         $yayasan = Yayasan::all();
         foreach ($yayasan as $key) {
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $key->nama);
@@ -1187,26 +1188,32 @@ class ReportController extends Controller
 
         // start : isi kolom
         $no = 0;
+        // dd($res);
         foreach ($res as $value) {
+            // dd($value->toArray());
             $no++;
             $col = 1;
             $row++;
-
+            $value = $value[0];
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadPengeluaran . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
 
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
             $objSpreadsheet->getActiveSheet()->mergeCells($abjad . $row . ':' . $abjad . ($row+3));
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . ($row + 3))->applyFromArray($style_kolom);
 
             $col++;
             $abjad = chr(ord($abjad) + 1);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->gudang->nama); //nama gudang
             $objSpreadsheet->getActiveSheet()->mergeCells($abjad . $row . ':' . $abjad . ($row + 3));
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . ($row + 3))->applyFromArray($style_kolom);
 
             $col++;
             $abjad = chr(ord($abjad) + 1);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->material->nama); //nama pallet
             $objSpreadsheet->getActiveSheet()->mergeCells($abjad . $row . ':' . $abjad . ($row + 3));
-            $abjad = 'A';
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . ($row + 3))->applyFromArray($style_kolom);
+            
             $kondisi = [
                 'Terpakai',
                 'Tidak Terpakai',
@@ -1215,7 +1222,9 @@ class ReportController extends Controller
             ];
 
             $col++;
+            $abjad++;
             for ($i=0; $i<count($kondisi); $i++) {
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $kondisi[$i]); //kondisi pallet
                 $row++;
             }
@@ -1223,6 +1232,7 @@ class ReportController extends Controller
             $col++;
             //stok awal
             $row = $row-count($kondisi);
+            $abjad++;
             for ($i = 0; $i < count($kondisi); $i++) {
                 $materialTrans = MaterialTrans::where('id_material', $value->id_material)
                     ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
@@ -1231,17 +1241,20 @@ class ReportController extends Controller
                     $masuk      = $materialTrans->where('tipe', 2)->sum('jumlah');
                     $keluar     = $materialTrans->where('tipe', 1)->sum('jumlah');
                     $saldoAwal  = $masuk - $keluar;
-
+                    
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
                     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $saldoAwal); //jumlah stok pallet per kondisi
                     $stokAwal[$i] = $saldoAwal;
-                    // $stokAkhir[$kondisi[$i]] = $material_trans->jumlah;
+                    $stokAkhir[$kondisi[$i]] = $saldoAwal;
                 } else {
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
                     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 0); //jumlah stok pallet per kondisi
                     $stokAwal[$i] = 0;
-                    // $stokAkhir[$kondisi[$i]] = 0;
+                    $stokAkhir[$kondisi[$i]] = 0;
                 }
                 $row++;
             }
+            
             $col++;
             $stokAkhir[0] = 0;
             $stokAkhir[1] = 0;
@@ -1254,6 +1267,7 @@ class ReportController extends Controller
             $tempPenambahan[3] = 0;
             foreach ($gudang as $item) {
                 $row = $row - count($kondisi);
+                $abjad++;
                 for ($i = 0; $i < count($kondisi); $i++) {
                     $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use ($item) {
                         $query->where('id_gudang', $item->id);
@@ -1265,16 +1279,20 @@ class ReportController extends Controller
                     $stokAkhir[$i] += $materialTrans;
                     $tempPenambahan[$i] = $tempPenambahan[$i]+$materialTrans;
                     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $materialTrans); //jumlah pallet bertambah per gudang per kondisi
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
                     $row++;
                 }
                 $col++;
             }
             $abjadPemasukan++;
             $row = $row - count($kondisi);
+            $abjad++;
             for ($i = 0; $i < count($kondisi); $i++) {
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tempPenambahan[$i]); //total pallet bertambah per kondisi
                 $row++;
             }
+            
             $col++;
             $tempPengeluaran[0] = 0;
             $tempPengeluaran[1] = 0;
@@ -1282,6 +1300,7 @@ class ReportController extends Controller
             $tempPengeluaran[3] = 0;
             foreach ($gudang as $item) {
                 $row = $row - count($kondisi);
+                $abjad++;
                 for ($i = 0; $i < count($kondisi); $i++) {
                     $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use ($item) {
                         $query->where('id_gudang', $item->id);
@@ -1295,102 +1314,159 @@ class ReportController extends Controller
                     $stokAkhir[$i] -= $materialTrans;
                     $tempPengeluaran[$i] += $materialTrans;
                     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $materialTrans); //jumlah pallet berkurang per gudang per kondisi
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
                     $row++;
                 }
                 $col++;
             }
             $row = $row - count($kondisi);
             $abjadPemasukan++;
+            $abjad++;
             for ($i = 0; $i < count($kondisi); $i++) {
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tempPengeluaran[$i]); //total pengeluaran per kondisi
                 $row++;
             }
+
+            $col++;
+            $tempPenyusutan[0] = 0;
+            $tempPenyusutan[1] = 0;
+            $tempPenyusutan[2] = 0;
+            $tempPenyusutan[3] = 0;
+            foreach ($yayasan as $item) {
+                $row = $row - count($kondisi);
+                $abjad++;
+                for ($i = 0; $i < count($kondisi); $i++) {
+                    $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use ($item, $value) {
+                        $query->where('id_gudang', $value->gudang->id);
+                        $query->where('id_yayasan', $item->id);
+                    })
+                        ->where('status_pallet', ($i + 2)) //harus + 2 step agar cocok dengan status pada databse
+                        ->where('tipe', 1)
+                        ->where('created_at', '>=', date('Y-m-d', strtotime($tgl_awal)))
+                        ->where('created_at', '<=', date('Y-m-d', strtotime($tgl_akhir)))
+                        ->where('id_material', $value->id_material)
+                        ->sum('jumlah');
+                    $stokAkhir[$i] -= $materialTrans;
+                    $tempPenyusutan[$i] += $materialTrans;
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $materialTrans); //jumlah penyusutan per gudang per kondisi
+                    $row++;
+                }
+                $col++;
+            }
+            $row = $row - count($kondisi);
+            $abjadPemasukan++;
+            $abjad++;
+            for ($i = 0; $i < count($kondisi); $i++) {
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tempPenyusutan[$i]); //total yayasan
+                $row++;
+            }
             // // $col++;
-            // $rusak = 0;
-            // $materialTrans = MaterialTrans::where('tipe', 1)
-            //     ->where('status_produk', 2)
-            //     ->where('id_material', $value->id_material)
-            //     ->sum('jumlah');
+            $rusak = 0;
+            $materialTrans = MaterialTrans::where('tipe', 1)
+                ->where('status_produk', 2)
+                ->where('id_material', $value->id_material)
+                ->sum('jumlah');
 
-            // if ($materialTrans) {
-            //     $rusak += $materialTrans;
-            // }
+            if ($materialTrans) {
+                $rusak += $materialTrans;
+            }
 
-            // $row = $row - count($kondisi);
-            // for ($i = 0; $i < count($kondisi); $i++) {
-            //     $dipinjam = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) use ($item) {
-            //         $query->whereNotNull('peminjaman');
-            //     })
-            //         ->where('tipe', 1)
-            //         ->where('status_produk', ($i + 2))
-            //         ->where('id_material', $value->id_material)
-            //         ->sum('jumlah');
-            //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $dipinjam);
-            //     $stokAkhir[$i] -= $dipinjam;
-            //     $col++;
-            //     $dipinjam = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) use ($item) {
-            //         $query->whereNotNull('peminjaman');
-            //     })
-            //         ->where('tipe', 1)
-            //         ->where('status_produk', ($i + 2))
-            //         ->where('id_material', $value->id_material)
-            //         ->sum('jumlah');
-            //     $stokAkhir[$i] += $dipinjam;
-            //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $dipinjam);
+            $row = $row - count($kondisi);
+            
+            for ($i = 0; $i < count($kondisi); $i++) {
+                // dd($col);
+                // $dipinjam = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) use ($item) {
+                //     $query->whereNotNull('peminjaman');
+                // })
+                //     ->where('tipe', 1)
+                //     ->where('status_produk', ($i + 2))
+                //     ->where('id_material', $value->id_material)
+                //     ->sum('jumlah');
+                // $col++;
+                // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $dipinjam);
+                // $stokAkhir[$i] -= $dipinjam;
                 
-            //     $col++;
-            //     $dikembalikan = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) use ($item) {
-            //         $query->whereNotNull('peminjaman');
-            //     })
-            //         ->where('tipe', 2)
-            //         ->where('status_produk', ($i + 2))
-            //         ->where('id_material', $value->id_material)
-            //         ->sum('jumlah');
-            //     $stokAkhir[$i] += $dikembalikan;
-            //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $dikembalikan);
+                $dipinjam = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) use ($item) {
+                    $query->whereNotNull('peminjaman');
+                })
+                    ->where('tipe', 1)
+                    ->where('status_produk', ($i + 2))
+                    ->where('id_material', $value->id_material)
+                    ->sum('jumlah');
+                $stokAkhir[$i] += $dipinjam;
+                $col++;
 
-            //     $col++;
-            //     $peralihanTambah = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) {
-            //         $query->whereNotNull('penyusutan');
-            //     })
-            //         ->where('tipe', 2)
-            //         ->whereHas('aktivitasHarian', function($query){
-            //             $query->whereNotNull('id_yayasan');
-            //         })
-            //         ->where('status_produk', ($i + 2))
-            //         ->where('id_material', $value->id_material)
-            //         ->sum('jumlah');
-            //     $stokAkhir[$i] += $peralihanTambah;
-            //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanTambah);
+                // $abjad++;
+                // $abjadDipinjam = $abjad;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $dipinjam);
 
-            //     $col++;
-            //     $peralihanKurang = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) {
-            //         $query->whereNotNull('penyusutan');
-            //     })
-            //         ->where('tipe', 1)
-            //         ->whereHas('aktivitasHarian', function($query){
-            //             $query->whereNotNull('id_yayasan');
-            //         })
-            //         ->where('status_produk', ($i + 2))
-            //         ->where('id_material', $value->id_material)
-            //         ->sum('jumlah');
-            //     $stokAkhir[$i] += $peralihanKurang;
-            //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanKurang);
+               
+                $dikembalikan = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) use ($item) {
+                    $query->whereNotNull('peminjaman');
+                })
+                    ->where('tipe', 2)
+                    ->where('status_produk', ($i + 2))
+                    ->where('id_material', $value->id_material)
+                    ->sum('jumlah');
+                $stokAkhir[$i] += $dikembalikan;
+                $col++;
+                // $abjad++;
+                // $abjadDikembalikan = $abjad;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $dikembalikan);
 
-            //     $col++;
-            //     if ($stokAkhir[$i] == $stokAwal[$i]) {
-            //         $status = 'BALANCE';
-            //     } else {
-            //         $status = 'CEKLAGI';
-            //     }
-            //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $status);
+                $peralihanTambah = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) {
+                    $query->whereNotNull('penyusutan');
+                })
+                    ->where('tipe', 2)
+                    ->whereHas('aktivitasHarian', function($query){
+                        $query->whereNotNull('id_yayasan');
+                    })
+                    ->where('status_produk', ($i + 2))
+                    ->where('id_material', $value->id_material)
+                    ->sum('jumlah');
+                $stokAkhir[$i] += $peralihanTambah;
+                $col++;
+                // $abjad++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanTambah);
+
+                $peralihanKurang = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) {
+                    $query->whereNotNull('penyusutan');
+                })
+                    ->where('tipe', 1)
+                    ->whereHas('aktivitasHarian', function($query){
+                        $query->whereNotNull('id_yayasan');
+                    })
+                    ->where('status_produk', ($i + 2))
+                    ->where('id_material', $value->id_material)
+                    ->sum('jumlah');
+                $stokAkhir[$i] += $peralihanKurang;
+                $col++;
+                // $abjad++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanKurang);
+
                 
-            //     $col++;
-            //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $stokAkhir[$i]);
-            //     $row++;
-            //     // $col -= 5;
-            // }
-            // $row--;
+                if ($peralihanTambah == $peralihanKurang) {
+                    $status = 'BALANCE';
+                } else {
+                    $status = 'CEKLAGI';
+                }
+                $col++;
+                // $abjad++;
+                // dd($abjad . $row);
+                // $objSpreadsheet->getActiveSheet()->setCellValue($abjad.$row, '=IF('.$abjadDipinjam.$row.'='. $abjadDikembalikan.$row. ',"BALANCE","CEKLAGI")');
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $status);
+
+                $col++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $stokAkhir[$i]);
+                $row++;
+                $col -= 6;
+                // print_r($col);
+            }
+            $row--;
+            $abjad = 'A';
         }
 
         //Sheet Title
