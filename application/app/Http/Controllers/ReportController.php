@@ -235,7 +235,7 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y H:i:s', strtotime($value->created_at)));
 
             $col++;
-            $shiftKerja = ShiftKerja::find($value->id_shift); 
+            $shiftKerja = ShiftKerja::withoutGlobalScopes()->find($value->id_shift); 
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $shiftKerja->nama);
             
             $col++;
@@ -244,8 +244,8 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->gudang->nama);
             $col++;
 
-            $users = Users::find($value->created_by);
-            $tkbm = TenagaKerjaNonOrganik::find($users->id_tkbm);
+            $users = Users::withoutGlobalScopes()->find($value->created_by);
+            $tkbm = TenagaKerjaNonOrganik::withoutGlobalScopes()->find($users->id_tkbm);
             if ($tkbm) {
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tkbm->nama);
             } else {
