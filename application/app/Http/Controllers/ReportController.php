@@ -37,7 +37,7 @@ class ReportController extends Controller
     public function aktivitasHarian()
     {
         $tgl_awal   = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
+        $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
 
         $res = AktivitasHarian::with('aktivitas')
         ->with('gudang')
@@ -51,9 +51,9 @@ class ReportController extends Controller
         ->whereHas('materialTrans.material', function($query) {
             $query->where('kategori', 1);
         })
-        // ->orderBy('')
+        ->orderBy('created_at', 'asc')
         ->get();
-        // dd($res->toArray());
+
         $nama_file = date("YmdHis") . '_aktivitas_harian.xlsx';
         $this->generateExcelAktivitas($res, $nama_file, $tgl_awal, $tgl_akhir);
     }
@@ -2084,7 +2084,7 @@ class ReportController extends Controller
         $material             = request()->input('material');
         $pilih_material       = request()->input('pilih_material'); //multi
         $tgl_awal           = request()->input('tgl_awal') == null? '' : date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir          = request()->input('tgl_awal') == null ? '' : date('Y-m-d', strtotime(request()->input('tgl_akhir')));
+        $tgl_akhir          = request()->input('tgl_awal') == null ? '' : date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
 
         // $res = GudangStok::distinct()->select(
         //     'id_material',
@@ -2467,7 +2467,7 @@ class ReportController extends Controller
         $produk             = request()->input('produk');
         $pilih_produk       = request()->input('pilih_produk'); //multi
         $tgl_awal   = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
+        $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
 
         // $res = Area::whereBetween('created_at', [$tgl_awal, $tgl_akhir]);
 
@@ -2801,7 +2801,7 @@ class ReportController extends Controller
         $produk             = request()->input('produk');
         $pilih_produk       = request()->input('pilih_produk'); //multi
         $tgl_awal   = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
+        $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
 
         $res = Material::produk()
         ->whereBetween('created_at', [$tgl_awal, $tgl_akhir])
