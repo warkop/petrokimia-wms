@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Factory;
 
 class AktivitasRequest extends FormRequest
 {
@@ -30,6 +32,7 @@ class AktivitasRequest extends FormRequest
             $rules['id'] = 'required';
         }
 
+
         $rules = [
             'nama'                      => 'required',
             'produk_stok'               => 'nullable|numeric',
@@ -40,43 +43,55 @@ class AktivitasRequest extends FormRequest
             'pallet_rusak'              => 'nullable|numeric',
             'connect_sistro'            => 'nullable|numeric',
             'pengiriman'                => 'nullable|numeric',
+            'pengaruh_tgl_produksi'     => 'nullable|numeric',
             'fifo'                      => 'nullable|numeric',
             'kelayakan'                 => 'nullable|numeric',
             'butuh_biaya'               => 'nullable|numeric',
             'peminjaman'                => 'nullable|numeric',
-            'pengaruh_tgl_produksi'     => 'nullable|numeric',
             'internal_gudang'           => 'nullable|numeric',
             'butuh_tkbm'                => 'nullable|numeric',
             'tanda_tangan'              => 'nullable|numeric',
             'start_date'                => 'nullable|date_format:d-m-Y',
             'end_date'                  => 'nullable|date_format:d-m-Y|after:start_date',
-            // 'anggaran_tkbm'             => 'nullable|numeric',
             'upload_foto.*'             => 'nullable|numeric',
             'alat_berat.*'              => 'nullable|numeric',
-            // 'anggaran.*'                => 'nullable|numeric',
             'kode_aktivitas'            => 'nullable|size:3',
         ];
 
-        $limit=1;
-        $jumlah = 0;
         if (request()->pallet_stok != null) {
-            $jumlah++;
         }
-
         if (request()->pallet_dipakai != null) {
-            $jumlah++;
+            if (request()->input('pallet_kosong') != null) {
+                $rules['pallet_dipakai'] = 'different:pallet_kosong';
+            } else if (request()->input('pallet_rusak') != null) {
+                $rules['pallet_dipakai'] = 'different:pallet_rusak';
+            } else if (request()->input('pallet_stok') != null) {
+                $rules['pallet_dipakai'] = 'same:pallet_stok';
+            }
         }
         if (request()->pallet_kosong != null) {
-            $jumlah++;
+            if (request()->input('pallet_dipakai') != null) {
+                $rules['pallet_kosong'] = 'different:pallet_dipakai';
+            } else if (request()->input('pallet_rusak') != null) {
+                $rules['pallet_kosong'] = 'different:pallet_rusak';
+            } else if (request()->input('pallet_stok') != null) {
+                $rules['pallet_dipakai'] = 'same:pallet_stok';
+            }
         }
         if (request()->pallet_rusak != null) {
-            $jumlah++;
+            if (request()->input('pallet_kosong') != null) {
+                $rules['pallet_rusak'] = 'different:pallet_kosong';
+            } else if (request()->input('pallet_dipakai') != null) {
+                $rules['pallet_rusak'] = 'different:pallet_kosong';
+            } else if (request()->input('pallet_stok') != null) {
+                $rules['pallet_dipakai'] = 'same:pallet_stok';
+            }
         }
 
-        request()->pallet_dump = $jumlah;
-        
-        $rules['pallet_dump'] = 'max:'.$limit;
-        // dd($rules);
+        if (request()->fifo != null) {
+            $rules['pengaruh_tgl_produksi'] = 'nullable|numeric|required';
+        }
+
         return $rules;
     }
 
@@ -116,12 +131,15 @@ class AktivitasRequest extends FormRequest
     {
         return [
             'required'                  => ':attribute wajib diisi!',
+            'pengaruh_tgl_produksi.required'                  => ':attribute wajib dicentang apabila FIFO dicentang!',
             'max'                       => 'pilihan :attribute hanya boleh maksimal :max jenis!',
             'numeric'                   => 'Inputan :attribute tidak valid!',
             'size'                      => ':attribute harus :size karakter!',
             'start_date.date_format'    => 'Tanggal harus dengan format tanggal-bulan-tahun',
             'end_date.date_format'      => 'Tanggal harus dengan format tanggal-bulan-tahun',
             'end_date.after'            => 'Tanggal End Date tidak boleh melebihi Start Date!',
+            'same'                      => 'Pilihan jenis :attribute harus sama dengan :other!',
+            'different'                 => 'Pilihan jenis :attribute harus berbeda dengan :other!',
         ];
     }
 
