@@ -13,6 +13,7 @@ use App\Http\Models\MaterialTrans;
 use App\Http\Requests\AktivitasKeluhanGpRequest;
 use App\Http\Resources\MaterialTransResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PenerimaanGpController extends Controller
 {
@@ -77,15 +78,16 @@ class PenerimaanGpController extends Controller
         }
         // $data = Material::where('nama', 'ILIKE', '%'.strtolower($search).'%')->where('kategori', 1)->orderBy('nama', 'asc')->get();
         
-        $data = MaterialTrans::
-        with('material')
-        ->whereHas('aktivitasHarian.aktivitas', function($query) {
-            $query->whereNotNull('pengiriman');
+        $data = MaterialTrans::distinct('id_material')
+        ->select(
+            'id_material',
+            'nama'
+        )
+        ->join('material', 'material.id', '=', 'id_material')
+        ->where(function($query) use($search) {
+            $query->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
         })
-        ->whereHas('material', function($query) use($search) {
-            $query->where('kategori', 1);
-            $query->where('nama', 'ILIKE', '%' . strtolower($search) . '%');
-        })
+        ->where('id_aktivitas_harian', $id_aktivitas_harian)
         ->get();
         
         return response()->json(['data' => $data, 'keluhan' => $keluhan], 200);

@@ -395,7 +395,7 @@ let datatable,
                 const obj = res.data;
                 let html = `<option value="">Pilih Produk</option>`;
                 obj.forEach((item, index) => {
-                    html += `<option value="${item.material.id}">${item.material.nama}</option>`;
+                    html += `<option value="${item.id_material}">${item.nama}</option>`;
                 });
 
                 $(target).html(html);
