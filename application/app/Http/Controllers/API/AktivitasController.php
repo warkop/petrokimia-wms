@@ -1694,7 +1694,7 @@ class AktivitasController extends Controller
         if ($res[0]->sistro) {
             $sistro = Sistro::where('tiketno', $res[0]->sistro)->orWhere('bookingno', $res[0]->sistro)->firstOrFail();
         } else {
-            $sistro = '';
+            $sistro = [];
         }
 
         $res_produk = MaterialTrans::select(
