@@ -1689,7 +1689,13 @@ class AktivitasController extends Controller
         ->leftJoin('alat_berat', 'aktivitas_harian.id_alat_berat', '=', 'alat_berat.id')
         ->where('aktivitas_harian.id', $id)
         ->orderBy('aktivitas_harian.id', 'desc')
-        ;
+        ->get();
+
+        if ($res[0]->sistro) {
+            $sistro = Sistro::where('tiketno', $res[0]->sistro)->orWhere('bookingno', $res[0]->sistro)->firstOrFail();
+        } else {
+            $sistro = '';
+        }
 
         $res_produk = MaterialTrans::select(
             'material.id as id_material',
@@ -1749,7 +1755,8 @@ class AktivitasController extends Controller
         ->where('id_aktivitas_harian', $id)
         ->get();
 
-        $obj = (new AktivitasResource($res->get()))->additional([
+        $obj = (new AktivitasResource($res))->additional([
+            'sistro' => $sistro,
             'produk' => $res_produk,
             'pallet' => $res_pallet,
             'alat_berat' => $list_alat_berat,
