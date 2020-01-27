@@ -5,7 +5,7 @@
 @section('content')
 
 <script>
-    document.getElementById('report-produk-nav').classList.add('kt-menu__item--active');
+    document.getElementById('report-realisasi-nav').classList.add('kt-menu__item--active');
 </script>
 
 

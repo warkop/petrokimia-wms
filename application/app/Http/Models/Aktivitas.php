@@ -53,4 +53,9 @@ class Aktivitas extends CustomModel
 
         return $result;
     }
+
+    public function scopeNonPenerimaanGi($query)
+    {
+        return $query->whereNull('penerimaan_gi');
+    }
 }
