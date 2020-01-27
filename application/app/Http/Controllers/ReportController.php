@@ -977,7 +977,7 @@ class ReportController extends Controller
         $pallet             = request()->input('pallet');
         $pilih_pallet       = request()->input('pilih_pallet'); //multi
         $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
+        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
 
         $res = new GudangStok;
         $res = $res->with('gudang')->whereHas('gudang', function($query) {
@@ -1574,7 +1574,7 @@ class ReportController extends Controller
         $shift              = request()->input('shift'); //multi
         $kegiatan           = request()->input('kegiatan'); //multi
         $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1'));
+        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
 
         $res = DB::table('aktivitas_harian')->select(
             'aktivitas.nama',
@@ -1885,7 +1885,7 @@ class ReportController extends Controller
         $keluhan            = request()->input('keluhan'); //multi
         $kegiatan           = request()->input('kegiatan'); //multi
         $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
+        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
         $res = AktivitasKeluhanGp::select(
             'aktivitas_keluhan_gp.*',
             'g.nama as nama_gudang',
