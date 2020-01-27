@@ -846,7 +846,7 @@ class ReportController extends Controller
                     $query->where('aktivitas_harian.created_at', '<', $tgl_awal);
                     $query->orWhere('material_adjustment.created_at', '<', $tgl_awal);
                 })
-                ->where('status_produk', '<>', 2)
+                ->where('status_produk', 1)
                 ->where('tipe', 2)
                 ->sum('jumlah');
             $stokAwal = $materialTransMenambah - $materialTransMengurang;
