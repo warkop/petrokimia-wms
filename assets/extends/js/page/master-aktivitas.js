@@ -282,17 +282,17 @@ function edit(id = '') {
             if (obj.data['kelayakan'] != null) {
                 $('#kelayakan').prop('checked', true);
             }
-            if (obj.data['peminjaman'] != null) {
-                $('#peminjaman').prop('checked', true);
-            }
+            // if (obj.data['peminjaman'] != null) {
+            //     $('#peminjaman').prop('checked', true);
+            // }
 
             if (obj.data['pindah_area'] != null) {
                 $('#pindah_area').prop('checked', true);
             }
 
-            if (obj.data['penerimaan_gi'] != null) {
-                $('#penerimaan_gi').prop('checked', true);
-            }
+            // if (obj.data['penerimaan_gi'] != null) {
+            //     $('#penerimaan_gi').prop('checked', true);
+            // }
 
             if (obj.data['so'] != null) {
                 $('#so').prop('checked', true);

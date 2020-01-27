@@ -196,18 +196,26 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="row form-group mb-0 mb2">
+                            {{-- <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                         <input type="checkbox" name="peminjaman" id="peminjaman" value="1"> Peminjaman
                                         <span></span>
                                     </label>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                         <input type="checkbox" name="penyusutan" id="penyusutan" value="1"> Penyusutan
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row form-group mb-0 mb2">
+                                <div class="col-12 offset-col-2">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                        <input type="checkbox" name="tanpa_tanggal" id="tanpa_tanggal" value="1"> Tanpa Tanggal Produksi
                                         <span></span>
                                     </label>
                                 </div>
@@ -246,14 +254,14 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="row form-group mb-0 mb2">
+                            {{-- <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                         <input type="checkbox" name="penerimaan_gi" id="penerimaan_gi" value="1"> Penerimaan GI
                                         <span></span>
                                     </label>
                                 </div>
-                            </div>
+                            </div> --}}
                             @if (!empty($anggaran_pallet))
                                 @php 
                                     $show_biaya_pallet = 'display:block'; 
@@ -343,14 +351,6 @@
                                 <div class="col-12 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
                                         <input type="checkbox" name="so" id="so" value="1"> SO
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="row form-group mb-0 mb2">
-                                <div class="col-12 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                        <input type="checkbox" name="tanpa_tanggal" id="tanpa_tanggal" value="1"> Tanpa Tanggal Produksi
                                         <span></span>
                                     </label>
                                 </div>
