@@ -85,8 +85,10 @@ class UsersController extends Controller
 
         if ($role == 5) {
             $models->id_karu    = $pilih;    
+            $models->id_tkbm    = '';    
         } else if ($role == 3) {
-            $models->id_tkbm    = $pilih;    
+            $models->id_tkbm    = $pilih;
+            $models->id_karu    = '';    
         }
         
         $models->role_id        = $role;
