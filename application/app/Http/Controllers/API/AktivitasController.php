@@ -468,15 +468,18 @@ class AktivitasController extends Controller
                 $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                 return response()->json($response, $this->responseCode);
             }
+
+            $rencanaHarian = RencanaHarian::withoutGlobalScopes()->find($rencana_tkbm->id);
+
+
             $aktivitasHarian->id_shift          = $rencana_tkbm->id_shift;
+            $aktivitasHarian->id_karu           = $rencanaHarian->updated_by;
         }
 
         $aktivitasHarian->id_aktivitas      = $req->input('id_aktivitas');
         $aktivitasHarian->id_gudang         = $gudang->id;
-        // $aktivitasHarian->id_karu           = $gudang->id_karu;
         $aktivitasHarian->id_gudang_tujuan  = $req->input('id_gudang_tujuan');
         $aktivitasHarian->ref_number        = $req->input('ref_number');
-        // $aktivitasHarian->id_alat_berat     = $req->input('id_alat_berat');
         $aktivitasHarian->sistro            = $req->input('sistro');
         $aktivitasHarian->approve           = $req->input('approve');
         $aktivitasHarian->kelayakan_before  = $req->input('kelayakan_before');
@@ -659,7 +662,10 @@ class AktivitasController extends Controller
                 $status_pallet  = $list_pallet[$i]['status_pallet'];
                 $tipe           = $list_pallet[$i]['tipe'];
 
-                $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('status', $status_pallet)->where('id_material', $pallet)->first();
+                $gudangStok = GudangStok::where('id_gudang', $gudang->id)
+                ->where('status', $status_pallet)
+                ->where('id_material', $pallet)
+                ->first();
 
                 if (empty($gudangStok)) {
                     $gudangStok = new GudangStok;
