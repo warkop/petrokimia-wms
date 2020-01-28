@@ -38,7 +38,7 @@
     </div>
 </div>
 
-<div class="kt-content  kt-grid__item kt-grid__item--fluid" style="margin-bottom: -3vh">
+{{-- <div class="kt-content  kt-grid__item kt-grid__item--fluid" style="margin-bottom: -3vh">
     <div class="row">
         <div class="col-12">
             <div class="kt-portlet">
@@ -59,7 +59,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
 
 <div class="kt-content  kt-grid__item kt-grid__item--fluid">
@@ -70,7 +70,18 @@
                 <div class="kt-portlet__head no-border-bottom">
                     <div class="kt-portlet__head-title">
                         <h5 class="kt-portlet__head-text title_sub pt-4">
-                            {{-- <i class="la la-group"></i> &nbsp; --}}
+                            <div class="row">
+                                <label class="col-form-label">Periode 1</label>
+                                <div class="col-4">
+                                    <input class="form-control" id="kt_datepicker_1" readonly placeholder="Pilih periode mulai"
+                                        type="text" />
+                                </div>
+                                <label class="offset-1 col-form-label">Periode 2</label>
+                                <div class="col-4">
+                                    <input class="form-control" id="kt_datepicker_2" readonly
+                                        placeholder="Pilih periode selesai" type="text" />
+                                </div>
+                            </div><br>
                             Dashboard
                             </h4>
                             <p class="sub">

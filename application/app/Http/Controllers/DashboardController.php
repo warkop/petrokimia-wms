@@ -59,7 +59,8 @@ class DashboardController extends Controller
         $data['komplain_gp_shift2'] = $komplain_gp_shift2;
         $data['komplain_gp_shift3'] = $komplain_gp_shift3;
 
-        // dd($data['komplain_gp_shift3']);
+        
+
 
         return view('dashboard.grid', $data);
     }
