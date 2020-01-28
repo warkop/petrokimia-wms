@@ -316,6 +316,26 @@
         }
     });
 
+    let keluhanGpShift1 = [];
+    @if (!empty($komplain_gp_shift1))
+        @foreach ($komplain_gp_shift1 as $item)
+            keluhanGpShift1.push({{$item->shift}});
+        @endforeach
+    @endif
+
+    let keluhanGpShift2 = [];
+    @if (!empty($komplain_gp_shift2))
+        @foreach ($komplain_gp_shift2 as $item)
+            keluhanGpShift2.push({{$item->shift}});
+        @endforeach
+    @endif
+
+    let keluhanGpShift3 = [];
+    @if (!empty($komplain_gp_shift3))
+        @foreach ($komplain_gp_shift3 as $item)
+            keluhanGpShift3.push({{$item->shift}});
+        @endforeach
+    @endif
 
     // line chart lancip
     new Chart(document.getElementById("line-chart-lancip"), {
@@ -323,19 +343,19 @@
         data: {
             labels: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"],
             datasets: [{
-                data: [86, 100, 106, 20, 107, 24, 133],
+                data: keluhanGpShift1,
                 borderColor: "#00AE4D",
                 label: "Shift 1",
                 fill: false,
                 lineTension: 0,
             }, {
-                data: [10, 150, 411, 202, 135, 309, 247],
+                data: keluhanGpShift2,
                 borderColor: "#FAAE32",
                 label: "Shift 2",
                 fill: false,
                 lineTension: 0,
             }, {
-                data: [68, 50, 78, 90, 203, 176, 408],
+                data: keluhanGpShift3,
                 borderColor: "#E14A3A",
                 label: "Shift 3",
                 fill: false,
