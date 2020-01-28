@@ -51,7 +51,13 @@
                     <div class="row mb1">
                         <div class="col-12">
                             <label>Paket Alat Berat</label>
-                            <h5 class="boldd"> {{$aktivitasHarian->alatBerat->nomor_lambung??'-'}}</h5>
+                            @php $no = 1; @endphp
+                            <h5 class="boldd"> 
+                                @foreach ($aktivitasHarian->aktivitasHarianAlatBerat as $key)
+                                {{ $no.'. '.$key->nomor_lambung}} <br>
+                                @php $no++ @endphp
+                                @endforeach
+                            </h5>
                         </div>
                     </div>
                     <div class="row mb1">
@@ -213,6 +219,54 @@
 </div>
 <!--end::Modal-->
 
+<div class="modal fade" id="kt_modal_kelayakan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Foto Kelayakan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form action="">
+                <div class="modal-body">
+                    <div class="kt-scroll" data-scroll="true" data-height="400">
+                        <div class="row mb2">
+                            {{-- @foreach ($fotoKelayakanBefore as $item)
+                                <div class="col-4">
+                                    <label class="boldd">Foto {{$item->foto}}</label>
+                                    <a class="fancybox" rel="ligthbox"
+                                        href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
+                                        <img class="img-fluid"
+                                            src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
+                                            srcset="">
+                                    </a>
+                                </div>
+                            @endforeach --}}
+                        </div>
+                        <div class="row mb2">
+                            {{-- @foreach ($fotoKelayakanAfter as $item)
+                                <div class="col-4">
+                                    <label class="boldd">Foto {{$item->foto}}</label>
+                                    <a class="fancybox" rel="ligthbox"
+                                        href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
+                                        <img class="img-fluid"
+                                            src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
+                                            srcset="">
+                                    </a>
+                                </div>
+                            @endforeach --}}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-clean" data-dismiss="modal">Tutup</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="kt_keluhan" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -332,7 +386,7 @@ let datatable,
                     </select>
                 </div>
                 <div class="col-2">
-                    <label class="boldd-500">Jumlah</label><br>
+                    <label class="boldd-500">Jumlah (Ton)</label><br>
                     <input type="text" id="jumlah-${rows}" name="jumlah[]" class="form-control" placeholder="Jumlah">
                 </div>
                 <div class="col-5">
@@ -643,25 +697,23 @@ let datatable,
                         <div class="card-header" id="heading-${i}">
                             <div class="card-title" data-toggle="collapse show" data-target="#collapse-${i}"
                                 aria-expanded="true" aria-controls="collapse-${i}">
-                                <i class="flaticon2-shelter"></i> Area ${element.nama}
+                                <i class="flaticon2-shelter"></i> Area ${element.area_stok.area.nama}
                             </div>
                         </div>
                     `;
 
                     areanya = "";
-                    element.area_stok.forEach(element2 => {
-                        areanya += `
-                            <div class="kt-widget4__item border-bottom-dash mt1">
-                                <div class="kt-widget4__info">
-                                    <h6 class="kt-widget4__username">
-                                        ${helpDateFormat(element2.tanggal, "mi")}
-                                    </h6>
-                                    <p class="kt-widget4__text boldd">
-                                        ${element2.jumlah} KG
-                                    </p>
-                                </div>
-                            </div>`;
-                    });
+                    areanya += `
+                        <div class="kt-widget4__item border-bottom-dash mt1">
+                            <div class="kt-widget4__info">
+                                <h6 class="kt-widget4__username">
+                                    ${helpDateFormat(element.tanggal, "mi")}
+                                </h6>
+                                <p class="kt-widget4__text boldd">
+                                    ${element.jumlah} Ton
+                                </p>
+                            </div>
+                        </div>`;
                     if (!$.isEmptyObject(temp_nama)) {
                         temp += `
                                 <div class="card">
@@ -676,8 +728,51 @@ let datatable,
                 });
                 $("#tempat_card").html(temp);
             },
-            error:(response) => {
+            error:response => {
+                let head = 'Maaf',
+                message = 'Terjadi kesalahan koneksi',
+                type = 'error';
+                window.onbeforeunload = false;
+                $('.btn_close_modal').removeClass('hide');
+                $('.se-pre-con').hide();
 
+                if (response['status'] == 401 || response['status'] == 419) {
+                    location.reload();
+                } else {
+                    if (response['status'] != 404 && response['status'] != 500) {
+                        let obj = JSON.parse(response['responseText']);
+
+                        if (!$.isEmptyObject(obj.message)) {
+                            if (obj.code > 450) {
+                                head = 'Maaf';
+                                message = obj.message;
+                                type = 'error';
+                            } else {
+                                head = 'Pemberitahuan';
+                                type = 'warning';
+                                obj = response.responseJSON.errors;
+                                message = '';
+                                if (obj == null) {
+                                    message = response.responseJSON.message;
+                                } else {
+                                    const temp = Object.values(obj);
+                                    message = '';
+                                    temp.forEach(element => {
+                                        element.forEach(row => {
+                                            message += row + "<br>"
+                                        });
+                                    });
+                                }
+
+                                window.onbeforeunload = false;
+                                $('.btn_close_modal').removeClass('hide');
+                                $('.se-pre-con').hide();
+                            }
+                        }
+                    }
+
+                    swal.fire(head, message, type);
+                }
             }
         });
     }

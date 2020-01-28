@@ -326,20 +326,17 @@
                     `;
 
                     areanya = "";
-                    // console.log(element);
-                    // element.forEach(element2 => {
-                        areanya += `
-                            <div class="kt-widget4__item border-bottom-dash mt1">
-                                <div class="kt-widget4__info">
-                                    <h6 class="kt-widget4__username">
-                                        ${helpDateFormat(element.tanggal, "mi")}
-                                    </h6>
-                                    <p class="kt-widget4__text boldd">
-                                        ${element.jumlah} Ton
-                                    </p>
-                                </div>
-                            </div>`;
-                    // });
+                    areanya += `
+                        <div class="kt-widget4__item border-bottom-dash mt1">
+                            <div class="kt-widget4__info">
+                                <h6 class="kt-widget4__username">
+                                    ${helpDateFormat(element.tanggal, "mi")}
+                                </h6>
+                                <p class="kt-widget4__text boldd">
+                                    ${element.jumlah} Ton
+                                </p>
+                            </div>
+                        </div>`;
                     if (!$.isEmptyObject(temp_nama)) {
                         temp += `
                                 <div class="card">
@@ -352,12 +349,53 @@
                                 </div>`;
                     }
                 });
-                // console.log($("#accordionExample5"));
                 $("#tempat_card").html(temp);
-                // console.log(temp);
             },
-            error:(response) => {
+            error:response => {
+                let head = 'Maaf',
+                message = 'Terjadi kesalahan koneksi',
+                type = 'error';
+                window.onbeforeunload = false;
+                $('.btn_close_modal').removeClass('hide');
+                $('.se-pre-con').hide();
 
+                if (response['status'] == 401 || response['status'] == 419) {
+                    location.reload();
+                } else {
+                    if (response['status'] != 404 && response['status'] != 500) {
+                        let obj = JSON.parse(response['responseText']);
+
+                        if (!$.isEmptyObject(obj.message)) {
+                            if (obj.code > 450) {
+                                head = 'Maaf';
+                                message = obj.message;
+                                type = 'error';
+                            } else {
+                                head = 'Pemberitahuan';
+                                type = 'warning';
+                                obj = response.responseJSON.errors;
+                                message = '';
+                                if (obj == null) {
+                                    message = response.responseJSON.message;
+                                } else {
+                                    const temp = Object.values(obj);
+                                    message = '';
+                                    temp.forEach(element => {
+                                        element.forEach(row => {
+                                            message += row + "<br>"
+                                        });
+                                    });
+                                }
+
+                                window.onbeforeunload = false;
+                                $('.btn_close_modal').removeClass('hide');
+                                $('.se-pre-con').hide();
+                            }
+                        }
+                    }
+
+                    swal.fire(head, message, type);
+                }
             }
         });
     }

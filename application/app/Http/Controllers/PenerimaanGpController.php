@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\AktivitasFoto;
 use App\Http\Models\AktivitasHarian;
+use App\Http\Models\AktivitasKelayakanFoto;
 use App\Http\Models\AktivitasKeluhanGp;
 use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
@@ -176,7 +177,18 @@ class PenerimaanGpController extends Controller
         $pallet = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_pallet')->get();
         $data['pallet'] = $pallet;
         $data['id_gudang'] = $aktivitasHarian->id_gudang;
+        $kelayakan = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->get()->groupBy('jenis');
+        if (array_key_exists(0, $kelayakan)) {
+            $data['fotoKelayakanBefore'] = $kelayakan[0];
+        } else {
+            $data['fotoKelayakanBefore'] = null;
+        }
 
+        if (array_key_exists(1, $kelayakan)) {
+            $data['fotoKelayakanAfter'] = $kelayakan[1];
+        } else {
+            $data['fotoKelayakanAfter'] = null;
+        }
         $data['list_produk'] = Material::produk()->get();
         return view('penerimaan-gp.detail', $data);
     }
@@ -195,16 +207,21 @@ class PenerimaanGpController extends Controller
 
     public function getArea($id_gudang, $id_material, $id_aktivitas_harian)
     {
-        $areaStok = Area::with('areaStok', 'areaStok.materialTrans')
-        ->whereHas('areaStok', function($query) use ($id_material) {
-            $query->where('id_material', $id_material);
-        })
-        ->whereHas('areaStok.materialTrans', function($query) use ($id_aktivitas_harian) {
-            $query->where('id_aktivitas_harian', $id_aktivitas_harian);
-        })
-        ->where('id_gudang', $id_gudang)
-        ->orderBy('nama')
-        ->get();
+        // $areaStok = Area::with('areaStok', 'areaStok.materialTrans')
+        // ->whereHas('areaStok', function($query) use ($id_material) {
+        //     $query->where('id_material', $id_material);
+        // })
+        // ->whereHas('areaStok.materialTrans', function($query) use ($id_aktivitas_harian) {
+        //     $query->where('id_aktivitas_harian', $id_aktivitas_harian);
+        // })
+        // ->where('id_gudang', $id_gudang)
+        // ->orderBy('nama')
+        // ->get();
+
+        $areaStok = MaterialTrans::with('areaStok.area')
+            ->where('id_aktivitas_harian', $id_aktivitas_harian)
+            ->where('id_material', $id_material)
+            ->get();
         return response()->json($areaStok, 200);
     }
 }
