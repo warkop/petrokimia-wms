@@ -107,11 +107,12 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
 
     Route::group(['prefix' => 'master-user', 'middleware' => 'can:data-master-user'], function () {
         Route::get('/', 'UsersController@index');
-        Route::get('/load-pegawai/{id_kategori}', 'UsersController@loadPegawai');
+        Route::get('/load-pegawai/{id_kategori}', 'UsersController@loadPegawai')->where('id_kategori', '[0-9]+');
         Route::put('/', 'UsersController@store');
         Route::post('/', 'UsersController@json');
         Route::get('/{id}', 'UsersController@show')->where('id', '[0-9]+');
-        Route::patch('/{id}', 'UsersController@changePassword')->where('id', '[0-9]+');
+        Route::patch('/{id}', 'UsersController@resetPassword')->where('id', '[0-9]+');
+        Route::patch('/change-password/{id}', 'UsersController@changePassword')->where('id', '[0-9]+');
         Route::delete('/{id}', 'UsersController@destroy')->where('id', '[0-9]+');
     });
 

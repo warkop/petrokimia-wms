@@ -22,10 +22,24 @@ jQuery(document).ready(function () {
         simpan();
     });
 
+    $('#btn_change').on('click', function (e) {
+        e.preventDefault();
+        laddaButton = Ladda.create(this);
+        laddaButton.start();
+        changePassword();
+    });
+
     $('.input-enter').on("keyup", function (event) {
         event.preventDefault();
         if (event.keyCode === 13) {
             $("#btn_save").click();
+        }
+    });
+
+    $('.input-enter-change').on("keyup", function (event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            $("#btn_change").click();
         }
     });
 });
@@ -114,9 +128,12 @@ let load_table = function () {
                         <button type = "button" onclick="edit(${full.id})" class="btn btn-orens btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Ubah Data">
                         <i class="flaticon-edit-1"></i> </button>
                     </a> <a href="" data-toggle="modal" data-target="#kt_modal_1">
-                        <button type = "button" onclick="gantiPassword(${full.id})" class="btn btn-info btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Reset Password">
+                        <button type = "button" onclick="resetPassword(${full.id})" class="btn btn-info btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Reset Password">
                         <i class="flaticon2-refresh"></i> </button>
-                    </a>`;
+                    </a>
+                        <button type = "button" onclick="modalChangePassword(${full.id})" class="btn btn-danger btn-elevate btn-icon" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="Ganti Password">
+                        <i class="flaticon-safe-shield-protection"></i> </button>
+                    `;
                 },
             }
         ],
@@ -259,7 +276,7 @@ function loadPegawai(role='') {
 
             $("#pilih").html(element);
         },
-        error:(err, oo, pp)=>{
+        error:(response)=>{
             let head = 'Maaf',
                 message = 'Terjadi kesalahan koneksi',
                 type = 'error';
@@ -293,7 +310,7 @@ function loadPegawai(role='') {
     });
 }
 
-function gantiPassword(id) {
+function resetPassword(id) {
     swal.fire({
         title: 'Apakah Anda yakin?',
         text: "Password akan direset menjadi petrokimia123!",
@@ -444,6 +461,93 @@ function simpan() {
             }
         }
     });
+}
+
+function modalChangePassword(id) {
+    $("#modal_form_ganti_password").modal("show", {background:'static'});
+    $("#id_user").val(id);
+    $("#old_password").val('');
+    $("#new_password").val('');
+    $("#new_password_confirmation").val('');
+}
+
+function changePassword() {
+    const id = $("#id_user").val();
+    let data = $("#form2").serializeArray();
+    $.ajax({
+        url: ajaxUrl +"/change-password/"+id,
+        type:"PATCH",
+        data: data,
+        dataType: "json",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success:(response) => {
+            laddaButton.stop();
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            let obj = response;
+
+            if (obj.status == "OK") {
+                datatable.api().ajax.reload();
+                swal.fire('Ok', obj.message, 'success');
+                $('#modal_form_ganti_password').modal('hide');
+            } else {
+                swal.fire('Pemberitahuan', obj.message, 'warning');
+            }
+        },
+        error:response => {
+            $("#btn_change").prop("disabled", false);
+            let head = 'Maaf',
+                message = 'Terjadi kesalahan koneksi',
+                type = 'error';
+            laddaButton.stop();
+            window.onbeforeunload = false;
+            $('.btn_close_modal').removeClass('hide');
+            $('.se-pre-con').hide();
+
+            if (response['status'] == 401 || response['status'] == 419) {
+                location.reload();
+            } else {
+                if (response['status'] != 404 && response['status'] != 500) {
+                    let obj = JSON.parse(response['responseText']);
+
+                    if (!$.isEmptyObject(obj.message)) {
+                        if (obj.code > 450) {
+                            head = 'Maaf';
+                            message = obj.message;
+                            type = 'error';
+                        } else {
+                            head = 'Pemberitahuan';
+                            type = 'warning';
+                            obj = response.responseJSON.errors;
+                            message = '';
+                            if (obj == null) {
+                                message = response.responseJSON.message;
+                            } else {
+                                const temp = Object.values(obj);
+                                message = '';
+                                temp.forEach(element => {
+                                    element.forEach(row => {
+                                        message += row + "<br>"
+                                    });
+                                });
+                            }
+
+                            laddaButton.stop();
+                            window.onbeforeunload = false;
+                            $('.btn_close_modal').removeClass('hide');
+                            $('.se-pre-con').hide();
+                        }
+                    }
+                }
+
+                swal.fire(head, message, type);
+            }
+        }
+    })
 }
 
 function reset_form(method = '') {

@@ -126,7 +126,52 @@
 </div>
 <!--end::Modal-->
 
-
+<div class="modal fade btn_close_modal" id="modal_form_ganti_password" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ganti Password</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form id="form2" class="kt-form" action="" method="post" onsubmit="return false;">
+                <div class="modal-body">
+                    <input type="hidden" class="form-control" id="id_user" name="id_user">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group" id="tempat_old_password">
+                                <label>Password Lama</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control input-enter-change pwd" name="old_password" id="old_password" placeholder="Password Lama" aria-describedby="basic-addon2">
+                                    <div class="input-group-append reveal" style="cursor: pointer;"><span class="input-group-text kt-font-dark" id="basic-addon2">Show</span></div>
+                                </div>
+                            </div>
+                            <div class="form-group" id="tempat_password">
+                                <label>Password Baru</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control input-enter-change pwd" name="new_password" id="new_password" placeholder="Password Baru" aria-describedby="basic-addon2">
+                                    <div class="input-group-append reveal" style="cursor: pointer;"><span class="input-group-text kt-font-dark" id="basic-addon2">Show</span></div>
+                                </div>
+                            </div>
+                            <div class="form-group" id="tempat_password_confirmation">
+                                <label>Konfirmasi Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control input-enter-change pwd" name="new_password_confirmation" id="new_password_confirmation" placeholder="Konfirmasi Password" aria-describedby="basic-addon2">
+                                    <div class="input-group-append reveal" style="cursor: pointer;"><span class="input-group-text kt-font-dark" id="basic-addon2">Show</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-wms ladda-button" data-style="zoom-in" id="btn_change">Simpan data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 
 

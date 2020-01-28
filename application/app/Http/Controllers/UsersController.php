@@ -7,8 +7,10 @@ use App\Http\Models\Karu;
 use App\Http\Models\Users;
 use App\Http\Models\Role;
 use App\Http\Models\TenagaKerjaNonOrganik;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -162,7 +164,7 @@ class UsersController extends Controller
         //
     }
 
-    public function changePassword($id_user)
+    public function resetPassword($id_user)
     {
         $res = Users::withoutGlobalScopes()->find($id_user);
         // dump($res);
@@ -181,6 +183,35 @@ class UsersController extends Controller
             $this->responseData = $res;
         }
 
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
+    public function changePassword(ChangePasswordRequest $req, $id)
+    {
+        $req->validated();
+
+        $new_password   = $req->new_password;
+        $old_password   = $req->old_password;
+
+        $res = Users::withoutGlobalScopes()->find($id);
+        if (Hash::check($old_password, $res->password)) {
+            $res->password = Hash::make($new_password);
+            $res->save();
+        } else {
+            $this->responseCode = 403;
+            $this->responseMessage = 'Password lama yang Anda masukkan salah!';
+            // $this->responseData = $res;
+
+            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+            return response()->json($response, $this->responseCode);
+        }
+
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Password berhasil diubah';
+        $this->responseData = $res;
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
