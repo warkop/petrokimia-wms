@@ -1015,11 +1015,9 @@ class ReportController extends Controller
         }
 
         $res = $res
-        // ->where('created_at', '<=', date('Y-m-d', strtotime($tgl_awal)))
         ->orderBy('id_gudang', 'asc')->get()->groupBy('id_material');
 
         $nama_file = date("YmdHis") . '_mutasi_pallet.xlsx';
-        // dd($res->toArray());
         $this->generateExcelMutasiPallet($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir);
     }
 
@@ -1103,7 +1101,7 @@ class ReportController extends Controller
         $col = 3;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Mutasi Pallet (Bulan)');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Mutasi Pallet');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
         
         $row++;
@@ -1258,9 +1256,7 @@ class ReportController extends Controller
 
         // start : isi kolom
         $no = 0;
-        // dd($res);
         foreach ($res as $value) {
-            // dd($value->toArray());
             $no++;
             $col = 1;
             $row++;
@@ -1304,24 +1300,20 @@ class ReportController extends Controller
             $row = $row-count($kondisi);
             $abjad++;
             for ($i = 0; $i < count($kondisi); $i++) {
-                $materialTrans = MaterialTrans::where('id_material', $value->id_material)
-                    ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
-                    ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
-                if (!empty($materialTrans)) {
-                    $masuk      = $materialTrans->where('tipe', 2)->sum('jumlah');
-                    $keluar     = $materialTrans->where('tipe', 1)->sum('jumlah');
-                    $saldoAwal  = $masuk - $keluar;
-                    
-                    $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
-                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $saldoAwal); //jumlah stok pallet per kondisi
-                    $stokAwal[$i] = $saldoAwal;
-                    $stokAkhir[$kondisi[$i]] = $saldoAwal;
-                } else {
-                    $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
-                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 0); //jumlah stok pallet per kondisi
-                    $stokAwal[$i] = 0;
-                    $stokAkhir[$kondisi[$i]] = 0;
-                }
+                $masuk      = MaterialTrans::where('id_material', $value->id_material)
+                ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
+                ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)))->where('tipe', 2)->sum('jumlah');
+
+                $keluar     = MaterialTrans::where('id_material', $value->id_material)
+                ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
+                ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)))->where('tipe', 1)->sum('jumlah');
+
+                $saldoAwal  = $masuk - $keluar;
+                
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $saldoAwal); //jumlah stok pallet per kondisi
+                $stokAwal[$i] = $saldoAwal;
+                $stokAkhir[$kondisi[$i]] = $saldoAwal;
                 $row++;
             }
             
@@ -1341,9 +1333,11 @@ class ReportController extends Controller
                 for ($i = 0; $i < count($kondisi); $i++) {
                     $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use ($item) {
                         $query->where('id_gudang', $item->id);
+                        $query->where('draft', 0);
                     })
                     ->where('status_pallet', ($i + 2)) //harus + 2 step agar cocok dengan status pada databse
                     ->where('tipe', 2)
+                    ->whereBetween('created_at', [$tgl_awal, $tgl_akhir])
                     ->where('id_material', $value->id_material)
                     ->sum('jumlah');
                     $stokAkhir[$i] += $materialTrans;
@@ -1374,11 +1368,11 @@ class ReportController extends Controller
                 for ($i = 0; $i < count($kondisi); $i++) {
                     $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use ($item) {
                         $query->where('id_gudang', $item->id);
+                        $query->where('draft', 0);
                     })
                         ->where('status_pallet', ($i + 2)) //harus + 2 step agar cocok dengan status pada databse
                         ->where('tipe', 1)
-                        ->where('created_at', '>=', date('Y-m-d', strtotime($tgl_awal)))
-                        ->where('created_at', '<=', date('Y-m-d', strtotime($tgl_akhir)))
+                        ->whereBetween('created_at', [$tgl_awal, $tgl_akhir])
                         ->where('id_material', $value->id_material)
                         ->sum('jumlah');
                     $stokAkhir[$i] -= $materialTrans;
@@ -1433,7 +1427,6 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tempPenyusutan[$i]); //total yayasan
                 $row++;
             }
-            // // $col++;
             $rusak = 0;
             $materialTrans = MaterialTrans::where('tipe', 1)
                 ->where('status_produk', 2)
@@ -1447,18 +1440,7 @@ class ReportController extends Controller
             $row = $row - count($kondisi);
             
             for ($i = 0; $i < count($kondisi); $i++) {
-                // dd($col);
-                // $dipinjam = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) use ($item) {
-                //     $query->whereNotNull('peminjaman');
-                // })
-                //     ->where('tipe', 1)
-                //     ->where('status_produk', ($i + 2))
-                //     ->where('id_material', $value->id_material)
-                //     ->sum('jumlah');
-                // $col++;
-                // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $dipinjam);
-                // $stokAkhir[$i] -= $dipinjam;
-                
+                $abjadDalam = $abjad;
                 $dipinjam = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) use ($item) {
                     $query->whereNotNull('peminjaman');
                 })
@@ -1469,10 +1451,9 @@ class ReportController extends Controller
                 $stokAkhir[$i] += $dipinjam;
                 $col++;
 
-                // $abjad++;
-                // $abjadDipinjam = $abjad;
+                $abjadDalam++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $dipinjam);
-
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
                
                 $dikembalikan = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) use ($item) {
                     $query->whereNotNull('peminjaman');
@@ -1483,9 +1464,9 @@ class ReportController extends Controller
                     ->sum('jumlah');
                 $stokAkhir[$i] += $dikembalikan;
                 $col++;
-                // $abjad++;
-                // $abjadDikembalikan = $abjad;
+                $abjadDalam++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $dikembalikan);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
 
                 $peralihanTambah = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) {
                     $query->whereNotNull('penyusutan');
@@ -1499,8 +1480,9 @@ class ReportController extends Controller
                     ->sum('jumlah');
                 $stokAkhir[$i] += $peralihanTambah;
                 $col++;
-                // $abjad++;
+                $abjadDalam++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanTambah);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
 
                 $peralihanKurang = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) {
                     $query->whereNotNull('penyusutan');
@@ -1514,8 +1496,9 @@ class ReportController extends Controller
                     ->sum('jumlah');
                 $stokAkhir[$i] += $peralihanKurang;
                 $col++;
-                // $abjad++;
+                $abjadDalam++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanKurang);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
 
                 
                 if ($peralihanTambah == $peralihanKurang) {
@@ -1524,16 +1507,17 @@ class ReportController extends Controller
                     $status = 'CEKLAGI';
                 }
                 $col++;
-                // $abjad++;
-                // dd($abjad . $row);
+                $abjadDalam++;
                 // $objSpreadsheet->getActiveSheet()->setCellValue($abjad.$row, '=IF('.$abjadDipinjam.$row.'='. $abjadDikembalikan.$row. ',"BALANCE","CEKLAGI")');
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $status);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
 
                 $col++;
+                $abjadDalam++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $stokAkhir[$i]);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
                 $row++;
                 $col -= 6;
-                // print_r($col);
             }
             $row--;
             $abjad = 'A';
@@ -1882,7 +1866,7 @@ class ReportController extends Controller
         $gudang             = request()->input('gudang'); //multi
         $produk             = request()->input('produk');
         $pilih_produk       = request()->input('pilih_produk'); //multi
-        $keluhan            = request()->input('keluhan'); //multi
+        // $keluhan            = request()->input('keluhan'); //multi
         $kegiatan           = request()->input('kegiatan'); //multi
         $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
@@ -2895,6 +2879,7 @@ class ReportController extends Controller
         ->leftJoin('material as m', 'm.id', '=', 'material_trans.id_material')
         ->leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
         ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
+        ->where('draft', 0)
         ->where(function($query) use($tgl_awal, $tgl_akhir) {
             $query->whereBetween('ah.created_at', [$tgl_awal, $tgl_akhir]);
             $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
@@ -3140,6 +3125,7 @@ class ReportController extends Controller
                 })
                 ->where('status_produk', 1)
                 ->where('tipe', 1)
+                ->where('draft', 0)
                 ->sum('jumlah');
 
             $materialTransMenambah = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
@@ -3155,6 +3141,7 @@ class ReportController extends Controller
                 })
                 ->where('status_produk', 1)
                 ->where('tipe', 2)
+                ->where('draft', 0)
                 ->sum('jumlah');
 
             $stokAwal = $materialTransMenambah - $materialTransMengurang;
@@ -3173,6 +3160,7 @@ class ReportController extends Controller
                     $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
                 })
                 ->where('id_material', $value->id_material)
+                ->where('draft', 0)
                 ->sum('jumlah');
                 
                 $stokAkhir += $materialTrans;
@@ -3189,6 +3177,7 @@ class ReportController extends Controller
                     $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
                 })
                 ->where('id_material', $value->id_material)
+                ->where('draft', 0)
                 ->sum('jumlah');
 
                 $stokAkhir -= $materialTrans;
