@@ -18,7 +18,8 @@ class HistoryMaterialAreaResource extends Resource
             'id_area'   => $this->id_area,
             'nama'      => $this->nama_area,
             'tipe'      => $this->tipe,
-            'tanggal'   => $this->tanggal,
+            'tanggal'   => [
+                'date' => $this->tanggal],
             'jumlah'    => $this->jumlah,
         ];
     }
