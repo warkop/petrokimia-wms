@@ -15,10 +15,10 @@ class HistoryMaterialAreaResource extends Resource
     public function toArray($request)
     {
         return [
-            'id_area'   => $this->areaStok->id_area,
-            'nama'      => $this->areaStok->area->nama,
+            'id_area'   => $this->id_area,
+            'nama'      => $this->nama_area,
             'tipe'      => $this->tipe,
-            'tanggal'   => $this->areaStok->tanggal,
+            'tanggal'   => $this->tanggal,
             'jumlah'    => $this->jumlah,
         ];
     }

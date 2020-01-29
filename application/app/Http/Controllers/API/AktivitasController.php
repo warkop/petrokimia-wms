@@ -1773,13 +1773,21 @@ class AktivitasController extends Controller
 
     public function historyMaterialArea($id_aktivitas_harian, $id_material)
     {
-        $res = AktivitasHarianArea::with('areaStok')
-        ->where('id_aktivitas_harian', $id_aktivitas_harian)
-        ->whereHas('areaStok', function ($query) use ($id_material) {
-            $query->where('id_material', $id_material);
-        });
+        $res = MaterialTrans::select(
+            'material_trans.id_material',
+            'id_area',
+            'area.nama as nama_area',
+            'material_trans.tipe',
+            'tanggal',
+            'material_trans.jumlah'
+        )
+            // ->leftJoin('area_stok', 'area_stok.id', '=', 'material_trans.id_area_stok')
+            ->leftJoin('area', 'area.id', '=', 'material_trans.id_area')
+            ->where('id_aktivitas_harian', $id_aktivitas_harian)
+            ->where('material_trans.id_material', $id_material)
+            ;
 
-        $aktivitasHarian = AktivitasHarian::where('ref_number', $id_aktivitas_harian)->first();
+        // $aktivitasHarian = AktivitasHarian::where('ref_number', $id_aktivitas_harian)->first();
         // $resApprove = [];
         // if (!empty($aktivitasHarian)) {
         //     $resApprove = AktivitasHarianArea::with('areaStok')
