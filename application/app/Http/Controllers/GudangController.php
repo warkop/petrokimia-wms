@@ -190,7 +190,7 @@ class GudangController extends Controller
         $search = preg_replace($pattern, '', $search);
 
         $res = Aktivitas::
-        where('aktivitas.nama', 'LIKE', "%" . $search . "%")
+        where(DB::raw('LOWER(aktivitas.nama)'), 'LIKE', "%" . strtolower($search) . "%")
         ->get();
 
         if (!empty($res)) {
