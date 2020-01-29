@@ -236,11 +236,11 @@
             <form action="">
                 <div class="modal-body">
                     <div class="row">
-                        <h4>Kelayakan Sebelum</h4>
+                        <h4 class="kt-badge kt-badge--warning kt-badge--inline kt-badge--pill kt-badge--rounded">Kelayakan Sebelum</h4>
                     </div>
                     <div class="kt-scroll" data-scroll="true">
                         <div class="row">
-                            @if (empty($fotoKelayakanBefore))
+                            @if ($fotoKelayakanBefore->isEmpty())
                                 <h4>Tidak ada foto</h4>
                             @endif
                             @foreach ($fotoKelayakanBefore as $item)
@@ -256,14 +256,19 @@
                             @endforeach
                         </div>
                     </div>
+                    <hr>
                     <div class="row">
-                        <h4>Kelayakan Sesudah</h4>
+                        <h4 class="kt-badge kt-badge--danger kt-badge--inline kt-badge--pill kt-badge--rounded">Kelayakan Sesudah</h4>
+                    </div>
+                    <div class="row">
+                    @if ($fotoKelayakanAfter->isEmpty())
+                        <span><strong>Tidak ada foto</strong></span>
+                    @endif
                     </div>
                     <div class="kt-scroll" data-scroll="true">
                         <div class="row mb2">
-                            @if (empty($fotoKelayakanAfter))
-                                <h4>Tidak ada foto</h4>
-                            @endif
+                            {{-- @php dd($fotoKelayakanAfter->isEmpty()) @endphp --}}
+                            
                             @foreach ($fotoKelayakanAfter as $item)
                                 <div class="col-4">
                                     {{-- <label class="boldd">Foto {{$item->foto}}</label> --}}
