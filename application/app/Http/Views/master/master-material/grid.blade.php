@@ -69,7 +69,6 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>ID Material SAP</label>
-                                <input type="hidden" name="id_plant" id="id_plant">
                                 <select class="form-control input-enter m-select2" id="id_material_sap" name="id_material_sap" placeholder="Masukkan ID material SAP" style="width: 100%"></select>
                             </div>
                         </div>

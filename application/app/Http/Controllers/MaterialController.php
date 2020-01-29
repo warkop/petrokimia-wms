@@ -63,7 +63,7 @@ class MaterialController extends Controller
         }
 
         $material->id_material_sap    = $req->input('id_material_sap');
-        $material->id_plant           = $req->input('id_plant');
+        // $material->id_plant           = $req->input('id_plant');
         $material->nama               = $req->input('nama');
         $material->kategori           = $req->input('kategori');
         $material->berat              = $req->input('berat');
@@ -81,7 +81,7 @@ class MaterialController extends Controller
     }
 
     public function getMaterialSap($id_material_sap) {
-        $sap = Sap::where('Material_number', $id_material_sap)->first();
+        $sap = Sap::where('MaterialNumber', $id_material_sap)->first();
 
         $this->responseCode = 200;
         $this->responseMessage = 'Data tersedia.';
@@ -98,7 +98,7 @@ class MaterialController extends Controller
         } else {
             $res = $models::withoutGlobalScopes()->find($id);
 
-            $sap = Sap::where('Material_number', $res->id_material_sap)->where('Plant', $res->id_plant)->first();
+            $sap = Sap::where('MaterialNumber', $res->id_material_sap)->first();
 
             if (!empty($res)) {
                 $this->responseCode = 200;
@@ -131,12 +131,9 @@ class MaterialController extends Controller
             $search = preg_replace($pattern, '', $search);
 
             $res = Sap::select(
-                'Plant',
-                'Material_number'
+                'MaterialNumber'
             )
-            ->where('Plant', 'LIKE', "%".$search."%")
-            ->orWhere('Material_number', 'LIKE', "%".$search."%")
-            ->groupBy(['Plant','Material_number'])
+            ->where('MaterialNumber', 'LIKE', "%".$search."%")
             ->get();
 
             if (!empty($res)) {

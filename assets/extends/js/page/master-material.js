@@ -45,20 +45,17 @@ jQuery(document).ready(function () {
                 /*Tranforms the top-level key of the response object from 'items' to 'results'*/
                 return {
                     results: $.map(response.data, function (item) {
-                        // console.log(response.data);
-
                         return {
-                            text: item.Plant+" - "+item.Material_number,
-                            id: item.Material_number,
-                            id_plant: item.Plant
+                            text: item.MaterialNumber,
+                            id: item.MaterialNumber
+                            // material_desc: item.MaterialDesc
                         }
                     })
                 };
             }
         }
     }).on("select2:select", (q)=>{
-        const id_plant = q.params.data.id_plant;
-        $("#id_plant").val(id_plant);
+        // const material_desc = q.params.data.material_desc;
     });
 });
 
@@ -236,14 +233,11 @@ function edit(id = '') {
                 }
 
                 if (obj.data.sap != null) {
-                    load_selected_id_material(obj.data.sap['Material_number']);
+                    load_selected_id_material(obj.data.sap['MaterialNumber']);
 
-                    if (obj.data.sap['Plant'] != null) {
-                        $('#id_plant').val(obj.data.sap['Plant']);
-                    }
-                    if (obj.data.sap['Material_number'] != null) {
-                        $('#id_material_sap').val(obj.data.sap['Material_number']);
-                        $('#id_material_sap').html(obj.data.sap['Plant'] +" - "+obj.data.sap['Material_number']);
+                    if (obj.data.sap['MaterialNumber'] != null) {
+                        $('#id_material_sap').val(obj.data.sap['MaterialNumber']);
+                        $('#id_material_sap').html(obj.data.sap['MaterialNumber']); 
                     }
                 }
 
@@ -337,7 +331,7 @@ function load_selected_id_material(id_material_sap = '') {
         }).then(function (response) {
             var obj = response;
             /* create the option and append to Select2 */
-            var option = new Option(obj.data.Material_number, obj.data.Material_number, true, true);
+            var option = new Option(obj.data.MaterialNumber, obj.data.MaterialNumber, true, true);
             setJalan.append(option).trigger('change');
 
             /* manually trigger the `select2:select` event */
