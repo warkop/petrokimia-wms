@@ -1298,6 +1298,10 @@ class ReportController extends Controller
             $col++;
             //stok awal
             $row = $row-count($kondisi);
+            $stokAkhir[0] = 0;
+            $stokAkhir[1] = 0;
+            $stokAkhir[2] = 0;
+            $stokAkhir[3] = 0;
             $abjad++;
             for ($i = 0; $i < count($kondisi); $i++) {
                 $masuk      = MaterialTrans::where('id_material', $value->id_material)
@@ -1313,15 +1317,11 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $saldoAwal); //jumlah stok pallet per kondisi
                 $stokAwal[$i] = $saldoAwal;
-                $stokAkhir[$kondisi[$i]] = $saldoAwal;
+                $stokAkhir[$i] = $saldoAwal;
                 $row++;
             }
             
             $col++;
-            $stokAkhir[0] = 0;
-            $stokAkhir[1] = 0;
-            $stokAkhir[2] = 0;
-            $stokAkhir[3] = 0;
 
             $tempPenambahan[0] = 0;
             $tempPenambahan[1] = 0;
@@ -1448,7 +1448,7 @@ class ReportController extends Controller
                     ->where('status_produk', ($i + 2))
                     ->where('id_material', $value->id_material)
                     ->sum('jumlah');
-                $stokAkhir[$i] += $dipinjam;
+                $stokAkhir[$i] -= $dipinjam;
                 $col++;
 
                 $abjadDalam++;
@@ -1494,7 +1494,7 @@ class ReportController extends Controller
                     ->where('status_produk', ($i + 2))
                     ->where('id_material', $value->id_material)
                     ->sum('jumlah');
-                $stokAkhir[$i] += $peralihanKurang;
+                $stokAkhir[$i] -= $peralihanKurang;
                 $col++;
                 $abjadDalam++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanKurang);
@@ -1614,8 +1614,9 @@ class ReportController extends Controller
         }
 
         if ($kegiatan) {
-            $res = $res->where(function ($query) use ($gudang) {
-                foreach ($gudang as $key => $value) {
+            // dd($kegiatan);
+            $res = $res->where(function ($query) use ($kegiatan) {
+                foreach ($kegiatan as $key => $value) {
                     $query->orWhere('id_aktivitas', $value);
                 }
             });
@@ -1666,9 +1667,11 @@ class ReportController extends Controller
 
         $textKegiatan = 'SEMUA KEGIATAN';
         if ($kegiatan) {
-            $textKegiatan = 'KEGIATAN '.$kegiatan[0];
-            for ($i=1; $i<count($textKegiatan); $i++) {
-                $textKegiatan .= ', '.$kegiatan[$i];
+            $aktivitas = Aktivitas::find($kegiatan[0]);
+            $textKegiatan = 'KEGIATAN '.strtoupper($aktivitas->nama);
+            for ($i=1; $i<count($kegiatan); $i++) {
+                $aktivitas = Aktivitas::find($kegiatan[$i]);
+                $textKegiatan .= ', '. strtoupper($aktivitas->nama);
             }
         }
         $row++;
@@ -1679,9 +1682,9 @@ class ReportController extends Controller
 
         $textPeriode = 'SEMUA SHIFT';
         if ($shift) {
-            $textPeriode .= 'Shift ' . $shift[0];
+            $textPeriode = 'SHIFT ' . $shift[0];
             for ($i=1; $i<count($shift);$i++) {
-                $textPeriode .= 'Shift '.$shift[$i];
+                $textPeriode .= 'SHIFT '.$shift[$i];
             }
         }
 
@@ -2153,7 +2156,7 @@ class ReportController extends Controller
         $material             = request()->input('material');
         $pilih_material       = request()->input('pilih_material'); //multi
         $tgl_awal           = request()->input('tgl_awal') == null? '' : date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir          = request()->input('tgl_awal') == null ? '' : date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
+        $tgl_akhir          = request()->input('tgl_akhir') == null ? '' : date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
 
         // $res = GudangStok::distinct()->select(
         //     'id_material',
@@ -2184,16 +2187,16 @@ class ReportController extends Controller
 
         $res = MaterialTrans::with('aktivitasHarian', 'aktivitasHarian.gudang', 'aktivitasHarian.gudangTujuan')
         ->with('material')
-        ->whereNotNull('id_aktivitas_harian')
+        ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+        // ->whereNotNull('id_aktivitas_harian')
         ->whereHas('material', function($query) {
             $query->where('kategori', 1);
         })
         ->whereHas('aktivitasHarian', function($query) {
             $query->where('draft', 0);
         })
-        
-        ->whereBetween('tanggal', [date('Y-m-d', strtotime($tgl_awal)), date('Y-m-d', strtotime($tgl_akhir))])
-        ->orderBy('id', 'asc')
+        ->whereBetween('aktivitas_harian.created_at', [$tgl_awal, $tgl_akhir])
+        ->orderBy('material_trans.id', 'asc')
         ;
 
         // $resGudang = Gudang::internal()->get();
@@ -2439,7 +2442,7 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->jumlah);
 
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->tanggal)));
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->created_at)));
 
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, (!empty($value->aktivitasHarian->gudang))?$value->aktivitasHarian->gudang->nama:'');
@@ -2553,7 +2556,11 @@ class ReportController extends Controller
         //     });
         // }
 
-        $res = MaterialTrans::whereBetween('created_at', [date('Y-m-d', strtotime($tgl_awal)), date('Y-m-d', strtotime($tgl_akhir))])->with('areaStok', 'areaStok.area');
+        $res = MaterialTrans::whereBetween('created_at', [$tgl_awal, $tgl_akhir])
+        ->with('areaStok', 'areaStok.area')
+        ->whereHas('areaStok', function ($query){
+            $query->where('status', 1);
+        });
 
         $resProduk = new Material;
         if ($produk == 2) {
@@ -2735,6 +2742,7 @@ class ReportController extends Controller
         $total_kesamping = 0;
         $j=0;
         foreach ($area as $value) {
+            // dd($value);
             $no++;
             $col = 1;
             $row++;
@@ -2753,16 +2761,25 @@ class ReportController extends Controller
             $total_kapasitas += $value->kapasitas;
             $i = 0;
             $total_kesamping = 0;
-            // dd($produk);
             foreach ($produk as $key) {
-                // dd($key->id);
-                $materialTrans = MaterialTrans::whereBetween('created_at', [date('Y-m-d', strtotime($tgl_awal)), date('Y-m-d', strtotime($tgl_akhir))])
+                $masuk      = MaterialTrans::where('id_material', $key->id)
+                    ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
+                    ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)))->where('tipe', 2)->sum('jumlah');
+
+                $keluar     = MaterialTrans::where('id_material', $key->id)
+                    ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
+                    ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)))->where('tipe', 1)->sum('jumlah');
+
+                $jumlah  = $masuk - $keluar;
+                // dd($keluar);
+                $materialTrans = MaterialTrans::whereBetween('created_at', [$tgl_awal,$tgl_akhir])
                 ->where('id_material', $key->id)
+                ->where('status_produk', 1)
                 ->whereHas('areaStok.area', function($query) use($value){
                     $query->where('id_area', $value->id);
                 })
                 ->get();
-                $jumlah = 0;
+                // $jumlah = 0;
                 foreach ($materialTrans as $key2) {
                     if ($key2->tipe == 1) {
                         $jumlah = $jumlah - $key2->jumlah;
