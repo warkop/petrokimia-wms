@@ -169,11 +169,21 @@ class PenerimaanGpController extends Controller
         $data['id_aktivitas_harian'] = $aktivitasHarian->id;
         $data['aktivitasFoto'] = AktivitasFoto::withoutGlobalScopes()->where('id_aktivitas_harian', $aktivitasHarian->id)->get();
 
-        $produk = MaterialTrans::with('material')
+        $produk = MaterialTrans::select(
+            'material_trans.id_material',
+            'material.nama as nama_material',
+            'area_stok.id_area',
+            'material_trans.tipe',
+            DB::raw('SUM(material_trans.jumlah) as jumlah')
+        )
+        ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
+        ->leftJoin('area_stok', 'area_stok.id', '=', 'material_trans.id_area_stok')
         ->where('id_aktivitas_harian', $aktivitasHarian->id)
         ->whereNotNull('status_produk')
+        ->groupBy('material_trans.id_material', 'material.nama', 'area_stok.id_area', 'material_trans.tipe')
         ->get();
-        $data['produk'] = MaterialTransResource::collection($produk);
+        $data['produk'] = $produk;
+        // dd($data['produk']);
         $pallet = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_pallet')->get();
         $data['pallet'] = $pallet;
         $data['id_gudang'] = $aktivitasHarian->id_gudang;
@@ -209,10 +219,18 @@ class PenerimaanGpController extends Controller
         // ->orderBy('nama')
         // ->get();
 
-        $areaStok = MaterialTrans::with('areaStok.area')
-            ->where('id_aktivitas_harian', $id_aktivitas_harian)
-            ->where('id_material', $id_material)
-            ->get();
+        $areaStok = MaterialTrans::select(
+            'material_trans.id_material',
+            'area_stok.id_area',
+            'area.nama as nama_area',
+            'area_stok.tanggal',
+            'material_trans.jumlah'
+        )
+        ->leftJoin('area_stok', 'area_stok.id', '=', 'material_trans.id_area_stok')
+        ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
+        ->where('id_aktivitas_harian', $id_aktivitas_harian)
+        ->where('material_trans.id_material', $id_material)
+        ->get();
         return response()->json($areaStok, 200);
     }
 }

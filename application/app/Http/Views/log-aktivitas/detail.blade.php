@@ -105,7 +105,7 @@
                     </div>
                 </div>
                 <div class="row listterplas mt2">
-                    <label class="boldd mb1">List Palet</label>
+                    <label class="boldd mb1">List Pallet</label>
                     <div class="kt-widget4 col-12 kel">
                        @foreach ($pallet as $item)
                             <div class="kt-widget4__item border-bottom-dash">
