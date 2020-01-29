@@ -177,18 +177,9 @@ class PenerimaanGpController extends Controller
         $pallet = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_pallet')->get();
         $data['pallet'] = $pallet;
         $data['id_gudang'] = $aktivitasHarian->id_gudang;
-        $kelayakan = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->get()->groupBy('jenis');
-        if (array_key_exists(0, $kelayakan)) {
-            $data['fotoKelayakanBefore'] = $kelayakan[0];
-        } else {
-            $data['fotoKelayakanBefore'] = null;
-        }
+        $data['fotoKelayakanBefore'] = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->where('jenis', 1)->get();
+        $data['fotoKelayakanAfter'] = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->where('jenis', 2)->get();
 
-        if (array_key_exists(1, $kelayakan)) {
-            $data['fotoKelayakanAfter'] = $kelayakan[1];
-        } else {
-            $data['fotoKelayakanAfter'] = null;
-        }
         $data['list_produk'] = Material::produk()->get();
         return view('penerimaan-gp.detail', $data);
     }

@@ -45,7 +45,7 @@ const loadTable = function () {
             }
         ],
         aaSorting: [
-            [1, "asc"]
+            [1, "desc"]
         ],
         lengthMenu: [10, 25, 50, 75, 100],
         pageLength: 10,

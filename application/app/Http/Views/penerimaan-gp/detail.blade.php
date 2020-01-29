@@ -68,9 +68,14 @@
                     </div>
                     <div class="row mb1">
                         <div class="col-12">
-                            <label>Gambar</label><br>
-                            <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_2"> Lihat
-                                Gambar</a>
+                            <label>Foto Truk</label><br>
+                            <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_2"> Lihat Gambar</a>
+                        </div>
+                    </div>
+                    <div class="row mb1">
+                        <div class="col-12">
+                            <label>Foto Kelayakan</label><br>
+                            <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_kelayakan"> Lihat Gambar</a>
                         </div>
                     </div>
                 </div>
@@ -230,11 +235,17 @@
             </div>
             <form action="">
                 <div class="modal-body">
-                    <div class="kt-scroll" data-scroll="true" data-height="400">
-                        <div class="row mb2">
-                            {{-- @foreach ($fotoKelayakanBefore as $item)
+                    <div class="row">
+                        <h4>Kelayakan Sebelum</h4>
+                    </div>
+                    <div class="kt-scroll" data-scroll="true">
+                        <div class="row">
+                            @if (empty($fotoKelayakanBefore))
+                                <h4>Tidak ada foto</h4>
+                            @endif
+                            @foreach ($fotoKelayakanBefore as $item)
                                 <div class="col-4">
-                                    <label class="boldd">Foto {{$item->foto}}</label>
+                                    {{-- <label class="boldd">Foto {{$item->foto}}</label> --}}
                                     <a class="fancybox" rel="ligthbox"
                                         href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
                                         <img class="img-fluid"
@@ -242,12 +253,20 @@
                                             srcset="">
                                     </a>
                                 </div>
-                            @endforeach --}}
+                            @endforeach
                         </div>
+                    </div>
+                    <div class="row">
+                        <h4>Kelayakan Sesudah</h4>
+                    </div>
+                    <div class="kt-scroll" data-scroll="true">
                         <div class="row mb2">
-                            {{-- @foreach ($fotoKelayakanAfter as $item)
+                            @if (empty($fotoKelayakanAfter))
+                                <h4>Tidak ada foto</h4>
+                            @endif
+                            @foreach ($fotoKelayakanAfter as $item)
                                 <div class="col-4">
-                                    <label class="boldd">Foto {{$item->foto}}</label>
+                                    {{-- <label class="boldd">Foto {{$item->foto}}</label> --}}
                                     <a class="fancybox" rel="ligthbox"
                                         href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
                                         <img class="img-fluid"
@@ -255,7 +274,7 @@
                                             srcset="">
                                     </a>
                                 </div>
-                            @endforeach --}}
+                            @endforeach
                         </div>
                     </div>
                 </div>
