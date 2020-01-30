@@ -14,29 +14,32 @@
 <link rel="stylesheet" href="{{aset_extends('css/global.css')}}">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
-
-<div class="row" style="padding: 2em 2em 0 2em;">
-    <div class=" offset-7 col-3">
-        <a href="{{url('main')}}" class="btn btn-success btn-pill pull-right btn-md">
-            <span>
-                <i class="fa fa-arrow-left"></i>
-                <span class="boldd">
-                    Kembali ke Halaman Depan
-                </span>
-            </span>
-        </a>
+<div class="row row-no-padding row-col-separator-xl" style="background:#fff">
+    <div class="col-md-12 col-lg-6 col-xl-6 col-sm-6 col-xs-6 pointer nav---gation" onclick="location.href='{{url('main')}}';">
+        <div class="kt-widget24">
+            <div class="text-center">
+                <div class="text-center">
+                    <a href="{{url('main')}}">
+                        <h4> <span><i class=""></i></span> Halaman Depan</h4>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class=" col-2">
-        <a href="{{url('layout')}}" class="btn btn-wms btn-pill pull-right btn-md">
-            <span>
-                <i class="fa fa-arrow-left"></i>
-                <span class="boldd">
-                    Kembali ke Menu
-                </span>
-            </span>
-        </a>
+    <div class="col-md-12 col-lg-6 col-xl-6 col-sm-6 col-xs-6 pointer nav---gation" onclick="location.href='{{url('layout')}}';" style="z-index:10">
+        <div class="kt-widget24">
+            <div class="text-center">
+                <div class="text-center">
+                    <a href="{{url('layout')}}">
+                        <h4><span><i class=""></i></span>Menu Utama</h4>
+                    </a>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
+
 
 {{-- <div class="kt-content  kt-grid__item kt-grid__item--fluid" style="margin-bottom: -3vh">
     <div class="row">
@@ -65,23 +68,12 @@
 <div class="kt-content  kt-grid__item kt-grid__item--fluid">
     <!--Begin::Dashboard 6-->
     <div class="row">
-        <div class="col-9">
+        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
             <div class="kt-portlet">
                 <div class="kt-portlet__head no-border-bottom">
                     <div class="kt-portlet__head-title">
                         <h5 class="kt-portlet__head-text title_sub pt-4">
-                            <div class="row">
-                                <label class="col-form-label">Periode 1</label>
-                                <div class="col-4">
-                                    <input class="form-control" id="kt_datepicker_1" readonly placeholder="Pilih periode mulai"
-                                        type="text" />
-                                </div>
-                                <label class="offset-1 col-form-label">Periode 2</label>
-                                <div class="col-4">
-                                    <input class="form-control" id="kt_datepicker_2" readonly
-                                        placeholder="Pilih periode selesai" type="text" />
-                                </div>
-                            </div><br>
+                            <br>
                             Dashboard
                             </h4>
                             <p class="sub">
@@ -96,13 +88,25 @@
                     </div>
                 </div>
                 <div class="kt-portlet__body">
+                    <div class="container row" style="margin-bottom:3rem">
+                        <label class="col-form-label col-2">Periode 1</label>
+                        <div class="col-3">
+                            <input class="form-control" id="kt_datepicker_1" readonly placeholder="Pilih periode mulai"
+                                type="text" />
+                        </div>
+                        <label class="offset-1 col-form-label col-2">Periode 2</label>
+                        <div class="col-3">
+                            <input class="form-control" id="kt_datepicker_2" readonly
+                                placeholder="Pilih periode selesai" type="text" />
+                        </div>
+                    </div>
                     <canvas id="line-chart" width="800" height="510"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-3">
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
             <div class="row">
-                <div class="col-12">
+                <div class="col-lg-12 col-md-12 col-sm-4 col-xs-4">
                     <div class="kt-portlet">
                         <div class="kt-portlet__head no-border-bottom">
                             <div class="kt-portlet__head-title">
@@ -121,7 +125,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12">
+                <div class="col-lg-12 col-md-12 col-sm-4 col-xs-4">
                     <div class="kt-portlet">
                         <div class="kt-portlet__head no-border-bottom">
                             <div class="kt-portlet__head-title">
@@ -140,7 +144,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12">
+                <div class="col-lg-12 col-md-12 col-sm-4 col-xs-4">
                     <div class="kt-portlet">
                         <div class="kt-portlet__head no-border-bottom">
                             <div class="kt-portlet__head-title">
@@ -166,7 +170,7 @@
 
 <div class=" kt-content  kt-grid__item kt-grid__item--fluid">
     <div class="row">
-        <div class="col-6">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <div class="kt-grid__item kt-grid__item--fluid">
                 <div class="kt-portlet">
                     <div class="kt-portlet__head no-border-bottom">
@@ -182,7 +186,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <div class="kt-grid__item kt-grid__item--fluid">
                 <div class="kt-portlet">
                     <div class="kt-portlet__head no-border-bottom">
@@ -266,6 +270,9 @@
         ]
         },
         options: {
+            legend: {
+                display: false
+            },
             title: {
                 display: true,
                 text: 'Ton per Shift'
