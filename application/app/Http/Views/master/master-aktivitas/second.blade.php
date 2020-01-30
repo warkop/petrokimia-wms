@@ -77,6 +77,7 @@
                                         <option value="">Pilih jenis</option>
                                         <option value="1">Mengurangi</option>
                                         <option value="2">Menambah</option>
+                                        <option value="3">Menambah & Mengurangi</option>
                                     </select>
                                 </div>
                             </div>
