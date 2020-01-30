@@ -188,9 +188,15 @@ class ApiAktivitasRequest extends FormRequest
                             } else {
                                 $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
                                     'min:0',
-                                    'max:' . $area->kapasitas,
                                     'numeric'
                                 ];
+                                if ($area->kapasitas != null) {
+                                    $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
+                                        'min:0',
+                                        'max:' . $area->kapasitas,
+                                        'numeric'
+                                    ];
+                                }
                             }
                         } else {
                             $area = Area::find($list_area[$j]['id_area_stok']);
