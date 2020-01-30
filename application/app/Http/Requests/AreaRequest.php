@@ -38,7 +38,7 @@ class AreaRequest extends FormRequest
                     $query->where('id_gudang', '=', request()->id_gudang);
                 })->ignore(request()->id)
             ],
-            'kapasitas'         => 'numeric|between:0,9999.9999',
+            'kapasitas'         => 'nullable|numeric|between:0,9999.9999',
             'tipe'              => 'required',
         ];
 
