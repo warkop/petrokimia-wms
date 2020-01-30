@@ -15,7 +15,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
 <div class="row row-no-padding row-col-separator-xl" style="background:#fff">
-    <div class="col-md-12 col-lg-6 col-xl-6 col-sm-12 col-xs-12 pointer nav---gation" onclick="location.href='{{url('main')}}';">
+    <div class="col-md-12 col-lg-6 col-xl-6 col-sm-6 col-xs-6 pointer nav---gation" onclick="location.href='{{url('main')}}';">
         <div class="kt-widget24">
             <div class="text-center">
                 <div class="text-center">
@@ -26,7 +26,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-12 col-lg-6 col-xl-6 col-sm-12 col-xs-12 pointer nav---gation" onclick="location.href='{{url('layout')}}';" style="z-index:10">
+    <div class="col-md-12 col-lg-6 col-xl-6 col-sm-6 col-xs-6 pointer nav---gation" onclick="location.href='{{url('layout')}}';" style="z-index:10">
         <div class="kt-widget24">
             <div class="text-center">
                 <div class="text-center">
@@ -170,7 +170,7 @@
 
 <div class=" kt-content  kt-grid__item kt-grid__item--fluid">
     <div class="row">
-        <div class="col-6">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <div class="kt-grid__item kt-grid__item--fluid">
                 <div class="kt-portlet">
                     <div class="kt-portlet__head no-border-bottom">
@@ -186,7 +186,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <div class="kt-grid__item kt-grid__item--fluid">
                 <div class="kt-portlet">
                     <div class="kt-portlet__head no-border-bottom">
