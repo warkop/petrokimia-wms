@@ -56,7 +56,12 @@ class MaterialAdjusmentRequest extends FormRequest
                     $areaStok = AreaStok::where('id_area', $area->id)
                     ->where('status', 1)
                     ->sum('jumlah');
-                    $rules['produk_jumlah.'.$i] = 'numeric|max:'. abs((float)((float)$area->kapasitas - (float)$areaStok));
+
+                    $maximum = (float) $areaStok;
+                    if ($area->kapasitas != null) {
+                        $maximum = abs((float) ((float) $area->kapasitas - (float) $areaStok));
+                    }
+                    $rules['produk_jumlah.'.$i] = 'numeric|max:'.$maximum;
                 }
             }
         }
