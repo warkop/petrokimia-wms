@@ -2421,6 +2421,7 @@ class ReportController extends Controller
         $totalStok = 0;
         $totalRusak = 0;
         $totalNormal = 0;
+        $jumlahStok = 0;
         foreach ($res as $value) {
             $no++;
             $col = 1;
@@ -2449,12 +2450,22 @@ class ReportController extends Controller
 
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, (!empty($value->aktivitasHarian->gudangTujuan))?$value->aktivitasHarian->gudangTujuan->nama:'');
+            
+            // $tempRes =  DB::table('material_trans')->where('id_material', $value->material->id)
+            //     ->where('created_at', '<', $value->created_at);
+
+            // $penambahan = $tempRes->where('tipe', 2)->sum('jumlah');
+            // $pengurangan = $tempRes->where('tipe', 1)->sum('jumlah');
+
+            // $jumlahStok = $penambahan+$pengurangan;
 
             if ($value->tipe == 1) {
                 $totalStok -= $value->jumlah;
             } else {
                 $totalStok += $value->jumlah;
             }
+
+            // $jumlahStok -= $totalStok;
 
             if ($value->status_produk == 2) {
                 if ($value->tipe == 1) {
@@ -2762,16 +2773,24 @@ class ReportController extends Controller
             $i = 0;
             $total_kesamping = 0;
             foreach ($produk as $key) {
+                // $materialTrans = MaterialTrans::where(['id_material' => $key->id, 'tipe' => 1])->sum('jumlah');
+
                 $masuk      = MaterialTrans::where('id_material', $key->id)
                     ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
+                    ->whereHas('areaStok.area', function ($query) use ($value) {
+                        $query->where('id_area', $value->id);
+                    })
                     ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)))->where('tipe', 2)->sum('jumlah');
 
                 $keluar     = MaterialTrans::where('id_material', $key->id)
                     ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
+                    ->whereHas('areaStok.area', function ($query) use ($value) {
+                        $query->where('id_area', $value->id);
+                    })
                     ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)))->where('tipe', 1)->sum('jumlah');
 
                 $jumlah  = $masuk - $keluar;
-                // dd($keluar);
+                // dd($masuk);
                 $materialTrans = MaterialTrans::whereBetween('created_at', [$tgl_awal,$tgl_akhir])
                 ->where('id_material', $key->id)
                 ->where('status_produk', 1)
