@@ -1304,14 +1304,45 @@ class ReportController extends Controller
             $stokAkhir[3] = 0;
             $abjad++;
             for ($i = 0; $i < count($kondisi); $i++) {
-                $masuk      = MaterialTrans::where('id_material', $value->id_material)
+                $masuk      = MaterialTrans::
+                leftJoin('aktivitas_harian', function($join) use ($tgl_awal){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0)
+                    ->where('aktivitas_harian.created_at', '<', date('Y-m-d', strtotime($tgl_awal)))
+                    ;
+                })
+                ->leftJoin('material_adjustment', function ($join) use ($tgl_awal){
+                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                        ->where('material_adjustment.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                })
+                ->leftJoin('gudang_stok', function ($join) {
+                    $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+                })
+                ->where('material_trans.id_material', $value->id_material)
+                ->where('tipe', 2)
+                ->where('gudang_stok.id_gudang', $value->id_gudang)
                 ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
-                ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)))->where('tipe', 2)->sum('jumlah');
+                ->sum('material_trans.jumlah');
 
-                $keluar     = MaterialTrans::where('id_material', $value->id_material)
+                $keluar     = MaterialTrans::
+                leftJoin('aktivitas_harian', function($join) use($tgl_awal){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0)
+                        ->where('aktivitas_harian.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                })
+                ->leftJoin('material_adjustment', function ($join) use ($tgl_awal){
+                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                        ->where('material_adjustment.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                })
+                ->leftJoin('gudang_stok', function ($join){
+                    $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+                })
+                ->where('material_trans.id_material', $value->id_material)
+                ->where('tipe', 1)
+                ->where('gudang_stok.id_gudang', $value->id_gudang)
                 ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
-                ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)))->where('tipe', 1)->sum('jumlah');
-
+                ->sum('material_trans.jumlah');
+                // dd(($i+2));
                 $saldoAwal  = $masuk - $keluar;
                 
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
@@ -2451,13 +2482,15 @@ class ReportController extends Controller
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, (!empty($value->aktivitasHarian->gudangTujuan))?$value->aktivitasHarian->gudangTujuan->nama:'');
             
-            // $tempRes =  DB::table('material_trans')->where('id_material', $value->material->id)
-            //     ->where('created_at', '<', $value->created_at);
+            $tempRes =  DB::table('material_trans')
+            ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            ->where('id_material', $value->material->id)
+            ->where('aktivitas_harian.created_at', '<', $value->created_at);
 
-            // $penambahan = $tempRes->where('tipe', 2)->sum('jumlah');
-            // $pengurangan = $tempRes->where('tipe', 1)->sum('jumlah');
+            $penambahan = $tempRes->where('tipe', 2)->sum('jumlah');
+            $pengurangan = $tempRes->where('tipe', 1)->sum('jumlah');
 
-            // $jumlahStok = $penambahan+$pengurangan;
+            $jumlahStok = $penambahan+$pengurangan;
 
             if ($value->tipe == 1) {
                 $totalStok -= $value->jumlah;
@@ -2465,7 +2498,7 @@ class ReportController extends Controller
                 $totalStok += $value->jumlah;
             }
 
-            // $jumlahStok -= $totalStok;
+            $totalStok += $jumlahStok;
 
             if ($value->status_produk == 2) {
                 if ($value->tipe == 1) {
@@ -2780,14 +2813,24 @@ class ReportController extends Controller
                     ->whereHas('areaStok.area', function ($query) use ($value) {
                         $query->where('id_area', $value->id);
                     })
-                    ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)))->where('tipe', 2)->sum('jumlah');
+                    ->whereHas('aktivitasHarian', function ($query){
+                        $query->where('draft', 0);
+                    })
+                    ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)))
+                    ->where('tipe', 2)
+                    ->sum('jumlah');
 
                 $keluar     = MaterialTrans::where('id_material', $key->id)
                     ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
                     ->whereHas('areaStok.area', function ($query) use ($value) {
                         $query->where('id_area', $value->id);
                     })
-                    ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)))->where('tipe', 1)->sum('jumlah');
+                    ->whereHas('aktivitasHarian', function ($query) {
+                        $query->where('draft', 0);
+                    })
+                    ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)))
+                    ->where('tipe', 1)
+                    ->sum('jumlah');
 
                 $jumlah  = $masuk - $keluar;
                 // dd($masuk);
