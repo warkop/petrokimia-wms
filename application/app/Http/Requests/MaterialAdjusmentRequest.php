@@ -34,10 +34,10 @@ class MaterialAdjusmentRequest extends FormRequest
             'produk.*'          => 'required',
             'area.*'            => 'required',
             'tanggal_produksi.*'=> 'required',
-            'pallet.*'          => 'required',
             'action_produk.*'   => 'required|numeric|between:1,2',
-            'action_pallet.*'   => 'required|numeric|between:1,2',
             'produk_jumlah.*'   => 'numeric',
+            'pallet.*'          => 'required',
+            'action_pallet.*'   => 'required|numeric|between:1,2',
             'pallet_jumlah.*'   => 'numeric',
             'tanggal'           => 'required',
         ];

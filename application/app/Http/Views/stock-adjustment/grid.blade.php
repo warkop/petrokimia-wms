@@ -78,7 +78,7 @@ lines {
 <!--begin::Modal-->
 <div class="modal fade btn_close_modal" id="modal_form" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog" role="document" style="max-width: 1000px;">
+    <div class="modal-dialog" role="document" style="max-width: 1200px;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Tambah Data</h5>

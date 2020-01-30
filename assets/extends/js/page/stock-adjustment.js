@@ -72,6 +72,7 @@ const load_table = function() {
     bDestroy: true,
     processing: true,
     serverSide: true,
+    responsive:true,
     ajax: {
       url: ajaxSource + "/stock-adjustment/" + id_gudang,
       method: "POST",
@@ -192,12 +193,12 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
                         <select class="form-control m-select2 pilih_produk" id="produk-${rows}" name="produk[]" onchange="checkProduk(this)" aria-placeholder="Pilih Produk" style="width: 100%;">
                         </select>
                     </td>
-                    <td>
-                        <select class="form-control m-select2 pilih_area" id="area-${rows}" name="area[]" aria-placeholder="Pilih Area" style="width: 100%;">
+                    <td id="tempat-area-${rows}">
+                        <select class="form-control m-select2 pilih_area pilih_produk" id="area-${rows}" name="area[]" aria-placeholder="Pilih Area" style="width: 100%;">
                         </select>
                     </td>
                     <td>
-                        <input class="form-control pilih_tanggal" id="tanggal-${rows}" name="tanggal_produksi[]" aria-placeholder="Pilih Tanggal Produksi" style="width: 100%;">
+                        <input class="form-control pilih_tanggal pilih_produk" id="tanggal-${rows}" name="tanggal_produksi[]" aria-placeholder="Pilih Tanggal Produksi" style="width: 100%;">
                     </td>
                     <td>
                         <select class="form-control" name="action_produk[]" id="produk-status-${rows}" style="width: 100%;">
@@ -209,16 +210,20 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
                         <input type="text" name="produk_jumlah[]" id="produk-jumlah-${rows}" class="form-control" placeholder="Masukkan jumlah">
                     </td>
                     <td>
-                        <input type="text" name="produk_alasan[]" id="produk-alasan-${rows}" class="form-control" placeholder="Masukkan alasan">
+                        <textarea name="produk_alasan[]" id="produk-alasan-${rows}" class="form-control" placeholder="Masukkan alasan"></textarea>
                     </td>
                     <td>
                         <button class="btn btn-danger btn-elevate btn-icon btn-sm" onclick="hapusProduk(${rows})"><i class="la la-trash"></i></button>
                     </td>
                 </tr>`;
   $("#table_produk tbody").append(html);
-  $(".pilih_produk").select2({
+  $(`#produk-${rows}`).select2({
     placeholder: "Pilih Produk",
     dropdownParent: $(`#tempat-produk-${rows}`)
+  });
+  $(`#area-${rows}`).select2({
+    placeholder: "Pilih Area",
+    dropdownParent: $(`#tempat-area-${rows}`)
   });
 
   $(`#tanggal-${rows}`).datepicker({
