@@ -1578,6 +1578,10 @@ class AktivitasController extends Controller
 
     public function history(Request $req) //memuat history
     {
+        // $nama = $req->nama;
+        $shift = $req->input('shift');
+        // $tanggal = date('Y-m-d', strtotime($req->tanggal));
+
         $gudang = $this->getCheckerGudang();
         $search = $req->input('search');
         $my_auth = $req->get('my_auth');
@@ -1594,20 +1598,45 @@ class AktivitasController extends Controller
             DB::raw('CASE WHEN approve IS NOT NULL OR internal_gudang IS NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
             DB::raw('CASE WHEN dikembalikan IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_peminjaman'),
             'aktivitas_harian.created_at',
-            'aktivitas_harian.created_by'
+            'aktivitas_harian.created_by',
+            'tenaga_kerja_non_organik.nama as nama_checker',
+            'karu.nama as nama_karu',
+            'shift_kerja.nama as nama_shift',
+            'aktivitas_harian.id_shift'
         )
             ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
             ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
+            ->leftJoin('users', 'users.id', '=', 'aktivitas_harian.updated_by')
+            ->leftJoin('tenaga_kerja_non_organik', 'tenaga_kerja_non_organik.id', '=', 'users.id_tkbm')
+            ->leftJoin('karu', 'karu.id', '=', 'users.id_karu')
+            ->leftJoin('shift_kerja', 'shift_kerja.id', '=', 'aktivitas_harian.id_shift')
             ->where(function ($where) use ($gudang) {
-                $where->where('id_gudang', $gudang->id);
+                $where->where('aktivitas_harian.id_gudang', $gudang->id);
                 $where->orWhere('id_gudang_tujuan', $gudang->id);
             })
             ->whereNull('ref_number')
             ->where(function ($where) use ($search) {
                 $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw('LOWER(tenaga_kerja_non_organik.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                // $where->orWhere('aktivitas_harian.updated_at', date('Y-m-d', strtotime($search)));
             })
-            ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'desc')
+            ;
+            
+        if ($shift != null) {
+            $res = $res->where('aktivitas_harian.id_shift', $shift);
+            // foreach ($shift as $key => $value) {
+            //     $res = $res->where('aktivitas_harian.id_shift', $value);
+            // }
+        }
+
+        // if (!empty($shift)) {
+        //     $res = $res->where('aktivitas_harian.id_shift', $shift[0]);
+        //     foreach ($shift as $key => $value) {
+        //         $res = $res->where('aktivitas_harian.id_shift', $value);
+        //     }
+        // }
 
         $obj =  AktivitasResource::collection($res->paginate(10))->additional([
             'status' => [
@@ -1639,7 +1668,7 @@ class AktivitasController extends Controller
             'sistro',
             'internal_gudang',
             'ttd',
-            'id_gudang',
+            'aktivitas_harian.id_gudang',
             'id_alat_berat',
             'approve',
             'id_gudang_tujuan',
@@ -1648,17 +1677,17 @@ class AktivitasController extends Controller
             'id_yayasan',
             'aktivitas.peminjaman',
             'aktivitas_harian.dikembalikan',
-            'id_tkbm',
+            'users.id_tkbm',
             'alasan',
             'ttd',
             'draft',
-            DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
+            DB::raw('(SELECT nama gudang FROM gudang WHERE id = aktivitas_harian.id_gudang)
                     AS text_gudang'),
             DB::raw('(SELECT nama FROM alat_berat_kat WHERE id = id_kategori)
                     AS kategori'),
             DB::raw('(SELECT nama FROM yayasan WHERE id = id_yayasan)
                     AS text_yayasan'),
-            DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang)
+            DB::raw('(SELECT nama gudang FROM gudang WHERE id = aktivitas_harian.id_gudang)
                     AS text_gudang_asal'),
             'id_gudang_tujuan',
             DB::raw('(SELECT nama gudang FROM gudang WHERE id = id_gudang_tujuan)
@@ -1683,10 +1712,15 @@ class AktivitasController extends Controller
             DB::raw('CASE WHEN dikembalikan IS NOT NULL THEN \'Done\' ELSE \'Progress\' END AS text_peminjaman'),
             DB::raw('CASE WHEN approve IS NOT NULL OR internal_gudang IS NULL THEN \'Done\' ELSE \'Progress\' END AS text_status'),
             'aktivitas_harian.created_at',
-            'aktivitas_harian.created_by' 
+            'aktivitas_harian.created_by',
+            'tenaga_kerja_non_organik.nama as nama_checker',
+            'karu.nama as nama_karu'
         )
         ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
         ->leftJoin('alat_berat', 'aktivitas_harian.id_alat_berat', '=', 'alat_berat.id')
+        ->leftJoin('users', 'users.id', '=', 'aktivitas_harian.updated_by')
+        ->leftJoin('tenaga_kerja_non_organik', 'tenaga_kerja_non_organik.id', '=', 'users.id_tkbm')
+        ->leftJoin('karu', 'karu.id', '=', 'users.id_karu')
         ->where('aktivitas_harian.id', $id)
         ->orderBy('aktivitas_harian.id', 'desc')
         ->get();
