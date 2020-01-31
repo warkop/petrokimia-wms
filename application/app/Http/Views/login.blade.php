@@ -104,12 +104,17 @@
             toggle();
         }
 
+        $(function() {
+            toggle();
+        });
+
         function toggle() {
             if (window.innerWidth < 800) {
-                document.getElementById('img-lefty').style.display = 'none';      
+                $('#img-lefty').hide();
+                // document.getElementById('img-lefty').style.display = 'none';      
             }
             else {
-                document.getElementById('img-lefty').style.display = 'block';         
+                $('#img-lefty').show();         
             }    
         }
         var KTAppOptions = {
