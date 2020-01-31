@@ -38,12 +38,12 @@
     <div class="body">
         <div class="login">
             <div class="row">
-                <div class="col-lg-5 left">
-                    <img class="logo" src="{{ aset_extends('img/logo/logo_petro1.png')}}" alt="" srcset="">            
+                <div id="lefty" class="col-lg-5 left ">
+                    <img id="img-lefty" class="logo" src="{{ aset_extends('img/logo/logo_petro1.png')}}" alt="" srcset="">            
                     <img class="full" src="{{ aset_extends('img/illustration/login-wms.png')}}" alt="" srcset="">            
                 </div>
                 
-                <div class="col-lg-7 right">
+                <div id="rightty" class="col-lg-7 right" style="background: white;z-index: 99;">
                     <div class="login-wrapper">
                         <div class="top-logo">
                             <span>
@@ -100,6 +100,23 @@
         </div>
     </div>
     <script>
+        window.onresize = function() {
+            toggle();
+        }
+
+        $(function() {
+            toggle();
+        });
+
+        function toggle() {
+            if (window.innerWidth < 800) {
+                $('#img-lefty').hide();
+                // document.getElementById('img-lefty').style.display = 'none';      
+            }
+            else {
+                $('#img-lefty').show();         
+            }    
+        }
         var KTAppOptions = {
 				"colors": {
 					"state": {

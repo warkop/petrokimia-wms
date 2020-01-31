@@ -166,3 +166,7 @@ input[type=radio]:checked+label {
 .text-kiri {
     text-align: left !important;
 }
+
+.mr1{margin-right: 1rem;} .mr2{margin-right: 2rem;} .mr3{margin-right: 3rem;}
+.gd-a-color-1 {color: #00AE4D} .gd-a-color-2 {color: #B51C64} .gd-a-color-3 {color: #8653B5} .gd-a-color-4 {color: #FAAE32} .gd-a-color-5 {color: #B56D1C}
+.v-middle-flex-center { display:flex; align-items: center;}
