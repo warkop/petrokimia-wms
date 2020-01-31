@@ -19,6 +19,7 @@ use App\Http\Models\ShiftKerja;
 use App\Http\Models\TenagaKerjaNonOrganik;
 use App\Http\Models\Users;
 use App\Http\Models\Yayasan;
+use App\Jobs\GenerateExcel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -617,8 +618,14 @@ class ReportController extends Controller
 
         $res = $res->orderBy('id_material')->get()->groupBy('id_material');
         // dd($res->groupBy('id_material')->toArray());
+
+        if (!is_dir(storage_path() . '/app/public/excel/')) {
+            mkdir(storage_path() . '/app/public/excel', 755);
+        }
+
         $nama_file = date("YmdHis") . '_material.xlsx';
-        $this->generateExcelProduk($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir);
+        GenerateExcel::dispatch('material', ['res' => $res, 'nama_file' => $nama_file, 'resGudang' => $resGudang, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]);
+        // $this->generateExcelProduk($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir);
     }
 
     public function generateExcelProduk($res, $nama_file, $gudang, $tgl_awal, $tgl_akhir)
@@ -2166,7 +2173,7 @@ class ReportController extends Controller
         return view('report.material.grid', $data);
     }
 
-    public function material(Request $request)
+    public function material()
     {
         // $validator = Validator::make(
         //     $request->all(),[
@@ -2260,10 +2267,15 @@ class ReportController extends Controller
 
         $res = $res->get();
         // dd($res->toArray());
-        
+
+        if (!is_dir(storage_path() . '/app/public/excel/')) {
+            mkdir(storage_path() . '/app/public/excel', 755);
+        }
 
         $nama_file = date("YmdHis") . '_transaksi_material.xlsx';
-        $this->generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir);
+        $genToExcel = (new GenerateExcel('transaksi_material', ['res' => $res, 'nama_file' => $nama_file, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]))->onQueue('material');
+        $this->dispatch($genToExcel);
+        // $this->generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir);
 
         // dd($res->toArray());
     }
@@ -2564,8 +2576,13 @@ class ReportController extends Controller
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache");
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $writer->save(storage_path() . '/app/public/excel/' . $nama_file);
+        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
+        $spreadsheet = $reader->load(storage_path() . '/app/public/excel/' . $nama_file);
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+
         $writer->save("php://output");
     }
 
