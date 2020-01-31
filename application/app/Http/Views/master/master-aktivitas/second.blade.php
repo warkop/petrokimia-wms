@@ -85,6 +85,7 @@
 
 
                         <div class="kel mb2">
+                            <span><em><strong>Jenis Pallet hanya dapat dipilih maksimal 2 opsi</strong></em></span>
                             <div class="row">
                                 <div class="col-4 col-form-label">
                                     <label class="kt-checkbox kt-checkbox--brand">
@@ -164,7 +165,7 @@
                                     @endphp
                                 @endif
                                 <div class="col-6 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Daftar foto untuk upload foto pada truk">
                                         <input type="checkbox" id="upload_foto" name="butuh_upload_foto" value="1" {{$checked}}> Upload Foto
                                         <span></span>
                                     </label>
@@ -175,7 +176,7 @@
                             </div>
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Digunakan apabila mau scan QR code">
                                         <input type="checkbox" name="connect_sistro" id="connect_sistro" value="1"> Connect Sistro
                                         <span></span>
                                     </label>
@@ -183,7 +184,7 @@
                             </div>
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Untuk pengiriman ke gudang Gudang Penyangga">
                                         <input type="checkbox" name="pengiriman" id="pengiriman" value="1"> Pengiriman GP
                                         <span></span>
                                     </label>
@@ -207,7 +208,7 @@
                             </div> --}}
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Digunakan untuk mengiriman ke yayasan">
                                         <input type="checkbox" name="penyusutan" id="penyusutan" value="1"> Penyusutan
                                         <span></span>
                                     </label>
@@ -215,7 +216,7 @@
                             </div>
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Apabila tidak perlu tanggal produksi">
                                         <input type="checkbox" name="tanpa_tanggal" id="tanpa_tanggal" value="1"> Tanpa Tanggal Produksi
                                         <span></span>
                                     </label>
@@ -233,7 +234,7 @@
                             </div>
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Apabila tidak berhubungan dengan tanggal produksi">
                                         <input type="checkbox" name="pengaruh_tgl_produksi" id="pengaruh_tgl_produksi" value="1"> Tidak pengaruh tgl produksi
                                         <span></span>
                                     </label>
@@ -241,7 +242,7 @@
                             </div>
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Pengiriman ke gudang internal">
                                         <input type="checkbox" name="internal_gudang" id="internal_gudang" value="1"> Pengiriman Gudang Internal
                                         <span></span>
                                     </label>
@@ -249,7 +250,7 @@
                             </div>
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Centang apabila butuh untuk foto kelayakan">
                                         <input type="checkbox" name="kelayakan" id="kelayakan" value="1"> Kelayakan
                                         <span></span>
                                     </label>
@@ -276,7 +277,7 @@
                             @endif
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Menentukan biaya pallet per aktivitas">
                                         <input type="checkbox" name="biaya_pallet" id="biaya_pallet" value="1"> Biaya Pallet
                                         <span></span>
                                     </label>
@@ -301,7 +302,7 @@
                                     @endphp
                                 @endif
                                 <div class="col-9 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Menentukan daftar alat berat apa yang akan digunakan">
                                         <input type="checkbox" name="butuh_alat_berat" id="butuh_alat_berat" value="1" {{$checked}}> Butuh alat berat
                                         <span></span>
                                     </label>
@@ -323,7 +324,7 @@
                                     @endphp
                                 @endif
                                 <div class="col-12 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Menentukan biaya Tenaga Kerja Bongkar Muat>
                                         <input type="checkbox" name="butuh_tkbm" id="butuh_tkbm" value="1"> Butuh TKBM
                                         <span></span>
                                     </label>
@@ -334,7 +335,7 @@
                             </div>
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Tanda tangan per aktivitas">
                                         <input type="checkbox" name="tanda_tangan" id="tanda_tangan" value="1"> Butuh Tanda Tangan
                                         <span></span>
                                     </label>
@@ -342,7 +343,7 @@
                             </div>
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Menentukan biaya alat berat per aktivitas">
                                         <input type="checkbox" name="butuh_biaya" id="butuh_biaya" value="1"> Butuh Biaya Alat Berat
                                         <span></span>
                                     </label>
@@ -350,7 +351,7 @@
                             </div>
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Centang apabila pengiriman SO">
                                         <input type="checkbox" name="so" id="so" value="1"> SO
                                         <span></span>
                                     </label>
