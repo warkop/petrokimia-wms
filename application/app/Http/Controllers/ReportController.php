@@ -543,7 +543,7 @@ class ReportController extends Controller
 
     public function laporanProduk()
     {
-        $data['title'] = 'Laporan Produk';
+        $data['title'] = 'Laporan Material';
         $data['gudang'] = Gudang::internal()->get();
         $data['produk'] = Material::produk()->get();
         return view('report.produk.grid', $data);
@@ -617,7 +617,7 @@ class ReportController extends Controller
 
         $res = $res->orderBy('id_material')->get()->groupBy('id_material');
         // dd($res->groupBy('id_material')->toArray());
-        $nama_file = date("YmdHis") . '_produk.xlsx';
+        $nama_file = date("YmdHis") . '_material.xlsx';
         $this->generateExcelProduk($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir);
     }
 
@@ -643,7 +643,7 @@ class ReportController extends Controller
         $col = 3;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Produk');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Material');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
         $row++;
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
@@ -946,7 +946,7 @@ class ReportController extends Controller
         }
 
         //Sheet Title
-        $objSpreadsheet->getActiveSheet()->setTitle("Laporan Produk");
+        $objSpreadsheet->getActiveSheet()->setTitle("Laporan Material");
         // end : isi kolom
         // end : sheet
 
@@ -2160,7 +2160,7 @@ class ReportController extends Controller
 
     public function laporanMaterial()
     {
-        $data['title'] = 'Laporan Material';
+        $data['title'] = 'Laporan Transaksi Material';
         $data['gudang'] = Gudang::internal()->get();
         $data['produk'] = Material::produk()->get();
         return view('report.material.grid', $data);
@@ -2262,7 +2262,7 @@ class ReportController extends Controller
         // dd($res->toArray());
         
 
-        $nama_file = date("YmdHis") . '_material.xlsx';
+        $nama_file = date("YmdHis") . '_transaksi_material.xlsx';
         $this->generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir);
 
         // dd($res->toArray());
@@ -2343,7 +2343,7 @@ class ReportController extends Controller
         $col = 3;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Material');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Transaksi Material');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
 
         $row++;
@@ -2552,7 +2552,7 @@ class ReportController extends Controller
         $abjad2 = chr(ord($abjad) + 1);
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . ($row - 2) . ":" . $abjad2 . $row)->applyFromArray($style_kolom);
         //Sheet Title
-        $objSpreadsheet->getActiveSheet()->setTitle("Laporan Material");
+        $objSpreadsheet->getActiveSheet()->setTitle("Laporan Transaksi Material");
         // end : isi kolom
         // end : sheet
 
