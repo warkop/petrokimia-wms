@@ -175,15 +175,19 @@ class ApiAktivitasRequest extends FormRequest
                                         'numeric'
                                     ];
                                 } else {
-                                    $maximum = (float) $area_stok->jumlah;
                                     if ($area->kapasitas != null) {
                                         $maximum = abs((float) ((float) $area->kapasitas - (float) $area_stok->jumlah));
+                                        $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
+                                            'min:0',
+                                            'max:' . $maximum,
+                                            'numeric'
+                                        ];
+                                    } else {
+                                        $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
+                                            'min:0',
+                                            'numeric'
+                                        ];
                                     }
-                                    $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
-                                        'min:0',
-                                        'max:' . $maximum,
-                                        'numeric'
-                                    ];
                                 }
                             } else {
                                 $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
