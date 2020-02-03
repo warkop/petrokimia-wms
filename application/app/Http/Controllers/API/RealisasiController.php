@@ -391,7 +391,7 @@ class RealisasiController extends Controller
             'id_shift'      => $realisasiMaterial->id_shift,
         ];
 
-        $this->responseData = ['realisasi_material' => $realisasiMaterial, 'data' => $data];
+        $this->responseData = ['realisasi_material' => $array, 'data' => $data];
         $this->responseCode = 200;
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
