@@ -28,6 +28,10 @@ class JobDeskSeeder extends Seeder
             [
                 'id'            => 4,
                 'nama'          => 'Housekeeper',
+            ],
+            [
+                'id'            => 5,
+                'nama'          => 'Tally',
             ]
         ];
 
