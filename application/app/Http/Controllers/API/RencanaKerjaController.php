@@ -46,13 +46,16 @@ class RencanaKerjaController extends Controller
         }
 
         $data = RencanaHarian::select(
-            '*',
+            'rencana_harian.*',
+            'karu.nama as nama_karu',
             DB::raw("
             CASE WHEN (SELECT id FROM realisasi WHERE id_rencana = rencana_harian.id ORDER BY id DESC LIMIT 1) IS NOT NULL
             THEN 'Done' ELSE 'Progress'
             END AS status")
         )
-        ->where('id_gudang', $res_gudang->id)
+        ->leftJoin('users', 'users.id', '=', 'rencana_harian.updated_by')
+        ->leftJoin('karu', 'karu.id', '=', 'users.id_karu')
+        ->where('rencana_harian.id_gudang', $res_gudang->id)
         ->where(function($query) use ($search){
             $query->where(DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\')'), 'ILIKE', '%'.strtolower($search).'%');
             $query->orWhere(DB::raw('LOWER(CONCAT(\'shift \', id_shift))'), 'ILIKE', '%' . strtolower($search).'%');
