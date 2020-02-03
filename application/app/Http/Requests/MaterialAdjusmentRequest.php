@@ -92,7 +92,7 @@ class MaterialAdjusmentRequest extends FormRequest
             'numeric'       => ':attribute harus berupa angka!',
             'between'       => ':attribute yang dimasukkan tidak valid!',
             'date_format'   => ':attribute harus dengan format tanggal-bulan-tahun!',
-            'produk_jumlah.max'           => ':attribute melebihi kapasitas area atau tidak tersedia pada stok!',
+            'produk_jumlah.*.max'           => ':attribute melebihi kapasitas area atau tidak tersedia pada stok!',
             'pallet_jumlah.*.max'           => ':attribute melebihi jumlah yang tersedia di gudang!',
         ];
     }
