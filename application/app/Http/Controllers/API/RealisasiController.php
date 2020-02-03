@@ -385,8 +385,8 @@ class RealisasiController extends Controller
 
         $array = [
             'id'            => $realisasiMaterial->id,
-            'created_at'    => $realisasiMaterial->created_at,
-            'updated_at'    => $realisasiMaterial->updated_at,
+            'created_at'    => date('Y-m-d H:i:s', strtotime($realisasiMaterial->created_at)),
+            'updated_at'    => date('Y-m-d H:i:s', strtotime($realisasiMaterial->updated_at)),
             'tanggal'       => date('Y-m-d', strtotime($realisasiMaterial->tanggal)),
             'id_shift'      => $realisasiMaterial->id_shift,
         ];
