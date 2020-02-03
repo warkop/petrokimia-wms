@@ -762,11 +762,11 @@ class AktivitasController extends Controller
 
                     $arrayFoto = [
                         'id_aktivitas_harian'       => $id_aktivitas_harian,
-                        'id_foto_jenis'             => $foto_jenis[$i],
+                        'id_foto_jenis'             => isset($foto_jenis[$i]),
                         'foto'                      => $foto[$i]->getClientOriginalName(),
                         'size'                      => $foto[$i]->getSize(),
-                        'lat'                       => $lat[$i],
-                        'lng'                       => $lng[$i],
+                        'lat'                       => isset($lat[$i]),
+                        'lng'                       => isset($lng[$i]),
                         'created_by'                => $res_user->id,
                         'created_at'                => date('Y-m-d H:i:s'),
                     ];
