@@ -20,7 +20,7 @@ class KeluhanOperator extends Model
         'updated_by',
     ];
 
-    protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
+    protected $dates = [ 'end_date', 'created_at', 'updated_at'];
 
     public $timestamps  = false;
 }
