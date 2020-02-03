@@ -20,8 +20,16 @@ class KeluhanGetOperatorResource extends Resource
             'nama'          => $this->tkbm->nama,
             'nomor_hp'      => $this->tkbm->nomor_hp,
             'nomor_bpjs'    => $this->tkbm->nomor_bpjs,
-            'start_date'    => $this->tkbm->start_date,
-            'end_date'      => $this->tkbm->end_date,
+            'start_date'    => [
+                'date' => $this->tkbm->start_date,
+                'timezone_type' => 3,
+                'timezone' => 'Asia/Jakarta'
+            ],
+            'end_date'      => [
+                'date' => $this->tkbm->end_date,
+                'timezone_type' => 3,
+                'timezone' => 'Asia/Jakarta'
+            ],
             'nik'           => $this->tkbm->nik,
         ];
     }

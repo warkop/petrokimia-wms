@@ -383,6 +383,14 @@ class RealisasiController extends Controller
 
         $data = MaterialTrans::where('id_realisasi_material', $realisasiMaterial->id)->get();
 
+        $array = [
+            'id'            => $realisasiMaterial->id,
+            'created_at'    => $realisasiMaterial->created_at,
+            'updated_at'    => $realisasiMaterial->updated_at,
+            'tanggal'       => date('Y-m-d', strtotime($realisasiMaterial->tanggal)),
+            'id_shift'      => $realisasiMaterial->id_shift,
+        ];
+
         $this->responseData = ['realisasi_material' => $realisasiMaterial, 'data' => $data];
         $this->responseCode = 200;
 
