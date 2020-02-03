@@ -11,6 +11,7 @@ use App\Http\Models\Realisasi;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -213,12 +214,26 @@ class AuthController extends Controller
         ]);
 
         $user = new Users;
-        $data = $user->where('api_token', $req->input('token'))->first();
+        $data = Users::where('api_token', $req->input('token'))->first();
         if (is_null($data)) {
             $this->responseCode = 400;
             $this->responseMessage = 'User tidak ditemukan.';
         } else {
-            $user->where('id', $data['id'])->update(['api_token' => null, 'user_gcid' => null]);
+            if ($data->role_id == 3) {
+                $rencanaTkbm = RencanaTkbm::where('id_tkbm', $data->id_tkbm)->orderBy('id_rencana')->first();
+
+                $rencanaHarian = RencanaHarian::find($rencanaTkbm->id_rencana);   
+                $realisasi = Realisasi::where('id_rencana', $rencanaHarian->id)->where('draft', 0)->first();
+                if (empty($realisasi)) {
+                    $this->responseMessage = 'Logout tidak diizinkan karena rencana Harian belum direalisasi!';
+                    $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                    return response()->json($response, $this->responseCode);
+                }
+            }
+            
+            $this->writeLog('Logout', 4, 'User dengan username ' . auth()->user()->username . ' berhasil logout');
+
+            DB::table('users')->where('id', $data->id)->update(['api_token' => null, 'user_gcid' => null]);
             $this->responseCode = 200;
             $this->responseMessage = 'Berhasil melakukan logout.';
         }
