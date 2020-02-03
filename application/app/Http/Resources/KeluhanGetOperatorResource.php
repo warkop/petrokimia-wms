@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\Resource;
 
 class KeluhanGetOperatorResource extends Resource
@@ -21,8 +20,7 @@ class KeluhanGetOperatorResource extends Resource
             'nama'          => $this->tkbm->nama,
             'nomor_hp'      => $this->tkbm->nomor_hp,
             'nomor_bpjs'    => $this->tkbm->nomor_bpjs,
-            'start_date'    => new Carbon(
-                $this->tkbm->start_date),
+            'start_date'    => $this->tkbm->start_date,
             'end_date'      => $this->tkbm->end_date,
             'nik'           => $this->tkbm->nik,
         ];
