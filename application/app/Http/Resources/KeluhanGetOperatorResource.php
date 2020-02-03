@@ -20,7 +20,7 @@ class KeluhanGetOperatorResource extends Resource
             'nama'          => $this->tkbm->nama,
             'nomor_hp'      => $this->tkbm->nomor_hp,
             'nomor_bpjs'    => $this->tkbm->nomor_bpjs,
-            'start_date'    => $this->tkbm->start_date,
+            'start_date'    => date('Y-m-d', strtotime($this->tkbm->start_date)),
             'end_date'      => $this->tkbm->end_date,
             'nik'           => $this->tkbm->nik,
         ];
