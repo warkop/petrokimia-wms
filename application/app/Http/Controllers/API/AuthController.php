@@ -219,19 +219,19 @@ class AuthController extends Controller
             $this->responseCode = 400;
             $this->responseMessage = 'User tidak ditemukan.';
         } else {
-            if ($data->role_id == 3) {
-                $rencanaTkbm = RencanaTkbm::where('id_tkbm', $data->id_tkbm)->orderBy('id_rencana')->first();
+            // if ($data->role_id == 3) {
+            //     $rencanaTkbm = RencanaTkbm::where('id_tkbm', $data->id_tkbm)->orderBy('id_rencana')->first();
 
-                $rencanaHarian = RencanaHarian::find($rencanaTkbm->id_rencana);   
-                $realisasi = Realisasi::where('id_rencana', $rencanaHarian->id)->where('draft', 0)->first();
-                if (empty($realisasi)) {
-                    $this->responseMessage = 'Logout tidak diizinkan karena rencana Harian belum direalisasi!';
-                    $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                    return response()->json($response, $this->responseCode);
-                }
-            }
-            
-            $this->writeLog('Logout', 4, 'User dengan username ' . auth()->user()->username . ' berhasil logout');
+            //     $rencanaHarian = RencanaHarian::find($rencanaTkbm->id_rencana);   
+            //     $realisasi = Realisasi::where('id_rencana', $rencanaHarian->id)->where('draft', 0)->first();
+            //     if (empty($realisasi)) {
+            //         $this->responseMessage = 'Logout tidak diizinkan karena rencana Harian belum direalisasi!';
+            //         $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            //         return response()->json($response, $this->responseCode);
+            //     }
+            // }
+
+            $this->writeLog('Logout', 4, 'User dengan username ' . $data->username . ' berhasil logout');
 
             DB::table('users')->where('id', $data->id)->update(['api_token' => null, 'user_gcid' => null]);
             $this->responseCode = 200;
