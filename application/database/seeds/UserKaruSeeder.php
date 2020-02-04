@@ -24,6 +24,7 @@ class UserKaruSeeder extends Seeder
             $username = str_replace("`", '', $username);
             $username = str_replace(",", '', $username);
             $username = str_replace("-", '', $username);
+            $username = str_replace("’", '', $username);
 
             if (empty($users)) {
                 $users = new Users;
