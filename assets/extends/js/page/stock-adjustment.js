@@ -190,15 +190,15 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
   let html = `<tr class="produk_baris" id="baris-produk-${rows}">
                     <td>${rows}</td>
                     <td id="tempat-produk-${rows}">
-                        <select class="form-control m-select2 pilih_produk" id="produk-${rows}" name="produk[]" onchange="checkProduk(this)" aria-placeholder="Pilih Produk" style="width: 100%;">
+                        <select class="form-control m-select2" id="produk-${rows}" name="produk[]" onchange="checkProduk(this)" aria-placeholder="Pilih Produk" style="width: 100%;">
                         </select>
                     </td>
                     <td id="tempat-area-${rows}">
-                        <select class="form-control m-select2 pilih_area pilih_produk" id="area-${rows}" name="area[]" aria-placeholder="Pilih Area" style="width: 100%;">
+                        <select class="form-control m-select2 pilih_area" id="area-${rows}" name="area[]" aria-placeholder="Pilih Area" style="width: 100%;">
                         </select>
                     </td>
                     <td>
-                        <input class="form-control pilih_tanggal pilih_produk" id="tanggal-${rows}" name="tanggal_produksi[]" aria-placeholder="Pilih Tanggal Produksi" style="width: 100%;">
+                        <input class="form-control pilih_tanggal" id="tanggal-${rows}" name="tanggal_produksi[]" aria-placeholder="Pilih Tanggal Produksi" style="width: 100%;">
                     </td>
                     <td>
                         <select class="form-control" name="action_produk[]" id="produk-status-${rows}" style="width: 100%;">
