@@ -324,7 +324,7 @@
                                     @endphp
                                 @endif
                                 <div class="col-12 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Menentukan biaya Tenaga Kerja Bongkar Muat>
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Menentukan biaya Tenaga Kerja Bongkar Muat">
                                         <input type="checkbox" name="butuh_tkbm" id="butuh_tkbm" value="1"> Butuh TKBM
                                         <span></span>
                                     </label>
