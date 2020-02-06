@@ -175,32 +175,32 @@ class ApiAktivitasRequest extends FormRequest
                                         'numeric'
                                     ];
                                 } else {
-                                    if ($area->kapasitas != null) {
-                                        $maximum = abs((float) ((float) $area->kapasitas - (float) $area_stok->jumlah));
+                                    // if ($area->kapasitas != null) {
+                                    //     $maximum = abs((float) ((float) $area->kapasitas - (float) $area_stok->jumlah));
+                                    //     $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
+                                    //         'min:0',
+                                    //         'max:' . $maximum,
+                                    //         'numeric'
+                                    //     ];
+                                    // } else {
                                         $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
                                             'min:0',
-                                            'max:' . $maximum,
                                             'numeric'
                                         ];
-                                    } else {
-                                        $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
-                                            'min:0',
-                                            'numeric'
-                                        ];
-                                    }
+                                    // }
                                 }
                             } else {
                                 $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
                                     'min:0',
                                     'numeric'
                                 ];
-                                if ($area->kapasitas != null) {
-                                    $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
-                                        'min:0',
-                                        'max:' . $area->kapasitas,
-                                        'numeric'
-                                    ];
-                                }
+                                // if ($area->kapasitas != null) {
+                                //     $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
+                                //         'min:0',
+                                //         'max:' . $area->kapasitas,
+                                //         'numeric'
+                                //     ];
+                                // }
                             }
                         } else {
                             $area = Area::find($list_area[$j]['id_area_stok']);

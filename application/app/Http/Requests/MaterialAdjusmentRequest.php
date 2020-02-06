@@ -57,13 +57,13 @@ class MaterialAdjusmentRequest extends FormRequest
                     ->where('status', 1)
                     ->sum('jumlah');
 
-                    if ($area->kapasitas != null) {
-                        $maximum = (float) $areaStok;
-                        $maximum = abs((float) ((float) $area->kapasitas - (float) $areaStok));
-                        $rules['produk_jumlah.'.$i] = 'numeric|max:'.$maximum;
-                    } else {
+                    // if ($area->kapasitas != null) {
+                    //     $maximum = (float) $areaStok;
+                    //     $maximum = abs((float) ((float) $area->kapasitas - (float) $areaStok));
+                    //     $rules['produk_jumlah.'.$i] = 'numeric|max:'.$maximum;
+                    // } else {
                         $rules['produk_jumlah.' . $i] = 'numeric';    
-                    }
+                    // }
                 }
             }
         }

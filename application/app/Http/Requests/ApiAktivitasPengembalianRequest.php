@@ -134,16 +134,24 @@ class ApiAktivitasPengembalianRequest extends FormRequest
                                         'numeric'
                                     ];
                                 } else {
+                                // $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
+                                //     'min:0',
+                                //     'max:' . abs($area->kapasitas - $area_stok->jumlah),
+                                //     'numeric'
+                                // ];
                                     $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
                                         'min:0',
-                                        'max:' . abs($area->kapasitas - $area_stok->jumlah),
                                         'numeric'
                                     ];
                                 }
                             } else {
+                                // $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
+                                //     'min:0',
+                                //     'max:' . $area->kapasitas,
+                                //     'numeric'
+                                // ];
                                 $rules['list_produk.' . $i . '.list_area.' . $j . '.list_jumlah.' . $k . '.jumlah'] = [
                                     'min:0',
-                                    'max:' . $area->kapasitas,
                                     'numeric'
                                 ];
                             }
