@@ -125,9 +125,9 @@ lines {
                                 <tr>
                                     <th>No</th>
                                     <th width="20%">Nama</th>
-                                    <th>Area</th>
+                                    <th width="10%">Area</th>
                                     <th>Tanggal Produksi</th>
-                                    <th>Jenis</th>
+                                    <th width="15%">Jenis</th>
                                     <th>Jumlah</th>
                                     <th>Alasan</th>
                                     <th><button type="button" class="btn btn-success btn-elevate btn-icon btn-sm" onclick="tambahProduk()"><i class="la la-plus"></i></button></th>
