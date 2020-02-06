@@ -61,7 +61,7 @@ $(document).ready(function() {
     }
   });
 
-  protectNumber(".produk_jumlah");
+  // protectNumber(".produk_jumlah");
   protectNumber(".pallet_jumlah");
 });
 
@@ -239,7 +239,7 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
   //     dropdownParent: $("#modal_form")
   // });
   $(".kt-selectpicker").selectpicker();
-  protectNumber(`#produk-jumlah-${rows}`, 10);
+  // protectNumber(`#produk-jumlah-${rows}`, 10);
   getProduk(`#produk-${rows}`, rows, id, tipe, jumlah);
   getArea(`#area-${rows}`);
 }
