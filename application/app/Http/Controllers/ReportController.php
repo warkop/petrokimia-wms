@@ -1369,7 +1369,7 @@ class ReportController extends Controller
                 $abjad++;
                 for ($i = 0; $i < count($kondisi); $i++) {
                     $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use ($item) {
-                        $query->where('id_gudang', $item->id);
+                        $query->where('id_gudang_tujuan', $item->id);
                         $query->where('draft', 0);
                     })
                     ->where('status_pallet', ($i + 2)) //harus + 2 step agar cocok dengan status pada databse
@@ -1404,7 +1404,7 @@ class ReportController extends Controller
                 $abjad++;
                 for ($i = 0; $i < count($kondisi); $i++) {
                     $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use ($item) {
-                        $query->where('id_gudang', $item->id);
+                        $query->where('id_gudang_tujuan', $item->id);
                         $query->where('draft', 0);
                     })
                         ->where('status_pallet', ($i + 2)) //harus + 2 step agar cocok dengan status pada databse
