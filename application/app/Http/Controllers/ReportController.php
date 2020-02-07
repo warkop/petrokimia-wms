@@ -1022,8 +1022,8 @@ class ReportController extends Controller
         }
 
         $res = $res
-        ->orderBy('id_gudang', 'asc')->get()->groupBy('id_material');
-        dd($res);
+        ->orderBy('id_gudang', 'asc')->get();
+        // dd($res);
         $nama_file = date("YmdHis") . '_mutasi_pallet.xlsx';
         $this->generateExcelMutasiPallet($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir);
     }
@@ -1266,7 +1266,7 @@ class ReportController extends Controller
             $no++;
             $col = 1;
             $row++;
-            $value = $value[0];
+            // $value = $value[0];
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadPengeluaran . $row)->applyFromArray($style_kolom);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
 
