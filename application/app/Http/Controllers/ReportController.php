@@ -3276,11 +3276,11 @@ class ReportController extends Controller
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                         ->where('material_adjustment.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
                 })
-                ->where('ah.id_gudang', $item->id)
+                ->where('aktivitas_harian.id_gudang', $item->id)
                 ->where('tipe', 2)
                 ->where(function($query) use($tgl_awal, $tgl_akhir){
-                    $query->whereBetween('ah.created_at', [$tgl_awal, $tgl_akhir]);
-                    $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
+                    $query->whereBetween('aktivitas_harian.created_at', [$tgl_awal, $tgl_akhir]);
+                    $query->orWhereBetween('material_adjustment.created_at', [$tgl_awal, $tgl_akhir]);
                 })
                 ->where('status_produk', 1)
                 ->where('id_material', $value->id_material)
@@ -3304,11 +3304,11 @@ class ReportController extends Controller
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                         ->where('material_adjustment.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
                 })
-                ->where('ah.id_gudang', $item->id)
+                ->where('aktivitas_harian.id_gudang', $item->id)
                 ->where('tipe', 1)
                 ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
-                    $query->whereBetween('ah.created_at', [$tgl_awal, $tgl_akhir]);
-                    $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
+                    $query->whereBetween('aktivitas_harian.created_at', [$tgl_awal, $tgl_akhir]);
+                    $query->orWhereBetween('material_adjustment.created_at', [$tgl_awal, $tgl_akhir]);
                 })
                 ->where('status_produk', 1)
                 ->where('id_material', $value->id_material)
