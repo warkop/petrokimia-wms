@@ -1214,7 +1214,6 @@ class ReportController extends Controller
         $col++;
         $abjadPengeluaran++;
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
-        $objSpreadsheet->getActiveSheet()->mergeCells($abjadPemasukan . ($row - 1) . ':' . $abjadPengeluaran . ($row - 1));
 
         $row = 5;
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
@@ -3208,12 +3207,22 @@ class ReportController extends Controller
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama);
 
-            $materialTransMengurang = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-                ->where(function ($query) use ($value) {
-                    $query->where('aktivitas_harian.id_gudang', $value->id_gudang);
-                    $query->orWhere('material_adjustment.id_gudang', $value->id_gudang);
+            $materialTransMengurang = MaterialTrans::
+                // leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                // ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
+                leftJoin('aktivitas_harian', function ($join) use ($tgl_awal) {
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0)
+                        ->where('aktivitas_harian.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
                 })
+                ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
+                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                        ->where('material_adjustment.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                })
+                // ->where(function ($query) use ($value) {
+                //     $query->where('aktivitas_harian.id_gudang', $value->id_gudang);
+                //     $query->orWhere('material_adjustment.id_gudang', $value->id_gudang);
+                // })
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal) {
                     $query->where('aktivitas_harian.created_at', '<', $tgl_awal);
@@ -3226,10 +3235,10 @@ class ReportController extends Controller
 
             $materialTransMenambah = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-                ->where(function ($query) use ($value) {
-                    $query->where('aktivitas_harian.id_gudang', $value->id_gudang);
-                    $query->orWhere('material_adjustment.id_gudang', $value->id_gudang);
-                })
+                // ->where(function ($query) use ($value) {
+                //     $query->where('aktivitas_harian.id_gudang', $value->id_gudang);
+                //     $query->orWhere('material_adjustment.id_gudang', $value->id_gudang);
+                // })
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal) {
                     $query->where('aktivitas_harian.created_at', '<', $tgl_awal);
