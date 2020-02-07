@@ -3230,7 +3230,6 @@ class ReportController extends Controller
                 })
                 ->where('status_produk', 1)
                 ->where('tipe', 1)
-                ->where('draft', 0)
                 ->sum('jumlah');
 
             $materialTransMenambah = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
