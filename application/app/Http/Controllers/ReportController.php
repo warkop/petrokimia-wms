@@ -986,7 +986,7 @@ class ReportController extends Controller
         $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
 
-        $res = GudangStok::distinct()->select('id_gudang, id_material');
+        $res = GudangStok::distinct()->select('id_gudang', 'id_material');
         $res = $res->with('gudang')->whereHas('gudang', function($query) {
             $query->where('tipe_gudang', 1);
         });
