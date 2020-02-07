@@ -1023,7 +1023,7 @@ class ReportController extends Controller
 
         $res = $res
         ->orderBy('id_gudang', 'asc')->get()->groupBy('id_material');
-
+        dd($res);
         $nama_file = date("YmdHis") . '_mutasi_pallet.xlsx';
         $this->generateExcelMutasiPallet($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir);
     }
