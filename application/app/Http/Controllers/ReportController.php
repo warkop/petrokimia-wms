@@ -3264,16 +3264,27 @@ class ReportController extends Controller
             $stokAkhir = $stokAwal;
             // $materialTrans1 = MaterialTrans::where('id_material', $value->id)->get();
             foreach ($gudang as $item) {
-                $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
-                ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
+                $materialTrans = MaterialTrans::
+                    // leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
+                    // ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
+                leftJoin('aktivitas_harian', function ($join) use ($tgl_awal) {
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0)
+                        ->where('aktivitas_harian.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                })
+                ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
+                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                        ->where('material_adjustment.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                })
                 ->where('ah.id_gudang', $item->id)
                 ->where('tipe', 2)
                 ->where(function($query) use($tgl_awal, $tgl_akhir){
                     $query->whereBetween('ah.created_at', [$tgl_awal, $tgl_akhir]);
                     $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
                 })
+                ->where('status_produk', 1)
                 ->where('id_material', $value->id_material)
-                ->where('draft', 0)
+                // ->where('draft', 0)
                 ->sum('jumlah');
                 
                 $stokAkhir += $materialTrans;
@@ -3281,16 +3292,27 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $materialTrans);
             }
             foreach ($gudang as $item) {
-                $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
-                ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
+                $materialTrans = MaterialTrans::
+                    // leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
+                    // ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
+                leftJoin('aktivitas_harian', function ($join) use ($tgl_awal) {
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0)
+                        ->where('aktivitas_harian.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                })
+                ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
+                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                        ->where('material_adjustment.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                })
                 ->where('ah.id_gudang', $item->id)
                 ->where('tipe', 1)
                 ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
                     $query->whereBetween('ah.created_at', [$tgl_awal, $tgl_akhir]);
                     $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
                 })
+                ->where('status_produk', 1)
                 ->where('id_material', $value->id_material)
-                ->where('draft', 0)
+                // ->where('draft', 0)
                 ->sum('jumlah');
 
                 $stokAkhir -= $materialTrans;
