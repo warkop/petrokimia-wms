@@ -2272,9 +2272,9 @@ class ReportController extends Controller
         }
 
         $nama_file = date("YmdHis") . '_transaksi_material.xlsx';
-        $genToExcel = (new GenerateExcel('transaksi_material', ['res' => $res, 'nama_file' => $nama_file, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]))->onQueue('material');
-        $this->dispatch($genToExcel);
-        // $this->generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir);
+        // $genToExcel = (new GenerateExcel('transaksi_material', ['res' => $res, 'nama_file' => $nama_file, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]))->onQueue('material');
+        // $this->dispatch($genToExcel);
+        $this->generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir);
 
         // dd($res->toArray());
     }
