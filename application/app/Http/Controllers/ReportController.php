@@ -1323,15 +1323,17 @@ class ReportController extends Controller
             $abjad++;
             for ($i = 0; $i < count($kondisi); $i++) {
                 $masuk      = MaterialTrans::
-                leftJoin('aktivitas_harian', function($join) use ($tgl_awal){
+                leftJoin('aktivitas_harian', function($join) use ($tgl_awal, $value){
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                     ->where('draft', 0)
+                    ->where('id_gudang', $value->id_gudang)
                     ->where('aktivitas_harian.created_at', '<', date('Y-m-d', strtotime($tgl_awal)))
                     ;
                 })
-                ->leftJoin('material_adjustment', function ($join) use ($tgl_awal){
+                ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $value){
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                        ->where('material_adjustment.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                        ->where('id_gudang', $value->id_gudang)
+                        ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
                 })
                 ->leftJoin('gudang_stok', function ($join) {
                     $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
@@ -1343,14 +1345,16 @@ class ReportController extends Controller
                 ->sum('material_trans.jumlah');
 
                 $keluar     = MaterialTrans::
-                leftJoin('aktivitas_harian', function($join) use($tgl_awal){
+                leftJoin('aktivitas_harian', function($join) use($tgl_awal, $value){
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
+                        ->where('id_gudang', $value->id_gudang)
                         ->where('aktivitas_harian.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
                 })
-                ->leftJoin('material_adjustment', function ($join) use ($tgl_awal){
+                ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $value){
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                        ->where('material_adjustment.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                        ->where('id_gudang', $value->id_gudang)
+                        ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
                 })
                 ->leftJoin('gudang_stok', function ($join){
                     $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
