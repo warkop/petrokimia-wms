@@ -2469,69 +2469,53 @@ class ReportController extends Controller
             $col = 1;
             $row++;
 
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":". $abjad . $row)->applyFromArray($style_kolom);
+            if ($value->jumlah != null) {
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
 
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':'. $abjad . $row)->applyFromArray($style_ontop);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':' . $abjad . $row)->applyFromArray($style_ontop);
 
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
 
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->material->nama);
+                $col++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->material->nama);
 
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->tipe == 1?'Mengurangi':'Menambah');
+                $col++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->tipe == 1 ? 'Mengurangi' : 'Menambah');
 
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->jumlah);
+                $col++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->jumlah);
 
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->created_at)));
+                $col++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->created_at)));
 
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, (!empty($value->aktivitasHarian->gudang))?$value->aktivitasHarian->gudang->nama:'');
+                $col++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, (!empty($value->aktivitasHarian->gudang)) ? $value->aktivitasHarian->gudang->nama : '');
 
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, (!empty($value->aktivitasHarian->gudangTujuan))?$value->aktivitasHarian->gudangTujuan->nama:'');
-            
-            // $tempRes =  DB::table('material_trans')
-            // ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-            // ->where('id_material', $value->material->id)
-            // ->where('aktivitas_harian.created_at', '<', $value->created_at);
+                $col++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, (!empty($value->aktivitasHarian->gudangTujuan)) ? $value->aktivitasHarian->gudangTujuan->nama : '');
 
-            // $penambahan = $tempRes->where('tipe', 2)->sum('jumlah');
-            // $pengurangan = $tempRes->where('tipe', 1)->sum('jumlah');
-
-            // $jumlahStok = $penambahan+$pengurangan;
-
-            if ($value->tipe == 1) {
-                $totalStok -= $value->jumlah;
-            } else {
-                $totalStok += $value->jumlah;
-            }
-            // dd($totalStok);
-            // $totalStok += $jumlahStok;
-
-            if ($value->status_produk == 2) {
                 if ($value->tipe == 1) {
-                    $totalRusak -= $value->jumlah;
+                    $totalStok -= $value->jumlah;
                 } else {
-                    $totalRusak += $value->jumlah;
+                    $totalStok += $value->jumlah;
                 }
+
+                if ($value->status_produk == 2) {
+                    if ($value->tipe == 1) {
+                        $totalRusak -= $value->jumlah;
+                    } else {
+                        $totalRusak += $value->jumlah;
+                    }
+                }
+
+                $style_no['alignment'] = array(
+                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                );
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
+            } else {
+                $objSpreadsheet->getActiveSheet()->getColumnDimension($abjad)->setVisible(false);
             }
 
-            $style_no['alignment'] = array(
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-            );
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
-
-            $style_isi_kolom = array(
-
-                'borders' => array(
-                    'allBorders' => array(
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-                    )
-                )
-            );
         }
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . 5 . ":" . $abjadOri . $row)->applyFromArray($style_kolom);
 
