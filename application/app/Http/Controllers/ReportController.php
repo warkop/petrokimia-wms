@@ -1326,13 +1326,13 @@ class ReportController extends Controller
                 leftJoin('aktivitas_harian', function($join) use ($tgl_awal, $value){
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                     ->where('draft', 0)
-                    ->where('id_gudang', $value->id_gudang)
+                    ->where('aktivitas_harian.id_gudang', $value->id_gudang)
                     ->where('aktivitas_harian.created_at', '<', date('Y-m-d', strtotime($tgl_awal)))
                     ;
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $value){
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                        ->where('id_gudang', $value->id_gudang)
+                        ->where('material_adjustment.id_gudang', $value->id_gudang)
                         ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
                 })
                 ->leftJoin('gudang_stok', function ($join) {
@@ -1348,12 +1348,12 @@ class ReportController extends Controller
                 leftJoin('aktivitas_harian', function($join) use($tgl_awal, $value){
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
-                        ->where('id_gudang', $value->id_gudang)
+                        ->where('aktivitas_harian.id_gudang', $value->id_gudang)
                         ->where('aktivitas_harian.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $value){
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                        ->where('id_gudang', $value->id_gudang)
+                        ->where('material_adjustment.id_gudang', $value->id_gudang)
                         ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
                 })
                 ->leftJoin('gudang_stok', function ($join){
