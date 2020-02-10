@@ -2493,23 +2493,23 @@ class ReportController extends Controller
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, (!empty($value->aktivitasHarian->gudangTujuan))?$value->aktivitasHarian->gudangTujuan->nama:'');
             
-            $tempRes =  DB::table('material_trans')
-            ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-            ->where('id_material', $value->material->id)
-            ->where('aktivitas_harian.created_at', '<', $value->created_at);
+            // $tempRes =  DB::table('material_trans')
+            // ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            // ->where('id_material', $value->material->id)
+            // ->where('aktivitas_harian.created_at', '<', $value->created_at);
 
-            $penambahan = $tempRes->where('tipe', 2)->sum('jumlah');
-            $pengurangan = $tempRes->where('tipe', 1)->sum('jumlah');
+            // $penambahan = $tempRes->where('tipe', 2)->sum('jumlah');
+            // $pengurangan = $tempRes->where('tipe', 1)->sum('jumlah');
 
-            $jumlahStok = $penambahan+$pengurangan;
+            // $jumlahStok = $penambahan+$pengurangan;
 
-            // if ($value->tipe == 1) {
-            //     $totalStok -= $value->jumlah;
-            // } else {
-            //     $totalStok += $value->jumlah;
-            // }
+            if ($value->tipe == 1) {
+                $totalStok -= $value->jumlah;
+            } else {
+                $totalStok += $value->jumlah;
+            }
             // dd($totalStok);
-            $totalStok += $jumlahStok;
+            // $totalStok += $jumlahStok;
 
             if ($value->status_produk == 2) {
                 if ($value->tipe == 1) {
