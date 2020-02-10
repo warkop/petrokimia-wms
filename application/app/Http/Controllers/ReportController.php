@@ -2509,6 +2509,7 @@ class ReportController extends Controller
                 $totalStok += $value->jumlah;
             }
 
+            dd($totalStok);
             // $totalStok += $jumlahStok;
 
             if ($value->status_produk == 2) {
