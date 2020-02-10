@@ -864,7 +864,7 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $stokAwal);
 
             $stokAkhir = $stokAwal;
-            $abjadGudang = 'E';
+            // $abjadGudang = 'E';
             foreach ($gudang as $item) {
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -880,14 +880,14 @@ class ReportController extends Controller
                 ->where('status_produk', 1)
                 ->sum('jumlah');
 
-                if ($materialTrans == 0) {
-                    $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadGudang)->setVisible(false);
-                } else {
+                // if ($materialTrans == 0) {
+                //     $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadGudang)->setVisible(false);
+                // } else {
                     $stokAkhir += $materialTrans;
                     $col++;
                     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $materialTrans);
-                }
-                $abjadGudang++;
+                // }
+                // $abjadGudang++;
             }
 
             foreach ($gudang as $item) {
