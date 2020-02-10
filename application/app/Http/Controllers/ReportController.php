@@ -2464,14 +2464,15 @@ class ReportController extends Controller
         $totalRusak = 0;
         $totalNormal = 0;
         $jumlahStok = 0;
+        $abjad = 'E';
         foreach ($res as $value) {
             $no++;
             $col = 1;
             $row++;
-
+            
             if ($value->jumlah == 0) {
-            } else {
                 $objSpreadsheet->getActiveSheet()->getColumnDimension($abjad)->setVisible(false);
+            } else {
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
 
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':' . $abjad . $row)->applyFromArray($style_ontop);
@@ -2515,7 +2516,7 @@ class ReportController extends Controller
                 );
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
             }
-
+            $abjad++;
         }
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . 5 . ":" . $abjadOri . $row)->applyFromArray($style_kolom);
 
