@@ -2469,7 +2469,9 @@ class ReportController extends Controller
             $col = 1;
             $row++;
 
-            if ($value->jumlah != 0) {
+            if ($value->jumlah == 0) {
+                $objSpreadsheet->getActiveSheet()->getColumnDimension($abjad)->setVisible(false);
+            } else {
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
 
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':' . $abjad . $row)->applyFromArray($style_ontop);
@@ -2512,8 +2514,6 @@ class ReportController extends Controller
                     'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                 );
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
-            } else {
-                $objSpreadsheet->getActiveSheet()->getColumnDimension($abjads)->setVisible(false);
             }
 
         }
