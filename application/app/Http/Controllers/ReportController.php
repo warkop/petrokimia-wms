@@ -624,8 +624,8 @@ class ReportController extends Controller
         }
 
         $nama_file = date("YmdHis") . '_material.xlsx';
-        GenerateExcel::dispatch('material', ['res' => $res, 'nama_file' => $nama_file, 'resGudang' => $resGudang, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]);
-        // $this->generateExcelProduk($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir);
+        // GenerateExcel::dispatch('material', ['res' => $res, 'nama_file' => $nama_file, 'resGudang' => $resGudang, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]);
+        $this->generateExcelProduk($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir);
     }
 
     public function generateExcelProduk($res, $nama_file, $gudang, $tgl_awal, $tgl_akhir)
@@ -879,9 +879,15 @@ class ReportController extends Controller
                 })
                 ->where('status_produk', 1)
                 ->sum('jumlah');
-                $stokAkhir += $materialTrans;
-                $col++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $materialTrans);
+
+                if ($materialTrans == 0) {
+                    $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setVisible(false);
+                } else {
+                    $stokAkhir += $materialTrans;
+                    $col++;
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $materialTrans);
+                }
+
             }
 
             foreach ($gudang as $item) {
