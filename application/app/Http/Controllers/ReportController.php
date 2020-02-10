@@ -2469,7 +2469,7 @@ class ReportController extends Controller
             $col = 1;
             $row++;
 
-            if ($value->jumlah != null) {
+            if ($value->jumlah != 0) {
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
 
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':' . $abjad . $row)->applyFromArray($style_ontop);
