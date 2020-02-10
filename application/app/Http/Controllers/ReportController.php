@@ -2471,7 +2471,7 @@ class ReportController extends Controller
             $row++;
             
             if ($value->jumlah == 0) {
-                $objSpreadsheet->getActiveSheet()->getColumnDimension($abjad)->setVisible(false);
+                $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setVisible(false);
             } else {
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
 
