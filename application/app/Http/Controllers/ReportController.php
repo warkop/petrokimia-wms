@@ -2503,11 +2503,11 @@ class ReportController extends Controller
 
             $jumlahStok = $penambahan+$pengurangan;
 
-            if ($value->tipe == 1) {
-                $totalStok -= $value->jumlah;
-            } else {
-                $totalStok += $value->jumlah;
-            }
+            // if ($value->tipe == 1) {
+            //     $totalStok -= $value->jumlah;
+            // } else {
+            //     $totalStok += $value->jumlah;
+            // }
 
             $totalStok += $jumlahStok;
 
