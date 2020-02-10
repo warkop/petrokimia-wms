@@ -958,11 +958,11 @@ class ReportController extends Controller
             );
 
             // $listOfGudang
-            for ($i='E'; $i<count($listOfGudang); $i++) {
-                if (array_key_exists($i, $listOfGudang)) {
-                    $objSpreadsheet->getActiveSheet()->getColumnDimension($listOfGudang[$i])->setVisible(false);
-                }
-            }
+            // for ($i='E'; $i<count($listOfGudang); $i++) {
+            //     if (array_key_exists($i, $listOfGudang)) {
+            //         $objSpreadsheet->getActiveSheet()->getColumnDimension($listOfGudang[$i])->setVisible(false);
+            //     }
+            // }
         }
 
         //Sheet Title
