@@ -2503,12 +2503,12 @@ class ReportController extends Controller
 
             // $jumlahStok = $penambahan+$pengurangan;
 
-            // if ($value->tipe == 1) {
-            //     $totalStok -= $value->jumlah;
-            // } else {
-            //     $totalStok += $value->jumlah;
-            // }
-            dd($totalStok);
+            if ($value->tipe == 1) {
+                $totalStok -= $value->jumlah;
+            } else {
+                $totalStok += $value->jumlah;
+            }
+            // dd($totalStok);
             // $totalStok += $jumlahStok;
 
             if ($value->status_produk == 2) {
@@ -2542,21 +2542,21 @@ class ReportController extends Controller
         $col = 1;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Totak Stok');    
         $col++;
-        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalStok);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalStok);
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_judul_kolom);
 
         $row++;
         $col = 1;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Totak Rusak');
         $col++;
-        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalRusak);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalRusak);
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_judul_kolom);
 
         $row++;
         $col = 1;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Totak Normal');
         $col++;
-        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalNormal);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalNormal);
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_judul_kolom);
 
         // $abjad++;
