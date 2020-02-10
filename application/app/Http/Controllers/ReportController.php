@@ -2513,7 +2513,7 @@ class ReportController extends Controller
                 );
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
             } else {
-                $objSpreadsheet->getActiveSheet()->getColumnDimension($abjad)->setVisible(false);
+                $objSpreadsheet->getActiveSheet()->getColumnDimension($abjads)->setVisible(false);
             }
 
         }
