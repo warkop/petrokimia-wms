@@ -138,7 +138,7 @@ lines {
                             </tbody>
                         </table>
                     </div>
-                    <div class="mt-4">
+                    {{-- <div class="mt-4">
                         <h5>List pallet</h5>
                         <table class="table" id="table_pallet">
                             <thead>
@@ -155,7 +155,7 @@ lines {
                                 
                             </tbody>
                         </table>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="modal-footer">
                     <input type="hidden" class="form-control" id="id_gudang" name="id_gudang" value="{{$id_gudang}}">

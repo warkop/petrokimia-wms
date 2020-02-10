@@ -186,4 +186,15 @@ class PalletController extends Controller
             return response()->json($response, $this->responseCode);
         }
     // }
+
+    public function listPallet($id_gudang, $status)
+    {
+        $gudangStok = GudangStok::with('material')->where('id_gudang', $id_gudang)->where('status', $status)->get();
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $gudangStok;
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
 }

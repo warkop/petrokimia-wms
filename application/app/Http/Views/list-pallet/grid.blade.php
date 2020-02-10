@@ -9,7 +9,7 @@
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!-- begin:: Widget -->
     <div class="row">
-        <div class="col-lg-3 col-md-3">
+        <div class="col-lg-3 col-md-3" onclick="showPallet(1)" style="cursor: pointer">
             <div class="kt-portlet kt-portlet--height-fluid-half kt-portlet--border-bottom-green bg-green-custom" style="height: 150px;">
                 <div class="kt-portlet__body kt-portlet__body--fluid">
                     <div class="kt-widget26">
@@ -21,7 +21,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-3">
+        <div class="col-lg-3 col-md-3" onclick="showPallet(2)" style="cursor: pointer">
             <div class="kt-portlet kt-portlet--height-fluid-half kt-portlet--border-bottom-green bg-green-custom" style="height: 150px;">
                 <div class="kt-portlet__body kt-portlet__body--fluid">
                     <div class="kt-widget26">
@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-3">
+        <div class="col-lg-3 col-md-3" onclick="showPallet(3)" style="cursor: pointer">
             <div class="kt-portlet kt-portlet--height-fluid-half kt-portlet--border-bottom-green" style="height: 150px;">
                 <div class="kt-portlet__body kt-portlet__body--fluid">
                     <div class="kt-widget26">
@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-3">
+        <div class="col-lg-3 col-md-3" onclick="showPallet(4)" style="cursor: pointer">
             <div class="kt-portlet kt-portlet--height-fluid-half kt-portlet--border-bottom-green" style="height: 150px;">
                 <div class="kt-portlet__body kt-portlet__body--fluid">
                     <div class="kt-widget26">
@@ -191,7 +191,34 @@
 </div>
 <!--end::Modal-->
 
-
+<!--begin::Modal-->
+<div class="modal fade btn_close_modal" id="modal_pallet" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">List Pallet</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form id="form1" class="kt-form" action="" method="post" onsubmit="return false;">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <table class="table" id="list"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--end::Modal-->
 
 <script>
     // $('#tanggal').datepicker({
@@ -203,6 +230,44 @@
     // });
     
     const id_gudang = "{{ $id_gudang }}";
+
+    function showPallet(status) {
+        $("#modal_pallet").modal("show");
+        $("#list").html("");
+        $.ajax({
+            url: "{{url('list-pallet/pallets')}}/"+id_gudang+"/"+status,
+            beforeSend:()=>{
+                $("#list").html("<strong>Memuat Data</strong>")
+            },
+            success:response=>{
+                if (response.data == "") {
+                    $("#list").html("<strong>Tidak ada pallet</strong>");
+                } else {
+                    let html = "<thead><tr><th>#</th><th>Nama Pallet</th><th>Jumlah Pallet</th></tr></thead>";
+
+                    const data = response.data;
+                    html += "<tbody>";
+                    let no=1;
+                    data.forEach(element => {
+                        html += "<tr>";
+                        html += "<td>"+no+"</td>";
+                        html += "<td>"+element.material.nama+"</td>";
+                        html += "<td>"+element.jumlah+"</td>";
+                        html += "</tr>";
+                        no++;
+                    });
+
+                    html += "</tbody>";
+
+                    $("#list").html(html);
+                }
+
+            },
+            error:err=>{
+
+            }
+        });
+    }
     
 </script>
 <script src="{{asset('assets/extends/js/page/list-pallet.js')}}" type="text/javascript"></script>

@@ -158,6 +158,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/get-material', 'PalletController@getMaterial');
         Route::get('/{id_gudang}', 'PalletController@index');
         Route::get('/{id_gudang}/{id}', 'PalletController@show');
+        Route::get('/pallets/{id_gudang}/{status}', 'PalletController@listPallet');
         Route::post('/{id_gudang}', 'PalletController@json');
         Route::put('/{id_gudang}', 'PalletController@store');
     });

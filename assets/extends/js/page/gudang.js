@@ -110,9 +110,9 @@ var load_table = function () {
                             Actions
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="` + ajaxSource + `/stock-adjustment/${full.id}"><i class="flaticon-cogwheel-1"></i> Stok adjustment</a> 
+                            <a class="dropdown-item" href="` + ajaxSource + `/stock-adjustment/${full.id}"><i class="flaticon-cogwheel-1"></i> Stok produk adjustment</a> 
                             <a class="dropdown-item" href="${baseUrl+'list-area/'+full.id}"><i class="flaticon-symbol"></i> List area</a>
-                            <a class="dropdown-item" href="${baseUrl+'list-pallet/'+full.id}"><i class="flaticon-layers"></i> List pallet</a>
+                            <a class="dropdown-item" href="${baseUrl+'list-pallet/'+full.id}"><i class="flaticon-layers"></i> Stok pallet adjustment</a>
                             <button class="dropdown-item" onclick="edit(${full.id})" data-toggle="modal" data-target="#kt_modal_1"><i class="flaticon-edit-1"></i> Edit data</button>
                             <a class="dropdown-item" href="` + ajaxSource + `/layout-gudang/${full.id}"><i class="flaticon-app"></i> Layout Gudang</a>
                             <a class="dropdown-item" href="javascript:;" onclick="showModalAktivitasGudang(${full.id})"><i class="flaticon-list"></i> Aktivitas Gudang</a>
