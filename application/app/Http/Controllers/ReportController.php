@@ -2666,9 +2666,9 @@ class ReportController extends Controller
             ->leftJoin('aktivitas_harian', 'material_trans.id_aktivitas_harian', '=', 'aktivitas_harian.id')
             ->leftJoin('material', 'area_stok.id_material', '=', 'material.id')
             ->where(function ($query) use ($gudang) {
-                $query->where('id_gudang', $gudang[0]);
+                $query->where('area.id_gudang', $gudang[0]);
                 foreach ($gudang as $key => $value) {
-                    $query->orWhere('id_gudang', $value);
+                    $query->orWhere('area.id_gudang', $value);
                 }
             })     
             ->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir])       
