@@ -2634,7 +2634,7 @@ class ReportController extends Controller
         //     $query->where('status', 1);
         // })
         // ;
-        $res = DB::table('area')->distinct()->select('area.id', 'area.id_area', 'kapasitas')->whereBetween('created_at', [$tgl_awal, $tgl_akhir])
+        $res = DB::table('area')->distinct()->select('area.id', 'area.id_area', 'kapasitas')
         ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
         ->where('area_stok.status', 1)
         ;
@@ -2652,10 +2652,10 @@ class ReportController extends Controller
                 }
             });
         } else {
-            $res = $res->whereHas('areaStok.material', function ($query) use($resProduk){
-                $query = $query->where('kategori', 1);
-                $resProduk = $resProduk->where('kategori', 1);
-            });
+            // $res = $res->whereHas('areaStok.material', function ($query) use($resProduk){
+            //     $query = $query->where('kategori', 1);
+            //     $resProduk = $resProduk->where('kategori', 1);
+            // });
         }
         if (is_array($gudang)) {
             $resArea = DB::table('area')->distinct()->select('area.*')
