@@ -2667,7 +2667,7 @@ class ReportController extends Controller
                 }
             })->get();
         } else {
-            $resArea = Area::take(10)->get();
+            $resArea = Area::all();
         }
 
         $res = $res->get()->groupBy('id_material');
@@ -2824,7 +2824,6 @@ class ReportController extends Controller
         $total_kesamping = 0;
         $j=0;
         foreach ($area as $value) {
-            // dd($value);
             $no++;
             $col = 1;
             $row++;
@@ -2844,42 +2843,30 @@ class ReportController extends Controller
             $i = 0;
             $total_kesamping = 0;
             foreach ($produk as $key) {
-                // $materialTrans = MaterialTrans::where(['id_material' => $key->id, 'tipe' => 1])->sum('jumlah');
-
-                $masuk      = MaterialTrans::where('id_material', $key->id)
+                $singleton = MaterialTrans::where('id_material', $key->id)
                     ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
-                    ->whereHas('areaStok.area', function ($query) use ($value) {
-                        $query->where('id_area', $value->id);
+                    ->join('area', function ($join) use ($value) {
+                        $join->on('area.id', '=', 'material_trans.id_area')->where('id_area', $value->id);
                     })
-                    ->whereHas('aktivitasHarian', function ($query){
-                        $query->where('draft', 0);
+                    ->join('aktivitas_harian', function ($join) use ($value) {
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')->where('draft', 0);
                     })
-                    ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)))
+                    ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+
+                $masuk      = $singleton
                     ->where('tipe', 2)
                     ->sum('jumlah');
 
-                $keluar     = MaterialTrans::where('id_material', $key->id)
-                    ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
-                    ->whereHas('areaStok.area', function ($query) use ($value) {
-                        $query->where('id_area', $value->id);
-                    })
-                    ->whereHas('aktivitasHarian', function ($query) {
-                        $query->where('draft', 0);
-                    })
-                    ->where('created_at', '<', date('Y-m-d', strtotime($tgl_awal)))
+                $keluar     = $singleton
                     ->where('tipe', 1)
                     ->sum('jumlah');
 
                 $jumlah  = $masuk - $keluar;
-                // dd($masuk);
                 $materialTrans = MaterialTrans::whereBetween('created_at', [$tgl_awal,$tgl_akhir])
                 ->where('id_material', $key->id)
                 ->where('status_produk', 1)
-                ->whereHas('areaStok.area', function($query) use($value){
-                    $query->where('id_area', $value->id);
-                })
+                ->where('id_area', $value->id)
                 ->get();
-                // $jumlah = 0;
                 foreach ($materialTrans as $key2) {
                     if ($key2->tipe == 1) {
                         $jumlah = $jumlah - $key2->jumlah;
@@ -2888,9 +2875,7 @@ class ReportController extends Controller
                     }
                 }
 
-                // $areaStok = AreaStok::where('id_area', $value->id)->where('id_material', $key->id)->sum('jumlah');
                 $col++;
-                // dd($jumlah);
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlah); //jumlah
                 $total_kesamping += $jumlah;
 
