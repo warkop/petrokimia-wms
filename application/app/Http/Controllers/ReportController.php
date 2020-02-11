@@ -79,7 +79,7 @@ class ReportController extends Controller
         ->with('foto')
         ->has('kerusakan')
         ->whereHas('alatBerat', function ($query) use ($jenis_alat_berat) {
-            if (count($jenis_alat_berat) > 0) {
+            if (is_array($jenis_alat_berat)) {
                 $query->where('id_kategori', $jenis_alat_berat[0]);
                 foreach ($jenis_alat_berat as $key => $value) {
                     $query->orWhere('id_kategori', $value);
