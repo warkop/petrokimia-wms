@@ -2660,11 +2660,13 @@ class ReportController extends Controller
         }
 
         $resArea = Area::where(function ($query) use ($gudang) {
+            if (is_array($gudang)) {
                 $query->where('id_gudang', $gudang[0]);
                 foreach ($gudang as $key => $value) {
                     $query->orWhere('id_gudang', $value);
                 }
-            })->get();
+            }
+        })->get();
 
         $res = $res->get()->groupBy('id_material');
 
