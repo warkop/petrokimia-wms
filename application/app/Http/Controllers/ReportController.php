@@ -2636,6 +2636,7 @@ class ReportController extends Controller
         // ;
         $res = DB::table('area')->distinct()->select('area.id', 'area.nama', 'kapasitas')
         ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
+        ->join('material_trans', 'material_trans.id_area_stok', '=', 'area_stok.id')->where('area_stok.jumlah', '>', 0)
         ->where('area_stok.status', 1)
         ;
 
