@@ -2635,7 +2635,7 @@ class ReportController extends Controller
         // }
 
         $res = MaterialTrans::whereBetween('created_at', [$tgl_awal, $tgl_akhir])
-        ->with('areaStok', 'areaStok.area')
+        // ->with('areaStok', 'areaStok.area')
         ->whereHas('areaStok', function ($query){
             $query->where('status', 1);
         });
