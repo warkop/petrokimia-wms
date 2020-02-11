@@ -2674,6 +2674,14 @@ class ReportController extends Controller
             // ->where('kategori', 1)
             // ->where('draft', 0)
             ->get();
+
+            $res = $res->where(function ($query) use ($gudang) {
+                $query->where('area.id_gudang', $gudang[0]);
+                foreach ($gudang as $key => $value) {
+                    $query->orWhere('area.id_gudang', $value);
+                }
+            });
+
         } else {
             $resArea = DB::table('area')
             // ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
