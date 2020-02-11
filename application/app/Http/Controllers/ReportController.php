@@ -2641,11 +2641,11 @@ class ReportController extends Controller
 
         $resProduk = new Material;
         if ($produk == 2) {
-            $res = $res->whereHas('areaStok', function ($query) use ($pilih_produk) {
-                foreach ($pilih_produk as $key => $value) {
-                    $query = $query->orWhere('id_material', $value);
-                }
-            });
+            // $res = $res->whereHas('areaStok', function ($query) use ($pilih_produk) {
+            //     foreach ($pilih_produk as $key => $value) {
+            //         $query = $query->orWhere('id_material', $value);
+            //     }
+            // });
             $resProduk = $resProduk->where(function($query) use ($pilih_produk) {
                 foreach ($pilih_produk as $key => $value) {
                     $query->orWhere('id', $value);
