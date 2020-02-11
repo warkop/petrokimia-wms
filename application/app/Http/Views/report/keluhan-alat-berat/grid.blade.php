@@ -48,7 +48,7 @@
                 <div class="col-6">
                     <select class="form-control" name="status_tindak_lanjut">
                         <option value="1">Sudah</option>
-                        <option value="2">Belum</option>
+                        <option value="0">Belum</option>
                     </select>
                 </div>
             </div>
