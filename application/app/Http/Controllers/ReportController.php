@@ -79,9 +79,11 @@ class ReportController extends Controller
         ->with('foto')
         ->has('kerusakan')
         ->whereHas('alatBerat', function ($query) use ($jenis_alat_berat) {
-            $query->where('id_kategori', $jenis_alat_berat[0]);
-            foreach ($jenis_alat_berat as $key => $value) {
-                $query->orWhere('id_kategori', $value);
+            if (count($jenis_alat_berat) > 0) {
+                $query->where('id_kategori', $jenis_alat_berat[0]);
+                foreach ($jenis_alat_berat as $key => $value) {
+                    $query->orWhere('id_kategori', $value);
+                }
             }
         })
         ->where('status', $status_tindak_lanjut)
