@@ -2244,7 +2244,7 @@ class ReportController extends Controller
 
         $res = MaterialTrans::with('aktivitasHarian', 'aktivitasHarian.gudang', 'aktivitasHarian.gudangTujuan')
         ->with('material')
-        // ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+        ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
         ->whereHas('material', function($query) {
             $query->where('kategori', 1);
         })
