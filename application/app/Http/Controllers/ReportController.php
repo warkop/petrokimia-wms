@@ -2667,7 +2667,7 @@ class ReportController extends Controller
                 }
             })->get();
         } else {
-            $resArea = Area::all();
+            $resArea = Area::first();
         }
 
         $res = $res->get()->groupBy('id_material');
