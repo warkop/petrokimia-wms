@@ -2628,11 +2628,15 @@ class ReportController extends Controller
         //     });
         // }
 
-        $res = MaterialTrans::whereBetween('created_at', [$tgl_awal, $tgl_akhir])
-        ->with('areaStok', 'areaStok.area')
-        ->whereHas('areaStok', function ($query){
-            $query->where('status', 1);
-        })
+        // $res = MaterialTrans::whereBetween('created_at', [$tgl_awal, $tgl_akhir])
+        // ->with('areaStok', 'areaStok.area')
+        // ->whereHas('areaStok', function ($query){
+        //     $query->where('status', 1);
+        // })
+        // ;
+        $res = DB::table('area')->distinct()->select('area.id', 'area.id_area', 'kapasitas')->whereBetween('created_at', [$tgl_awal, $tgl_akhir])
+        ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
+        ->where('area_stok.status', 1)
         ;
 
         $resProduk = new Material;
@@ -2681,7 +2685,7 @@ class ReportController extends Controller
 
         $resProduk = $resProduk->get();
         $nama_file = date("YmdHis") . '_stok.xlsx';
-        // dd($res->toArray());
+        dd($res->toArray());
         $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl_awal, $tgl_akhir);
     }
 
