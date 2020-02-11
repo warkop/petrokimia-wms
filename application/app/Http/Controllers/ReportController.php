@@ -2660,14 +2660,15 @@ class ReportController extends Controller
             });
         }
         if (is_array($gudang)) {
-            $resArea = DB::table('area')->where(function ($query) use ($gudang) {
+            $resArea = DB::table('area')
+            ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
+            ->where(function ($query) use ($gudang) {
                 $query->where('id_gudang', $gudang[0]);
                 foreach ($gudang as $key => $value) {
                     $query->orWhere('id_gudang', $value);
                 }
-            })
-            ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
-            ->where('jumlah', '>', 0)
+            })            
+            ->where('jumlahs', '>', 0)
             ->get();
         } else {
             $resArea = DB::table('area')
@@ -2861,7 +2862,7 @@ class ReportController extends Controller
                     ->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir]);
 
                 $masuk      = $singleton
-                    ->where('material_trans.tipes', 2)
+                    ->where('material_trans.tipe', 2)
                     ->sum('jumlah');
 
                 $keluar     = $singleton
