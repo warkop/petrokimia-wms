@@ -2845,7 +2845,7 @@ class ReportController extends Controller
             foreach ($produk as $key) {
                 $singleton = DB::table('material_trans')->where('id_material', $key->id)
                     ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
-                    ->where('id_area', $value->id)
+                    ->where('material_trans.id_area', $value->id)
                     // ->join('area', function ($join) use ($value) {
                     //     $join->on('area.id', '=', 'material_trans.id_area');
                     // })
