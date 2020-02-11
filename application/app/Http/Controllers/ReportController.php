@@ -2546,21 +2546,21 @@ class ReportController extends Controller
         $row++;
         $row++;
         $col = 1;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Totak Stok');    
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total Stok');    
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalStok);
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_judul_kolom);
 
         $row++;
         $col = 1;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Totak Rusak');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total Rusak');
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalRusak);
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_judul_kolom);
 
         $row++;
         $col = 1;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Totak Normal');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total Normal');
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalNormal);
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_judul_kolom);
