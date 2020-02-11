@@ -1396,7 +1396,7 @@ class ReportController extends Controller
                         $query->where('draft', 0);
                     })
                     ->where('status_pallet', ($i + 2)) //harus + 2 step agar cocok dengan status pada databse
-                    ->where('tipe', 2)
+                    ->where('tipe', 1)
                     ->whereBetween('created_at', [$tgl_awal, $tgl_akhir])
                     ->where('id_material', $value->id_material)
                     ->sum('jumlah');
@@ -1434,7 +1434,7 @@ class ReportController extends Controller
                         $query->where('draft', 0);
                     })
                         ->where('status_pallet', ($i + 2)) //harus + 2 step agar cocok dengan status pada databse
-                        ->where('tipe', 1)
+                        ->where('tipe', 2)
                         ->whereBetween('created_at', [$tgl_awal, $tgl_akhir])
                         ->where('id_material', $value->id_material)
                         ->sum('jumlah');
