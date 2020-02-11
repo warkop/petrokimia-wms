@@ -2855,10 +2855,10 @@ class ReportController extends Controller
                     // ->join('area', function ($join) use ($value) {
                     //     $join->on('area.id', '=', 'material_trans.id_area');
                     // })
-                    ->join('aktivitas_harian', function ($join) use ($value) {
+                    ->leftJoin('aktivitas_harian', function ($join) use ($value) {
                         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')->where('draft', 0);
                     })
-                    ->where('material_trans.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                    ->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir]);
 
                 $masuk      = $singleton
                     ->where('material_trans.tipe', 2)
@@ -2869,18 +2869,18 @@ class ReportController extends Controller
                     ->sum('jumlah');
 
                 $jumlah  = $masuk - $keluar;
-                $materialTrans = DB::table('material_trans')->whereBetween('created_at', [$tgl_awal,$tgl_akhir])
-                ->where('id_material', $key->id)
-                ->where('status_produk', 1)
-                ->where('id_area', $value->id)
-                ->get();
-                foreach ($materialTrans as $key2) {
-                    if ($key2->tipe == 1) {
-                        $jumlah = $jumlah - $key2->jumlah;
-                    } else {
-                        $jumlah = $jumlah + $key2->jumlah;
-                    }
-                }
+                // $materialTrans = DB::table('material_trans')->whereBetween('created_at', [$tgl_awal,$tgl_akhir])
+                // ->where('id_material', $key->id)
+                // ->where('status_produk', 1)
+                // ->where('id_area', $value->id)
+                // ->get();
+                // foreach ($materialTrans as $key2) {
+                //     if ($key2->tipe == 1) {
+                //         $jumlah = $jumlah - $key2->jumlah;
+                //     } else {
+                //         $jumlah = $jumlah + $key2->jumlah;
+                //     }
+                // }
 
                 $col++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlah); //jumlah
