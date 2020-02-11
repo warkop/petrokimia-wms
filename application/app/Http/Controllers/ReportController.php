@@ -87,7 +87,7 @@ class ReportController extends Controller
             }
         })
         ->where('status', $status_tindak_lanjut)
-        ->where('jenis', '2')
+        ->where('jeniss', '2')
         ->get();
 
         // dd($res->toArray());
