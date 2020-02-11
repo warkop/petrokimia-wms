@@ -2843,7 +2843,7 @@ class ReportController extends Controller
             $i = 0;
             $total_kesamping = 0;
             foreach ($produk as $key) {
-                $singleton = DB::table('material_trans')::where('id_material', $key->id)
+                $singleton = DB::table('material_trans')->where('id_material', $key->id)
                     ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
                     ->join('area', function ($join) use ($value) {
                         $join->on('area.id', '=', 'material_trans.id_area')->where('id_area', $value->id);
@@ -2862,7 +2862,7 @@ class ReportController extends Controller
                     ->sum('jumlah');
 
                 $jumlah  = $masuk - $keluar;
-                $materialTrans = DB::table('material_trans')::whereBetween('created_at', [$tgl_awal,$tgl_akhir])
+                $materialTrans = DB::table('material_trans')->whereBetween('created_at', [$tgl_awal,$tgl_akhir])
                 ->where('id_material', $key->id)
                 ->where('status_produk', 1)
                 ->where('id_area', $value->id)
