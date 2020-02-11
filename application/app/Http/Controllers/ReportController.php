@@ -1304,7 +1304,7 @@ class ReportController extends Controller
                 'Terpakai',
                 'Tidak Terpakai',
                 'Rusak',
-                'Dasaran',
+                // 'Dasaran',
             ];
 
             $col++;
