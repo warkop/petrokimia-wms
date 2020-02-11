@@ -2861,7 +2861,7 @@ class ReportController extends Controller
                     ->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir]);
 
                 $masuk      = $singleton
-                    ->where('material_trans.tipe', 2)
+                    ->where('material_trans.tipes', 2)
                     ->sum('jumlah');
 
                 $keluar     = $singleton
