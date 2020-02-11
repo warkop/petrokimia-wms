@@ -2641,23 +2641,23 @@ class ReportController extends Controller
         });
 
         $resProduk = new Material;
-        if ($produk == 2) {
-            $res = $res->whereHas('areaStok', function ($query) use ($pilih_produk) {
-                foreach ($pilih_produk as $key => $value) {
-                    $query = $query->orWhere('id_material', $value);
-                }
-            });
-            $resProduk = $resProduk->where(function($query) use ($pilih_produk) {
-                foreach ($pilih_produk as $key => $value) {
-                    $query->orWhere('id', $value);
-                }
-            });
-        } else {
-            $res = $res->whereHas('areaStok.material', function ($query) use($resProduk){
-                $query = $query->where('kategori', 1);
-                $resProduk = $resProduk->where('kategori', 1);
-            });
-        }
+        // if ($produk == 2) {
+        //     $res = $res->whereHas('areaStok', function ($query) use ($pilih_produk) {
+        //         foreach ($pilih_produk as $key => $value) {
+        //             $query = $query->orWhere('id_material', $value);
+        //         }
+        //     });
+        //     $resProduk = $resProduk->where(function($query) use ($pilih_produk) {
+        //         foreach ($pilih_produk as $key => $value) {
+        //             $query->orWhere('id', $value);
+        //         }
+        //     });
+        // } else {
+        //     $res = $res->whereHas('areaStok.material', function ($query) use($resProduk){
+        //         $query = $query->where('kategori', 1);
+        //         $resProduk = $resProduk->where('kategori', 1);
+        //     });
+        // }
 
         $resArea = Area::where(function ($query) use ($gudang) {
             // if (is_array($gudang)) {
