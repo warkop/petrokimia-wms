@@ -2660,7 +2660,7 @@ class ReportController extends Controller
             });
         }
         if (is_array($gudang)) {
-            $resArea = DB::table('area')->select('area.*')
+            $resArea = DB::table('area')->distinct()->select('area.*')
             ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
             ->leftJoin('material_trans', 'material_trans.id_area', '=', 'area.id')
             ->leftJoin('aktivitas_harian', 'material_trans.id_aktivitas_harian', '=', 'aktivitas_harian.id')
