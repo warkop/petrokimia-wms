@@ -2695,7 +2695,9 @@ class ReportController extends Controller
         $resProduk = $resProduk->get();
         $nama_file = date("YmdHis") . '_stok.xlsx';
         // dd($res->toArray());
-        $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl_awal, $tgl_akhir);
+        dispatch(new GenerateExcel('stok', ['res' => $res, 'nama_file' => $nama_file, 'resProduk' => $resProduk, 'resArea' => $resArea, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]));
+        GenerateExcel::dispatch('stok', ['res' => $res, 'nama_file' => $nama_file, 'resProduk' => $resProduk, 'resArea' => $resArea, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]);
+        // $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl_awal, $tgl_akhir);
     }
 
     public function generateExcelStok($res, $nama_file, $produk, $area, $tgl_awal, $tgl_akhir)
