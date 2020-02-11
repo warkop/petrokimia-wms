@@ -2693,7 +2693,7 @@ class ReportController extends Controller
 
         $resProduk = $resProduk->get();
         $nama_file = date("YmdHis") . '_stok.xlsx';
-        dd($res->toArray());
+        // dd($res->toArray());
         $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl_awal, $tgl_akhir);
     }
 
@@ -2862,6 +2862,7 @@ class ReportController extends Controller
             $total_kapasitas += $value->kapasitas;
             $i = 0;
             $total_kesamping = 0;
+            // dd($value);
             foreach ($produk as $key) {
                 $singleton = DB::table('material_trans')->where('id_material', $key->id)
                     ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
@@ -2881,6 +2882,8 @@ class ReportController extends Controller
                 $keluar     = $singleton
                     ->where('material_trans.tipe', 1)
                     ->sum('jumlah');
+
+                // dd($masuk);
 
                 $jumlah  = $masuk - $keluar;
                 // $materialTrans = DB::table('material_trans')->whereBetween('created_at', [$tgl_awal,$tgl_akhir])
