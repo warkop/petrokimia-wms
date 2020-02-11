@@ -1388,8 +1388,11 @@ class ReportController extends Controller
                 $row = $row - count($kondisi);
                 $abjad++;
                 for ($i = 0; $i < count($kondisi); $i++) {
-                    $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use ($item) {
-                        $query->where('id_gudang', $item->id);
+                    $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use ($item, $value) {
+                        $query->where(function($query) use($item, $value) {
+                            $query->where('id_gudang', $item->id);
+                            $query->orWhere('id_gudang_tujuan', $value->id_gudang);
+                        });
                         $query->where('draft', 0);
                     })
                     ->where('status_pallet', ($i + 2)) //harus + 2 step agar cocok dengan status pada databse
@@ -1423,8 +1426,11 @@ class ReportController extends Controller
                 $row = $row - count($kondisi);
                 $abjad++;
                 for ($i = 0; $i < count($kondisi); $i++) {
-                    $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use ($item) {
-                        $query->where('id_gudang', $item->id);
+                    $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use ($item, $value) {
+                        $query->where(function ($query) use ($item, $value) {
+                            $query->where('id_gudang', $item->id);
+                            $query->orWhere('id_gudang_tujuan', $value->id_gudang);
+                        });
                         $query->where('draft', 0);
                     })
                         ->where('status_pallet', ($i + 2)) //harus + 2 step agar cocok dengan status pada databse
