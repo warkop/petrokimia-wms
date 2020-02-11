@@ -2661,14 +2661,20 @@ class ReportController extends Controller
         }
         if (is_array($gudang)) {
             $resArea = DB::table('area')
-            ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
+            ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
+            ->leftJoin('material_trans', 'material_trans.id_area', '=', 'area.id')
+            ->leftJoin('aktivitas_harian', 'material_trans.id_aktivitas_harian', '=', 'aktivitas_harian.id')
+            ->leftJoin('material', 'area_stok.id_material', '=', 'material.id')
             ->where(function ($query) use ($gudang) {
                 $query->where('id_gudang', $gudang[0]);
                 foreach ($gudang as $key => $value) {
                     $query->orWhere('id_gudang', $value);
                 }
-            })            
-            ->where('jumlahs', '>', 0)
+            })     
+            ->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir])       
+            ->where('area_stok.jumlah', '>', 0)
+            ->where('kategori', 1)
+            ->where('draft', 0)
             ->get();
         } else {
             $resArea = DB::table('area')
