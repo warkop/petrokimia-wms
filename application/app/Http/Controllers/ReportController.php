@@ -2635,39 +2635,40 @@ class ReportController extends Controller
         // }
 
         $res = MaterialTrans::whereBetween('created_at', [$tgl_awal, $tgl_akhir])
-        // ->with('areaStok', 'areaStok.area')
-        // ->whereHas('areaStok', function ($query){
-        //     $query->where('status', 1);
-        // })
+        ->with('areaStok', 'areaStok.area')
+        ->whereHas('areaStok', function ($query){
+            $query->where('status', 1);
+        })
         ;
 
         $resProduk = new Material;
-        // if ($produk == 2) {
-        //     $res = $res->whereHas('areaStok', function ($query) use ($pilih_produk) {
-        //         foreach ($pilih_produk as $key => $value) {
-        //             $query = $query->orWhere('id_material', $value);
-        //         }
-        //     });
-        //     $resProduk = $resProduk->where(function($query) use ($pilih_produk) {
-        //         foreach ($pilih_produk as $key => $value) {
-        //             $query->orWhere('id', $value);
-        //         }
-        //     });
-        // } else {
-        //     $res = $res->whereHas('areaStok.material', function ($query) use($resProduk){
-        //         $query = $query->where('kategori', 1);
-        //         $resProduk = $resProduk->where('kategori', 1);
-        //     });
-        // }
-        $resArea = null;
-        // $resArea = Area::where(function ($query) use ($gudang) {
-        //     // if (is_array($gudang)) {
-        //     //     $query->where('id_gudang', $gudang[0]);
-        //     //     foreach ($gudang as $key => $value) {
-        //     //         $query->orWhere('id_gudang', $value);
-        //     //     }
-        //     // }
-        // })->get();
+        if ($produk == 2) {
+            $res = $res->whereHas('areaStok', function ($query) use ($pilih_produk) {
+                foreach ($pilih_produk as $key => $value) {
+                    $query = $query->orWhere('id_material', $value);
+                }
+            });
+            $resProduk = $resProduk->where(function($query) use ($pilih_produk) {
+                foreach ($pilih_produk as $key => $value) {
+                    $query->orWhere('id', $value);
+                }
+            });
+        } else {
+            $res = $res->whereHas('areaStok.material', function ($query) use($resProduk){
+                $query = $query->where('kategori', 1);
+                $resProduk = $resProduk->where('kategori', 1);
+            });
+        }
+        if (is_array($gudang)) {
+            $resArea = Area::where(function ($query) use ($gudang) {
+                $query->where('id_gudang', $gudang[0]);
+                foreach ($gudang as $key => $value) {
+                    $query->orWhere('id_gudang', $value);
+                }
+            })->get();
+        } else {
+            $resArea = Area::all();
+        }
 
         $res = $res->get()->groupBy('id_material');
 
