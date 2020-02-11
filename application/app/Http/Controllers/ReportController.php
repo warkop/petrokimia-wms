@@ -2244,7 +2244,7 @@ class ReportController extends Controller
 
         $res = MaterialTrans::with('aktivitasHarian', 'aktivitasHarian.gudang', 'aktivitasHarian.gudangTujuan')
         ->with('material')
-        ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+        // ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
         ->whereHas('material', function($query) {
             $query->where('kategori', 1);
         })
@@ -2255,20 +2255,13 @@ class ReportController extends Controller
         ->orderBy('material_trans.id', 'asc')
         ;
 
-        // $resGudang = Gudang::internal()->get();
         if ($gudang != null) {
             $res = $res->whereHas('aktivitasHarian', function ($query) use ($gudang) {
+                $query = $query->where('id_gudang', $gudang[0]);
                 foreach ($gudang as $key => $value) {
                     $query = $query->orWhere('id_gudang', $value);
                 }
             });
-
-            // $resGudang = Gudang::where(function ($query) use ($gudang) {
-            //     $query->where('id', $gudang[0]);
-            //     foreach ($gudang as $key => $value) {
-            //         $query->orWhere('id', $value);
-            //     }
-            // })->get();
         }
 
         if ($material == 2) {
@@ -2284,7 +2277,6 @@ class ReportController extends Controller
         }
 
         $res = $res->get();
-        // dd($res->toArray());
 
         if (!is_dir(storage_path() . '/app/public/excel/')) {
             mkdir(storage_path() . '/app/public/excel', 755);
@@ -2294,8 +2286,6 @@ class ReportController extends Controller
         // $genToExcel = (new GenerateExcel('transaksi_material', ['res' => $res, 'nama_file' => $nama_file, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]))->onQueue('material');
         // $this->dispatch($genToExcel);
         $this->generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir);
-
-        // dd($res->toArray());
     }
 
     public function generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir)
