@@ -2665,9 +2665,15 @@ class ReportController extends Controller
                 foreach ($gudang as $key => $value) {
                     $query->orWhere('id_gudang', $value);
                 }
-            })->get();
+            })
+            ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
+            ->where('jumlah', '>', 0)
+            ->get();
         } else {
-            $resArea = DB::table('area')->get();
+            $resArea = DB::table('area')
+            ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
+            ->where('jumlah', '>', 0)
+            ->get();
         }
 
         $res = $res->get()->groupBy('id_material');
