@@ -2660,14 +2660,14 @@ class ReportController extends Controller
             });
         }
         if (is_array($gudang)) {
-            $resArea = Area::where(function ($query) use ($gudang) {
+            $resArea = DB::table('area')->where(function ($query) use ($gudang) {
                 $query->where('id_gudang', $gudang[0]);
                 foreach ($gudang as $key => $value) {
                     $query->orWhere('id_gudang', $value);
                 }
             })->get();
         } else {
-            $resArea = Area::all();
+            $resArea = DB::table('area')->get();
         }
 
         $res = $res->get()->groupBy('id_material');
