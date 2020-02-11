@@ -1391,7 +1391,7 @@ class ReportController extends Controller
                     $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use ($item, $value) {
                         $query->where(function($query) use($item, $value) {
                             $query->where('id_gudang', $item->id);
-                            $query->orWhere('id_gudang_tujuan', $value->id_gudang);
+                            $query->where('id_gudang_tujuan', $value->id_gudang);
                         });
                         $query->where('draft', 0);
                     })
@@ -1429,7 +1429,7 @@ class ReportController extends Controller
                     $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use ($item, $value) {
                         $query->where(function ($query) use ($item, $value) {
                             $query->where('id_gudang', $item->id);
-                            $query->orWhere('id_gudang_tujuan', $value->id_gudang);
+                            $query->where('id_gudang_tujuan', $value->id_gudang);
                         });
                         $query->where('draft', 0);
                     })
