@@ -2681,6 +2681,7 @@ class ReportController extends Controller
 
         $resProduk = $resProduk->get();
         $nama_file = date("YmdHis") . '_stok.xlsx';
+        dd($res);
         $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl_awal, $tgl_akhir);
     }
 
