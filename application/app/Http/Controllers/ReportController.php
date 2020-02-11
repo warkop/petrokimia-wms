@@ -2655,33 +2655,33 @@ class ReportController extends Controller
         }
         if (is_array($gudang)) {
             $resArea = DB::table('area')->distinct()->select('area.*')
-            ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
-            ->leftJoin('material_trans', 'material_trans.id_area', '=', 'area.id')
-            ->leftJoin('aktivitas_harian', 'material_trans.id_aktivitas_harian', '=', 'aktivitas_harian.id')
-            ->leftJoin('material', 'area_stok.id_material', '=', 'material.id')
+            // ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
+            // ->leftJoin('material_trans', 'material_trans.id_area', '=', 'area.id')
+            // ->leftJoin('aktivitas_harian', 'material_trans.id_aktivitas_harian', '=', 'aktivitas_harian.id')
+            // ->leftJoin('material', 'area_stok.id_material', '=', 'material.id')
             ->where(function ($query) use ($gudang) {
                 $query->where('area.id_gudang', $gudang[0]);
                 foreach ($gudang as $key => $value) {
                     $query->orWhere('area.id_gudang', $value);
                 }
             })     
-            ->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir])       
-            ->where('area_stok.jumlah', '>', 0)
-            ->where('kategori', 1)
-            ->where('draft', 0)
+            // ->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir])       
+            // ->where('area_stok.jumlah', '>', 0)
+            // ->where('kategori', 1)
+            // ->where('draft', 0)
             ->get();
         } else {
             $resArea = DB::table('area')
-            ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
-            ->where('jumlah', '>', 0)
+            // ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
+            // ->where('jumlah', '>', 0)
             ->get();
         }
 
-        $res = $res->get()->groupBy('id_material');
+        $res = $res->get();
 
         $resProduk = $resProduk->get();
         $nama_file = date("YmdHis") . '_stok.xlsx';
-        dd($res->toArray());
+        // dd($res->toArray());
         $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl_awal, $tgl_akhir);
     }
 
