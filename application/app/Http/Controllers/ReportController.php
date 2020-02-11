@@ -2514,7 +2514,7 @@ class ReportController extends Controller
             ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
             ->where('id_material', $value->material->id)
             ->where('draft', 0)
-            ->where('aktivitas_harian.created_at', '<', $value->tgl_awal);
+            ->where('aktivitas_harian.created_at', '<', $tgl_awal);
 
             $penambahan = $tempRes->where('tipe', 2)->sum('jumlah');
             $pengurangan = $tempRes->where('tipe', 1)->sum('jumlah');
@@ -2526,7 +2526,7 @@ class ReportController extends Controller
             } else {
                 $totalStok += $value->jumlah;
             }
-            
+
             $totalStok += $jumlahStok;
 
             if ($value->status_produk == 2) {
