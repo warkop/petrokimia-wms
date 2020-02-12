@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Area;
 use App\Http\Models\AreaHousekeeperFoto;
+use App\Http\Models\FotoBuruh;
 use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
 use App\Http\Models\Karu;
@@ -153,17 +154,10 @@ class RealisasiController extends Controller
         $req->validated();
 
         $id_rencana     = $req->input('id_rencana');
+        $jumlah_buruh   = $req->input('jumlah_buruh');
+        $foto_buruh     = $req->foto_buruh;
         $user           = $req->get('my_auth');
         $rencana        = RencanaHarian::findOrFail($id_rencana);
-
-        if (empty($rencana)) {
-            return response()->json([
-                'status' => [
-                    'message'   => 'Rencana tidak ditemukan',
-                    'code'      => 403,
-                ]
-            ], 403);
-        }
 
         $temp_res = (new Realisasi)->where('id_rencana', $id_rencana)->first();
         (new Realisasi)->where('id_rencana', $id_rencana)->forceDelete();
@@ -182,6 +176,7 @@ class RealisasiController extends Controller
         $housekeeper    = array_values((array)$housekeeper);
 
         $realisasi->id_rencana  = $id_rencana;
+        $realisasi->jumlah_buruh  = $jumlah_buruh;
         $realisasi->tanggal     = now();
         $realisasi->created_at  = now();
         $realisasi->created_by  = $user->id_user;
@@ -192,9 +187,9 @@ class RealisasiController extends Controller
                 $temp = array_values((array)$req->input('area_housekeeper')[$key]);
                 if (!empty($temp)) {
                     foreach ($temp as $row => $hey) {
-                        if (isset($key,$req->input('foto')[$key])) {
-                            if (isset($req->input('foto')[$key][$row])) {
-                                $foto = $req->input('foto')[$key][$row];
+                        if (isset($key,$req->foto[$key])) {
+                            if (isset($req->foto[$key][$row])) {
+                                $foto = $req->foto[$key][$row];
                             } else {
                                 $foto = '';
                             }
@@ -215,7 +210,7 @@ class RealisasiController extends Controller
                             for ($i = 0; $i < $panjang; $i++) {
                                 if ($foto[$i]->isValid()) {
                                     $areaHousekeeperFoto = new AreaHousekeeperFoto();
-
+                                    // dd($foto[$i]);
                                     storage_path('app/public/realisasi_housekeeper/') . $realisasi_housekeeper->id;
                                     $md5Name = md5_file($foto[$i]->getRealPath());
                                     $guessExtension = $foto[$i]->getClientOriginalExtension();
@@ -239,11 +234,35 @@ class RealisasiController extends Controller
             }
         }
 
-        
+        // dd($foto_buruh);
+        if (!empty($foto_buruh)) {
+            $panjang = count($foto_buruh);
+            for ($i = 0; $i < $panjang; $i++) {
+                $fotoBuruh = new FotoBuruh();
 
-        $housekeeper = RealisasiHousekeeper::where('id_realisasi', $realisasi->id)->get();
+                // storage_path('app/public/foto_buruh/') . $realisasi->id;
+                // dd($foto_buruh[$i]->getRealPath());
+                $md5Name = md5_file($foto_buruh[$i]->getRealPath());
+                $guessExtension = $foto_buruh[$i]->getClientOriginalExtension();
+                $foto_buruh[$i]->storeAs('/public/foto_buruh/' . $realisasi->id, $md5Name . '.' . $guessExtension);
+                $arrayFoto = [
+                    'id_realisasi'              => $realisasi->id,
+                    'foto'                      => $foto_buruh[$i]->getClientOriginalName(),
+                    'size'                      => $foto_buruh[$i]->getSize(),
+                    'ekstensi'                  => $foto_buruh[$i]->getClientOriginalExtension(),
+                    'file_enc'                  => $md5Name . '.' . $guessExtension,
+                    'created_by'                => $user->id_user,
+                    'updated_by'                => $user->id_user,
+                ];
 
-        $this->responseData = ['realisasi' => $realisasi, 'housekeeper' => $housekeeper];
+                $fotoBuruh->create($arrayFoto);
+            }
+        }        
+
+        $housekeeper = RealisasiHousekeeper::with('areaHousekeeperFoto')->where('id_realisasi', $realisasi->id)->get();
+        $fotoBuruh = FotoBuruh::where('id_realisasi', $realisasi->id)->get();
+
+        $this->responseData = ['realisasi' => $realisasi, 'housekeeper' => $housekeeper, 'foto_buruh' => $fotoBuruh];
         $this->responseCode = 200; 
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
