@@ -2909,7 +2909,7 @@ class ReportController extends Controller
 
                 // dd($masuk);
 
-                $jumlah  = ((float)$masuk - (float)$keluar);
+                $jumlah  = ((float)$pre_masuk - (float)$pre_keluar)+((float)$masuk - (float)$keluar);
                 // $materialTrans = DB::table('material_trans')->whereBetween('created_at', [$tgl_awal,$tgl_akhir])
                 // ->where('id_material', $key->id)
                 // ->where('status_produk', 1)
