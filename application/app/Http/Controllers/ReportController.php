@@ -2657,6 +2657,7 @@ class ReportController extends Controller
             //     $query = $query->where('kategori', 1);
             //     $resProduk = $resProduk->where('kategori', 1);
             // });
+            $resProduk = $resProduk->get();
         }
         if (is_array($gudang)) {
             $resArea = DB::table('area')->distinct()->select('area.*')
@@ -2692,7 +2693,6 @@ class ReportController extends Controller
 
         $res = $res->get();
 
-        $resProduk = $resProduk->get();
         $nama_file = date("YmdHis") . '_stok.xlsx';
         // dd($res->toArray());
         // dispatch(new GenerateExcel('stok', ['res' => $res, 'nama_file' => $nama_file, 'resProduk' => $resProduk, 'resArea' => $resArea, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]));
