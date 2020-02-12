@@ -2892,11 +2892,11 @@ class ReportController extends Controller
 
                 $pre_masuk = 0;
                 $pre_keluar = 0;
-                foreach ($stokTanggalSebelum as $singletonKey) {
-                    if ($singletonKey->tipe == 2) {
-                        $pre_masuk += $singletonKey->jumlah;
-                    } else if ($singletonKey->tipe == 1) {
-                        $pre_keluar += $singletonKey->jumlah;
+                foreach ($stokTanggalSebelum as $preKey) {
+                    if ($preKey->tipe == 2) {
+                        $pre_masuk += $preKey->jumlah;
+                    } else if ($preKey->tipe == 1) {
+                        $pre_keluar += $preKey->jumlah;
                     }
                 }
 
