@@ -2868,7 +2868,7 @@ class ReportController extends Controller
             // dd($value);
             foreach ($produk as $key) {
                 $jumlah =0;
-                $singleton = DB::table('material_transs')->where('id_material', $key->id)
+                $singleton = DB::table('material_trans')->where('id_material', $key->id)
                     ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
                     ->where('material_trans.id_area', $value->id)
                     ->leftJoin('aktivitas_harian', function ($join) use ($value) {
@@ -2877,7 +2877,7 @@ class ReportController extends Controller
 
                 $stokTanggalIni = $singleton->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir])->get();
                 
-                $stokTanggalSebelum = $singleton->where('material_trans.created_at', '<', $tgl_awal)->get();
+                $stokTanggalSebelum = $singleton->where('material_transs.created_at', '<', $tgl_awal)->get();
                 
                 $masuk = 0;
                 $keluar = 0;
