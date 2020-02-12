@@ -2890,6 +2890,8 @@ class ReportController extends Controller
                     }
                 }
 
+                $pre_masuk = 0;
+                $pre_keluar = 0;
                 foreach ($stokTanggalSebelum as $singletonKey) {
                     if ($singletonKey->tipe == 2) {
                         $pre_masuk += $singletonKey->jumlah;
