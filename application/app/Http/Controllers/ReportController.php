@@ -2883,9 +2883,9 @@ class ReportController extends Controller
                 $keluar = 0;
                 foreach ($stokTanggalIni as $singletonKey) {
                     if ($singletonKey->tipe == 2) {
-                        $masuk += $singletonKey->jumlah;
+                        $masuk = (float)$masuk + (float)$singletonKey->jumlah;
                     } else if ($singletonKey->tipe == 1) {
-                        $keluar += $singletonKey->jumlah;
+                        $keluar = (float)$keluar + (float)$singletonKey->jumlah;
                     }
                 }
 
@@ -2893,9 +2893,9 @@ class ReportController extends Controller
                 $pre_keluar = 0;
                 foreach ($stokTanggalSebelum as $preKey) {
                     if ($preKey->tipe == 2) {
-                        $pre_masuk += $preKey->jumlah;
+                        $pre_masuk = (float)$pre_masuk + (float)$preKey->jumlah;
                     } else if ($preKey->tipe == 1) {
-                        $pre_keluar += $preKey->jumlah;
+                        $pre_keluar = (float)$pre_keluar + (float)$preKey->jumlah;
                     }
                 }
 
@@ -2909,7 +2909,7 @@ class ReportController extends Controller
 
                 // dd($masuk);
 
-                $jumlah  = ($pre_masuk - $pre_keluar);
+                $jumlah  = ((float)$pre_masuk - (float)$pre_keluar)-((float)$masuk - (float)$keluar);
                 // $materialTrans = DB::table('material_trans')->whereBetween('created_at', [$tgl_awal,$tgl_akhir])
                 // ->where('id_material', $key->id)
                 // ->where('status_produk', 1)
