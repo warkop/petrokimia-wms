@@ -2867,6 +2867,7 @@ class ReportController extends Controller
             $total_kesamping = 0;
             // dd($value);
             foreach ($produk as $key) {
+                $jumlah =0;
                 $singleton = DB::table('material_trans')->where('id_material', $key->id)
                     ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
                     ->where('material_trans.id_area', $value->id)
