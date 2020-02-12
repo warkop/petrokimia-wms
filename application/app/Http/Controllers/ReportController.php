@@ -2879,7 +2879,7 @@ class ReportController extends Controller
                     });
 
                 $stokTanggalIni = $singleton->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir])->get();
-                $stokTanggalSebelum = $singleton = DB::table('material_trans')->where('id_material', $key->id)
+                $stokTanggalSebelum = DB::table('material_trans')->where('id_material', $key->id)
                     ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
                     ->where('material_trans.id_area', $value->id)
                     // ->join('area', function ($join) use ($value) {
