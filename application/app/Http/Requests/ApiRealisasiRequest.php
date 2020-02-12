@@ -34,6 +34,7 @@ class ApiRealisasiRequest extends FormRequest
             ],
             'area_housekeeper.*.*'  => 'exists:area,id',
             'foto.*.*.*'            => 'image',
+            'foto_buruh.*'            => 'image',
         ];
 
         $this->sanitize();
@@ -51,6 +52,7 @@ class ApiRealisasiRequest extends FormRequest
             'housekeeper.*'         => 'Housekeeper',
             'area_housekeeper.*.*'  => 'Area Housekeeper',
             'foto.*.*.*'            => 'Foto',
+            'foto_buruh.*'          => 'Foto Buruh',
         ];
     }
 
@@ -71,13 +73,17 @@ class ApiRealisasiRequest extends FormRequest
         foreach ($input as $key => $value) {
             if (is_array($input[$key])) {
                 foreach ($input[$key] as $row1 => $data1) {
-                    if (is_array($input[$key][$row1])) {
-                        foreach ($input[$key] as $row2 => $data2) {
-                            if ($input[$key] == 'file')
-                                $input[$key][$row1][$row2] = filter_var($data2, FILTER_SANITIZE_STRING);
-                        }
+                    if ($input[$key][$row1] == 'file') {
+                        // $input[$key][$row1] = filter_var($data1, FILTER_SANITIZE_STRING);
                     } else {
-                        $input[$key][$row1] = filter_var($data1, FILTER_SANITIZE_STRING);
+                        if (is_array($input[$key][$row1])) {
+                            foreach ($input[$key] as $row2 => $data2) {
+                                if ($input[$key] == 'file')
+                                    $input[$key][$row1][$row2] = filter_var($data2, FILTER_SANITIZE_STRING);
+                            }
+                        } else {
+                            $input[$key][$row1] = filter_var($data1, FILTER_SANITIZE_STRING);
+                        }
                     }
                 }
             } else {
