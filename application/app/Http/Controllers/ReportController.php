@@ -2882,7 +2882,7 @@ class ReportController extends Controller
                     ->where('material_trans.id_area', $value->id)
                     ->leftJoin('aktivitas_harian', function ($join) use ($value) {
                         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')->where('draft', 0);
-                    })->where('material_transs.created_at', '<', $tgl_awal)->get();
+                    })->where('material_trans.created_at', '<', $tgl_awal)->get();
                 
                 $masuk = 0;
                 $keluar = 0;
