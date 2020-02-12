@@ -1599,6 +1599,8 @@ class AktivitasController extends Controller
 
         $gudang = $this->getCheckerGudang();
         $search = $req->input('search');
+        $tanggal_awal = $req->input('tanggal_awal');
+        $tanggal_selesai = $req->input('tanggal_selesai');
         $my_auth = $req->get('my_auth');
         $user = Users::findOrFail($my_auth->id_user);
         
@@ -1630,28 +1632,21 @@ class AktivitasController extends Controller
                 $where->orWhere('id_gudang_tujuan', $gudang->id);
             })
             ->whereNull('ref_number')
-            ->where(function ($where) use ($search) {
+            ->where(function ($where) use ($search, $tanggal_awal, $tanggal_selesai) {
                 $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('LOWER(tenaga_kerja_non_organik.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-                // $where->orWhere('aktivitas_harian.updated_at', date('Y-m-d', strtotime($search)));
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('aktivitas_harian.created_at', 'desc')
             ;
             
-        if ($shift != null) {
+        if (!empty($shift)) {
             $res = $res->where('aktivitas_harian.id_shift', $shift);
-            // foreach ($shift as $key => $value) {
-            //     $res = $res->where('aktivitas_harian.id_shift', $value);
-            // }
         }
 
-        // if (!empty($shift)) {
-        //     $res = $res->where('aktivitas_harian.id_shift', $shift[0]);
-        //     foreach ($shift as $key => $value) {
-        //         $res = $res->where('aktivitas_harian.id_shift', $value);
-        //     }
-        // }
+        if (!empty($tanggal_awal) && !empty($tanggal_selesai)) {
+            $res = $res->orWhereBetween('aktivitas_harian.created_at', [date('Y-m-d', strtotime($tanggal_awal)), date('Y-m-d', strtotime($tanggal_selesai . '+1 day'))]);
+        }
 
         $obj =  AktivitasResource::collection($res->paginate(10))->additional([
             'status' => [
