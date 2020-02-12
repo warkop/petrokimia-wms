@@ -2640,7 +2640,7 @@ class ReportController extends Controller
         ->where('area_stok.status', 1)
         ;
 
-        $resProduk = new Material;
+        $resProduk = Material::produk();
         if ($produk == 2) {
             // $res = $res->whereHas('areaStok', function ($query) use ($pilih_produk) {
             //     foreach ($pilih_produk as $key => $value) {
@@ -2657,8 +2657,8 @@ class ReportController extends Controller
             //     $query = $query->where('kategori', 1);
             //     $resProduk = $resProduk->where('kategori', 1);
             // });
-            $resProduk = $resProduk->get();
         }
+        $resProduk = $resProduk->get();
         if (is_array($gudang)) {
             $resArea = DB::table('area')->distinct()->select('area.*')
             // ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
