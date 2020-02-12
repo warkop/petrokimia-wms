@@ -2878,7 +2878,15 @@ class ReportController extends Controller
                     });
 
                 $stokTanggalIni = $singleton->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir])->get();
-                $stokTanggalSebelum = $singleton->where('material_trans.created_at', '<', $tgl_awal)->get();
+                $stokTanggalSebelum = $singleton = DB::table('material_trans')->where('id_material', $key->id)
+                    ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
+                    ->where('material_trans.id_area', $value->id)
+                    // ->join('area', function ($join) use ($value) {
+                    //     $join->on('area.id', '=', 'material_trans.id_area');
+                    // })
+                    ->leftJoin('aktivitas_harian', function ($join) use ($value) {
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')->where('draft', 0);
+                    })->where('material_trans.created_at', '<', $tgl_awal)->get();
                 
                 $masuk = 0;
                 $keluar = 0;
@@ -2910,7 +2918,7 @@ class ReportController extends Controller
 
                 // dd($masuk);
 
-                $jumlah  = ($pre_masuk- $pre_keluar)-($masuk - $keluar);
+                $jumlah  = ($pre_masuk - $pre_keluar)-($masuk - $keluar);
                 // $materialTrans = DB::table('material_trans')->whereBetween('created_at', [$tgl_awal,$tgl_akhir])
                 // ->where('id_material', $key->id)
                 // ->where('status_produk', 1)
