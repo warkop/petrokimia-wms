@@ -2875,16 +2875,26 @@ class ReportController extends Controller
                     // })
                     ->leftJoin('aktivitas_harian', function ($join) use ($value) {
                         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')->where('draft', 0);
-                    })
-                    ->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir])->get();
+                    });
+
+                $stokTanggalIni = $singleton->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir])->get();
+                $stokTanggalSebelum = $singleton->where('material_trans.created_at', '<', $tgl_awal)->get();
                 
                 $masuk = 0;
                 $keluar = 0;
-                foreach ($singleton as $singletonKey) {
+                foreach ($stokTanggalIni as $singletonKey) {
                     if ($singletonKey->tipe == 2) {
                         $masuk += $singletonKey->jumlah;
                     } else if ($singletonKey->tipe == 1) {
                         $keluar += $singletonKey->jumlah;
+                    }
+                }
+
+                foreach ($stokTanggalSebelum as $singletonKey) {
+                    if ($singletonKey->tipe == 2) {
+                        $pre_masuk += $singletonKey->jumlah;
+                    } else if ($singletonKey->tipe == 1) {
+                        $pre_keluar += $singletonKey->jumlah;
                     }
                 }
 
@@ -2898,7 +2908,7 @@ class ReportController extends Controller
 
                 // dd($masuk);
 
-                $jumlah  = $masuk - $keluar;
+                $jumlah  = ($pre_masuk- $pre_keluar)-($masuk - $keluar);
                 // $materialTrans = DB::table('material_trans')->whereBetween('created_at', [$tgl_awal,$tgl_akhir])
                 // ->where('id_material', $key->id)
                 // ->where('status_produk', 1)
