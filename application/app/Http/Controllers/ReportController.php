@@ -2881,10 +2881,10 @@ class ReportController extends Controller
                 $masuk = 0;
                 $keluar = 0;
                 foreach ($singleton as $singletonKey) {
-                    if ($singletonKey['tipe'] == 2) {
-                        $masuk += $singletonKey['jumlah'];
-                    } else if ($singletonKey['tipe'] == 1) {
-                        $keluar += $singletonKey['jumlah'];
+                    if ($singletonKey->tipe == 2) {
+                        $masuk += $singletonKey->jumlah;
+                    } else if ($singletonKey->tipe == 1) {
+                        $keluar += $singletonKey->jumlah;
                     }
                 }
 
