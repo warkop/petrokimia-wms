@@ -2695,9 +2695,9 @@ class ReportController extends Controller
         $resProduk = $resProduk->get();
         $nama_file = date("YmdHis") . '_stok.xlsx';
         // dd($res->toArray());
-        dispatch(new GenerateExcel('stok', ['res' => $res, 'nama_file' => $nama_file, 'resProduk' => $resProduk, 'resArea' => $resArea, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]));
+        // dispatch(new GenerateExcel('stok', ['res' => $res, 'nama_file' => $nama_file, 'resProduk' => $resProduk, 'resArea' => $resArea, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]));
         // GenerateExcel::dispatch('stok', ['res' => $res, 'nama_file' => $nama_file, 'resProduk' => $resProduk, 'resArea' => $resArea, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]);
-        // $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl_awal, $tgl_akhir);
+        $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl_awal, $tgl_akhir);
     }
 
     public function generateExcelStok($res, $nama_file, $produk, $area, $tgl_awal, $tgl_akhir)
@@ -2876,15 +2876,25 @@ class ReportController extends Controller
                     ->leftJoin('aktivitas_harian', function ($join) use ($value) {
                         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')->where('draft', 0);
                     })
-                    ->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir]);
+                    ->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir])->get();
+                
+                $masuk = 0;
+                $keluar = 0;
+                foreach ($singleton as $singletonKey) {
+                    if ($singletonKey['tipe'] == 2) {
+                        $masuk += $singletonKey['jumlah'];
+                    } else if ($singletonKey['tipe'] == 1) {
+                        $keluar += $singletonKey['jumlah'];
+                    }
+                }
 
-                $masuk      = $singleton
-                    ->where('material_trans.tipe', 2)
-                    ->sum('jumlah');
+                // $masuk      = $singleton
+                //     ->where('material_trans.tipe', 2)
+                //     ->sum('jumlah');
 
-                $keluar     = $singleton
-                    ->where('material_trans.tipe', 1)
-                    ->sum('jumlah');
+                // $keluar     = $singleton
+                //     ->where('material_trans.tipe', 1)
+                //     ->sum('jumlah');
 
                 // dd($masuk);
 
