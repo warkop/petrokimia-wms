@@ -3602,7 +3602,7 @@ class ReportController extends Controller
         $totalKeluar = 0;
         foreach ($res as $value) {
             $col = 1;
-             $abjad = 'A';
+            $abjad = 'A';
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
