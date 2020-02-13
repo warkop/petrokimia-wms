@@ -2607,100 +2607,24 @@ class ReportController extends Controller
 
     public function stok()
     {
-        $gudang             = request()->input('gudang'); //multi
-        $produk             = request()->input('produk');
-        $pilih_produk       = request()->input('pilih_produk'); //multi
-        $tgl_awal   = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
+        $gudang     = request()->input('gudang'); //multi
+        $tipe_produk= request()->input('produk');
+        $produk     = request()->input('pilih_produk'); //multi
+        $tgl        = (request()->input('tgl_awal') == '') ? date('Y-m-d') : (request()->input('tgl_awal'));
+        $tgl        = date('Y-m-d', strtotime(request()->input('tgl_awal')));
 
-        // $res = Area::whereBetween('created_at', [$tgl_awal, $tgl_akhir]);
+        $res        = [];
+        $area       = new Area;
+        $resProduk  = $area->getProduk($gudang, $tipe_produk, $produk, $tgl);
+        $resArea    = $area->getStokGudang($gudang, $tipe_produk, $produk, $tgl);
+        $nama_file  = date("YmdHis") . '_stok.xlsx';
 
-        // if ($gudang) {
-        //     $res = $res->where(function ($query) use ($gudang) {
-        //         $query->where('id_gudang', $gudang[0]);
-        //         foreach ($gudang as $key => $value) {
-        //             $query->orWhere('id_gudang', $value);
-        //         }
-        //     });
-        // } else {
-        //     $res = $res->whereHas('gudang', function($query) {
-        //         $query->where('tipe_gudang', 1);
-        //     });
-        // }
+        // return $resArea;
 
-        // $res = MaterialTrans::whereBetween('created_at', [$tgl_awal, $tgl_akhir])
-        // ->with('areaStok', 'areaStok.area')
-        // ->whereHas('areaStok', function ($query){
-        //     $query->where('status', 1);
-        // })
-        // ;
-        $res = DB::table('area')->distinct()->select('area.id', 'area.nama', 'kapasitas')
-        ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
-        ->join('material_trans', 'material_trans.id_area_stok', '=', 'area_stok.id')->where('area_stok.jumlah', '>', 0)
-        ->where('area_stok.status', 1)
-        ;
-
-        $resProduk = Material::produk();
-        if ($produk == 2) {
-            // $res = $res->whereHas('areaStok', function ($query) use ($pilih_produk) {
-            //     foreach ($pilih_produk as $key => $value) {
-            //         $query = $query->orWhere('id_material', $value);
-            //     }
-            // });
-            $resProduk = $resProduk->where(function($query) use ($pilih_produk) {
-                foreach ($pilih_produk as $key => $value) {
-                    $query->orWhere('id', $value);
-                }
-            });
-        } else {
-            // $res = $res->whereHas('areaStok.material', function ($query) use($resProduk){
-            //     $query = $query->where('kategori', 1);
-            //     $resProduk = $resProduk->where('kategori', 1);
-            // });
-        }
-        $resProduk = $resProduk->get();
-        if (is_array($gudang)) {
-            $resArea = DB::table('area')->distinct()->select('area.*')
-            // ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
-            // ->leftJoin('material_trans', 'material_trans.id_area', '=', 'area.id')
-            // ->leftJoin('aktivitas_harian', 'material_trans.id_aktivitas_harian', '=', 'aktivitas_harian.id')
-            // ->leftJoin('material', 'area_stok.id_material', '=', 'material.id')
-            ->where(function ($query) use ($gudang) {
-                $query->where('area.id_gudang', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query->orWhere('area.id_gudang', $value);
-                }
-            })     
-            // ->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir])       
-            // ->where('area_stok.jumlah', '>', 0)
-            // ->where('kategori', 1)
-            // ->where('draft', 0)
-            ->get();
-
-            $res = $res->where(function ($query) use ($gudang) {
-                $query->where('area.id_gudang', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query->orWhere('area.id_gudang', $value);
-                }
-            });
-
-        } else {
-            $resArea = DB::table('area')
-            // ->join('area_stok', 'area_stok.id_area', '=', 'area.id')
-            // ->where('jumlah', '>', 0)
-            ->get();
-        }
-
-        $res = $res->get();
-
-        $nama_file = date("YmdHis") . '_stok.xlsx';
-        // dd($res->toArray());
-        // dispatch(new GenerateExcel('stok', ['res' => $res, 'nama_file' => $nama_file, 'resProduk' => $resProduk, 'resArea' => $resArea, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]));
-        // GenerateExcel::dispatch('stok', ['res' => $res, 'nama_file' => $nama_file, 'resProduk' => $resProduk, 'resArea' => $resArea, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]);
-        $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl_awal, $tgl_akhir);
+        $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl);
     }
 
-    public function generateExcelStok($res, $nama_file, $produk, $area, $tgl_awal, $tgl_akhir)
+    public function generateExcelStok($res, $nama_file, $produk, $area, $tgl_awal)
     {
         $objSpreadsheet = new Spreadsheet();
 
@@ -2779,13 +2703,13 @@ class ReportController extends Controller
         // start : title
         $col = 3;
         $row = 1;
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Stok (Bulan)');
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow('A', $row, 'Laporan Stok (Bulan)');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
 
         $row++;
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Periode Tanggal '.date('d/m/Y', strtotime($tgl_awal)). ' - ' . date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow('A', $row, 'Per Tanggal '.date('d/m/Y', strtotime($tgl_awal)));
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
 
         $col = 1;
@@ -2795,8 +2719,8 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
         $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(7);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(15);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(35);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
 
         // end : title
         // start : judul kolom
@@ -2823,8 +2747,11 @@ class ReportController extends Controller
         $abjadPemasukan = $abjadOri;
         $i = 0;
         $row = 6;
+        $listProduk = [];
         foreach ($produk as $key) {
+            $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $key->nama);
+            $listProduk[$key->id_material] = $col;
             $i++;
             $col++;
             $abjadPemasukan++;
@@ -2846,112 +2773,52 @@ class ReportController extends Controller
         $total_kapasitas = 0;
         $total_kesamping = 0;
         $j=0;
-        foreach ($area as $value) {
-            $no++;
-            $col = 1;
-            $row++;
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadPemasukan . $row)->applyFromArray($style_kolom);
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':' . $abjadPemasukan . $row)->applyFromArray($style_ontop);
+        // $row++;
 
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
-
-            $col++;
-            $abjad = chr(ord($abjad) + 1);
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama); //nama area
-
-            $col++;
-            $abjad = chr(ord($abjad) + 1);
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->kapasitas); //kapasitas
-            $total_kapasitas += $value->kapasitas;
-            $i = 0;
-            $total_kesamping = 0;
-            // dd($value);
-            foreach ($produk as $key) {
-                $jumlah =0;
-                $singleton = DB::table('material_trans')->where('id_material', $key->id)
-                    ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
-                    ->where('material_trans.id_area', $value->id)
-                    ->leftJoin('aktivitas_harian', function ($join) use ($value) {
-                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')->where('draft', 0);
-                    });
-
-                $stokTanggalIni = $singleton->whereBetween('material_trans.created_at', [$tgl_awal, $tgl_akhir])->get();
-                
-                $stokTanggalSebelum = DB::table('material_trans')->where('id_material', $key->id)
-                    ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
-                    ->where('material_trans.id_area', $value->id)
-                    ->leftJoin('aktivitas_harian', function ($join) use ($value) {
-                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')->where('draft', 0);
-                    })->where('material_trans.created_at', '<', $tgl_awal)->get();
-                
-                $masuk = 0;
-                $keluar = 0;
-                foreach ($stokTanggalIni as $singletonKey) {
-                    if ($singletonKey->tipe == 2) {
-                        $masuk = $masuk + $singletonKey->jumlah;
-                    } else if ($singletonKey->tipe == 1) {
-                        $keluar = $keluar + $singletonKey->jumlah;
-                    }
-                }
-
-                $pre_masuk = 0;
-                $pre_keluar = 0;
-                foreach ($stokTanggalSebelum as $preKey) {
-                    if ($preKey->tipe == 2) {
-                        $pre_masuk = $pre_masuk + $preKey->jumlah;
-                    } else if ($preKey->tipe == 1) {
-                        $pre_keluar = $pre_keluar + $preKey->jumlah;
-                    }
-                }
-
-                // $masuk      = $singleton
-                //     ->where('material_trans.tipe', 2)
-                //     ->sum('jumlah');
-
-                // $keluar     = $singleton
-                //     ->where('material_trans.tipe', 1)
-                //     ->sum('jumlah');
-
-                // dd($masuk);
-
-                $jumlah  = $pre_masuk - $pre_keluar + $masuk - $keluar;
-                // $materialTrans = DB::table('material_trans')->whereBetween('created_at', [$tgl_awal,$tgl_akhir])
-                // ->where('id_material', $key->id)
-                // ->where('status_produk', 1)
-                // ->where('id_area', $value->id)
-                // ->get();
-                // foreach ($materialTrans as $key2) {
-                //     if ($key2->tipe == 1) {
-                //         $jumlah = $jumlah - $key2->jumlah;
-                //     } else {
-                //         $jumlah = $jumlah + $key2->jumlah;
-                //     }
-                // }
-
-                $col++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlah); //jumlah
-                $total_kesamping += $jumlah;
-
-                if (array_key_exists($i, $total)) {
-                    $total[$i] = $total[$i] + $jumlah; 
-                } else {
-                    $total[$i] = $jumlah; 
-                }
-                $i++;
+        //coding transaksi di sini
+        $id_gudang = null;
+        $id_material = null;
+        $kapasitas = 0;
+        $total_per_gudang = 0;
+        $total_keseluruhan = 0;
+        $total_kapasitas = 0;
+        foreach($area as $dArea){
+            if($dArea->id_gudang != $id_gudang){
+                $no++;
+                $row++;
+                $id_gudang = $dArea->id_gudang;
+                $kapasitas = $dArea->kapasitas;
+                $total_per_gudang = $dArea->total;
+            } else {
+                $kapasitas = $kapasitas + $dArea->kapasitas;
+                $total_per_gudang = $total_per_gudang + $dArea->total;
             }
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $total_kesamping); //jumlah disamping
-
-            $abjad = 'A';
-            $j++;
+            if(isset($total_per_produk[$dArea->id_material]))
+                $total_per_produk[$dArea->id_material] = $total_per_produk[$dArea->id_material] + $dArea->total;
+            else
+                $total_per_produk[$dArea->id_material] = $dArea->total;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $no); //nomor
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $dArea->nama_gudang); //nama gudang
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $kapasitas); //nama area
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($listProduk[$dArea->id_material], $row, $dArea->total); //nama area
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $total_per_gudang); //nama area
+            $total_keseluruhan = $total_keseluruhan + $dArea->total;
+            $total_kapasitas = $total_kapasitas + $dArea->kapasitas;
         }
+        $objSpreadsheet->getActiveSheet()->getStyle("A7:" . $abjadPemasukan . ($row))->applyFromArray($style_isi_kolom);
 
-        $col=2;
+        // $col=2;
         $row++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Jumlah'); //jumlah
+        $objSpreadsheet->getActiveSheet()->getStyle("A{$row}:" . $abjadPemasukan . ($row))->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(2, $row, 'Jumlah');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $total_kapasitas); //kapasitas
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $total_keseluruhan); //jumlah produk
+        $objSpreadsheet->getActiveSheet()->getStyle("B{$row}:{$abjadPemasukan}{$row}")->applyFromArray($style_title);
 
-        $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $total_kapasitas); //jumlah
+        
+        
+        /*$col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $total_kapasitas); //jumlah
         $total_semua = 0;
         $abjadKedua = 'C';
         for ($i=0; $i < count($total); $i++) {
@@ -2961,10 +2828,10 @@ class ReportController extends Controller
             $abjadKedua++;
         }
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $total_semua); //jumlah
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $total_semua); //jumlah*/
         // dd($abjadKedua);
-        $abjadKedua++;
-        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadKedua . $row)->applyFromArray($style_judul_kolom);
+        // $abjadKedua++;
+        // $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadKedua . $row)->applyFromArray($style_judul_kolom);
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle('Laporan Stok');
         // end : isi kolom

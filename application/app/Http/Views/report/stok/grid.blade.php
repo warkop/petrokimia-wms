@@ -60,25 +60,11 @@
                 </div>
             </div>
             <div class="form-group row">
-                <h4 class="col-2 col-form-label text-kiri">Periode</h4>
+                <h4 class="col-2 col-form-label text-kiri">Laporan Per Tanggal</h4>
                 <div class="col-6">
-                    <div class="kel-min">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Start Date</label>
-                                    <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
-                                        placeholder="Pilih tanggal">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>End Date</label>
-                                    <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
-                                        placeholder="Pilih tanggal">
-                                </div>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
+                            placeholder="Pilih tanggal">
                     </div>
                 </div>
             </div>
