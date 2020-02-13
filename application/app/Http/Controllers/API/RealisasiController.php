@@ -53,11 +53,15 @@ class RealisasiController extends Controller
         ->join('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'realisasi_housekeeper.id_tkbm')
         ->join('area', 'area.id', '=', 'realisasi_housekeeper.id_area')
         ->where('id_realisasi', $realisasi->id)->with('areaHousekeeperFoto')->get();
+
+        $fotoBuruh = FotoBuruh::where('id_realisasi', $realisasi->id)->get();
         
         $res = collect($realisasi);
         $res = $res->merge([
             'list_housekeeper' => $realisasiHousekeeper, 
-            'url' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_realisasi_housekeeper}}&ctg=realisasi_housekeeper&src={{file_enc}}'
+            'foto_buruh' => $fotoBuruh, 
+            'url' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_realisasi_housekeeper}}&ctg=realisasi_housekeeper&src={{file_enc}}',
+            'url_foto_buruh' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_realisasi}}&ctg=foto_buruh&src={{file_enc}}',
         ]);
 
 
@@ -170,6 +174,8 @@ class RealisasiController extends Controller
                 Storage::deleteDirectory('/public/realisasi_housekeeper/' . $key->id);
             }
             (new RealisasiHousekeeper)->where('id_realisasi', $temp_res->id)->forceDelete();
+            (new FotoBuruh)->where('id_realisasi', $key->id)->forceDelete();
+            Storage::deleteDirectory('/public/foto_buruh/' . $key->id);
         }
 
         $housekeeper    = $req->input('housekeeper');
