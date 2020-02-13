@@ -275,6 +275,7 @@ function edit(id = '') {
 
             if (obj.status == "OK") {
                 $('#tanggal').val(helpDateFormat(obj.data['tanggal'], 'si'));
+                $('#shift_id').val(obj.data['shift_id']);
                 $('#material').val(obj.data['id_material']);
                 $('#jumlah').val(obj.data['jumlah']);
                 $('#alasan').val(obj.data['alasan']);

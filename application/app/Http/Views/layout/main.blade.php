@@ -251,6 +251,12 @@
                                                 <span class="kt-nav__link-text">Aktivitas</span>
                                             </a>
                                         </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('report/laporan-log-sheet')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon la la-bicycle"></i>
+                                                <span class="kt-nav__link-text">Log Sheet</span>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>

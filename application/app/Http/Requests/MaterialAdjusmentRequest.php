@@ -40,6 +40,7 @@ class MaterialAdjusmentRequest extends FormRequest
             'action_pallet.*'   => 'required|numeric|between:1,2',
             'pallet_jumlah.*'   => 'numeric',
             'tanggal'           => 'required',
+            'shift_id'          => 'required',
         ];
 
         if (request()->produk_jumlah) {
