@@ -2619,7 +2619,7 @@ class ReportController extends Controller
         $resArea    = $area->getStokGudang($gudang, $tipe_produk, $produk, $tgl);
         $nama_file  = date("YmdHis") . '_stok.xlsx';
 
-        // return $resArea;
+        // return $gudang;
 
         $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl);
     }
@@ -2703,14 +2703,14 @@ class ReportController extends Controller
         // start : title
         $col = 3;
         $row = 1;
-        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':D' . $row);
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow('A', $row, 'Laporan Stok (Bulan)');
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        // $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':D' . $row);
+        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow('A', $row, 'Laporan Stok (Bulan)');
+        // $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
         $row++;
-        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':D' . $row);
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow('A', $row, 'Per Tanggal '.date('d/m/Y', strtotime($tgl_awal)));
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        // $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':D' . $row);
+        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow('A', $row, 'Per Tanggal '.date('d/m/Y', strtotime($tgl_awal)));
+        // $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
         $col = 1;
         $row++;
@@ -2813,6 +2813,9 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(2, $row, 'Jumlah');
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $total_kapasitas); //kapasitas
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $total_keseluruhan); //jumlah produk
+        foreach ($produk as $key) {
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($listProduk[$key->id_material], $row, $total_per_produk[$key->id_material]); //jumlah produk
+        }
         $objSpreadsheet->getActiveSheet()->getStyle("B{$row}:{$abjadPemasukan}{$row}")->applyFromArray($style_title);
 
         
