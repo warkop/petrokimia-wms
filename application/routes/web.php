@@ -228,6 +228,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/laporan-keluhan-alat-berat', 'ReportController@laporanKeluhanAlatBerat');
         Route::get('/laporan-keluhan-gp', 'ReportController@laporanKeluhanGp');
         Route::get('/laporan-aktivitas', 'ReportController@laporanAktivitas');
+        Route::get('/laporan-log-sheet', 'ReportController@laporanLogSheet');
         
         Route::get('/material', 'ReportController@material');
         Route::get('/stok', 'ReportController@stok');
@@ -239,6 +240,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/keluhan-alat-berat', 'ReportController@keluhanAlatBerat');
         Route::get('/keluhan-gp', 'ReportController@keluhanGp');
         Route::get('/aktivitas-harian', 'ReportController@aktivitasHarian');
+        Route::get('/log-sheet', 'ReportController@logSheet');
     });
 
     Route::get('/main', function () {
