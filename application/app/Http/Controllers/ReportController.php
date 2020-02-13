@@ -3612,6 +3612,7 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $jumlah =0;
+            $jumlahStokAwal = 0;
 
             $stokTanggalIni = DB::table('material_trans')->where('id_material', $value->id_material)
                 ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
@@ -3663,9 +3664,11 @@ class ReportController extends Controller
                 }
             }
 
+            $jumlahStokAwal = $pre_masuk - $pre_keluar;
+
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlah);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlahStokAwal);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $masuk = 0;
