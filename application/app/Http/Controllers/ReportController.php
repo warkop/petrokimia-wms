@@ -3615,7 +3615,7 @@ class ReportController extends Controller
             $jumlahStokAwal = 0;
 
             $stokTanggalIni = DB::table('material_trans')->where('id_material', $value->id_material)
-                ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
+                // ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
                 ->where('material_trans.id_area', $value->id_area)
                 ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
@@ -3629,12 +3629,10 @@ class ReportController extends Controller
                     ->where('shift', $resShift->id)
                     ->where('material_adjustment.tanggal', $tanggal);
                 })
-                // 
-                // ->where('material_trans.shift_id', $resShift->id)
                 ->get();
             
             $stokTanggalSebelum = DB::table('material_trans')->where('id_material', $value->id_material)
-                ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
+                // ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
                 ->where('material_trans.id_area', $value->id_area)
                 ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
@@ -3651,7 +3649,6 @@ class ReportController extends Controller
                     $query->where('id_shift', $resShift->id);
                     $query->orWhere('shift', $resShift->id);
                 })
-                // ->where('material_trans.shift_id', $resShift->id)
                 ->get();
 
             $pre_masuk = 0;
