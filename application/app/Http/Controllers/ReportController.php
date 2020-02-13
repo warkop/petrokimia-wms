@@ -3620,7 +3620,7 @@ class ReportController extends Controller
                 ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                     ->where('shift', $resShift->id)
-                    ->where('tanggal', $tanggal);
+                    ->where('material_trans.tanggal', $tanggal);
                 })
                 // ->where(DB::raw("TO_CHAR(material_trans.created_at, 'yyyy-mm-dd')"), $tanggal)
                 // ->where('material_trans.shift_id', $resShift->id)
@@ -3635,7 +3635,7 @@ class ReportController extends Controller
                 ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                     ->where('shift', $resShift->id)
-                    ->where('tanggal', '<', $tanggal);
+                    ->where('material_trans.tanggal', '<', $tanggal);
                 })
                 // ->where(DB::raw("TO_CHAR(material_trans.created_at, 'yyyy-mm-dd')"), '<', $tanggal)
                 // ->where('material_trans.shift_id', $resShift->id)
