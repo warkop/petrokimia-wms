@@ -6,6 +6,7 @@ use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
+use App\Http\Models\ShiftKerja;
 use App\Http\Requests\PalletRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -45,6 +46,7 @@ class PalletController extends Controller
         ->first();
         $data['nama_gudang'] = $gudang->nama;
         $data['id_gudang'] = $id_gudang;
+        $data['shift'] = ShiftKerja::get();
         return view('list-pallet.grid', $data);
     }
 
@@ -140,6 +142,7 @@ class PalletController extends Controller
             'jumlah'            => $req->input('jumlah'),
             'alasan'            => $req->input('alasan'),
             'status_pallet'     => $req->input('jenis'),
+            'shift_id'          => $req->input('shift_id'),
         ];
 
         (new MaterialTrans)->create($arr);
@@ -153,39 +156,34 @@ class PalletController extends Controller
 
     public function show($id_gudang, $id, GudangStok $models, Request $request)
     {
-        // if (!$request->ajax()) {
-        //     return $this->accessForbidden();
-        // } else {
-            $gudang = Gudang::find($id_gudang);
-            if (!empty($gudang)) {
-                $res = MaterialTrans::find($id);
+        $gudang = Gudang::find($id_gudang);
+        if (!empty($gudang)) {
+            $res = MaterialTrans::find($id);
 
-                if (!empty($res)) {
-                    $resProduk = DB::table('gudang_stok as ma')
-                        ->leftJoin('material_trans as mt', 'mt.id_gudang_stok', '=', 'ma.id')
-                        ->leftJoin('material as m', 'mt.id_material', '=', 'm.id')
-                        ->where('mt.id', $id)
-                        ->where('kategori', 2)
-                        ->first();
+            if (!empty($res)) {
+                $resProduk = DB::table('gudang_stok as ma')
+                    ->leftJoin('material_trans as mt', 'mt.id_gudang_stok', '=', 'ma.id')
+                    ->leftJoin('material as m', 'mt.id_material', '=', 'm.id')
+                    ->where('mt.id', $id)
+                    ->where('kategori', 2)
+                    ->first();
 
-                    $this->responseCode = 200;
-                    $this->responseMessage = 'Data tersedia.';
-                    // $this->responseData['gudang_stok'] = $res;
-                    $this->responseData = $resProduk;
-                } else {
-                    $this->responseData = [];
-                    $this->responseStatus = 'No Data Available';
-                    $this->responseMessage = 'Data tidak tersedia';
-                }
+                $this->responseCode = 200;
+                $this->responseMessage = 'Data tersedia.';
+                $this->responseData = $resProduk;
             } else {
-                $this->responseCode = 400;
-                $this->responseMessage = 'ID gudang tidak valid';
+                $this->responseData = [];
+                $this->responseStatus = 'No Data Available';
+                $this->responseMessage = 'Data tidak tersedia';
             }
-
-            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
-            return response()->json($response, $this->responseCode);
+        } else {
+            $this->responseCode = 400;
+            $this->responseMessage = 'ID gudang tidak valid';
         }
-    // }
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
 
     public function listPallet($id_gudang, $status)
     {

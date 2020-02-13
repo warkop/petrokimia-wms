@@ -31,6 +31,7 @@ class PalletRequest extends FormRequest
         $rules = [
             'tanggal'           => 'nullable|date_format:d-m-Y',
             'material'          => 'required',
+            'shift_id'          => 'required',
             'jumlah'            => 'numeric',
             'tipe'              => 'between:1,2',
             'jenis'             => 'between:1,4',

@@ -9,6 +9,7 @@ use App\Http\Models\GudangStok;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialAdjustment;
 use App\Http\Models\MaterialTrans;
+use App\Http\Models\ShiftKerja;
 use App\Http\Requests\MaterialAdjusmentRequest;
 use App\Http\Requests\MaterialRequest;
 use Illuminate\Http\Request;
@@ -20,6 +21,7 @@ class MaterialAdjustmentController extends Controller
     {
         $data['title'] = 'Stock Adjustment';
         $data['id_gudang'] = $id;
+        $data['shift'] = ShiftKerja::get();
         $gudang = Gudang::findOrFail($id);
         if (!empty($gudang)) {
             $data['gudang'] = $gudang;
@@ -71,6 +73,7 @@ class MaterialAdjustmentController extends Controller
         $req->validate();
 
         $id = $req->input('id');
+        $shift_id      = $req->input('shift_id');
         if (!empty($id)) {
             $materialAdjustment = MaterialAdjustment::find($id);
             MaterialTrans::where('id_adjustment', $id)->truncate();
@@ -81,6 +84,7 @@ class MaterialAdjustmentController extends Controller
         //material adjustment
         $materialAdjustment->tanggal    = date('Y-m-d', strtotime($req->input('tanggal')));
         $materialAdjustment->id_gudang  = $id_gudang;
+        $materialAdjustment->shift      = $shift_id;
         $materialAdjustment->save();
 
         //material trans
@@ -127,6 +131,7 @@ class MaterialAdjustmentController extends Controller
                 $materialTrans->tanggal         = date('Y-m-d', strtotime($tanggal[$i]));
                 $materialTrans->status_produk   = 1;
                 $materialTrans->id_area         = $area[$i];
+                $materialTrans->shift_id        = $shift_id;
                 $materialTrans->save();
             }
         }
@@ -170,6 +175,7 @@ class MaterialAdjustmentController extends Controller
                 $materialTrans->tanggal         = $materialAdjustment->tanggal;
                 $materialTrans->status_pallet   = 1;
                 $materialTrans->id_gudang_stok  = $gudangStok->id;
+                $materialTrans->shift_id        = $shift_id;
                 $materialTrans->save();
             }
         }
@@ -246,7 +252,8 @@ class MaterialAdjustmentController extends Controller
                         'ars.tanggal',
                         'mt.tipe',
                         'alasan',
-                        'mt.jumlah'
+                        'mt.jumlah',
+                        'shift_id'
                     )
                     ->leftJoin('material_trans as mt', 'mt.id_adjustment', '=', 'ma.id')
                     ->leftJoin('material as m', 'mt.id_material', '=', 'm.id')
