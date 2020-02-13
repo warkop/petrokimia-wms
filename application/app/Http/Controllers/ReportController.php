@@ -3593,14 +3593,16 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_kolom);
 
         $row = 7;
-        $col = 1;
+        
         // end : judul kolom
 
         // start : isi kolom
-        $abjad = 'A';
+       
         $totalMasuk = 0;
         $totalKeluar = 0;
         foreach ($res as $value) {
+            $col = 1;
+             $abjad = 'A';
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
