@@ -3616,30 +3616,40 @@ class ReportController extends Controller
             $stokTanggalIni = DB::table('material_trans')->where('id_material', $value->id_material)
                 ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
                 ->where('material_trans.id_area', $value->id_area)
-                ->leftJoin('aktivitas_harian', function ($join) use ($resShift) {
-                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')->where('draft', 0)->where('id_shift', $resShift->id);
+                ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0)
+                    ->where('id_shift', $resShift->id)
+                    ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $tanggal)
+                    ;
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                     ->where('shift', $resShift->id)
-                    ->where('material_trans.tanggal', $tanggal);
+                    ->where('material_adjustment.tanggal', $tanggal);
                 })
-                // ->where(DB::raw("TO_CHAR(material_trans.created_at, 'yyyy-mm-dd')"), $tanggal)
+                // 
                 // ->where('material_trans.shift_id', $resShift->id)
                 ->get();
             
             $stokTanggalSebelum = DB::table('material_trans')->where('id_material', $value->id_material)
                 ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
                 ->where('material_trans.id_area', $value->id_area)
-                ->leftJoin('aktivitas_harian', function ($join) use ($resShift) {
-                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')->where('draft', 0)->where('id_shift', $resShift->id);
+                ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0)
+                    ->where('id_shift', $resShift->id)
+                    ->where(DB::raw("TO_CHAR(material_trans.updated_at, 'yyyy-mm-dd')"), '<', $tanggal);
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                     ->where('shift', $resShift->id)
-                    ->where('material_trans.tanggal', '<', $tanggal);
+                    ->where('material_adjustment.tanggal', '<', $tanggal);
                 })
-                // ->where(DB::raw("TO_CHAR(material_trans.created_at, 'yyyy-mm-dd')"), '<', $tanggal)
+                ->where(function($query) use($resShift){
+                    $query->where('id_shift', $resShift->id);
+                    $query->orWhere('shift', $resShift->id);
+                })
                 // ->where('material_trans.shift_id', $resShift->id)
                 ->get();
 
