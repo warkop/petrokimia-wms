@@ -30,6 +30,7 @@
                 <h4 class="col-2 col-form-label text-kiri">Gudang</h4>
                 <div class="col-6">
                     <select class="form-control m-select2" id="gudang" name="gudang" style="width: 100%">
+                        <option></option>
                         @foreach ($gudang as $item)
                             <option value="{{$item->id}}">{{$item->nama}}</option>
                         @endforeach
@@ -40,6 +41,7 @@
                 <h4 class="col-2 col-form-label text-kiri">Shift</h4>
                 <div class="col-6">
                     <select class="form-control m-select2" id="shift" name="shift" style="width: 100%">
+                        <option></option>
                         @foreach ($shift as $item)
                             <option value="{{$item->id}}">{{$item->nama}}</option>
                         @endforeach
@@ -51,6 +53,7 @@
                 <div class="col-6">
                     <div class="mt1" id="textadd">
                         <select class="form-control m-select2" id="pilih" name="pilih_produk" style="width:100%">
+                            <option></option>
                             @foreach ($produk as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>
                             @endforeach
@@ -86,10 +89,15 @@
 
 <script>
     $('#gudang').select2({
-        placeholder: "Semua Gudang"
+        placeholder: "Pilih Gudang",
+        allowClear: true
     });
     $('#pilih').select2({
         placeholder: "Pilih Produk",
+        allowClear: true
+    });
+    $('#shift').select2({
+        placeholder: "Pilih Shift",
         allowClear: true
     });
 
