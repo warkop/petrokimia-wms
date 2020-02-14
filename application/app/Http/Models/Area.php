@@ -105,6 +105,7 @@ class Area extends CustomModel
                 }
             });
         }
+        $res = $res->where('gdg.tipe_gudang',1);
         $res = $res->orderBy(DB::raw("gdg.nama"),'asc');
         return $res->get();
     }
@@ -135,6 +136,7 @@ class Area extends CustomModel
                 }
             });
         }
+        $res = $res->where('gdg.tipe_gudang',1);
         $res = $res->leftJoin('material as mat','mat.id','=','stok.id_material');
         return $res->get();
     }
