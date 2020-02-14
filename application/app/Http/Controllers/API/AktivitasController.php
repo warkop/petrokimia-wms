@@ -1645,7 +1645,7 @@ class AktivitasController extends Controller
         }
 
         if (!empty($tanggal_awal) && !empty($tanggal_selesai)) {
-            $res = $res->orWhereBetween('aktivitas_harian.created_at', [date('Y-m-d', strtotime($tanggal_awal)), date('Y-m-d', strtotime($tanggal_selesai . '+1 day'))]);
+            $res = $res->whereBetween('aktivitas_harian.created_at', [date('Y-m-d', strtotime($tanggal_awal)), date('Y-m-d', strtotime($tanggal_selesai . '+1 day'))]);
         }
 
         $obj =  AktivitasResource::collection($res->paginate(10))->additional([
