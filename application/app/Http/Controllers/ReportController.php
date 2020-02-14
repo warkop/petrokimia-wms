@@ -3493,7 +3493,7 @@ class ReportController extends Controller
 
             $stokTanggalIni = DB::table('material_trans')->where('id_material', $value->id_material)
                 // ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
-                ->where('material_trans.id_area', $value->id_area)
+                ->where('material_trans.id_area_stok', $value->id)
                 ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                     ->where('draft', 0)
@@ -3510,7 +3510,7 @@ class ReportController extends Controller
             
             $stokTanggalSebelum = DB::table('material_trans')->where('id_material', $value->id_material)
                 // ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
-                ->where('material_trans.id_area', $value->id_area)
+                ->where('material_trans.id_area_stok', $value->id)
                 ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                     ->where('draft', 0)
