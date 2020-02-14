@@ -776,14 +776,14 @@ class AktivitasController extends Controller
                     $aktivitasFoto = new AktivitasFoto;
 
                     $foto[$i]->storeAs('/public/aktivitas_harian/' . $id_aktivitas_harian, $foto[$i]->getClientOriginalName());
-
+        
                     $arrayFoto = [
                         'id_aktivitas_harian'       => $id_aktivitas_harian,
-                        'id_foto_jenis'             => isset($foto_jenis[$i]),
+                        'id_foto_jenis'             => (isset($foto_jenis[$i])? $foto_jenis[$i]:null),
                         'foto'                      => $foto[$i]->getClientOriginalName(),
                         'size'                      => $foto[$i]->getSize(),
-                        'lat'                       => isset($lat[$i]),
-                        'lng'                       => isset($lng[$i]),
+                        'lat'                       => (isset($lat[$i])? $lat[$i]:null),
+                        'lng'                       => (isset($lng[$i])? $lng[$i]:null),
                         'created_by'                => $res_user->id,
                         'created_at'                => date('Y-m-d H:i:s'),
                     ];
