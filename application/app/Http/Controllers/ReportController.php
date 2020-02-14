@@ -2611,7 +2611,7 @@ class ReportController extends Controller
         $tipe_produk= request()->input('produk');
         $produk     = request()->input('pilih_produk'); //multi
         $tgl        = (request()->input('tgl_awal') == '') ? date('Y-m-d') : (request()->input('tgl_awal'));
-        $tgl        = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+        $tgl        = date('Y-m-d', strtotime($tgl));
 
         $res        = [];
         $area       = new Area;
