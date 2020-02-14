@@ -61,7 +61,11 @@ class Pengiriman extends Notification implements ShouldQueue
             'asal_gudang'           => $this->aktivitasHarian->gudang->nama,
             'gudang_tujuan'         => $this->aktivitasHarian->gudangTujuan->nama,
             'waktu'                 => $this->aktivitasHarian->created_at->diffForHumans(),
-            'created_at'            => $this->aktivitasHarian->created_at,
+            'created_at'            => [
+                'date' => $this->aktivitasHarian->created_at,
+                'timezone_type' => 3,
+                'timezone' => 'Asia/Jakarta',
+            ],
         ];
     }
 
