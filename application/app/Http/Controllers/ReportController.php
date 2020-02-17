@@ -14,13 +14,11 @@ use App\Http\Models\Keluhan;
 use App\Http\Models\LaporanKerusakan;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
-use App\Http\Models\RealisasiMaterial;
 use App\Http\Models\ShiftKerja;
 use App\Http\Models\TenagaKerjaNonOrganik;
 use App\Http\Models\Users;
 use App\Http\Models\Yayasan;
 use App\Jobs\GenerateExcel;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -129,14 +127,17 @@ class ReportController extends Controller
         ->where('jenis', '2')
         ->get();
 
-        // dd($res->toArray());
-
         if (!is_dir(storage_path() . '/app/public/excel/')) {
             mkdir(storage_path() . '/app/public/excel', 755);
         }
 
+        $preview = false;
+        if (request()->preview == true) {
+            $preview = true;
+        }
+
         $nama_file = date("YmdHis") . '_kerusakan_alat_berat.xlsx';
-        $this->generateExcelKeluhanAlatBerat($res, $nama_file);
+        $this->generateExcelKeluhanAlatBerat($res, $nama_file, $preview);
     }
 
     public function generateExcelAktivitas($res, $nama_file, $tgl_awal, $tgl_akhir, $preview)
@@ -150,7 +151,6 @@ class ReportController extends Controller
         $objSpreadsheet->setActiveSheetIndex($sheetIndex);
         $style_title = array(
             'font' => array(
-                // 'size' => 18,
                 'bold' => true
             ),
             'alignment' => array(
@@ -167,9 +167,6 @@ class ReportController extends Controller
         $row++;
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TANGGAL '.date('d/m/Y', strtotime($tgl_awal)).' - '.date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
-        // $objSpreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(30);
-
-        
 
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
 
@@ -226,7 +223,6 @@ class ReportController extends Controller
 
         $style_judul_kolom = array(
             'fill' => array(
-                // 'type'  => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                 'color' => array('rgb' => 'D3D3D3')
             ),
@@ -248,7 +244,6 @@ class ReportController extends Controller
 
         // start : isi kolom
         $no = 0;
-        // var_dump($res);
         foreach ($res as $value) {
             $no++;
             $col = 1;
@@ -343,19 +338,13 @@ class ReportController extends Controller
             header("Cache-Control: no-store, no-cache, must-revalidate");
             header("Cache-Control: post-check=0, pre-check=0", false);
             header("Pragma: no-cache");
-            // $writer->save(storage_path() . '/app/public/excel/' . $nama_file);
-    
-            // $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-            // $spreadsheet = $reader->load(storage_path() . '/app/public/excel/' . $nama_file);
-            // $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($spreadsheet);
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment; filename="' . $nama_file . '"');
             $writer->save("php://output");
-
         }
     }
 
-    public function generateExcelKeluhanAlatBerat($res, $nama_file)
+    public function generateExcelKeluhanAlatBerat($res, $nama_file, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
 
@@ -376,6 +365,7 @@ class ReportController extends Controller
         // start : title
         $col = 3;
         $row = 1;
+        $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Kerusakan Alat Berat');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
@@ -578,22 +568,22 @@ class ReportController extends Controller
         // end : sheet
 
         #### END : SHEET SESI ####
-        $writer = new Xlsx($objSpreadsheet);
-
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-
-        $writer->save(storage_path() . '/app/public/excel/' . $nama_file);
-
-        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
-        $spreadsheet = $reader->load(storage_path() . '/app/public/excel/' . $nama_file);
-        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="' . $nama_file . '"');
-        $writer->save("php://output");
+        if ($preview == true) {
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($objSpreadsheet);
+            echo $writer->generateHTMLHeader();
+            echo $writer->generateStyles(true);
+            echo $writer->generateSheetData();
+            echo $writer->generateHTMLFooter();
+        } else {
+            $writer = new Xlsx($objSpreadsheet);
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+            $writer->save("php://output");
+        }
     }
 
     public function laporanProduk()
@@ -677,12 +667,17 @@ class ReportController extends Controller
             mkdir(storage_path() . '/app/public/excel', 755);
         }
 
+        $preview = false;
+        if (request()->preview == true) {
+            $preview = true;
+        }
+
         $nama_file = date("YmdHis") . '_material.xlsx';
         // GenerateExcel::dispatch('material', ['res' => $res, 'nama_file' => $nama_file, 'resGudang' => $resGudang, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]);
-        $this->generateExcelProduk($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir);
+        $this->generateExcelProduk($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir, $preview);
     }
 
-    public function generateExcelProduk($res, $nama_file, $gudang, $tgl_awal, $tgl_akhir)
+    public function generateExcelProduk($res, $nama_file, $gudang, $tgl_awal, $tgl_akhir, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
 
@@ -703,6 +698,7 @@ class ReportController extends Controller
         // start : title
         $col = 3;
         $row = 1;
+        $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Material');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
@@ -1024,16 +1020,22 @@ class ReportController extends Controller
         // end : sheet
 
         #### END : SHEET SESI ####
-        $writer = new Xlsx($objSpreadsheet);
-
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="' . $nama_file . '"');
-        $writer->save("php://output");
+        if ($preview == true) {
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($objSpreadsheet);
+            echo $writer->generateHTMLHeader();
+            echo $writer->generateStyles(true);
+            echo $writer->generateSheetData();
+            echo $writer->generateHTMLFooter();
+        } else {
+            $writer = new Xlsx($objSpreadsheet);
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+            $writer->save("php://output");
+        }
     }
 
     public function laporanMutasiPallet()
@@ -1089,12 +1091,17 @@ class ReportController extends Controller
 
         $res = $res
         ->orderBy('id_gudang', 'asc')->get();
-        // dd($res);
+
+        $preview = false;
+        if (request()->preview == true) {
+            $preview = true;
+        }
+
         $nama_file = date("YmdHis") . '_mutasi_pallet.xlsx';
-        $this->generateExcelMutasiPallet($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir);
+        $this->generateExcelMutasiPallet($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir, $preview);
     }
 
-    public function generateExcelMutasiPallet($res, $nama_file, $gudang, $tgl_awal, $tgl_akhir)
+    public function generateExcelMutasiPallet($res, $nama_file, $gudang, $tgl_awal, $tgl_akhir, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
 
@@ -1173,6 +1180,7 @@ class ReportController extends Controller
         // start : title
         $col = 3;
         $row = 1;
+        $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Mutasi Pallet');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
@@ -1644,16 +1652,22 @@ class ReportController extends Controller
         // end : sheet
 
         #### END : SHEET SESI ####
-        $writer = new Xlsx($objSpreadsheet);
-
-        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-        header('Cache-Control: no-store, no-cache, must-revalidate');
-        header('Cache-Control: post-check=0, pre-check=0', false);
-        header('Pragma: no-cache');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="' . $nama_file . '"');
-        $writer->save('php://output');
+        if ($preview == true) {
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($objSpreadsheet);
+            echo $writer->generateHTMLHeader();
+            echo $writer->generateStyles(true);
+            echo $writer->generateSheetData();
+            echo $writer->generateHTMLFooter();
+        } else {
+            $writer = new Xlsx($objSpreadsheet);
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+            $writer->save("php://output");
+        }
     }
 
     public function laporanRealisasi()
@@ -1751,11 +1765,16 @@ class ReportController extends Controller
 
         $res = $res->get();
 
+        $preview = false;
+        if (request()->preview == true) {
+            $preview = true;
+        }
+
         $nama_file = date("YmdHis") . '_realisasi.xlsx';
-        $this->generateExcelRealisasi($res, $nama_file, $kegiatan, $shift, $tgl_awal, $tgl_akhir);
+        $this->generateExcelRealisasi($res, $nama_file, $kegiatan, $shift, $tgl_awal, $tgl_akhir, $preview);
     }
 
-    public function generateExcelRealisasi($res, $nama_file, $kegiatan, $shift, $tgl_awal, $tgl_akhir)
+    public function generateExcelRealisasi($res, $nama_file, $kegiatan, $shift, $tgl_awal, $tgl_akhir, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
 
@@ -1776,6 +1795,7 @@ class ReportController extends Controller
         // start : title
         $col = 1;
         $row = 1;
+        $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':G' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'LAPORAN REALISASI');
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
@@ -1957,16 +1977,22 @@ class ReportController extends Controller
         // end : sheet
 
         #### END : SHEET SESI ####
-        $writer = new Xlsx($objSpreadsheet);
-
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="' . $nama_file . '"');
-        $writer->save("php://output");
+        if ($preview == true) {
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($objSpreadsheet);
+            echo $writer->generateHTMLHeader();
+            echo $writer->generateStyles(true);
+            echo $writer->generateSheetData();
+            echo $writer->generateHTMLFooter();
+        } else {
+            $writer = new Xlsx($objSpreadsheet);
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+            $writer->save("php://output");
+        }
     }
 
     public function laporanKeluhanGp()
@@ -2007,15 +2033,6 @@ class ReportController extends Controller
             })
             ;
 
-        // if ($keluhan) {
-        //     // $res = $res->whereHas('keluhan', function ($query) use ($keluhan) {
-        //         $res = $res->where('id_keluhan', $keluhan[0]);
-        //         foreach ($keluhan as $key => $value) {
-        //             $res = $res->orWhere('id_keluhan', $value);
-        //         }
-        //     // });
-        // }
-
         if ($gudang) {
             $res = $res->where(function ($query) use ($gudang) {
                 $query->where('id_gudang', $gudang[0]);
@@ -2036,12 +2053,16 @@ class ReportController extends Controller
 
         $res = $res->orderBy('ah.created_at')->get();
 
+        $preview = false;
+        if (request()->preview == true) {
+            $preview = true;
+        }
 
         $nama_file = date("YmdHis") . '_keluhan_gp.xlsx';
-        $this->generateExcelKeluhanGp($res, $nama_file, $tgl_awal, $tgl_akhir);
+        $this->generateExcelKeluhanGp($res, $nama_file, $tgl_awal, $tgl_akhir, $preview);
     }
 
-    public function generateExcelKeluhanGp($res, $nama_file, $tgl_awal, $tgl_akhir)
+    public function generateExcelKeluhanGp($res, $nama_file, $tgl_awal, $tgl_akhir, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
 
@@ -2121,6 +2142,7 @@ class ReportController extends Controller
         // start : title
         $col = 3;
         $row = 1;
+        $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Keluhan GP');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
@@ -2230,16 +2252,22 @@ class ReportController extends Controller
         // end : sheet
 
         #### END : SHEET SESI ####
-        $writer = new Xlsx($objSpreadsheet);
-
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="' . $nama_file . '"');
-        $writer->save("php://output");
+        if ($preview == true) {
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($objSpreadsheet);
+            echo $writer->generateHTMLHeader();
+            echo $writer->generateStyles(true);
+            echo $writer->generateSheetData();
+            echo $writer->generateHTMLFooter();
+        } else {
+            $writer = new Xlsx($objSpreadsheet);
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+            $writer->save("php://output");
+        }
     }
 
     public function laporanMaterial()
@@ -2313,6 +2341,11 @@ class ReportController extends Controller
 
         $res = $res->get();
 
+        $preview = false;
+        if (request()->preview == true) {
+            $preview = true;
+        }
+
         if (!is_dir(storage_path() . '/app/public/excel/')) {
             mkdir(storage_path() . '/app/public/excel', 755);
         }
@@ -2320,10 +2353,10 @@ class ReportController extends Controller
         $nama_file = date("YmdHis") . '_transaksi_material.xlsx';
         // $genToExcel = (new GenerateExcel('transaksi_material', ['res' => $res, 'nama_file' => $nama_file, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]))->onQueue('material');
         // $this->dispatch($genToExcel);
-        $this->generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir);
+        $this->generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir, $preview);
     }
 
-    public function generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir)
+    public function generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
 
@@ -2399,6 +2432,7 @@ class ReportController extends Controller
         // start : title
         $col = 3;
         $row = 1;
+        $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Transaksi Material');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
@@ -2571,21 +2605,22 @@ class ReportController extends Controller
         // end : sheet
 
         #### END : SHEET SESI ####
-        $writer = new Xlsx($objSpreadsheet);
-
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        $writer->save(storage_path() . '/app/public/excel/' . $nama_file);
-        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
-        $spreadsheet = $reader->load(storage_path() . '/app/public/excel/' . $nama_file);
-        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="' . $nama_file . '"');
-
-        $writer->save("php://output");
+        if ($preview == true) {
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($objSpreadsheet);
+            echo $writer->generateHTMLHeader();
+            echo $writer->generateStyles(true);
+            echo $writer->generateSheetData();
+            echo $writer->generateHTMLFooter();
+        } else {
+            $writer = new Xlsx($objSpreadsheet);
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+            $writer->save("php://output");
+        }
     }
 
     public function laporanStok()
@@ -2610,12 +2645,15 @@ class ReportController extends Controller
         $resArea    = $area->getStokGudang($gudang, $tipe_produk, $produk, $tgl);
         $nama_file  = date("YmdHis") . '_stok.xlsx';
 
-        // return $gudang;
+        $preview = false;
+        if (request()->preview == true) {
+            $preview = true;
+        }
 
-        $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl);
+        $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl, $preview);
     }
 
-    public function generateExcelStok($res, $nama_file, $produk, $area, $tgl_awal)
+    public function generateExcelStok($res, $nama_file, $produk, $area, $tgl_awal, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
 
@@ -2705,7 +2743,7 @@ class ReportController extends Controller
 
         $col = 1;
         $row++;
-
+        $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_acara);
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
@@ -2833,16 +2871,22 @@ class ReportController extends Controller
         // end : sheet
 
         #### END : SHEET SESI ####
-        $writer = new Xlsx($objSpreadsheet);
-
-        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-        header('Cache-Control: no-store, no-cache, must-revalidate');
-        header('Cache-Control: post-check=0, pre-check=0', false);
-        header('Pragma: no-cache');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="' . $nama_file . '"');
-        $writer->save('php://output');
+        if ($preview == true) {
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($objSpreadsheet);
+            echo $writer->generateHTMLHeader();
+            echo $writer->generateStyles(true);
+            echo $writer->generateSheetData();
+            echo $writer->generateHTMLFooter();
+        } else {
+            $writer = new Xlsx($objSpreadsheet);
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+            $writer->save("php://output");
+        }
     }
     
     public function laporanAbsenKaryawan()
@@ -2913,7 +2957,7 @@ class ReportController extends Controller
         } else {
             $res = $res->where('kategori', 1);
         }
-        
+
         // $res = Material::produk()
         // ->whereBetween('created_at', [$tgl_awal, $tgl_akhir])
         // ->where(function ($query) use ($pilih_produk, $produk) {
@@ -2927,12 +2971,17 @@ class ReportController extends Controller
 
         // dd($res->get());
 
+        $preview = false;
+        if (request()->preview == true) {
+            $preview = true;
+        }
+
         $nama_file = date("YmdHis") . '_mutasi_stok.xlsx';
-        $this->generateExcelMutasiStok($res->get(), $nama_file, $tgl_awal, $tgl_akhir);
+        $this->generateExcelMutasiStok($res->get(), $nama_file, $tgl_awal, $tgl_akhir, $preview);
         // dd($res);
     }
 
-    public function generateExcelMutasiStok($res, $nama_file, $tgl_awal, $tgl_akhir)
+    public function generateExcelMutasiStok($res, $nama_file, $tgl_awal, $tgl_akhir, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
 
@@ -3014,6 +3063,7 @@ class ReportController extends Controller
         // start : title
         $col = 3;
         $row = 1;
+        $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':E' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Harian Mutasi Stock Gudang Gresik I & II');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
@@ -3235,16 +3285,22 @@ class ReportController extends Controller
         // end : sheet
 
         #### END : SHEET SESI ####
-        $writer = new Xlsx($objSpreadsheet);
-
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="' . $nama_file . '"');
-        $writer->save("php://output");
+        if ($preview == true) {
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($objSpreadsheet);
+            echo $writer->generateHTMLHeader();
+            echo $writer->generateStyles(true);
+            echo $writer->generateSheetData();
+            echo $writer->generateHTMLFooter();
+        } else {
+            $writer = new Xlsx($objSpreadsheet);
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+            $writer->save("php://output");
+        }
     }
 
     public function laporanLogSheet()
@@ -3308,11 +3364,15 @@ class ReportController extends Controller
         $resShift = ShiftKerja::find($shift);
         $resProduk = Material::find($pilih_produk);
 
-        // dd($res);
-        $this->generateExcelLogSheet($res, $nama_file, $tanggal, $resGudang, $resProduk, $resShift);
+        $preview = false;
+        if (request()->preview == true) {
+            $preview = true;
+        }
+
+        $this->generateExcelLogSheet($res, $nama_file, $tanggal, $resGudang, $resProduk, $resShift, $preview);
     }
 
-    public function generateExcelLogSheet($res, $nama_file, $tanggal, $resGudang, $resProduk, $resShift)
+    public function generateExcelLogSheet($res, $nama_file, $tanggal, $resGudang, $resProduk, $resShift, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
 
@@ -3401,6 +3461,7 @@ class ReportController extends Controller
         // start : title
         $col = 1;
         $row = 1;
+        $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'LOG SHEET AREA PENYIMPANAN PUPUK DI SEKSI '. $resGudang->nama);
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
@@ -3588,15 +3649,21 @@ class ReportController extends Controller
         // end : sheet
 
         #### END : SHEET SESI ####
-        $writer = new Xlsx($objSpreadsheet);
-
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="' . $nama_file . '"');
-        $writer->save("php://output");
+        if ($preview == true) {
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($objSpreadsheet);
+            echo $writer->generateHTMLHeader();
+            echo $writer->generateStyles(true);
+            echo $writer->generateSheetData();
+            echo $writer->generateHTMLFooter();
+        } else {
+            $writer = new Xlsx($objSpreadsheet);
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+            $writer->save("php://output");
+        }
     }
 }

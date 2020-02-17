@@ -11,7 +11,7 @@
 
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
-    <form action="{{url('report/stok')}}" method="GET">
+    <form action="{{url('report/stok')}}" method="GET" target="_blank">
     <div class="kt-portlet">
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
@@ -78,6 +78,7 @@
                     <div class="offset-lg-2">
                         {{-- <a href="{{asset('assets/reports/stok/stok.xlsx')}}" class="btn btn-success" download> <i class="fa fa-print"></i> Cetak Laporan</a> --}}
                         <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
+                        <button type="submit" name="preview" value="true" class="btn btn-warning" download=""> <i class="fa fa-binoculars "></i> Preview Laporan</button>
                     </div>
                 </div>
             </div>
