@@ -94,15 +94,15 @@
 {{-- <script src="{{asset('assets/extends/js/page/reportAktivitas.js')}}" type="text/javascript"></script> --}}
 <script>
 $('#gudang').select2({
-    placeholder: "Pilih gudang",
+    placeholder: "Semua gudang",
     allowClear: true
 });
 $('#shift').select2({
-    placeholder: "Pilih shift",
+    placeholder: "Semua shift",
     allowClear: true
 });
 $('#aktivitas').select2({
-    placeholder: "Pilih aktivitas",
+    placeholder: "Semua aktivitas",
     allowClear: true
 });
 
