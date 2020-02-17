@@ -1619,7 +1619,9 @@ class AktivitasController extends Controller
             'tenaga_kerja_non_organik.nama as nama_checker',
             'karu.nama as nama_karu',
             'shift_kerja.nama as nama_shift',
-            'aktivitas_harian.id_shift'
+            'aktivitas_harian.id_shift',
+            'aktivitas.pengiriman_produk_rusak',
+            'aktivitas.cancelable'
         )
             ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
             ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
@@ -1687,6 +1689,8 @@ class AktivitasController extends Controller
             'id_yayasan',
             'aktivitas.peminjaman',
             'aktivitas_harian.dikembalikan',
+            'aktivitas.pengiriman_produk_rusak',
+            'aktivitas.cancelable',
             'users.id_tkbm',
             'alasan',
             'ttd',
@@ -1735,10 +1739,12 @@ class AktivitasController extends Controller
         ->orderBy('aktivitas_harian.id', 'desc')
         ->get();
 
-        if ($res[0]->sistro) {
-            $sistro = Sistro::where('tiketno', $res[0]->sistro)->orWhere('bookingno', $res[0]->sistro)->firstOrFail();
-        } else {
-            $sistro = null;
+        if (!$res->isEmpty()) {
+            if ($res[0]->sistro) {
+                $sistro = Sistro::where('tiketno', $res[0]->sistro)->orWhere('bookingno', $res[0]->sistro)->firstOrFail();
+            } else {
+                $sistro = null;
+            }
         }
 
         $res_produk = MaterialTrans::select(
@@ -1800,7 +1806,7 @@ class AktivitasController extends Controller
         ->get();
 
         $obj = (new AktivitasResource($res))->additional([
-            'sistro' => $sistro,
+            'sistro' => $sistro??[],
             'produk' => $res_produk,
             'pallet' => $res_pallet,
             'alat_berat' => $list_alat_berat,
