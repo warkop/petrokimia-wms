@@ -27,8 +27,38 @@
         </div>
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
+            <div class="form-group row mt2">
+                <h4 class="col-2 col-form-label text-kiri">Aktivitas</h4>
+                <div class="col-6">
+                    <select class="form-control m-select2" id="aktivitas" name="aktivitas[]" multiple="multiple" style="width: 100%">
+                        @foreach ($aktivitas as $item)
+                            <option value="{{$item->id}}">{{$item->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row mt2">
+                <h4 class="col-2 col-form-label text-kiri">Gudang</h4>
+                <div class="col-6">
+                    <select class="form-control m-select2" id="gudang" name="gudang[]" multiple="multiple" style="width: 100%">
+                        @foreach ($gudang as $item)
+                            <option value="{{$item->id}}">{{$item->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row mt2">
+                <h4 class="col-2 col-form-label text-kiri">Shift</h4>
+                <div class="col-6">
+                    <select class="form-control m-select2" id="shift" name="shift[]" multiple="multiple" style="width: 100%">
+                        @foreach ($shift as $item)
+                            <option value="{{$item->id}}">{{$item->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
             <div class="form-group row mt2" style="margin-bottom: 0;">
-                <h4 class="col-2 col-form-label text-kiri">Start Date</h4>
+                <h4 class="col-2 col-form-label text-kiri">Tanggal Awal</h4>
                 <div class="col-4">
                     <div class="form-group">
                         <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
@@ -37,7 +67,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <h4 class="col-2 col-form-label text-kiri">End Date</h4>
+                <h4 class="col-2 col-form-label text-kiri">Tanggal Akhir</h4>
                 <div class="col-4">
                     <div class="form-group">
                         <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
@@ -63,6 +93,19 @@
 
 {{-- <script src="{{asset('assets/extends/js/page/reportAktivitas.js')}}" type="text/javascript"></script> --}}
 <script>
+$('#gudang').select2({
+    placeholder: "Pilih gudang",
+    allowClear: true
+});
+$('#shift').select2({
+    placeholder: "Pilih shift",
+    allowClear: true
+});
+$('#aktivitas').select2({
+    placeholder: "Pilih aktivitas",
+    allowClear: true
+});
+
 $('#start_date').datepicker({
     rtl: KTUtil.isRTL(),
     todayHighlight: true,

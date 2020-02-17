@@ -32,11 +32,17 @@ class ReportController extends Controller
     public function laporanAktivitas()
     {
         $data['title'] = 'Laporan Aktivitas';
+        $data['aktivitas'] = Aktivitas::whereNull('penerimaan_gi')->get();
+        $data['shift'] = ShiftKerja::get();
+        $data['gudang'] = Gudang::internal()->get();
         return view('report.aktivitas.grid', $data);
     }
 
     public function aktivitasHarian()
     {
+        $aktivitas  = request()->aktivitas;
+        $shift      = request()->shift;
+        $gudang     = request()->gudang;
         $tgl_awal   = date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
 
@@ -47,14 +53,43 @@ class ReportController extends Controller
         ->where('created_at', '<=', $tgl_akhir)
         ->where('draft', 0)
         ->whereHas('aktivitas', function($query) {
-            $query->whereNull('peminjaman');
+            // $query->whereNull('peminjaman');
             $query->whereNull('penerimaan_gi');
         })
         ->whereHas('materialTrans.material', function($query) {
             $query->where('kategori', 1);
         })
         ->orderBy('created_at', 'asc')
-        ->get();
+        ;
+
+        if (!empty($aktivitas)) {
+            $res = $res->where(function ($query) use($aktivitas){
+                $query->where('id_aktivitas', $aktivitas[0]);
+                foreach ($aktivitas as $key => $value) {
+                    $query->orWhere('id_aktivitas', $value);
+                }
+            });
+        }
+
+        if (!empty($gudang)) {
+            $res = $res->where(function ($query) use ($gudang) {
+                $query->where('id_gudang', $gudang[0]);
+                foreach ($gudang as $key => $value) {
+                    $query->orWhere('id_gudang', $value);
+                }
+            });
+        }
+
+        if (!empty($shift)) {
+            $res = $res->where(function ($query) use ($shift) {
+                $query->where('id_shift', $shift[0]);
+                foreach ($shift as $key => $value) {
+                    $query->orWhere('id_shift', $value);
+                }
+            });
+        }
+
+        $res = $res->get();
 
         $nama_file = date("YmdHis") . '_aktivitas_harian.xlsx';
         $this->generateExcelAktivitas($res, $nama_file, $tgl_awal, $tgl_akhir);
@@ -157,13 +192,13 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
 
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(7);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(25);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(10);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(35);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(25);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(20);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(40);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
 
         // end : title
         // start : judul kolom
