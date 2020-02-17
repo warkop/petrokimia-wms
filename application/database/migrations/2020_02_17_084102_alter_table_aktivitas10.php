@@ -14,7 +14,7 @@ class AlterTableAktivitas10 extends Migration
     public function up()
     {
         Schema::table('aktivitas', function (Blueprint $table) {
-            $table->string('pengirim_produk_rusak')->nullable();
+            $table->string('pengiriman_produk_rusak')->nullable();
             $table->string('cancelable')->nullable();
         });
     }
@@ -27,7 +27,7 @@ class AlterTableAktivitas10 extends Migration
     public function down()
     {
         Schema::table('aktivitas', function (Blueprint $table) {
-            $table->dropColumn('pengirim_produk_rusak');
+            $table->dropColumn('pengiriman_produk_rusak');
             $table->dropColumn('cancelable');
         });
     }
