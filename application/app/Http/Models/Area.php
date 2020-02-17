@@ -90,7 +90,7 @@ class Area extends CustomModel
                         area as ar 
                     left join area_stok ars on ars.id_area = ar.id
                     join material_trans as trans on trans.id_area_stok = ars.id
-                    where trans.tanggal <= '{$tgl}'
+                    where trans.created_at <= '{$tgl}'
                     group by ar.id_gudang, trans.id_material
                     order by ar.id_gudang) stok"),"stok.id_gudang","=","gdg.id");
         if($gudang != ''){
@@ -121,7 +121,7 @@ class Area extends CustomModel
                         area as ar 
                     left join area_stok ars on ars.id_area = ar.id
                     join material_trans as trans on trans.id_area_stok = ars.id
-                    where trans.tanggal <= '{$tgl}'
+                    where trans.created_at <= '{$tgl}'
                     group by ar.id_gudang, trans.id_material
                     order by ar.id_gudang) stok"),"stok.id_gudang","=","gdg.id");
         if($gudang != ''){
