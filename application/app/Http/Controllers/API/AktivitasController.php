@@ -516,35 +516,17 @@ class AktivitasController extends Controller
 
                         for ($k = 0; $k < $jums_list_jumlah; $k++) {
                             if ($list_jumlah[$k]['tanggal'] != null) {
-                                if ($res_aktivitas->fifo != null) { //jika FIFO
-                                    $area_stok = AreaStok::where('id_area', $id_area)
-                                    ->where('id_material', $produk)
-                                    ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                    ->where('status', $status_produk)
-                                    ->orderBy('tanggal', 'asc')
-                                    ->first();
-                                } else {
-                                    $area_stok = AreaStok::where('id_area', $id_area)
-                                    ->where('id_material', $produk)
-                                    ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                    ->where('status', $status_produk)
-                                    ->first();
-                                }
+                                $area_stok = AreaStok::where('id_area', $id_area)
+                                ->where('id_material', $produk)
+                                ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                ->where('status', $status_produk)
+                                ->first();
                             } else {
-                                if ($res_aktivitas->fifo != null) { //jika FIFO
-                                    $area_stok = AreaStok::where('id_area', $id_area)
-                                        ->where('id_material', $produk)
-                                        ->whereNull('tanggal')
-                                        ->where('status', $status_produk)
-                                        ->orderBy('tanggal', 'asc')
-                                        ->first();
-                                } else {
-                                    $area_stok = AreaStok::where('id_area', $id_area)
-                                        ->where('id_material', $produk)
-                                        ->whereNull('tanggal')
-                                        ->where('status', $status_produk)
-                                        ->first();
-                                }
+                                $area_stok = AreaStok::where('id_area', $id_area)
+                                    ->where('id_material', $produk)
+                                    ->whereNull('tanggal')
+                                    ->where('status', $status_produk)
+                                    ->first();
                             }
 
                             if (!empty($area_stok)) {
@@ -948,31 +930,15 @@ class AktivitasController extends Controller
     
                                 for ($k = 0; $k < $jums_list_jumlah; $k++) {
                                     if ($list_jumlah[$k]['tanggal'] != null) {
-                                        if ($aktivitasGudang->aktivitas->fifo != null) { //jika FIFO
-                                            $area_stok = AreaStok::where('id_area', $id_area)
-                                                ->where('id_material', $produk)
-                                                ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                                ->orderBy('tanggal', 'asc')
-                                                ->first();
-                                        } else {
-                                            $area_stok = AreaStok::where('id_area', $id_area)
-                                                ->where('id_material', $produk)
-                                                ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                                ->first();
-                                        }
+                                        $area_stok = AreaStok::where('id_area', $id_area)
+                                            ->where('id_material', $produk)
+                                            ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                            ->first();
                                     } else {
-                                        if ($aktivitasGudang->aktivitas->fifo != null) { //jika FIFO
-                                            $area_stok = AreaStok::where('id_area', $id_area)
-                                                ->where('id_material', $produk)
-                                                ->whereNull('tanggal')
-                                                ->orderBy('tanggal', 'asc')
-                                                ->first();
-                                        } else {
-                                            $area_stok = AreaStok::where('id_area', $id_area)
-                                                ->where('id_material', $produk)
-                                                ->whereNull('tanggal')
-                                                ->first();
-                                        }
+                                        $area_stok = AreaStok::where('id_area', $id_area)
+                                            ->where('id_material', $produk)
+                                            ->whereNull('tanggal')
+                                            ->first();
                                     }
     
                                     if (!empty($area_stok)) {
