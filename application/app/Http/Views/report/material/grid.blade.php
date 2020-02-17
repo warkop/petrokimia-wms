@@ -66,24 +66,30 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Start Date</label>
-                                    <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
+                                    <input type="text" class="@if($errors->has('tgl_awal')) is-invalid @endif form-control" id="start_date" name="tgl_awal" readonly
                                         placeholder="Pilih tanggal">
+                                    @if($errors->has('tgl_awal'))
+                                        <div class="error">{{ $errors->first('tgl_awal') }}</div>
+                                    @endif
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>End Date</label>
-                                    <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
+                                    <input type="text" class="@if($errors->has('tgl_akhir')) is-invalid @endif form-control" id="end_date" name="tgl_akhir" readonly
                                         placeholder="Pilih tanggal">
+                                     @if($errors->has('tgl_akhir'))
+                                        <div class="error">{{ $errors->first('tgl_akhir') }}</div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            @foreach ($errors->all() as $error)
+            {{-- @foreach ($errors->all() as $error)
                 <div class="alert alert-danger">{{ $error }}</div>
-            @endforeach
+            @endforeach --}}
         </div>
         <div class="kt-portlet__foot">
             <div class="kt-form__actions">
