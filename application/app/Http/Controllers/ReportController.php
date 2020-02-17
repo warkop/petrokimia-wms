@@ -90,9 +90,13 @@ class ReportController extends Controller
         }
 
         $res = $res->get();
+        $preview = false;
+        if (request()->preview == true) {
+            $preview = true;
+        }
 
         $nama_file = date("YmdHis") . '_aktivitas_harian.xlsx';
-        $this->generateExcelAktivitas($res, $nama_file, $tgl_awal, $tgl_akhir);
+        $this->generateExcelAktivitas($res, $nama_file, $tgl_awal, $tgl_akhir, $preview);
     }
 
     public function laporanKeluhanAlatBerat()
@@ -135,7 +139,7 @@ class ReportController extends Controller
         $this->generateExcelKeluhanAlatBerat($res, $nama_file);
     }
 
-    public function generateExcelAktivitas($res, $nama_file, $tgl_awal, $tgl_akhir)
+    public function generateExcelAktivitas($res, $nama_file, $tgl_awal, $tgl_akhir, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
 
@@ -156,6 +160,7 @@ class ReportController extends Controller
         // start : title
         $col = 3;
         $row = 1;
+        $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Aktivitas Harian');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
@@ -326,16 +331,28 @@ class ReportController extends Controller
         // end : sheet
 
         #### END : SHEET SESI ####
-        $writer = new Xlsx($objSpreadsheet);
+        if ($preview == true) {
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($objSpreadsheet);
+            echo $writer->generateHTMLHeader();
+            echo $writer->generateStyles(true);
+            echo $writer->generateSheetData();
+            echo $writer->generateHTMLFooter();
+        } else {
+            $writer = new Xlsx($objSpreadsheet);
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            // $writer->save(storage_path() . '/app/public/excel/' . $nama_file);
+    
+            // $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+            // $spreadsheet = $reader->load(storage_path() . '/app/public/excel/' . $nama_file);
+            // $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($spreadsheet);
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+            $writer->save("php://output");
 
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="' . $nama_file . '"');
-        $writer->save("php://output");
+        }
     }
 
     public function generateExcelKeluhanAlatBerat($res, $nama_file)
