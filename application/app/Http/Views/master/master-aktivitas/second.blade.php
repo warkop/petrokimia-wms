@@ -216,7 +216,7 @@
                             </div>
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Apabila tidak perlu tanggal produksi">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Apabila tidak perlu tanggal produksi, biasanya untuk produk rusak">
                                         <input type="checkbox" name="tanpa_tanggal" id="tanpa_tanggal" value="1"> Tanpa Tanggal Produksi
                                         <span></span>
                                     </label>
@@ -226,7 +226,7 @@
                         <div class="col-md-4 col-lg-4">
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
-                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Tidak pengaruh tanggal produksi harus dicentang untuk dapat mengaktifkan fitur ini">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Tidak pengaruh tanggal produksi harus dicentang untuk dapat mengaktifkan fitur ini, berfungsi memprioritaskan produk dengan tanggal tertua pada saat transaksi">
                                         <input type="checkbox" name="fifo" id="fifo" value="1"> FIFO
                                         <span></span>
                                     </label>
@@ -286,7 +286,14 @@
                             <div class="col-3">
                                 <span id="biaya_pallet-label" onclick="showModalPallet()" class="pull-right pointer kt-font-success kt-font-bold undelinehov" style="{{$show_biaya_pallet}}">Lihat</span>
                             </div>
-                            
+                            <div class="row form-group mb-0 mb2">
+                                <div class="col-12 offset-col-2">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Jika Opsi ini aktif maka daftar produk yang muncul pada saat transaksi hanya produk rusak saja">
+                                        <input type="checkbox" name="pengiriman_produk_rusak" id="pengiriman_produk_rusak" value="1"> Pengiriman Produk Rusak
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-4 col-lg-4">
                             <div class="row form-group mb-0 mb2">
@@ -353,6 +360,14 @@
                                 <div class="col-12 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Centang apabila pengiriman SO">
                                         <input type="checkbox" name="so" id="so" value="1"> SO
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row form-group mb-0 mb2">
+                                <div class="col-12 offset-col-2">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Berfungsi untuk memunculkan tombol cancel pada history aktivitas yang untuk membatalkan transaksi">
+                                        <input type="checkbox" name="cancelable" id="cancelable" value="1"> Cancelable
                                         <span></span>
                                     </label>
                                 </div>
@@ -739,6 +754,30 @@ let now = 0;
             $('.alat_berat').hide('slow');
         }
     });
+
+    $("#pengiriman_produk_rusak").click(function(e){
+        if(e.target.checked){
+            $("#produk_rusak").attr('disabled',false);
+            $("#produk_rusak").selectpicker('refresh');
+            $("#produk_stok").val("");
+            $("#produk_stok").attr('disabled',true);
+            $("#selector_produk_stok").prop('checked',false);
+            $("#selector_produk_rusak").prop('checked',true).change();
+            $("#selector_produk_stok").attr('disabled',true);
+            $("#produk_stok").selectpicker('refresh');
+        } else {
+            $("#produk_stok").attr('disabled',false);
+            $("#produk_stok").selectpicker('refresh');
+            $("#selector_produk_rusak").prop('checked',false);
+            $("#selector_produk_stok").attr('disabled',false);
+            $("#produk_rusak").val("");
+            $("#produk_rusak").attr('disabled',true);
+            $("#produk_rusak").selectpicker('refresh');
+            $("#produk_stok").val("");
+            $("#produk_stok").attr('disabled',true);
+            $("#produk_stok").selectpicker('refresh');
+        }
+    })
 
     function showModalUploadFoto(){
         $('#modalFoto').modal();

@@ -274,11 +274,19 @@ function edit(id = '') {
             if (obj.data['butuh_biaya'] != null) {
                 $('#butuh_biaya').prop('checked', true);
             }
-            console.log(obj);
+
             if (obj.data['biaya_pallet'] != null) {
                 $('#biaya_pallet').prop('checked', true);
             }
 
+            if (obj.data['pengiriman_produk_rusak'] != null) {
+                $('#pengiriman_produk_rusak').prop('checked', true);
+            }
+
+            if (obj.data['cancelable'] != null) {
+                $('#cancelable').prop('checked', true);
+            }
+            
             if (obj.data['kelayakan'] != null) {
                 $('#kelayakan').prop('checked', true);
             }
