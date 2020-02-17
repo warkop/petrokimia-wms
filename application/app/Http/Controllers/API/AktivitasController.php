@@ -41,6 +41,7 @@ use App\Http\Resources\GetSistroResource;
 use App\Http\Resources\HistoryMaterialAreaResource;
 use App\Http\Resources\ListNotifikasiResource;
 use App\Notifications\Pengiriman;
+use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -2046,5 +2047,149 @@ class AktivitasController extends Controller
                 // ]);
             }
         }
+    }
+
+    public function cancelAktivitas(AktivitasHarian $aktivitasHarian)
+    {
+        $user       = request()->get('my_auth');
+        $res_user   = Users::findOrFail($user->id_user);
+
+        if ($aktivitasHarian->draft == 0) {
+            $res = MaterialTrans::where('id_aktivitas_harian', $aktivitasHarian->id)->get();
+
+            try {
+                DB::transaction(function () use ($res, $aktivitasHarian, $res_user) {
+                    $id = DB::table('aktivitas_harian')->insertGetId([
+                        'id_shift'          => $aktivitasHarian->id_shift,
+                        'id_karu'           => $aktivitasHarian->id_karu,
+                        'id_aktivitas'      => $aktivitasHarian->id_aktivitas,
+                        'id_gudang'         => $aktivitasHarian->id_gudang,
+                        'id_gudang_tujuan'  => $aktivitasHarian->id_gudang_tujuan,
+                        'ref_number'        => $aktivitasHarian->ref_number,
+                        'sistro'            => $aktivitasHarian->sistro,
+                        'approve'           => $aktivitasHarian->approve,
+                        'kelayakan_before'  => $aktivitasHarian->kelayakan_before,
+                        'kelayakan_after'   => $aktivitasHarian->kelayakan_after,
+                        'dikembalikan'      => $aktivitasHarian->dikembalikan,
+                        'alasan'            => $aktivitasHarian->alasan,
+                        'so'                => $aktivitasHarian->so,
+                        'id_yayasan'        => $aktivitasHarian->id_yayasan,
+                        'id_tkbm'           => $aktivitasHarian->id_tkbm,
+                        'draft'             => $aktivitasHarian->draft,
+                        'created_by'        => $res_user->id,
+                        'updated_by'        => $res_user->id,
+                    ]);
+                    
+                    //produk
+                    foreach ($res as $key) {
+                        if (!empty($key->status_produk)) {
+                            if ($key->tipe == 1) {
+                                $areaStok = AreaStok::find($key->id_area_stok);
+
+                                $latestTotal = $areaStok->jumlah + $key->jumlah;
+
+                                DB::table('material_trans')->insert([
+                                    'tipe'      => 2,
+                                    'jumlah'    => $key->jumlah,
+                                    'tanggal'   => $key->tanggal,
+                                    'id_material'           => $key->id_material,
+                                    'id_aktivitas_harian'   => $id,
+                                    'status_produk'         => $key->status_produk,
+                                    'id_stok_area'          => $key->id_stok_area,
+                                    'id_area'       => $key->id_area,
+                                    'id_shift'      => $key->id_shift,
+                                ]);
+
+                                DB::table('area_stok')
+                                ->where('id_area_stok', $key->id_area_stok)
+                                ->update([
+                                    'jumlah'      => $latestTotal,
+                                ]);
+                            } else {
+                                $areaStok = AreaStok::find($key->id_area_stok);
+
+                                $latestTotal = $areaStok->jumlah - $key->jumlah;
+
+                                DB::table('material_trans')->insert([
+                                    'tipe'      => 1,
+                                    'jumlah'    => $key->jumlah,
+                                    'tanggal'   => $key->tanggal,
+                                    'id_material'           => $key->id_material,
+                                    'id_aktivitas_harian'   => $id,
+                                    'status_produk'         => $key->status_produk,
+                                    'id_stok_area'          => $key->id_stok_area,
+                                    'id_area'       => $key->id_area,
+                                    'id_shift'      => $key->id_shift,
+                                ]);
+
+                                DB::table('area_stok')
+                                    ->where('id_area_stok', $key->id_area_stok)
+                                    ->update([
+                                        'jumlah'      => $latestTotal,
+                                    ]);
+                            }
+                        }
+
+                        //pallet
+                        if (!empty($key->status_pallet)) {
+                            if ($key->tipe == 1) {
+                                $gudangStok = GudangStok::find($key->id_gudang_stok);
+
+                                $latestTotal = $gudangStok->jumlah + $key->jumlah;
+
+                                DB::table('material_trans')->insert([
+                                    'tipe'      => 2,
+                                    'jumlah'    => $key->jumlah,
+                                    'tanggal'   => $key->tanggal,
+                                    'id_material'           => $key->id_material,
+                                    'id_aktivitas_harian'   => $id,
+                                    'status_pallet'         => $key->status_pallet,
+                                    'id_gudang_area'        => $key->id_gudang_area,
+                                    'id_area'       => $key->id_area,
+                                    'id_shift'      => $key->id_shift,
+                                ]);
+
+                                DB::table('gudang_stok')
+                                    ->where('id_gudang_stok', $key->id_gudang_stok)
+                                    ->update([
+                                        'jumlah'      => $latestTotal,
+                                    ]);
+                            } else {
+                                $gudangStok = GudangStok::find($key->id_gudang_stok);
+
+                                $latestTotal = $gudangStok->jumlah - $key->jumlah;
+
+                                DB::table('material_trans')->insert([
+                                    'tipe'      => 1,
+                                    'jumlah'    => $key->jumlah,
+                                    'tanggal'   => $key->tanggal,
+                                    'id_material'           => $key->id_material,
+                                    'id_aktivitas_harian'   => $id,
+                                    'status_pallet'         => $key->status_pallet,
+                                    'id_gudang_area'        => $key->id_gudang_area,
+                                    'id_area'       => $key->id_area,
+                                    'id_shift'      => $key->id_shift,
+                                ]);
+
+                                DB::table('gudang_stok')
+                                    ->where('id_gudang_stok', $key->id_gudang_stok)
+                                    ->update([
+                                        'jumlah'      => $latestTotal,
+                                    ]);
+                            }
+                        }
+                    }
+                });
+            } catch (Exception $e) {
+                $this->responseCode = 500;
+                $this->responseMessage = 'Ada kesalahan saat menyimpan! Silahkan hubungi administrator!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            } 
+        } else {
+            $this->responseCode = 403;
+            $this->responseMessage = 'Aktivitas dalam keadaan draft, tidak perlu dicancel!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+        }
+        return response()->json($response, $this->responseCode);
     }
 }
