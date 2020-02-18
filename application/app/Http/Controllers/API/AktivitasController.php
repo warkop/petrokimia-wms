@@ -1773,7 +1773,7 @@ class AktivitasController extends Controller
         ->get();
 
         $obj = (new AktivitasResource($res))->additional([
-            'sistro' => $sistro??[],
+            'sistro' => $sistro??null,
             'produk' => $res_produk,
             'pallet' => $res_pallet,
             'alat_berat' => $list_alat_berat,
