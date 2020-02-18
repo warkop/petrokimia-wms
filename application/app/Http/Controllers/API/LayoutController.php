@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
+use App\Http\Models\GudangStok;
 use App\Http\Models\Karu;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
@@ -82,7 +83,11 @@ class LayoutController extends Controller
             ->orderBy('area.nama', 'asc')
             ->paginate(10);
 
+        $listPallet = GudangStok::where('id_gudang', $id_gudang)
+        ->paginate(10);
+
         $obj =  AktivitasResource::collection($res)->additional([
+            'pallet' => $listPallet,
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK

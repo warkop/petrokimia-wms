@@ -1545,8 +1545,6 @@ class AktivitasController extends Controller
             'data'      => $wannaSave,
         ];
 
-        // dd($produk);
-
         if ($produk != null) {
             $this->responseData['produk']    = $produk;
         }
@@ -1560,9 +1558,7 @@ class AktivitasController extends Controller
 
     public function history(Request $req) //memuat history
     {
-        // $nama = $req->nama;
         $shift = $req->input('shift');
-        // $tanggal = date('Y-m-d', strtotime($req->tanggal));
 
         $gudang = $this->getCheckerGudang();
         $search = $req->input('search');
@@ -1768,7 +1764,6 @@ class AktivitasController extends Controller
         )
         ->join('alat_berat', 'aktivitas_harian_alat_berat.id_alat_berat', '=', 'alat_berat.id')
         ->join('alat_berat_kat', 'alat_berat.id_kategori', '=', 'alat_berat_kat.id')
-        // ->where('alat_berat.status', 1)
         ->where('id_aktivitas_harian', $id)
         ->get();
 
@@ -1798,24 +1793,12 @@ class AktivitasController extends Controller
             'tanggal',
             'material_trans.jumlah'
         )
-            // ->leftJoin('area_stok', 'area_stok.id', '=', 'material_trans.id_area_stok')
             ->leftJoin('area', 'area.id', '=', 'material_trans.id_area')
             ->where('id_aktivitas_harian', $id_aktivitas_harian)
             ->where('material_trans.id_material', $id_material)
             ;
 
-        // $aktivitasHarian = AktivitasHarian::where('ref_number', $id_aktivitas_harian)->first();
-        // $resApprove = [];
-        // if (!empty($aktivitasHarian)) {
-        //     $resApprove = AktivitasHarianArea::with('areaStok')
-        //         ->where('id_aktivitas_harian', $aktivitasHarian->id)
-        //         ->whereHas('areaStok', function ($query) use ($id_material) {
-        //             $query->where('id_material', $id_material);
-        //         })->get();
-        // }
-
         $obj = HistoryMaterialAreaResource::collection($res->get())->additional([
-            // 'dataApprove' => HistoryMaterialAreaResource::collection($resApprove),
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK
@@ -1921,8 +1904,7 @@ class AktivitasController extends Controller
                 $query->orWhere('end_date', '>', now());
             })
             ->get();
-        // dd($rencanaTkbm->toArray());
-        // dd($user);
+
         foreach ($rencanaTkbm as $key) {
             $user = Users::where('id_tkbm', $key->id_tkbm)->first();
             if (!empty($user)) {
@@ -2041,10 +2023,6 @@ class AktivitasController extends Controller
                     'tanggal'       => '2019-12-25',
                     'jumlah'        => 100
                 ])->save();
-
-                // $areaStok->materialTrans()->saveMany([
-                //     new MaterialTrans()
-                // ]);
             }
         }
     }
@@ -2059,13 +2037,17 @@ class AktivitasController extends Controller
 
             try {
                 DB::transaction(function () use ($res, $aktivitasHarian, $res_user) {
+                    DB::table('aktivitas_harian')->where('id')->update([
+                        'canceled' => 1,
+                    ]);
+
                     $id = DB::table('aktivitas_harian')->insertGetId([
                         'id_shift'          => $aktivitasHarian->id_shift,
                         'id_karu'           => $aktivitasHarian->id_karu,
                         'id_aktivitas'      => $aktivitasHarian->id_aktivitas,
                         'id_gudang'         => $aktivitasHarian->id_gudang,
                         'id_gudang_tujuan'  => $aktivitasHarian->id_gudang_tujuan,
-                        'ref_number'        => $aktivitasHarian->ref_number,
+                        'ref_number'        => $aktivitasHarian->id,
                         'sistro'            => $aktivitasHarian->sistro,
                         'approve'           => $aktivitasHarian->approve,
                         'kelayakan_before'  => $aktivitasHarian->kelayakan_before,
@@ -2076,8 +2058,11 @@ class AktivitasController extends Controller
                         'id_yayasan'        => $aktivitasHarian->id_yayasan,
                         'id_tkbm'           => $aktivitasHarian->id_tkbm,
                         'draft'             => $aktivitasHarian->draft,
+                        'cancelable'        => 1,
                         'created_by'        => $res_user->id,
                         'updated_by'        => $res_user->id,
+                        'created_at'        => now(),
+                        'updated_at'        => now(),
                     ]);
                     
                     //produk
@@ -2089,15 +2074,15 @@ class AktivitasController extends Controller
                                 $latestTotal = $areaStok->jumlah + $key->jumlah;
 
                                 DB::table('material_trans')->insert([
-                                    'tipe'      => 2,
-                                    'jumlah'    => $key->jumlah,
-                                    'tanggal'   => $key->tanggal,
+                                    'tipe'                  => 2,
+                                    'jumlah'                => $key->jumlah,
+                                    'tanggal'               => $key->tanggal,
                                     'id_material'           => $key->id_material,
                                     'id_aktivitas_harian'   => $id,
                                     'status_produk'         => $key->status_produk,
                                     'id_stok_area'          => $key->id_stok_area,
-                                    'id_area'       => $key->id_area,
-                                    'id_shift'      => $key->id_shift,
+                                    'id_area'               => $key->id_area,
+                                    'shift_id'              => $key->shift_id,
                                 ]);
 
                                 DB::table('area_stok')
@@ -2111,15 +2096,15 @@ class AktivitasController extends Controller
                                 $latestTotal = $areaStok->jumlah - $key->jumlah;
 
                                 DB::table('material_trans')->insert([
-                                    'tipe'      => 1,
-                                    'jumlah'    => $key->jumlah,
-                                    'tanggal'   => $key->tanggal,
+                                    'tipe'                  => 1,
+                                    'jumlah'                => $key->jumlah,
+                                    'tanggal'               => $key->tanggal,
                                     'id_material'           => $key->id_material,
                                     'id_aktivitas_harian'   => $id,
                                     'status_produk'         => $key->status_produk,
                                     'id_stok_area'          => $key->id_stok_area,
-                                    'id_area'       => $key->id_area,
-                                    'id_shift'      => $key->id_shift,
+                                    'id_area'               => $key->id_area,
+                                    'shift_id'              => $key->shift_id,
                                 ]);
 
                                 DB::table('area_stok')
@@ -2138,15 +2123,15 @@ class AktivitasController extends Controller
                                 $latestTotal = $gudangStok->jumlah + $key->jumlah;
 
                                 DB::table('material_trans')->insert([
-                                    'tipe'      => 2,
-                                    'jumlah'    => $key->jumlah,
-                                    'tanggal'   => $key->tanggal,
+                                    'tipe'                  => 2,
+                                    'jumlah'                => $key->jumlah,
+                                    'tanggal'               => $key->tanggal,
                                     'id_material'           => $key->id_material,
                                     'id_aktivitas_harian'   => $id,
                                     'status_pallet'         => $key->status_pallet,
-                                    'id_gudang_area'        => $key->id_gudang_area,
-                                    'id_area'       => $key->id_area,
-                                    'id_shift'      => $key->id_shift,
+                                    'id_gudang_stok'        => $key->id_gudang_stok,
+                                    'id_area'               => $key->id_area,
+                                    'shift_id'              => $key->shift_id,
                                 ]);
 
                                 DB::table('gudang_stok')
@@ -2160,15 +2145,15 @@ class AktivitasController extends Controller
                                 $latestTotal = $gudangStok->jumlah - $key->jumlah;
 
                                 DB::table('material_trans')->insert([
-                                    'tipe'      => 1,
-                                    'jumlah'    => $key->jumlah,
-                                    'tanggal'   => $key->tanggal,
+                                    'tipe'                  => 1,
+                                    'jumlah'                => $key->jumlah,            
+                                    'tanggal'               => $key->tanggal,
                                     'id_material'           => $key->id_material,
                                     'id_aktivitas_harian'   => $id,
                                     'status_pallet'         => $key->status_pallet,
-                                    'id_gudang_area'        => $key->id_gudang_area,
-                                    'id_area'       => $key->id_area,
-                                    'id_shift'      => $key->id_shift,
+                                    'id_gudang_stok'        => $key->id_gudang_stok,
+                                    'id_area'               => $key->id_area,
+                                    'shift_id'              => $key->shift_id,
                                 ]);
 
                                 DB::table('gudang_stok')
@@ -2181,13 +2166,13 @@ class AktivitasController extends Controller
                     }
                 });
             } catch (Exception $e) {
-                $this->responseCode = 500;
-                $this->responseMessage = 'Ada kesalahan saat menyimpan! Silahkan hubungi administrator!';
+                $this->responseCode     = 500;
+                $this->responseMessage  = $e;
                 $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
             } 
         } else {
-            $this->responseCode = 403;
-            $this->responseMessage = 'Aktivitas dalam keadaan draft, tidak perlu dicancel!';
+            $this->responseCode     = 403;
+            $this->responseMessage  = 'Aktivitas dalam keadaan draft, tidak perlu dicancel!';
             $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
         }
         return response()->json($response, $this->responseCode);
