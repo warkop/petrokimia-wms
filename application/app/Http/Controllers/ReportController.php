@@ -3578,21 +3578,26 @@ class ReportController extends Controller
                             // ->where('material_adjustment.tanggal', '<', $tanggal)
                             ;
                     })
-                    ->where(function ($query) use ($resShift, $tanggal) {
-                        $query->where('id_shift', $resShift->id);
-                        $query->orWhere('id_shift', 2);
-                        $query->orWhere('shift', $resShift->id);
-                        $query->orWhere('shift', 2);
-                        $query->orWhere(function ($inQuery) use ($tanggal) {
-                            $inQuery->where('id_shift', 3);
-                            $inQuery->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $tanggal);
-                            $inQuery->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'HH24-MI-SS')"), '<', '07:00:00');
-                        });
-                        $query->orWhere(function ($inQuery) use ($tanggal) {
-                            $inQuery->where('shift', 3);
-                            $inQuery->where('material_adjustment.tanggal', $tanggal);
-                        });
+                    ->where(function ($query) use ($tanggal) {
+                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 07:00:00')));
+                        $query->orWhere('material_adjustment.tanggal', '<', $tanggal);
                     })
+
+                    // ->where(function ($query) use ($resShift, $tanggal) {
+                    //     // $query->where('id_shift', $resShift->id);
+                    //     // $query->orWhere('id_shift', 2);
+                    //     // $query->orWhere('shift', $resShift->id);
+                    //     // $query->orWhere('shift', 2);
+                    //     $query->where(function ($inQuery) use ($tanggal) {
+                    //         // $inQuery->where('id_shift', 3);
+                    //         $inQuery->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d', strtotime($tanggal.' 07:00:00')));
+                    //     });
+                    //     $query->orWhere(function ($inQuery) use ($tanggal) {
+                    //         // $inQuery->where('shift', 3);
+                    //         $inQuery->where('material_adjustment.tanggal', '<', $tanggal);
+                    //     })
+                    //     ;
+                    // })
                     ->get();
             } else if ($resShift->id == 2) {
                 $stokTanggalSebelum = DB::table('material_trans')
@@ -3618,21 +3623,24 @@ class ReportController extends Controller
                             // ->where('material_adjustment.tanggal', '<', $tanggal)
                             ;
                     })
-                    ->where(function ($query) use ($resShift, $tanggal) {
-                        $query->where('id_shift', $resShift->id);
-                        $query->orWhere('shift', $resShift->id);
-                        $query->where(function($inQuery) use($tanggal){
-                            $inQuery->where('id_shift', 3);
-                            $inQuery->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $tanggal);
-                            $inQuery->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'HH24-MI-SS')"), '<', '07:00:00');
-                        });
-                        $query->orWhere(function ($inQuery) use ($tanggal) {
-                            $inQuery->where('shift', 3);
-                            $inQuery->where('material_adjustment.tanggal', $tanggal);
-                        });
-                        $query->orWhere('id_shift', 1);
-                        $query->orWhere('shift', 1);
+                    ->where(function ($query) use ($tanggal) {
+                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 15:00:00')));
+                        $query->orWhere('material_adjustment.tanggal', '<', $tanggal);
                     })
+                    // ->where(function ($query) use ($resShift, $tanggal) {
+                    //     // $query->where('id_shift', $resShift->id);
+                    //     // $query->orWhere('shift', $resShift->id);
+                    //     $query->where(function($inQuery) use($tanggal){
+                    //         // $inQuery->where('id_shift', 3);
+                    //         $inQuery->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<=', date('Y-m-d', strtotime($tanggal . ' 15:00:00')));
+                    //     });
+                    //     $query->orWhere(function ($inQuery) use ($tanggal) {
+                    //         // $inQuery->where('shift', 3);
+                    //         $inQuery->where('material_adjustment.tanggal', '<', $tanggal);
+                    //     });
+                    //     // $query->orWhere('id_shift', 1);
+                    //     // $query->orWhere('shift', 1);
+                    // })
                     ->get();
             } else if ($resShift->id == 3) {
                 $stokTanggalSebelum = DB::table('material_trans')
@@ -3663,21 +3671,26 @@ class ReportController extends Controller
                             // ->where('material_adjustment.tanggal', '<', $tanggal)
                             ;
                     })
-                    ->where(function ($query) use ($resShift, $tanggal) {
-                        $query->where(function ($inQuery) use ($resShift,$tanggal) {
-                            $inQuery->where('id_shift', $resShift->id);
-                            $inQuery->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $tanggal);
-                            $inQuery->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'HH24-MI-SS')"), '<', '07:00:00');
-                        });
-                        $query->orWhere(function ($inQuery) use ($resShift,$tanggal) {
-                            $inQuery->orWhere('shift', $resShift->id);
-                            $inQuery->where('material_adjustment.tanggal', $tanggal);
-                        });
-                        $query->orWhere('id_shift', 2);
-                        $query->orWhere('shift', 2);
-                        $query->orWhere('id_shift', 1);
-                        $query->orWhere('shift', 1);
+                    ->where(function($query) use ($tanggal){
+                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<=', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00 -1 day')));
+                        $query->orWhere('material_adjustment.tanggal', '<=', date('Y-m-d', strtotime($tanggal . '-1 day')));
                     })
+                    
+                    
+                    // ->where(function ($query) use ($resShift, $tanggal) {
+                    //     $query->where(function ($inQuery) use ($resShift,$tanggal) {
+                    //         // $inQuery->where('id_shift', $resShift->id);
+                    //         $inQuery->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d', strtotime($tanggal . ' 23:00:00 -1 day')));
+                    //     });
+                    //     $query->orWhere(function ($inQuery) use ($resShift,$tanggal) {
+                    //         // $inQuery->orWhere('shift', $resShift->id);
+                    //         $inQuery->where('material_adjustment.tanggal', '<=',date('Y-m-d', strtotime($tanggal . '-1 day')));
+                    //     });
+                    //     // $query->orWhere('id_shift', 2);
+                    //     // $query->orWhere('shift', 2);
+                    //     // $query->orWhere('id_shift', 1);
+                    //     // $query->orWhere('shift', 1);
+                    // })
                     ->get();
             }
 
