@@ -3544,38 +3544,114 @@ class ReportController extends Controller
             $jumlah =0;
             $jumlahStokAwal = 0;
 
-            $stokTanggalIni = DB::table('material_trans')->where('id_material', $value->id_material)
-                // ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
+            if ($resShift->id == 1) {
+                $stokTanggalSebelum = DB::table('material_trans')
+                    ->where('material_trans.id_area_stok', $value->id)
+                    ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                            ->where('draft', 0)
+                            ->where(function ($inQuery) use ($resShift) {
+                                $inQuery->where('id_shift', $resShift->id);
+                                $inQuery->orWhere('id_shift', 3);
+                            })
+
+                            ->where(DB::raw("TO_CHAR(material_trans.updated_at, 'yyyy-mm-dd')"), '<', $tanggal);
+                    })
+                    ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
+                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                            ->where(function ($inQuery) use ($resShift) {
+                                $inQuery->where('shift', $resShift->id);
+                                $inQuery->orWhere('shift', 3);
+                            })
+                            ->where('material_adjustment.tanggal', '<', $tanggal);
+                    })
+                    ->where(function ($query) use ($resShift) {
+                        $query->where('id_shift', $resShift->id);
+                        $query->orWhere('shift', $resShift->id);
+                        $query->orWhere('id_shift', 3);
+                        $query->orWhere('shift', 3);
+                    })
+                    ->get();
+            } else if ($resShift->id == 2) {
+                $stokTanggalSebelum = DB::table('material_trans')
+                    ->where('material_trans.id_area_stok', $value->id)
+                    ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                            ->where('draft', 0)
+                            ->where(function ($inQuery) use ($resShift) {
+                                $inQuery->where('id_shift', $resShift->id);
+                                $inQuery->orWhere('id_shift', 3);
+                                $inQuery->orWhere('id_shift', 1);
+                            })
+
+                            ->where(DB::raw("TO_CHAR(material_trans.updated_at, 'yyyy-mm-dd')"), '<=', $tanggal);
+                    })
+                    ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
+                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                            ->where(function ($inQuery) use ($resShift) {
+                                $inQuery->where('shift', $resShift->id);
+                                $inQuery->orWhere('shift', 3);
+                                $inQuery->orWhere('shift', 1);
+                            })
+                            ->where('material_adjustment.tanggal', '<=', $tanggal);
+                    })
+                    ->where(function ($query) use ($resShift) {
+                        $query->where('id_shift', $resShift->id);
+                        $query->orWhere('shift', $resShift->id);
+                        $query->orWhere('id_shift', 3);
+                        $query->orWhere('shift', 3);
+                        $query->orWhere('id_shift', 1);
+                        $query->orWhere('shift', 1);
+                    })
+                    ->get();
+            } else if ($resShift->id == 3) {
+                $stokTanggalSebelum = DB::table('material_trans')
+                    ->where('material_trans.id_area_stok', $value->id)
+                    ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                            ->where('draft', 0)
+                            ->where(function ($inQuery) use ($resShift) {
+                                $inQuery->where('id_shift', $resShift->id);
+                                $inQuery->orWhere('id_shift', 2);
+                                $inQuery->orWhere('id_shift', 1);
+                            })
+
+                            ->where(DB::raw("TO_CHAR(material_trans.updated_at, 'yyyy-mm-dd')"), '<', $tanggal);
+                    })
+                    ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
+                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                            ->where(function ($inQuery) use ($resShift) {
+                                $inQuery->where('shift', $resShift->id);
+                                $inQuery->orWhere('shift', 2);
+                                $inQuery->orWhere('shift', 1);
+                            })
+                            ->where('material_adjustment.tanggal', '<=', $tanggal);
+                    })
+                    ->where(function ($query) use ($resShift) {
+                        $query->where('id_shift', $resShift->id);
+                        $query->orWhere('shift', $resShift->id);
+                        $query->orWhere('id_shift', 2);
+                        $query->orWhere('shift', 2);
+                        $query->orWhere('id_shift', 1);
+                        $query->orWhere('shift', 1);
+                    })
+                    ->get();
+            }
+
+            $stokTanggalIni = DB::table('material_trans')
                 ->where('material_trans.id_area_stok', $value->id)
                 ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                     ->where('draft', 0)
-                    ->where('id_shift', $resShift->id)
                     ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $tanggal)
                     ;
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                    ->where('shift', $resShift->id)
                     ->where('material_adjustment.tanggal', $tanggal);
                 })
-                ->get();
-            
-            $stokTanggalSebelum = DB::table('material_trans')->where('id_material', $value->id_material)
-                // ->where('status_produk', 1) //harus + 2 step agar cocok dengan status pada databse
-                ->where('material_trans.id_area_stok', $value->id)
-                ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
-                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                    ->where('draft', 0)
-                    ->where('id_shift', $resShift->id)
-                    ->where(DB::raw("TO_CHAR(material_trans.updated_at, 'yyyy-mm-dd')"), '<', $tanggal);
-                })
-                ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
-                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                    ->where('shift', $resShift->id)
-                    ->where('material_adjustment.tanggal', '<', $tanggal);
-                })
-                ->where(function($query) use($resShift){
+                ->where(
+                    function ($query) use ($resShift) {
                     $query->where('id_shift', $resShift->id);
                     $query->orWhere('shift', $resShift->id);
                 })
