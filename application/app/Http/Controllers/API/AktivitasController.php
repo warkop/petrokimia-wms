@@ -1594,6 +1594,7 @@ class AktivitasController extends Controller
             'aktivitas_harian.id_shift',
             'aktivitas.pengiriman_produk_rusak',
             'aktivitas.cancelable',
+            'aktivitas_harian.canceled',
             'aktivitas_harian.nopol',
             'aktivitas_harian.driver',
             'aktivitas_harian.posto'
@@ -1669,6 +1670,8 @@ class AktivitasController extends Controller
             'aktivitas_harian.dikembalikan',
             'aktivitas.pengiriman_produk_rusak',
             'aktivitas.cancelable',
+            'aktivitas_harian.canceled',
+            'aktivitas_harian.cancelable',
             'users.id_tkbm',
             'alasan',
             'ttd',
