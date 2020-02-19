@@ -85,19 +85,39 @@ class LayoutController extends Controller
 
         $listPallet = DB::table('gudang_stok')
         ->select(
-            'gudang_stok.*',
-            'material.nama'
+            'gudang_stok.*'
         )
-        ->leftJoin('material', 'material.id', '=', 'gudang_stok.id_material')
         ->where('id_gudang', $id_gudang)
-        ->where(function ($where) use ($search) {
-            $where->where(DB::raw('LOWER(material.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-        })
         ->orderBy('status')
-        ->paginate(10);
+        ->get();
+
+        $stok       = 0;
+        $terpakai   = 0;
+        $kosong     = 0;
+        $rusak      = 0;
+
+        foreach ($listPallet as $key) {
+            if ($key->status == 1) {
+                $stok = $stok + $key->jumlah;
+            }
+            if ($key->status == 2) {
+                $terpakai = $terpakai + $key->jumlah;
+            }
+            if ($key->status == 3) {
+                $kosong = $kosong + $key->jumlah;
+            }
+            if ($key->status == 4) {
+                $rusak = $rusak + $key->jumlah;
+            }
+        }
 
         $obj =  AktivitasResource::collection($res)->additional([
-            'pallet' => $listPallet,
+            'pallet' => [
+                'stok'      => $stok,
+                'terpakai'  => $terpakai,
+                'kosong'    => $kosong,
+                'rusak'     => $rusak,
+            ],
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK
