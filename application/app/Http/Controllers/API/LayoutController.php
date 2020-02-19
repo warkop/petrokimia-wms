@@ -83,7 +83,17 @@ class LayoutController extends Controller
             ->orderBy('area.nama', 'asc')
             ->paginate(10);
 
-        $listPallet = GudangStok::where('id_gudang', $id_gudang)
+        $listPallet = DB::table('gudang_stok')
+        ->select(
+            'gudang_stok.*',
+            'material.nama'
+        )
+        ->leftJoin('material', 'material.id', '=', 'gudang_stok.id_material')
+        ->where('id_gudang', $id_gudang)
+        ->where(function ($where) use ($search) {
+            $where->where(DB::raw('LOWER(material.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+        })
+        ->orderBy('status')
         ->paginate(10);
 
         $obj =  AktivitasResource::collection($res)->additional([
