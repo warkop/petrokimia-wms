@@ -3200,7 +3200,6 @@ class ReportController extends Controller
                     $query->where('aktivitas_harian.created_at', '<', $tgl_awal);
                     $query->orWhere('material_adjustment.created_at', '<', $tgl_awal);
                 })
-                ->where('status_produk', 1)
                 ->where('tipe', 1)
                 ->sum('jumlah');
 
@@ -3225,7 +3224,6 @@ class ReportController extends Controller
                     $query->where('aktivitas_harian.created_at', '<', $tgl_awal);
                     $query->orWhere('material_adjustment.created_at', '<', $tgl_awal);
                 })
-                ->where('status_produk', 1)
                 ->where('tipe', 2)
                 ->sum('jumlah');
 
@@ -3246,7 +3244,6 @@ class ReportController extends Controller
                 })
                 ->where('id_material', $value->id_material)
                 ->where('draft', 0)
-                ->where('status_produk', 1)
                 ->sum('jumlah');
                 
                 $stokAkhir += $materialTrans;
@@ -3264,7 +3261,6 @@ class ReportController extends Controller
                 })
                 ->where('id_material', $value->id_material)
                 ->where('draft', 0)
-                ->where('status_produk', 1)
                 ->sum('jumlah');
 
                 $stokAkhir -= $materialTrans;
