@@ -107,6 +107,16 @@ class Area extends CustomModel
         }
         $res = $res->where('gdg.tipe_gudang',1);
         $res = $res->orderBy(DB::raw("gdg.nama"),'asc');
+
+        if ($produk == 2) {
+            $res = $res->where(function ($query) use ($pilih_produk) {
+                $query->where('trans.id_material', $pilih_produk[0]);
+                foreach ($pilih_produk as $key => $value) {
+                    $query = $query->orWhere('trans.id_material', $value);
+                }
+            });
+        }
+
         return $res->get();
     }
     public function getProduk($gudang, $produk, $pilih_produk, $tgl){
@@ -138,6 +148,16 @@ class Area extends CustomModel
         }
         $res = $res->where('gdg.tipe_gudang',1);
         $res = $res->leftJoin('material as mat','mat.id','=','stok.id_material');
+
+        if ($produk == 2) {
+            $res = $res->where(function($query) use($pilih_produk){
+                $query->where('trans.id_material', $pilih_produk[0]);
+                foreach ($pilih_produk as $key => $value) {
+                    $query = $query->orWhere('trans.id_material', $value);
+                }
+            });
+        }
+
         return $res->get();
     }
 }
