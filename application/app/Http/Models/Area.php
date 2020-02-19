@@ -110,9 +110,9 @@ class Area extends CustomModel
 
         if ($produk == 2) {
             $res = $res->where(function ($query) use ($pilih_produk) {
-                $query->where('trans.id_material', $pilih_produk[0]);
+                $query->where('stok.id_material', $pilih_produk[0]);
                 foreach ($pilih_produk as $key => $value) {
-                    $query = $query->orWhere('trans.id_material', $value);
+                    $query = $query->orWhere('stok.id_material', $value);
                 }
             });
         }
@@ -151,9 +151,9 @@ class Area extends CustomModel
 
         if ($produk == 2) {
             $res = $res->where(function($query) use($pilih_produk){
-                $query->where('trans.id_material', $pilih_produk[0]);
+                $query->where('stok.id_material', $pilih_produk[0]);
                 foreach ($pilih_produk as $key => $value) {
-                    $query = $query->orWhere('trans.id_material', $value);
+                    $query = $query->orWhere('stok.id_material', $value);
                 }
             });
         }
