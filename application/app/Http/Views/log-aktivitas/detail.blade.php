@@ -67,9 +67,38 @@
                 </div>
                 <div class="row mb1">
                     <div class="col-12">
-                        <label>Gambar</label><br>
+                        <label>Nopol</label>
+                        <h5 class="boldd"> {{$aktivitasHarian->nopol??'-'}}</h5>
+                    </div>
+                </div>
+                <div class="row mb1">
+                    <div class="col-12">
+                        <label>Driver</label>
+                        <h5 class="boldd"> {{$aktivitasHarian->driver??'-'}}</h5>
+                    </div>
+                </div>
+                <div class="row mb1">
+                    <div class="col-12">
+                        <label>No. SO</label>
+                        <h5 class="boldd"> {{$aktivitasHarian->posto??'-'}}</h5>
+                    </div>
+                </div>
+                <div class="row mb1">
+                    <div class="col-12">
+                        <label>Gambar Truk</label><br>
                         <a href="#" class="boldd color-green"  data-toggle="modal"
                         data-target="#kt_modal_2"> Lihat Gambar</a>
+                    </div>
+                </div>
+                <div class="row mb1">
+                    <div class="col-12">
+                        <label>Tanda Tangan</label><br>
+                        <a class="fancybox" rel="ligthbox"
+                            href="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}">
+                            <img class="img-fluid"
+                                src="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}" alt=""
+                                srcset="">
+                        </a>
                     </div>
                 </div>
             </div>

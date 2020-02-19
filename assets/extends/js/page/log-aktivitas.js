@@ -47,6 +47,15 @@ const load_table = function (id_gudang='', id_shift='') {
                 mData: "nama_shift"
             },
             {
+                mData: "driver"
+            },
+            {
+                mData: "nopol"
+            },
+            {
+                mData: "posto"
+            },
+            {
                 mData: "id"
             }
         ],

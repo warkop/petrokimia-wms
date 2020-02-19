@@ -11,6 +11,7 @@ use App\Http\Models\Gudang;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
 use App\Http\Models\ShiftKerja;
+use App\Http\Models\Sistro;
 use App\Http\Resources\MaterialTransResource;
 use Illuminate\Http\Request;
 
@@ -88,8 +89,13 @@ class LogAktivitasController extends Controller
         $data['produk'] = MaterialTransResource::collection($produk);
         $pallet = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_pallet')->get();
         $data['pallet'] = $pallet;
-        $data['id_gudang'] = $aktivitasHarian->id_gudang;        
+        $data['id_gudang'] = $aktivitasHarian->id_gudang;
         $data['list_produk'] = Material::produk()->get();
+        $sistro = null;
+        // if (!empty($aktivitasHarian->sistro)) {
+        //     $sistro = Sistro::where('tiketno', $aktivitasHarian->sistro)->orWhere('bookingno', $aktivitasHarian->sistro)->first();
+        // }
+        // $data['sistro'] = $sistro;
         return view('log-aktivitas.detail', $data);
     }
 
