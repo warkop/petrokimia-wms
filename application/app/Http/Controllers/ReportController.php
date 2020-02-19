@@ -2474,9 +2474,9 @@ class ReportController extends Controller
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Nama Aktivitas');
         
-        $abjadOri++;
-        $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Status');
+        // $abjadOri++;
+        // $col++;
+        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Status');
 
         $abjadOri++;
         $col++;
@@ -2523,11 +2523,11 @@ class ReportController extends Controller
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->aktivitasHarian->aktivitas->nama);
 
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->tipe == 1?'Mengurangi':'Menambah');
+            // $col++;
+            // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->tipe == 1?'Mengurangi':'Menambah');
 
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->jumlah);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->tipe == 1 ? '-'. $value->jumlah : $value->jumlah);
 
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->created_at)));
