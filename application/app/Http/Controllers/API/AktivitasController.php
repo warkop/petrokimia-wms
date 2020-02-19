@@ -2051,6 +2051,13 @@ class AktivitasController extends Controller
         $user       = request()->get('my_auth');
         $res_user   = Users::findOrFail($user->id_user);
 
+        if (empty($aktivitasHarian->aktivitas->cancelable)) {
+            $this->responseCode     = 403;
+            $this->responseMessage  = 'Aktivitas tidak bersifat cancelable!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+
         if (!empty($aktivitasHarian->canceled)) {
             $this->responseCode     = 403;
             $this->responseMessage  = 'Aktivitas sudah dicancel!';
