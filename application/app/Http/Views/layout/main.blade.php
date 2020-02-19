@@ -206,7 +206,7 @@
                                         <li class="kt-nav__item">
                                             <a href="{{url('report/laporan-stok')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-th-large"></i>
-                                                <span class="kt-nav__link-text">Stok</span>
+                                                <span class="kt-nav__link-text">Posisi Stok</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">

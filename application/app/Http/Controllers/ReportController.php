@@ -2643,7 +2643,7 @@ class ReportController extends Controller
         $area       = new Area;
         $resProduk  = $area->getProduk($gudang, $tipe_produk, $produk, $tgl);
         $resArea    = $area->getStokGudang($gudang, $tipe_produk, $produk, $tgl);
-        $nama_file  = date("YmdHis") . '_stok.xlsx';
+        $nama_file  = date("YmdHis") . '_posisi_stok.xlsx';
 
         $preview = false;
         if (request()->preview == true) {
@@ -2866,7 +2866,7 @@ class ReportController extends Controller
         // $abjadKedua++;
         // $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadKedua . $row)->applyFromArray($style_judul_kolom);
         //Sheet Title
-        $objSpreadsheet->getActiveSheet()->setTitle('Laporan Stok');
+        $objSpreadsheet->getActiveSheet()->setTitle('Laporan Posisi Stok');
         // end : isi kolom
         // end : sheet
 
