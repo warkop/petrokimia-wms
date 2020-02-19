@@ -492,6 +492,13 @@ class AktivitasController extends Controller
         $aktivitasHarian->id_tkbm           = $req->input('id_tkbm');
         $aktivitasHarian->draft             = $draft;
 
+        if (!empty($req->input('sistro'))) {
+            $sistro = Sistro::where('tiketno', $req->input('sistro'))->orWhere('bookingno', $req->input('sistro'))->first();
+            $aktivitasHarian->nopol   = $sistro->nopol;
+            $aktivitasHarian->driver  = $sistro->driver;
+            $aktivitasHarian->posto   = $sistro->posto;
+        }
+
         $aktivitasHarian->save();
 
         $res_aktivitas = Aktivitas::find($req->input('id_aktivitas'));
@@ -1584,7 +1591,10 @@ class AktivitasController extends Controller
             'shift_kerja.nama as nama_shift',
             'aktivitas_harian.id_shift',
             'aktivitas.pengiriman_produk_rusak',
-            'aktivitas.cancelable'
+            'aktivitas.cancelable',
+            'aktivitas_harian.nopol',
+            'aktivitas_harian.driver',
+            'aktivitas_harian.posto'
         )
             ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
             ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
@@ -1601,6 +1611,9 @@ class AktivitasController extends Controller
                 $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('LOWER(tenaga_kerja_non_organik.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw('LOWER(aktivitas_harian.nopol)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw('LOWER(aktivitas_harian.driver)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw('LOWER(aktivitas_harian.posto)'), 'ILIKE', '%' . strtolower($search) . '%');
             })
             ->orderBy('aktivitas_harian.created_at', 'desc')
             ;
@@ -1658,6 +1671,9 @@ class AktivitasController extends Controller
             'alasan',
             'ttd',
             'draft',
+            'nopol',
+            'driver',
+            'posto',
             DB::raw('(SELECT nama gudang FROM gudang WHERE id = aktivitas_harian.id_gudang)
                     AS text_gudang'),
             DB::raw('(SELECT nama FROM alat_berat_kat WHERE id = id_kategori)
@@ -1851,8 +1867,9 @@ class AktivitasController extends Controller
             'driver'            => $sistro->driver,
             'sistro_qty'        => (double)$sistro->qty,
             'tanggal'           => $sistro->tanggal,
-            'tujuan'            => $gudangTujuan->id,
-            'nama_tujuan'       => $gudangTujuan->nama,
+            'posto'             => $sistro->posto,
+            'tujuan'            => ($gudangTujuan == null) ? '-' : $gudangTujuan->id,
+            'nama_tujuan'       => ($gudangTujuan == null) ? '-' : $gudangTujuan->nama,
         ];
 
         return response()->json(['data' => [$data], 'status' => [
@@ -2176,5 +2193,19 @@ class AktivitasController extends Controller
             $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
         }
         return response()->json($response, $this->responseCode);
+    }
+
+    public function fillWithSistro()
+    {
+        $res = AktivitasHarian::whereNotNull('sistro')->get();
+
+        foreach ($res as $key) {
+            $sistro = Sistro::where('tiketno', $key->sistro)->orWhere('bookingno', $key->sistro)->firstOrFail();
+
+            $key->nopol     = $sistro->nopol;
+            $key->driver    = $sistro->driver;
+            $key->posto     = $sistro->posto;
+            $key->save();
+        }
     }
 }

@@ -60,6 +60,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         
         Route::post('/test-save/{kategoriAlatBerat}', 'API\AktivitasController@testSave');
         Route::get('/isi-stok/{hapus?}', 'API\AktivitasController@isiStok');
+        Route::get('/fill-with-sistro', 'API\AktivitasController@fillWithSistro');
     });
     
     Route::group(['prefix' => 'alat-berat'], function () {
