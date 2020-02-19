@@ -494,9 +494,11 @@ class AktivitasController extends Controller
 
         if (!empty($req->input('sistro'))) {
             $sistro = Sistro::where('tiketno', $req->input('sistro'))->orWhere('bookingno', $req->input('sistro'))->first();
-            $aktivitasHarian->nopol   = $sistro->nopol;
-            $aktivitasHarian->driver  = $sistro->driver;
-            $aktivitasHarian->posto   = $sistro->posto;
+            if (!empty($sistro)) {
+                $aktivitasHarian->nopol   = $sistro->nopol;
+                $aktivitasHarian->driver  = $sistro->driver;
+                $aktivitasHarian->posto   = $sistro->posto;
+            }
         }
 
         $aktivitasHarian->save();
