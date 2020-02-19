@@ -2200,12 +2200,13 @@ class AktivitasController extends Controller
         $res = AktivitasHarian::whereNotNull('sistro')->get();
 
         foreach ($res as $key) {
-            $sistro = Sistro::where('tiketno', $key->sistro)->orWhere('bookingno', $key->sistro)->firstOrFail();
-
-            $key->nopol     = $sistro->nopol;
-            $key->driver    = $sistro->driver;
-            $key->posto     = $sistro->posto;
-            $key->save();
+            $sistro = Sistro::where('tiketno', $key->sistro)->orWhere('bookingno', $key->sistro)->first();
+            if (!empty($sistro)) {
+                $key->nopol     = $sistro->nopol;
+                $key->driver    = $sistro->driver;
+                $key->posto     = $sistro->posto;
+                $key->save();
+            }
         }
     }
 }
