@@ -56,7 +56,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::post('/{aktivitas?}', 'API\AktivitasController@storePhotos')->where('aktivitas', '[0-9]+');
         Route::post('/kelayakan', 'API\AktivitasController@storeKelayakanPhotos');
         Route::put('/save-pengembalian', 'API\AktivitasController@storePengembalian');
-        Route::put('/cancel/{id}', 'API\AktivitasController@cancelAktivitas')->where('id', '[0-9]+');
+        Route::put('/cancel/{aktivitasHarian}', 'API\AktivitasController@cancelAktivitas')->where('id', '[0-9]+');
         
         Route::post('/test-save/{kategoriAlatBerat}', 'API\AktivitasController@testSave');
         Route::get('/isi-stok/{hapus?}', 'API\AktivitasController@isiStok');

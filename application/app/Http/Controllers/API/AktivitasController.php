@@ -2051,12 +2051,19 @@ class AktivitasController extends Controller
         $user       = request()->get('my_auth');
         $res_user   = Users::findOrFail($user->id_user);
 
+        if (!empty($aktivitasHarian->canceled)) {
+            $this->responseCode     = 403;
+            $this->responseMessage  = 'Aktivitas sudah dicancel!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+
         if ($aktivitasHarian->draft == 0) {
             $res = MaterialTrans::where('id_aktivitas_harian', $aktivitasHarian->id)->get();
 
             try {
                 DB::transaction(function () use ($res, $aktivitasHarian, $res_user) {
-                    DB::table('aktivitas_harian')->where('id')->update([
+                    DB::table('aktivitas_harian')->where('id', $aktivitasHarian->id)->update([
                         'canceled' => 1,
                     ]);
 
@@ -2099,18 +2106,18 @@ class AktivitasController extends Controller
                                     'id_material'           => $key->id_material,
                                     'id_aktivitas_harian'   => $id,
                                     'status_produk'         => $key->status_produk,
-                                    'id_stok_area'          => $key->id_stok_area,
+                                    'id_area_stok'          => $key->id_area_stok,
                                     'id_area'               => $key->id_area,
                                     'shift_id'              => $key->shift_id,
                                 ]);
 
                                 DB::table('area_stok')
-                                ->where('id_area_stok', $key->id_area_stok)
+                                ->where('id', $key->id_area_stok)
                                 ->update([
                                     'jumlah'      => $latestTotal,
                                 ]);
                             } else {
-                                $areaStok = AreaStok::find($key->id_area_stok);
+                                $areaStok = AreaStok::findOrFail($key->id_area_stok);
 
                                 $latestTotal = $areaStok->jumlah - $key->jumlah;
 
@@ -2121,13 +2128,13 @@ class AktivitasController extends Controller
                                     'id_material'           => $key->id_material,
                                     'id_aktivitas_harian'   => $id,
                                     'status_produk'         => $key->status_produk,
-                                    'id_stok_area'          => $key->id_stok_area,
+                                    'id_area_stok'          => $key->id_area_stok,
                                     'id_area'               => $key->id_area,
                                     'shift_id'              => $key->shift_id,
                                 ]);
 
                                 DB::table('area_stok')
-                                    ->where('id_area_stok', $key->id_area_stok)
+                                    ->where('id', $key->id_area_stok)
                                     ->update([
                                         'jumlah'      => $latestTotal,
                                     ]);
@@ -2154,7 +2161,7 @@ class AktivitasController extends Controller
                                 ]);
 
                                 DB::table('gudang_stok')
-                                    ->where('id_gudang_stok', $key->id_gudang_stok)
+                                    ->where('id', $key->id_gudang_stok)
                                     ->update([
                                         'jumlah'      => $latestTotal,
                                     ]);
@@ -2176,7 +2183,7 @@ class AktivitasController extends Controller
                                 ]);
 
                                 DB::table('gudang_stok')
-                                    ->where('id_gudang_stok', $key->id_gudang_stok)
+                                    ->where('id', $key->id_gudang_stok)
                                     ->update([
                                         'jumlah'      => $latestTotal,
                                     ]);
@@ -2184,9 +2191,12 @@ class AktivitasController extends Controller
                         }
                     }
                 });
+                $this->responseCode     = 200;
+                $this->responseMessage  = 'Aktivitas berhasil dicancel';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
             } catch (Exception $e) {
                 $this->responseCode     = 500;
-                $this->responseMessage  = $e;
+                $this->responseMessage  = $e->getMessage();
                 $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
             } 
         } else {
