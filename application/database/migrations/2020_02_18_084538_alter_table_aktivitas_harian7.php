@@ -16,6 +16,9 @@ class AlterTableAktivitasHarian7 extends Migration
         Schema::table('aktivitas_harian', function (Blueprint $table) {
             $table->integer('canceled')->nullable();
             $table->integer('cancelable')->nullable();
+            $table->string('nopol')->nullable();
+            $table->string('driver')->nullable();
+            $table->string('posto')->nullable();
         });
     }
 
@@ -29,6 +32,9 @@ class AlterTableAktivitasHarian7 extends Migration
         Schema::table('aktivitas_harian', function (Blueprint $table) {
             $table->dropColumn('canceled');
             $table->dropColumn('cancelable');
+            $table->dropColumn('nopol');
+            $table->dropColumn('driver');
+            $table->dropColumn('posto');
         });
     }
 }
