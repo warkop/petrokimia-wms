@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="{{aset_extends('css/global.css')}}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
 <link rel="stylesheet" href="{{asset('assets/extends/css/print/css/mainpage.css')}}">
@@ -397,6 +398,10 @@
         </div>
     </div>
 </div>
+
+<a href="javascript:;" class="float no-print" onclick="printPrev()">
+    <i class="fa fa-print my-float" style="font-size: 30px;"></i>
+</a>
 
 <script>
     function printPrev(){
