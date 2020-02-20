@@ -165,7 +165,7 @@
                         <div class="col-12">
                             <label>Tanda Tangan</label><br>
                             @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $aktivitasHarian->id . "/" . $aktivitasHarian->ttd)))
-                                <a class="fancybox"
+                                <a class="fancybox" rel="ligthbox"
                                     href="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}">
                                     <img class="img-fluid"
                                         src="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}" alt=""

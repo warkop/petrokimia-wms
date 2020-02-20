@@ -40,7 +40,6 @@
 		
 		<link rel="shortcut icon" href="{{ aset_extends('img/logo/favwms.png')}}" />
 		<link rel="stylesheet" href="{{aset_extends('plugin/ladda/dist/ladda-themeless.min.css')}}">
-		<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
 		<script src="{{aset_extends('plugin/ladda/dist/spin.min.js')}}"></script>
 		<script src="{{aset_extends('plugin/ladda/dist/ladda.min.js')}}"></script>
 		<script src="{{ aset_extends('js/energeek.js') }}" type="text/javascript"></script>

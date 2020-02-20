@@ -22,8 +22,7 @@
 
 		<!-- end::Global Config -->
 		<!--begin:: Global Mandatory Vendors -->
-		{{-- <script src="{{aset_tema()}}vendors/general/jquery/dist/jquery.js" type="text/javascript"></script> --}}
-		{{-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script> --}}
+		<script src="{{aset_tema()}}vendors/general/jquery/dist/jquery.js" type="text/javascript"></script>
 		<script src="{{aset_tema()}}vendors/general/popper.js/dist/umd/popper.js" type="text/javascript"></script>
 		<script src="{{aset_tema()}}vendors/general/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
 		<script src="{{aset_tema()}}vendors/general/js-cookie/src/js.cookie.js" type="text/javascript"></script>
