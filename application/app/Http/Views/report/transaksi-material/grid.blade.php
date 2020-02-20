@@ -1,11 +1,11 @@
 @extends('layout.app')
 
-@section('title', 'Laporan Produk')
+@section('title', 'Laporan Transaksi Material')
 
 @section('content')
 
 <script>
-    document.getElementById('report-produk-nav').classList.add('kt-menu__item--active');
+    document.getElementById('report-laporan-transaksi-material-nav').classList.add('kt-menu__item--active');
 </script>
 
 
@@ -15,21 +15,21 @@
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
-                    Laporan Produk
+                    Laporan Transaksi Material
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah form report produk pada <span class="text-ungu kt-font-bolder">Aplikasi WMS
+                    Berikut ini adalah form report transaksi material pada <span class="text-ungu kt-font-bolder">Aplikasi WMS
                         Petrokimia.</span>
                 </p>
             </div>
         </div>
-        <form action="{{url('report/produk')}}" method="GET" target="_blank">
+        <form action="{{url('report/transaksi-material')}}" method="GET" target="_blank">
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row mt2">
                 <h4 class="col-2 col-form-label text-kiri">Gudang</h4>
                 <div class="col-6">
-                    <select class="form-control m-select2" id="gudang" name="gudang[]" multiple="multiple" style="width: 100%">
+                    <select class="form-control m-select2 @error('title') is-invalid @enderror" id="gudang" name="gudang[]" multiple="multiple" style="width: 100%">
                         @foreach ($gudang as $item)
                             <option value="{{$item->id}}">{{$item->nama}}</option>
                         @endforeach
@@ -37,20 +37,20 @@
                 </div>
             </div>
             <div class="form-group row">
-                <h4 class="col-2 col-form-label text-kiri">Produk</h4>
+                <h4 class="col-2 col-form-label text-kiri">Material</h4>
                 <div class="col-6">
                     <div class="kt-radio-inline">
                         <label class="kt-radio kt-radio--success">
-                            <input id="semuaCheck" type="radio" name="produk" value="1" onclick="checkSemua()"> Semua
+                            <input id="semuaCheck" type="radio" name="material" value="1" onclick="checkSemua()"> Semua
                             <span></span>
                         </label>
                         <label class="kt-radio kt-radio--warning">
-                            <input id="myCheck" type="radio" name="produk" value="2" onclick="checkBx()"> Spesifik
+                            <input id="myCheck" type="radio" name="material" value="2" onclick="checkBx()"> Spesifik
                             <span></span>
                         </label> 
                     </div>
                     <div class="mt1" id="textadd" style="display:none;">
-                        <select class="form-control m-select2" id="produk" name="pilih_produk[]" multiple="multiple" style="width:100%">
+                        <select class="form-control m-select2" id="material" name="pilih_material[]" multiple="multiple" style="width:100%">
                             @foreach ($produk as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>
                             @endforeach
@@ -65,31 +65,37 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Tanggal Awal</label>
-                                    <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
+                                    <label>Start Date</label>
+                                    <input type="text" class="@if($errors->has('tgl_awal')) is-invalid @endif form-control" id="start_date" name="tgl_awal" readonly
                                         placeholder="Pilih tanggal">
+                                    @if($errors->has('tgl_awal'))
+                                        <div class="error">{{ $errors->first('tgl_awal') }}</div>
+                                    @endif
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Tanggal Akhir</label>
-                                    <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
+                                    <label>End Date</label>
+                                    <input type="text" class="@if($errors->has('tgl_akhir')) is-invalid @endif form-control" id="end_date" name="tgl_akhir" readonly
                                         placeholder="Pilih tanggal">
+                                     @if($errors->has('tgl_akhir'))
+                                        <div class="error">{{ $errors->first('tgl_akhir') }}</div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            @foreach ($errors->all() as $error)
+            {{-- @foreach ($errors->all() as $error)
                 <div class="alert alert-danger">{{ $error }}</div>
-            @endforeach
+            @endforeach --}}
         </div>
         <div class="kt-portlet__foot">
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="offset-lg-2">
-                        {{-- <a href="{{asset('assets/reports/produk/produk.xlsx')}}" class="btn btn-success"> <i class="fa fa-print"></i> Cetak Laporan</a> --}}
+                        {{-- <a href="{{asset('assets/reports/material/material.xlsx')}}" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</a> --}}
                         <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
                         <button type="submit" name="preview" value="true" class="btn btn-warning" download=""> <i class="fa fa-binoculars "></i> Preview Laporan</button>
                     </div>
@@ -102,10 +108,10 @@
 
 <script>
     $('#gudang').select2({
-        placeholder: "Pilih gudang"
+        placeholder: "Pilih Semua gudang"
     });
-    $('#produk').select2({
-        placeholder: "Pilih Produk",
+    $('#material').select2({
+        placeholder: "Pilih Semua material",
         allowClear: true
     });
 
@@ -116,7 +122,7 @@
         orientation: "top left"
     });
 
-function checkBx() {
+    function checkBx() {
   var checkBox = document.getElementById("myCheck");
   var text = document.getElementById("textadd");
   if (checkBox.checked == true){
@@ -131,7 +137,7 @@ function checkSemua() {
     var text = document.getElementById("textadd");
     if (checkBox.checked == true){
         text.style.display = "none";
-        $("#pallet").val('').trigger('change');
+        $("#material").val('').trigger('change');
     } else {
         text.style.display = "block";
     }

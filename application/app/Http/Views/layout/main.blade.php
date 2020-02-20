@@ -198,7 +198,7 @@
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <ul class="kt-nav">
                                         <li class="kt-nav__item">
-                                            <a href="{{url('report/laporan-material')}}" class="kt-nav__link">
+                                            <a href="{{url('report/laporan-transaksi-material')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-table"></i>
                                                 <span class="kt-nav__link-text">Transaksi Material</span>
                                             </a>
@@ -223,6 +223,12 @@
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-produk')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon fa fa-boxes"></i>
+                                                <span class="kt-nav__link-text">Produk</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('report/laporan-material')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon fa fa-boxes"></i>
                                                 <span class="kt-nav__link-text">Material</span>
                                             </a>
