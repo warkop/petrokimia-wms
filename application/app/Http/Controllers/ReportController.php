@@ -2609,8 +2609,6 @@ class ReportController extends Controller
                 $totalStok += $value->jumlah;
             }
 
-            // $totalStok += $jumlahStok;
-
             if ($value->status_produk == 2) {
                 if ($value->tipe == 1) {
                     $totalRusak -= $value->jumlah;
@@ -2622,7 +2620,8 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
         }
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . 5 . ":" . $abjadOri . $row)->applyFromArray($style_kolom);
-        
+        dd('TotalStok: '.$totalStok. ' - JumlahStok: '. $jumlahStok);
+        dd($jumlahStok);
         $totalStok += $jumlahStok;
         $totalNormal = $totalStok-$totalRusak;
         
