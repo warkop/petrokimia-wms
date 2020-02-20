@@ -2543,16 +2543,36 @@ class ReportController extends Controller
             }
             
             $tempRes =  DB::table('material_trans')
-            ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            ->leftJoin('aktivitas_harian', function($join){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0);
+            })
+            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
             ->where('id_material', $value->material->id)
-            ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-            ->where('draft', 0)
-            ->where('aktivitas_harian.updated_at', '<', $tgl_awal);
+            ->where(function($query) use($value) {
+                $query->where('aktivitas_harian.id_gudang', $value->aktivitasHarian->id_gudang);
+                $query->orWhere('material_adjustment.id_gudang', $value->aktivitasHarian->id_gudang);
+            })
+            ->where('material_trans.created_at', '<',$tgl_awal)
+            // ->where(function($query) use($tgl_awal) {
+            //     $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
+            //     $query->orWhere('material_adjustment.updated_at', '<', $tgl_awal);
+            // })
+            ->get();
 
-            $penambahan = $tempRes->where('tipe', 2)->sum('jumlah');
-            $pengurangan = $tempRes->where('tipe', 1)->sum('jumlah');
+            $penambahan = 0;
+            $pengurangan= 0;
+            foreach ($tempRes as $row2) {
+                if ($row2->tipe == 2) {
+                    $penambahan = $penambahan+$row2->jumlah;
+                }
 
-            $jumlahStok = $penambahan+$pengurangan;
+                if ($row2->tipe == 1) {
+                    $pengurangan = $pengurangan+$row2->jumlah;
+                }
+            }
+
+            $jumlahStok = $penambahan-$pengurangan;
 
             if ($value->tipe == 1) {
                 $totalStok -= $value->jumlah;
