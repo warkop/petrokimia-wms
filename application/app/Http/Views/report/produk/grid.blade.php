@@ -15,10 +15,10 @@
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
-                    Laporan Material
+                    Laporan Produk
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah form report material pada <span class="text-ungu kt-font-bolder">Aplikasi WMS
+                    Berikut ini adalah form report produk pada <span class="text-ungu kt-font-bolder">Aplikasi WMS
                         Petrokimia.</span>
                 </p>
             </div>

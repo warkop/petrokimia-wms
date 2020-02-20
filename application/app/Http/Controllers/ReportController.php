@@ -575,7 +575,7 @@ class ReportController extends Controller
 
     public function laporanProduk()
     {
-        $data['title'] = 'Laporan Material';
+        $data['title'] = 'Laporan Produk';
         $data['gudang'] = Gudang::internal()->get();
         $data['produk'] = Material::produk()->get();
         return view('report.produk.grid', $data);
@@ -658,7 +658,7 @@ class ReportController extends Controller
             $preview = true;
         }
 
-        $nama_file = date("YmdHis") . '_material.xlsx';
+        $nama_file = date("YmdHis") . '_produk.xlsx';
         $this->generateExcelProduk($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir, $preview);
     }
 
@@ -684,7 +684,7 @@ class ReportController extends Controller
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Material');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Produk');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
         $row++;
         $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
@@ -981,7 +981,7 @@ class ReportController extends Controller
         }
 
         //Sheet Title
-        $objSpreadsheet->getActiveSheet()->setTitle("Laporan Material");
+        $objSpreadsheet->getActiveSheet()->setTitle("Laporan Produk");
         // end : isi kolom
         // end : sheet
 

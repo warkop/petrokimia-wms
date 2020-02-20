@@ -224,7 +224,7 @@
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-produk')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon fa fa-boxes"></i>
-                                                <span class="kt-nav__link-text">Material</span>
+                                                <span class="kt-nav__link-text">Produk</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
