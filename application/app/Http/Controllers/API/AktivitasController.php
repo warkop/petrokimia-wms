@@ -1592,7 +1592,7 @@ class AktivitasController extends Controller
             'karu.nama as nama_karu',
             'shift_kerja.nama as nama_shift',
             'aktivitas_harian.id_shift',
-            'aktivitas.cancelable',
+            'aktivitas_harian.cancelable',
             'aktivitas_harian.canceled',
             'aktivitas_harian.nopol',
             'aktivitas_harian.driver',
