@@ -4,7 +4,7 @@
 
 @section('content')
 
-<link rel="stylesheet" href="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.css')}}">
+{{-- <link rel="stylesheet" href="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.css')}}"> --}}
 
 
 <!-- begin:: Content -->
@@ -410,7 +410,7 @@
 </div>
 <!--end::Modal-->
 
-<script src="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.js')}}"></script>
+{{-- <script src="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.js')}}"></script> --}}
 <script type="text/javascript">
     const id_gudang = "{{$id_gudang}}";
     const id_aktivitas_harian = "{{$id_aktivitas_harian}}";
@@ -420,7 +420,9 @@
 
     $(".fancybox").fancybox({
         openEffect: "none",
-
+        helpers   : { 
+            overlay : null
+        },
         closeEffect: "none"
     });
 

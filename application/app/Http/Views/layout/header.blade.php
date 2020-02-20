@@ -29,7 +29,7 @@
 		<!--begin::Global Theme Styles(used by all pages) -->
 		<link href="{{aset_tema()}}demo/default/base/style.bundle.css" rel="stylesheet" type="text/css" />
 		<link href="{{aset_extends()}}/css/theme_cus.css" rel="stylesheet" type="text/css" />
-		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" media="screen">
 		<!--end::Global Theme Styles -->
 
 		<!--begin::Layout Skins(used by all pages) -->
@@ -40,6 +40,7 @@
 		
 		<link rel="shortcut icon" href="{{ aset_extends('img/logo/favwms.png')}}" />
 		<link rel="stylesheet" href="{{aset_extends('plugin/ladda/dist/ladda-themeless.min.css')}}">
+		<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
 		<script src="{{aset_extends('plugin/ladda/dist/spin.min.js')}}"></script>
 		<script src="{{aset_extends('plugin/ladda/dist/ladda.min.js')}}"></script>
 		<script src="{{ aset_extends('js/energeek.js') }}" type="text/javascript"></script>
