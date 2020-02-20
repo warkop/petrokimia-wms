@@ -2553,11 +2553,11 @@ class ReportController extends Controller
                 $query->where('aktivitas_harian.id_gudang', $value->aktivitasHarian->id_gudang);
                 $query->orWhere('material_adjustment.id_gudang', $value->aktivitasHarian->id_gudang);
             })
-            ->where('material_trans.created_at', '<',$tgl_awal)
-            // ->where(function($query) use($tgl_awal) {
-            //     $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-            //     $query->orWhere('material_adjustment.updated_at', '<', $tgl_awal);
-            // })
+            // ->where('material_trans.created_at', '<',$tgl_awal)
+            ->where(function($query) use($tgl_awal) {
+                $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
+                $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
+            })
             ->get();
 
             $penambahan = 0;
