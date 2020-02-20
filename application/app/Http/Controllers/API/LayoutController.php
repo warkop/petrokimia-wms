@@ -111,12 +111,22 @@ class LayoutController extends Controller
             }
         }
 
+        // $produk = AreaStok::select('*')
+        // ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
+        // ->where()
+        // ->get();
+
         $obj =  AktivitasResource::collection($res)->additional([
             'pallet' => [
                 'stok'      => $stok,
                 'terpakai'  => $terpakai,
                 'kosong'    => $kosong,
                 'rusak'     => $rusak,
+            ],
+            'produk' => [
+                'total' => '',
+                'normal' => '',
+                'rusak' => '',
             ],
             'status' => [
                 'message' => '',
