@@ -1808,10 +1808,14 @@ class AktivitasController extends Controller
             'id_area',
             'area.nama as nama_area',
             'material_trans.tipe',
+            'material_trans.status_produk',
+            'material_trans.status_pallet',
             'tanggal',
+            'material.nama as nama_barang',
             'material_trans.jumlah'
         )
             ->leftJoin('area', 'area.id', '=', 'material_trans.id_area')
+            ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
             ->where('id_aktivitas_harian', $id_aktivitas_harian)
             ->where('material_trans.id_material', $id_material)
             ;
