@@ -2282,6 +2282,7 @@ class ReportController extends Controller
     {
         $validator = Validator::make(
             request()->all(),[
+            'gudang' => 'required',
             'tgl_awal' => 'required|before_or_equal:tgl_akhir',
             'tgl_akhir' => 'required|after_or_equal:tgl_awal',
         ],[
@@ -2289,6 +2290,7 @@ class ReportController extends Controller
             'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
             'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
         ],[
+            'gudang' => 'Gudang',
             'tgl_awal' => 'Tanggal Awal',
             'tgl_akhir' => 'Tanggal Akhir',
         ]);
@@ -2325,6 +2327,15 @@ class ReportController extends Controller
                     $query = $query->orWhere('id_gudang', $value);
                 }
             });
+
+            $resGudang = Gudang::internal()->where(function ($query) use ($gudang) {
+                $query->where('id', $gudang[0]);
+                foreach ($gudang as $key => $value) {
+                    $query = $query->orWhere('id', $value);
+                }
+            })->get();
+        } else {
+            $resGudang = Gudang::internal()->get();
         }
 
         if ($material == 2) {
@@ -2333,10 +2344,19 @@ class ReportController extends Controller
                     $query = $query->orWhere('id_material', $value);
                 }
             });
+
+            $produk = Material::produk()->where(function($query) use($pilih_material){
+                $query->where('id', $pilih_material[0]);
+                foreach ($pilih_material as $key => $value) {
+                    $query = $query->orWhere('id', $value);
+                }
+            })->get();
         } else {
             $res = $res->whereHas('material', function ($query) {
                 $query = $query->where('kategori', 1);
             });
+
+            $produk = Material::produk()->get();
         }
 
         $res = $res->get();
@@ -2353,10 +2373,10 @@ class ReportController extends Controller
         $nama_file = date("YmdHis") . '_transaksi_material.xlsx';
         // $genToExcel = (new GenerateExcel('transaksi_material', ['res' => $res, 'nama_file' => $nama_file, 'tgl_awal' => $tgl_awal, 'tgl_akhir' => $tgl_akhir]))->onQueue('material');
         // $this->dispatch($genToExcel);
-        $this->generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir, $preview);
+        $this->generateExcelMaterial($res, $nama_file, $produk, $resGudang, $tgl_awal, $tgl_akhir, $preview);
     }
 
-    public function generateExcelMaterial($res, $nama_file, $tgl_awal, $tgl_akhir, $preview)
+    public function generateExcelMaterial($res, $nama_file, $produk, $resGudang, $tgl_awal, $tgl_akhir, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
 
@@ -2506,6 +2526,47 @@ class ReportController extends Controller
         $totalRusak = 0;
         $totalNormal = 0;
         $jumlahStok = 0;
+
+        foreach ($produk as $value) {
+            $tempRes =  DB::table('material_trans')
+            ->leftJoin('aktivitas_harian', function ($join) {
+                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0);
+            })
+            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
+            ->where('id_material', $value->id)
+            // ->where(function ($query) use ($value) {
+            //     $query->where('aktivitas_harian.id_gudang', $value->aktivitasHarian->id_gudang);
+            //     $query->orWhere('material_adjustment.id_gudang', $value->aktivitasHarian->id_gudang);
+            // })
+            ->where(function ($query) use ($tgl_awal) {
+                $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
+                $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
+            })
+            ;
+
+            foreach ($resGudang as $key) {
+                $tempRes = $tempRes->where(function($query) use($key){
+                    $query->where('aktivitas_harian.id_gudang', $key->id);
+                    $query->orWhere('material_adjustment.id_gudang', $key->id);
+                });
+            }
+
+            $tempRes = $tempRes->get();
+            
+            $penambahan = 0;
+            $pengurangan = 0;
+            foreach ($tempRes as $row2) {
+                if ($row2->tipe == 1) {
+                    $pengurangan = $pengurangan + $row2->jumlah;
+                } else {
+                    $penambahan = $penambahan + $row2->jumlah;
+                }
+            }
+    
+            $jumlahStok = $jumlahStok + $penambahan - $pengurangan;
+        }
+
         foreach ($res as $value) {
             $no++;
             $col = 1;
@@ -2542,45 +2603,13 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, (!empty($value->aktivitasHarian->so)) ? $value->aktivitasHarian->so : '');
             }
             
-            $tempRes =  DB::table('material_trans')
-            ->leftJoin('aktivitas_harian', function($join){
-                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                    ->where('draft', 0);
-            })
-            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            ->where('id_material', $value->material->id)
-            ->where(function($query) use($value) {
-                $query->where('aktivitas_harian.id_gudang', $value->aktivitasHarian->id_gudang);
-                $query->orWhere('material_adjustment.id_gudang', $value->aktivitasHarian->id_gudang);
-            })
-            // ->where('material_trans.created_at', '<',$tgl_awal)
-            ->where(function($query) use($tgl_awal) {
-                $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-                $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
-            })
-            ->get();
-
-            $penambahan = 0;
-            $pengurangan= 0;
-            foreach ($tempRes as $row2) {
-                if ($row2->tipe == 2) {
-                    $penambahan = $penambahan+$row2->jumlah;
-                }
-
-                if ($row2->tipe == 1) {
-                    $pengurangan = $pengurangan+$row2->jumlah;
-                }
-            }
-
-            $jumlahStok = $penambahan-$pengurangan;
-
             if ($value->tipe == 1) {
                 $totalStok -= $value->jumlah;
             } else {
                 $totalStok += $value->jumlah;
             }
 
-            $totalStok += $jumlahStok;
+            // $totalStok += $jumlahStok;
 
             if ($value->status_produk == 2) {
                 if ($value->tipe == 1) {
@@ -2593,7 +2622,8 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
         }
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . 5 . ":" . $abjadOri . $row)->applyFromArray($style_kolom);
-
+        
+        $totalStok += $jumlahStok;
         $totalNormal = $totalStok-$totalRusak;
         
         $row++;

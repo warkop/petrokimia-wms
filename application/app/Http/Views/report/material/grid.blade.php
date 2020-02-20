@@ -108,10 +108,10 @@
 
 <script>
     $('#gudang').select2({
-        placeholder: "Pilih gudang"
+        placeholder: "Pilih Semua gudang"
     });
     $('#material').select2({
-        placeholder: "Pilih material",
+        placeholder: "Pilih Semua material",
         allowClear: true
     });
 
