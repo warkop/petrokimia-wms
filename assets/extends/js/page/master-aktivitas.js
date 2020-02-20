@@ -279,10 +279,6 @@ function edit(id = '') {
                 $('#biaya_pallet').prop('checked', true);
             }
 
-            if (obj.data['pengiriman_produk_rusak'] != null) {
-                $('#pengiriman_produk_rusak').prop('checked', true);
-            }
-
             if (obj.data['cancelable'] != null) {
                 $('#cancelable').prop('checked', true);
             }
