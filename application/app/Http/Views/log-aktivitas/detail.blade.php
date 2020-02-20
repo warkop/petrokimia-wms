@@ -4,9 +4,6 @@
 
 @section('content')
 
-{{-- <link rel="stylesheet" href="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.css')}}"> --}}
-
-
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
@@ -410,7 +407,6 @@
 </div>
 <!--end::Modal-->
 
-{{-- <script src="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.js')}}"></script> --}}
 <script type="text/javascript">
     const id_gudang = "{{$id_gudang}}";
     const id_aktivitas_harian = "{{$id_aktivitas_harian}}";
