@@ -1,11 +1,11 @@
 @extends('layout.app')
 
-@section('title', 'Laporan Produk')
+@section('title', 'Laporan Material')
 
 @section('content')
 
 <script>
-    document.getElementById('report-produk-nav').classList.add('kt-menu__item--active');
+    document.getElementById('report-material-nav').classList.add('kt-menu__item--active');
 </script>
 
 
@@ -15,10 +15,10 @@
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
-                    Laporan Produk
+                    Laporan Material
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah form report produk pada <span class="text-ungu kt-font-bolder">Aplikasi WMS
+                    Berikut ini adalah form report material pada <span class="text-ungu kt-font-bolder">Aplikasi WMS
                         Petrokimia.</span>
                 </p>
             </div>
@@ -37,21 +37,21 @@
                 </div>
             </div>
             <div class="form-group row">
-                <h4 class="col-2 col-form-label text-kiri">Produk</h4>
+                <h4 class="col-2 col-form-label text-kiri">Material</h4>
                 <div class="col-6">
                     <div class="kt-radio-inline">
                         <label class="kt-radio kt-radio--success">
-                            <input id="semuaCheck" type="radio" name="produk" value="1" onclick="checkSemua()"> Semua
+                            <input id="semuaCheck" type="radio" name="material" value="1" onclick="checkSemua()"> Semua
                             <span></span>
                         </label>
                         <label class="kt-radio kt-radio--warning">
-                            <input id="myCheck" type="radio" name="produk" value="2" onclick="checkBx()"> Spesifik
+                            <input id="myCheck" type="radio" name="material" value="2" onclick="checkBx()"> Spesifik
                             <span></span>
                         </label> 
                     </div>
                     <div class="mt1" id="textadd" style="display:none;">
-                        <select class="form-control m-select2" id="produk" name="pilih_produk[]" multiple="multiple" style="width:100%">
-                            @foreach ($produk as $item)
+                        <select class="form-control m-select2" id="material" name="pilih_material[]" multiple="multiple" style="width:100%">
+                            @foreach ($material as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>
                             @endforeach
                         </select>
@@ -105,7 +105,7 @@
         placeholder: "Pilih gudang"
     });
     $('#produk').select2({
-        placeholder: "Pilih Produk",
+        placeholder: "Pilih Material",
         allowClear: true
     });
 

@@ -228,6 +228,12 @@
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
+                                            <a href="{{('report/laporan-material')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon fa fa-boxes"></i>
+                                                <span class="kt-nav__link-text">Material</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-nav__item">
                                             <a href="{{('report/laporan-realisasi')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon fa fa-check-square"></i>
                                                 <span class="kt-nav__link-text">Realisasi</span>
