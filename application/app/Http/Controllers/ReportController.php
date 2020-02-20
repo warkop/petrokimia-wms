@@ -2620,9 +2620,9 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
         }
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . 5 . ":" . $abjadOri . $row)->applyFromArray($style_kolom);
-        dd('TotalStok: '.$totalStok. ' - JumlahStok: '. $jumlahStok);
+        dd('TotalStok: '.$totalStok. ' - JumlahStok: '. $jumlahStok.' - Total: '. ($totalStok + $jumlahStok));
         dd($jumlahStok);
-        $totalStok += $jumlahStok;
+        $totalStok = $totalStok + $jumlahStok;
         $totalNormal = $totalStok-$totalRusak;
         
         $row++;
