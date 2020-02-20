@@ -119,14 +119,32 @@
                     </div>
                     <div class="row mb1">
                         <div class="col-12">
+                            <label>Nopol</label>
+                            <h5 class="boldd"> {{$aktivitasHarian->nopol??'-'}}</h5>
+                        </div>
+                    </div>
+                    <div class="row mb1">
+                        <div class="col-12">
+                            <label>Driver</label>
+                            <h5 class="boldd"> {{$aktivitasHarian->driver??'-'}}</h5>
+                        </div>
+                    </div>
+                    <div class="row mb1">
+                        <div class="col-12">
+                            <label>No. SO</label>
+                            <h5 class="boldd"> {{$aktivitasHarian->posto??'-'}}</h5>
+                        </div>
+                    </div>
+                    <div class="row mb1">
+                        <div class="col-12">
                             <label>Foto Truk</label><br>
-                            <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_2"> Lihat Gambar</a>
+                            <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_2"> Lihat Foto</a>
                         </div>
                     </div>
                     <div class="row mb1">
                         <div class="col-12">
                             <label>Foto Kelayakan</label><br>
-                            <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_kelayakan"> Lihat Gambar</a>
+                            <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_kelayakan"> Lihat Foto</a>
                         </div>
                     </div>
                 </div>
@@ -194,6 +212,21 @@
                             @endforeach
                             <div class="border-pembatas mb1"></div>
                         </div>
+                        <div class="row mb1">
+                        <div class="col-12">
+                            <label>Tanda Tangan</label><br>
+                            @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $aktivitasHarian->id . "/" . $aktivitasHarian->ttd)))
+                                <a class="fancybox" rel="ligthbox"
+                                    href="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}">
+                                    <img class="img-fluid"
+                                        src="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}" alt=""
+                                        srcset="">
+                                </a>
+                            @else
+                                <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                            @endif
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -264,12 +297,16 @@
                                 @if ($item->fotoJenis)
                                 <div class="col-4">
                                     <label class="boldd">Foto {{$item->fotoJenis->nama}}</label>
-                                    <a class="fancybox" rel="ligthbox"
-                                        href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}">
-                                        <img class="img-fluid"
-                                            src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}" alt=""
-                                            srcset="">
-                                    </a>
+                                    @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $item->id_aktivitas_harian . "/" . $item->foto)))
+                                        <a class="fancybox" rel="ligthbox"
+                                            href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}">
+                                            <img class="img-fluid"
+                                                src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}" alt=""
+                                                srcset="">
+                                        </a>
+                                    @else
+                                        <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                                    @endif
                                 </div>
                                 @endif
                             @endforeach
@@ -308,12 +345,16 @@
                             @foreach ($fotoKelayakanBefore as $item)
                                 <div class="col-4">
                                     {{-- <label class="boldd">Foto {{$item->foto}}</label> --}}
+                                    @if (file_exists(storage_path("/app/public/kelayakan/" . $item->id_aktivitas_harian . "/" . $item->file_enc)))
                                     <a class="fancybox" rel="ligthbox"
                                         href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
                                         <img class="img-fluid"
                                             src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
                                             srcset="">
                                     </a>
+                                    @else
+                                        <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
@@ -334,12 +375,16 @@
                             @foreach ($fotoKelayakanAfter as $item)
                                 <div class="col-4">
                                     {{-- <label class="boldd">Foto {{$item->foto}}</label> --}}
+                                    @if (file_exists(storage_path("/app/public/kelayakan/" . $item->id_aktivitas_harian . "/" . $item->file_enc)))
                                     <a class="fancybox" rel="ligthbox"
                                         href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
                                         <img class="img-fluid"
                                             src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
                                             srcset="">
                                     </a>
+                                    @else
+                                        <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
