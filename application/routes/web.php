@@ -218,7 +218,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     });
 
     Route::group(['prefix' => 'report', 'middleware' => ['eauth:1&7']], function () {
-        Route::get('/laporan-material', 'ReportController@laporanMaterial');
+        Route::get('/laporan-transaksi-material', 'ReportController@laporanTransaksiMaterial');
         Route::get('/laporan-stok', 'ReportController@laporanStok');
         Route::get('/laporan-absen-karyawan', 'ReportController@laporanAbsenKaryawan');
         Route::get('/laporan-mutasi-pallet', 'ReportController@laporanMutasiPallet');
@@ -230,7 +230,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/laporan-aktivitas', 'ReportController@laporanAktivitas');
         Route::get('/laporan-log-sheet', 'ReportController@laporanLogSheet');
         
-        Route::get('/material', 'ReportController@material');
+        Route::get('/transaksi-material', 'ReportController@transaksiMaterial');
         Route::get('/stok', 'ReportController@stok');
         Route::get('/absen-karyawan', 'ReportController@absenKaryawan');
         Route::get('/mutasi-pallet', 'ReportController@mutasiPallet');

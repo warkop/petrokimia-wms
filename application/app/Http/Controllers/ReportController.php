@@ -2175,15 +2175,15 @@ class ReportController extends Controller
         }
     }
 
-    public function laporanMaterial()
+    public function laporanTransaksiMaterial()
     {
         $data['title'] = 'Laporan Transaksi Material';
         $data['gudang'] = Gudang::internal()->get();
         $data['produk'] = Material::produk()->get();
-        return view('report.material.grid', $data);
+        return view('report.transaksi-material.grid', $data);
     }
 
-    public function material()
+    public function transaksiMaterial()
     {
         $validator = Validator::make(
             request()->all(),[
@@ -2201,7 +2201,7 @@ class ReportController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('report/laporan-material')
+            return redirect('report/laporan-transaksi-material')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -2276,10 +2276,10 @@ class ReportController extends Controller
         }
 
         $nama_file = date("YmdHis") . '_transaksi_material.xlsx';
-        $this->generateExcelMaterial($res, $nama_file, $produk, $resGudang, $tgl_awal, $tgl_akhir, $preview);
+        $this->generateExcelTransaksiMaterial($res, $nama_file, $produk, $resGudang, $tgl_awal, $tgl_akhir, $preview);
     }
 
-    public function generateExcelMaterial($res, $nama_file, $produk, $resGudang, $tgl_awal, $tgl_akhir, $preview)
+    public function generateExcelTransaksiMaterial($res, $nama_file, $produk, $resGudang, $tgl_awal, $tgl_akhir, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
 

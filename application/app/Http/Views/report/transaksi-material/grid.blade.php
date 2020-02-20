@@ -1,11 +1,11 @@
 @extends('layout.app')
 
-@section('title', 'Laporan Material')
+@section('title', 'Laporan Transaksi Material')
 
 @section('content')
 
 <script>
-    document.getElementById('report-laporan-material-nav').classList.add('kt-menu__item--active');
+    document.getElementById('report-laporan-transaksi-material-nav').classList.add('kt-menu__item--active');
 </script>
 
 
@@ -23,7 +23,7 @@
                 </p>
             </div>
         </div>
-        <form action="{{url('report/material')}}" method="GET" target="_blank">
+        <form action="{{url('report/transaksi-material')}}" method="GET" target="_blank">
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row mt2">
