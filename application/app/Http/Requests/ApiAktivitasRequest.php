@@ -178,14 +178,17 @@ class ApiAktivitasRequest extends FormRequest
                             if (isset(${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk'] . '_' . date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']))})) {
                                 ${'tempJumlahProduk_'.$list_area[$j]['id_area_stok'].'_'.$request->list_produk[$i]['produk'].'_'.date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']))} = ${'tempJumlahProduk_'.$list_area[$j]['id_area_stok'].'_'.$request->list_produk[$i]['produk'].'_'.date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']))} - $list_jumlah[$k]['jumlah'];
                             } else {
-                                ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk'] . '_' . date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']))} = $area_stok->jumlah;
+                                if (!empty($area_stok)) {
+                                    ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk'] . '_' . date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']))} = $area_stok->jumlah;
+                                }
                             }
                         } else {
                             if (isset(${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk']})) {
                                 ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk']} = ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk']} - $list_jumlah[$k]['jumlah'];
                             } else {
-                                ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk']} = $area_stok->jumlah;
-                                // dd(${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk']});
+                                if (!empty($area_stok)) {
+                                    ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk']} = $area_stok->jumlah;
+                                }
                             }
                         }
                     }
