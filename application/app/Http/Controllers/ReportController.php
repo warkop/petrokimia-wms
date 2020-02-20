@@ -2545,8 +2545,9 @@ class ReportController extends Controller
             $tempRes =  DB::table('material_trans')
             ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
             ->where('id_material', $value->material->id)
+            ->where('aktivitas_harian.id_gudang', $value->id_gudang)
             ->where('draft', 0)
-            ->where('aktivitas_harian.created_at', '<', $tgl_awal);
+            ->where('aktivitas_harian.updated_at', '<', $tgl_awal);
 
             $penambahan = $tempRes->where('tipe', 2)->sum('jumlah');
             $pengurangan = $tempRes->where('tipe', 1)->sum('jumlah');
