@@ -2316,7 +2316,7 @@ class ReportController extends Controller
         ->whereHas('aktivitasHarian', function($query) {
             $query->where('draft', 0);
         })
-        ->whereBetween('aktivitas_harian.created_at', [$tgl_awal, $tgl_akhir])
+        ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
         ->orderBy('material_trans.id', 'asc')
         ;
 
