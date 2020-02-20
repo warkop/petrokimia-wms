@@ -53,7 +53,6 @@ class AlatBeratController extends Controller
     {
         $search = strip_tags($req->input('search'));
         $gudang = $this->getCheckerGudang();
-
         $rencanaHarian = RencanaHarian::where('id_gudang', $gudang->id)
         ->where('start_date', '<', date('Y-m-d H:i:s'))
         ->where('end_date', '>', date('Y-m-d H:i:s'))
@@ -225,6 +224,8 @@ class AlatBeratController extends Controller
         $user = $req->get('my_auth');
         $res_user = Users::findOrFail($user->id_user);
 
+        $gudang = $this->getCheckerGudang();
+
         if ($id_laporan != null) {
             $laporan = LaporanKerusakan::findOrFail($id_laporan);
 
@@ -263,6 +264,7 @@ class AlatBeratController extends Controller
                     'id_kerusakan'  => $req->input('id_kerusakan'),
                     'id_operator'   => $req->input('id_operator'),
                     'id_alat_berat' => $req->input('id_alat_berat'),
+                    'id_gudang'     => $gudang->id,
                     'id_shift'      => $laporan->id_shift,
                     'keterangan'    => $req->input('keterangan'),
                     'jenis'         => 1,
@@ -271,7 +273,6 @@ class AlatBeratController extends Controller
                     'created_by'    => $res_user->id,
                     'created_at'    => now(),
                 ];
-
                 $resource = LaporanKerusakan::create($arr);
 
                 $res = LaporanKerusakan::where(['id_alat_berat' => $req->input('id_alat_berat'), 'id_shift' => $laporan->id_shift])->update(['status' => 1]);
@@ -349,6 +350,7 @@ class AlatBeratController extends Controller
                 $laporan->id_alat_berat     = $req->input('id_alat_berat');
                 $laporan->id_operator       = $req->input('id_operator');
                 $laporan->id_shift          = $rencana_tkbm->id_shift;
+                $laporan->id_gudang         = $gudang->id;
                 $laporan->keterangan        = $req->input('keterangan');
                 $laporan->jenis             = 2;
                 $laporan->jam_rusak         = $req->input('jam_rusak');
