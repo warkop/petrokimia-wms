@@ -92,13 +92,8 @@
                 </div>
                 <div class="row mb1">
                     <div class="col-12">
-                        <label>Tanda Tangan</label><br>
-                        <a class="fancybox" rel="ligthbox"
-                            href="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}">
-                            <img class="img-fluid"
-                                src="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}" alt=""
-                                srcset="">
-                        </a>
+                        <label>Foto Kelayakan</label><br>
+                        <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_kelayakan"> Lihat Gambar</a>
                     </div>
                 </div>
             </div>
@@ -165,6 +160,17 @@
                             </div>    
                         @endforeach
                         <div class="border-pembatas mb1"></div>
+                    </div>
+                    <div class="row mb1">
+                        <div class="col-12">
+                            <label>Tanda Tangan</label><br>
+                            <a class="fancybox" rel="ligthbox"
+                                href="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}">
+                                <img class="img-fluid"
+                                    src="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}" alt=""
+                                    srcset="">
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -283,6 +289,73 @@
 </div>
 <!--end::Modal-->
 
+<div class="modal fade" id="kt_modal_kelayakan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Foto Kelayakan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form action="">
+                <div class="modal-body">
+                    <div class="row">
+                        <label class="boldd">Kelayakan Sebelum</label>
+                    </div>
+                    <br>
+                    <div class="kt-scroll" data-scroll="true">
+                        <div class="row">
+                            @if ($fotoKelayakanBefore->isEmpty())
+                                <h4>Tidak ada foto</h4>
+                            @endif
+                            @foreach ($fotoKelayakanBefore as $item)
+                                <div class="col-4">
+                                    {{-- <label class="boldd">Foto {{$item->foto}}</label> --}}
+                                    <a class="fancybox" rel="ligthbox"
+                                        href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
+                                        <img class="img-fluid"
+                                            src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
+                                            srcset="">
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <label class="boldd">Kelayakan Sesudah</label>
+                    </div>
+                    <br>
+                    <div class="row">
+                    @if ($fotoKelayakanAfter->isEmpty())
+                        <span><strong>Tidak ada foto</strong></span>
+                    @endif
+                    </div>
+                    <div class="kt-scroll" data-scroll="true">
+                        <div class="row mb2">
+                            {{-- @php dd($fotoKelayakanAfter->isEmpty()) @endphp --}}
+                            @foreach ($fotoKelayakanAfter as $item)
+                                <div class="col-4">
+                                    {{-- <label class="boldd">Foto {{$item->foto}}</label> --}}
+                                    <a class="fancybox" rel="ligthbox"
+                                        href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
+                                        <img class="img-fluid"
+                                            src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
+                                            srcset="">
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-clean" data-dismiss="modal">Tutup</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!--begin::Modal-->
 <div class="modal fade" id="kt_modal_2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
