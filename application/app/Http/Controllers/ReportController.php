@@ -872,7 +872,7 @@ class ReportController extends Controller
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal) {
                     $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-                    $query->orWhere('material_adjustment.created_at', '<', $tgl_awal);
+                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
                 ->where('status_produk', 1)
                 ->where('tipe', 1)
@@ -887,7 +887,7 @@ class ReportController extends Controller
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal) {
                     $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-                    $query->orWhere('material_adjustment.created_at', '<', $tgl_awal);
+                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
                 ->where('status_produk', 1)
                 ->where('tipe', 2)
@@ -953,7 +953,7 @@ class ReportController extends Controller
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
                     $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
-                    $query->orWhereBetween('material_adjustment.created_at', [$tgl_awal, $tgl_akhir]);
+                    $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
                 })
                 ->where('tipe', 2)
                 ->sum('jumlah');
@@ -963,7 +963,7 @@ class ReportController extends Controller
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
                     $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
-                    $query->orWhereBetween('material_adjustment.created_at', [$tgl_awal, $tgl_akhir]);
+                    $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
                 })
                 ->where('tipe', 1)
                 ->sum('jumlah');
@@ -1304,7 +1304,7 @@ class ReportController extends Controller
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal) {
                     $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-                    $query->orWhere('material_adjustment.created_at', '<', $tgl_awal);
+                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
                 ->where('status_produk', 1)
                 ->where('tipe', 1)
@@ -1318,7 +1318,7 @@ class ReportController extends Controller
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal) {
                     $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-                    $query->orWhere('material_adjustment.created_at', '<', $tgl_awal);
+                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
                 ->where('status_produk', 1)
                 ->where('tipe', 2)
@@ -1418,7 +1418,7 @@ class ReportController extends Controller
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal) {
                     $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-                    $query->orWhere('material_adjustment.created_at', '<', $tgl_awal);
+                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
                 ->whereNull('status_produk')
                 ->whereNotNull('status_pallet')
@@ -1433,7 +1433,7 @@ class ReportController extends Controller
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal) {
                     $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-                    $query->orWhere('material_adjustment.created_at', '<', $tgl_awal);
+                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
                 ->whereNull('status_produk')
                 ->whereNotNull('status_pallet')
@@ -3587,12 +3587,12 @@ class ReportController extends Controller
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                        ->where('material_adjustment.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                        ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
                 })
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal) {
                     $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-                    $query->orWhere('material_adjustment.created_at', '<', $tgl_awal);
+                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
                 ->where('tipe', 1)
                 ->sum('jumlah');
@@ -3605,12 +3605,12 @@ class ReportController extends Controller
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                        ->where('material_adjustment.created_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                        ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
                 })
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal) {
                     $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-                    $query->orWhere('material_adjustment.created_at', '<', $tgl_awal);
+                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
                 ->where('tipe', 2)
                 ->sum('jumlah');
