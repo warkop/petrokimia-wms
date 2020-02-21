@@ -303,14 +303,10 @@ class ReportController extends Controller
                         $temp = $temp.', '. $key->material->nama;
                     }
 
-                    if (!empty($key->materialTrans)) {
-                        foreach ($key->materialTrans as $row11) {
-                            if ($row11->tipe == 2) {
-                                $kuantum += $key->materialTrans->jumlah;
-                            } else {
-                                $kuantum -= $key->materialTrans->jumlah;
-                            }
-                        }
+                    if ($key->tipe == 2) {
+                        $kuantum += $key->jumlah;
+                    } else {
+                        $kuantum -= $key->jumlah;
                     }
                 }
             }
