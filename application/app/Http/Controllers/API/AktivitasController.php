@@ -488,6 +488,7 @@ class AktivitasController extends Controller
         $aktivitasHarian->dikembalikan      = $req->input('dikembalikan');
         $aktivitasHarian->alasan            = $req->input('alasan');
         $aktivitasHarian->so                = $req->input('so');
+        $aktivitasHarian->posto             = $req->input('posto');
         $aktivitasHarian->id_yayasan        = $req->input('id_yayasan');
         $aktivitasHarian->id_tkbm           = $req->input('id_tkbm');
         $aktivitasHarian->draft             = $draft;
