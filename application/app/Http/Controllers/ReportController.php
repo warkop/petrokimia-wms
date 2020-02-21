@@ -293,7 +293,7 @@ class ReportController extends Controller
 
             $col++;
             $temp = '';
-            $kuantum = 0;
+            $kuantum = '';
 
             foreach ($value->materialTrans as $key) {
                 if ($key->material->kategori == 1){
@@ -304,9 +304,9 @@ class ReportController extends Controller
                     }
 
                     if ($key->tipe == 2) {
-                        $kuantum += $key->jumlah;
+                        $kuantum = $key->jumlah;
                     } else {
-                        $kuantum -= $key->jumlah;
+                        $kuantum = $kuantum . ', ' . $key->jumlah;
                     }
                 }
             }
