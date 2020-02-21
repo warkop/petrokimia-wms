@@ -109,6 +109,7 @@ class ReportController extends Controller
 
         $res = LaporanKerusakan::with('alatBerat', 'alatBerat.kategori')
         ->with('kerusakan')
+        ->with('gudang')
         ->with('shift')
         ->with('operator')
         ->with('foto')
