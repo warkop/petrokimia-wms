@@ -342,8 +342,17 @@
                     <div class="col-md-5 mb1 ml1">
                         <table>
                             @foreach ($pallet as $key)
+                                @if ($key->status_pallet == 1)
+                                    @php $status = 'Stok' @endphp
+                                @elseif ($key->status_pallet == 2)
+                                    @php $status = 'Terpakai' @endphp
+                                @elseif ($key->status_pallet == 3)
+                                    @php $status = 'Kosong' @endphp
+                                @else
+                                    @php $status = 'Rusak' @endphp
+                                @endif
                                 <tr>
-                                <td>{{$key->material->nama}} - {{$key->jumlah}} ( Pallet {{$key->status_pallet==1?'Stok':$key->status_pallet==2?'Terpakai':$key->status_pallet==3?'Kosong':'Rusak'}} )</td>
+                                <td>{{$key->material->nama}} - {{$key->jumlah}} ( Pallet {{ $status }} )</td>
                                 <td>{{ $key->tipe == 1?'Mengurangi':'Menambah' }}</td>
                                 </tr>
                             @endforeach
