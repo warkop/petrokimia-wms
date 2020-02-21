@@ -40,13 +40,13 @@ class LayoutController extends Controller
             return false;
         }
 
-        return $gudang->id;
+        return $gudang;
     }
 
     public function index(Request $req)
     {
         $search = strip_tags($req->input('search'));
-        $id_gudang = $this->getCheckerGudang();
+        $gudang = $this->getCheckerGudang();
         $res = Area::select(
                 'area.id', 
                 'area.nama as nama_area', 
@@ -67,7 +67,7 @@ class LayoutController extends Controller
                 END AS text_tipe_area')
             )
             ->join('gudang as g', 'area.id_gudang', '=', 'g.id')
-            ->where('id_gudang', $id_gudang)
+            ->where('id_gudang', $gudang->id)
             ->where(function ($where) use ($search) {
                 $where->where(DB::raw('LOWER(area.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('LOWER(g.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
@@ -87,7 +87,7 @@ class LayoutController extends Controller
         ->select(
             'gudang_stok.*'
         )
-        ->where('id_gudang', $id_gudang)
+        ->where('id_gudang', $gudang->id)
         ->orderBy('status')
         ->get();
 
@@ -111,10 +111,21 @@ class LayoutController extends Controller
             }
         }
 
-        // $produk = AreaStok::select('*')
-        // ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
-        // ->where()
-        // ->get();
+        $produkNormal = 0;
+        $produkRusak = 0;
+
+        $produk = AreaStok::select('*')
+        ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
+        ->where('id_gudang', $gudang->id)
+        ->get();
+
+        foreach ($produk as $key) {
+            if ($key->status == 1) {
+                $produkNormal += $key->jumlah;
+            } else {
+                $produkRusak += $key->jumlah;
+            }
+        }
 
         $obj =  AktivitasResource::collection($res)->additional([
             'pallet' => [
@@ -124,13 +135,13 @@ class LayoutController extends Controller
                 'rusak'     => $rusak,
             ],
             'produk' => [
-                'total' => '',
-                'normal' => '',
-                'rusak' => '',
+                'total'     => $produkNormal+$produkRusak,
+                'normal'    => $produkNormal,
+                'rusak'     => $produkRusak,
             ],
             'status' => [
-                'message' => '',
-                'code' => Response::HTTP_OK
+                'message'   => '',
+                'code'      => Response::HTTP_OK
             ],
         ], Response::HTTP_OK);
 
@@ -152,7 +163,6 @@ class LayoutController extends Controller
         ->leftJoin('material', 'area_stok.id_material', '=', 'material.id')
         ->leftJoin('area', 'area_stok.id_area', '=', 'area.id')
         ->where('id_area',$id_area)
-        // ->where('area_stok.status', 1)
         ->get();
 
         $obj =  AktivitasResource::collection($res)->additional([
