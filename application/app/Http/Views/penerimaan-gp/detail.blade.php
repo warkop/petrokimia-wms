@@ -100,8 +100,8 @@
                     <div class="row mb1">
                         <div class="col-12">
                             <label>Paket Alat Berat</label>
-                            @php $no = 1; @endphp
                             <h5 class="boldd"> 
+                                @php $no = 1; @endphp
                                 @foreach ($aktivitasHarian->aktivitasHarianAlatBerat as $key)
                                 {{ $no.'. '.$key->nomor_lambung}} <br>
                                 @php $no++ @endphp
@@ -237,7 +237,7 @@
                         <button type="button" class="btn btn-wms btn-lg" onclick="approve()">Approve</button>
                         @endempty
                         <button type="button" class="btn btn-primary btn-lg" onclick="@if($aktivitasHarian->approve == null)loadKeluhan()@else loadDetail()@endif">Keluhan</button>
-                        <a href="{{url('penerimaan-gp/cetak-aktivitas')}}" type="button" class="btn btn-success btn-lg" target="_blank" > <i class="fa fa-print"></i> Cetak</a>
+                        <a href="{{url('penerimaan-gp/cetak-aktivitas/'.$aktivitasHarian->id)}}" type="button" class="btn btn-success btn-lg" target="_blank" > <i class="fa fa-print"></i> Cetak</a>
                     </div>
                 </div>
             </div>
@@ -476,8 +476,8 @@
 
 
 <script type="text/javascript">
-const id_gudang = "{{$id_gudang}}";
-const id_aktivitas_harian = "{{$id_aktivitas_harian}}";
+const id_gudang = "{{$aktivitasHarian->id_gudang}}";
+const id_aktivitas_harian = "{{$aktivitasHarian->id}}";
 
 let datatable,
     tableTarget = "#kt_table_1",

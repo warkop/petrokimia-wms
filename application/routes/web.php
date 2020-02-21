@@ -200,6 +200,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/{aktivitasHarian}', 'PenerimaanGpController@show')->where('aktivitasHarian', '[0-9]+');
         Route::get('/list-keluhan/{id}', 'PenerimaanGpController@getListKeluhanGP')->where('id', '[0-9]+');
         Route::get('/get-produk/{id_aktivitas_harian}', 'PenerimaanGpController@getProduk')->where('id_aktivitas_harian', '[0-9]+');
+        Route::get('/cetak-aktivitas/{aktivitasHarian}', 'PenerimaanGpController@print')->where('id_aktivitas_harian', '[0-9]+');
         Route::post('/', 'PenerimaanGpController@json');
         Route::put('/{aktivitasHarian}', 'PenerimaanGpController@store')->where('aktivitasHarian', '[0-9]+');
         Route::patch('/{aktivitasHarian}', 'PenerimaanGpController@approve')->where('aktivitasHarian', '[0-9]+');
@@ -344,10 +345,6 @@ Route::get('/laporan-realisasi', function () {
 
 Route::get('/laporan-keluhan-gp', function () {
     return view('report.keluhan-gp.grid');
-});
-
-Route::get('/penerimaan-gp/cetak-aktivitas', function () {
-    return view('penerimaan-gp.cetak');
 });
 
 // Route::get('/log-aktivitas-user', function () {

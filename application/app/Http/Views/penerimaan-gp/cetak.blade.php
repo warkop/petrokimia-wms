@@ -247,7 +247,7 @@
                         Jenis Aktivitas
                     </label>
                     <p class="boldd-500">
-                        Pengiriman Gudang Penyangga Non Urea
+                        {{$aktivitasHarian->aktivitas->nama}}
                     </p>
                 </div>
                 <div class="col-md-6 mb1">
@@ -255,7 +255,7 @@
                         Shift Kerja
                     </label>
                     <p class="boldd-500">
-                        Shift 2
+                        {{$aktivitasHarian->shift->nama??'-'}}
                     </p>
                 </div>
                 <div class="col-md-6 mb1">
@@ -263,7 +263,7 @@
                         Gudang Tujuan
                     </label>
                     <p class="boldd-500">
-                        KEDIRI 3 GURAH
+                        {{$aktivitasHarian->gudangTujuan->nama??'-'}}
                     </p>
                 </div>
                 <div class="col-md-6 mb1">
@@ -271,7 +271,11 @@
                         Paket Alat Berat
                     </label>
                     <p class="boldd-500">
-                        1. 162
+                        @php $no = 1; @endphp
+                        @foreach ($aktivitasHarian->aktivitasHarianAlatBerat as $key)
+                        {{ $no.'. '.$key->nomor_lambung}} <br>
+                        @php $no++ @endphp
+                        @endforeach
                     </p>
                 </div>
                 <div class="col-md-6 mb1">
@@ -279,7 +283,7 @@
                         Sistro
                     </label>
                     <p class="boldd-500">
-                        SISTRO_GCS_TyMvz4nHV_sec1
+                        {{$aktivitasHarian->sistro??'-'}}
                     </p>
                 </div>
                 <div class="col-md-6 mb1">
@@ -287,7 +291,7 @@
                         Nopol
                     </label>
                     <p class="boldd-500">
-                        W 9051 UH
+                        {{$aktivitasHarian->nopol??'-'}}
                     </p>
                 </div>
                 <div class="col-md-6 mb1">
@@ -295,7 +299,7 @@
                         Driver
                     </label>
                     <p class="boldd-500">
-                        YUANGGA
+                        {{$aktivitasHarian->driver??'-'}}
                     </p>
                 </div>
                 <div class="col-md-6 mb1">
@@ -303,7 +307,7 @@
                         No. SO
                     </label>
                     <p class="boldd-500">
-                        5120180888
+                        {{$aktivitasHarian->posto??'-'}}
                     </p>
                 </div>
                 <section class="row col-md-12 mt2" style="margin:0">
@@ -325,24 +329,24 @@
                               <th>Tanggal</th>
                               <th>Daya Tampung</th>
                             </tr>
-                            <?php for ($i=0; $i < 3; $i++) { ?>
-                            <tr>
-                              <td>Area B1</td>
-                              <td>04 Februari 2020</td>
-                              <td>30 Ton</td>
-                            </tr>
-                            <?php } ?>
+                            @foreach ($produk as $item)
+                                <tr>
+                                    <td>Area {{ $item->nama_area }}</td>
+                                    <td>{{ helpDate($item->tanggal, 'mi') }}</td>
+                                    <td>{{ $item->jumlah }} Ton</td>
+                                </tr>
+                            @endforeach
                         </table>
                     </div>
 
                     <div class="col-md-5 mb1 ml1">
                         <table>
-                            <?php for ($i=0; $i < 2; $i++) { ?>
-                            <tr>
-                              <td>Pallet Pupuk Plastik - 30 ( Pallet Terpakai )</td>
-                              <td>Mengurangi</td>
-                            </tr>
-                            <?php } ?>
+                            @foreach ($pallet as $key)
+                                <tr>
+                                <td>{{$key->material->nama}} - {{$key->jumlah}} ( Pallet {{$key->status_pallet==1?'Stok':$key->status_pallet==2?'Terpakai':$key->status_pallet==3?'Kosong':'Rusak'}} )</td>
+                                <td>{{ $key->tipe == 1?'Mengurangi':'Menambah' }}</td>
+                                </tr>
+                            @endforeach
                         </table>
                     </div>
                 </section>
@@ -350,30 +354,23 @@
                     <label class="boldd-500 col-md-12 mb1">
                         Foto Truk
                     </label>
-                    <div class="col-md-3">
-                        <h6> Tampak Samping Kiri </h6>
-                        <img class="imagImage p-setengah mb1 " src="http://demo.energeek.co.id/petrokimia-wms-dev/watch/ei_1580794298471.jpg?un=3210&ctg=aktivitas_harian&src=ei_1580794298471.jpg" alt="" srcset="">
-                    </div>
-                    <div class="col-md-3">
-                        <h6> Tampak Belakang </h6>
-                        <img class="imagImage p-setengah mb1 " src="http://demo.energeek.co.id/petrokimia-wms-dev/watch/ei_1580794303037.jpg?un=3210&ctg=aktivitas_harian&src=ei_1580794303037.jpg" alt="" srcset="">
-                    </div>
-                    <div class="col-md-3">
-                        <h6> Tampak Atas </h6>
-                        <img class="imagImage p-setengah mb1 " src="http://demo.energeek.co.id/petrokimia-wms-dev/watch/ei_1580794311676.jpg?un=3210&ctg=aktivitas_harian&src=ei_1580794311676.jpg" alt="" srcset="">
-                    </div>
-                    <div class="col-md-3">
-                        <h6> Tampak Samping Kanan </h6>
-                        <img class="imagImage p-setengah mb1 " src="http://demo.energeek.co.id/petrokimia-wms-dev/watch/ei_1580794328216.jpg?un=3210&ctg=aktivitas_harian&src=ei_1580794328216.jpg" alt="" srcset="">
-                    </div>
-                    <div class="col-md-3">
-                        <h6> Tampak Bawah </h6>
-                        <img class="imagImage p-setengah mb1 " src="http://demo.energeek.co.id/petrokimia-wms-dev/watch/ei_1580794298471.jpg?un=3210&ctg=aktivitas_harian&src=ei_1580794298471.jpg" alt="" srcset="">
-                    </div>
-                    <div class="col-md-3">
-                        <h6> Tampak Depan </h6>
-                        <img class="imagImage p-setengah mb1 " src="http://demo.energeek.co.id/petrokimia-wms-dev/watch/ei_1580794298471.jpg?un=3210&ctg=aktivitas_harian&src=ei_1580794298471.jpg" alt="" srcset="">
-                    </div>
+                    @foreach ($aktivitasFoto as $item)
+                        <div class="col-md-3">
+                            @if ($item->fotoJenis)
+                                <h6> {{$item->fotoJenis->nama}} </h6>
+                                @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $item->id_aktivitas_harian . "/" . $item->foto)))
+                                    <a class="fancybox" rel="ligthbox"
+                                        href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}">
+                                        <img class="img-fluid"
+                                            src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}" alt=""
+                                            srcset="">
+                                    </a>
+                                @else
+                                    <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                                @endif
+                            @endif
+                        </div>
+                    @endforeach
                 </section>
                 <section class="row col-md-12 mt2 foto-kelayakan" style="margin:0">
                     <label class="boldd-500 col-md-12 mb1">
@@ -381,11 +378,39 @@
                     </label>
                     <div class="col-md-6">
                         <h6> Sebelum </h6>
-                        <img class="imagImage p-setengah mb1 " src="http://demo.energeek.co.id/petrokimia-wms-dev/watch/1580794250106.jpg?un=3210&ctg=kelayakan&src=483ba6181eea1ff47d0261dd354b780d.jpg" alt="" srcset="">
+                        @if ($fotoKelayakanBefore->isEmpty())
+                            <h4>Tidak ada foto</h4>
+                        @endif
+                        @foreach ($fotoKelayakanBefore as $item)
+                            @if (file_exists(storage_path("/app/public/kelayakan/" . $item->id_aktivitas_harian . "/" . $item->file_enc)))
+                            <a class="fancybox" rel="ligthbox"
+                                href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
+                                <img class="img-fluid"
+                                    src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
+                                    srcset="">
+                            </a>
+                            @else
+                                <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                            @endif
+                        @endforeach
                     </div>
                     <div class="col-md-6">
                         <h6> Sesudah </h6>
-                        <img class="imagImage p-setengah mb1 " src="http://demo.energeek.co.id/petrokimia-wms-dev/watch/ei_1580794280038.jpg?un=3210&ctg=kelayakan&src=a7e4a5e5defccbb7a9a1181b24e78ef1.jpg" alt="" srcset="">
+                         @if ($fotoKelayakanAfter->isEmpty())
+                            <span><strong>Tidak ada foto</strong></span>
+                        @endif
+                         @foreach ($fotoKelayakanAfter as $item)
+                            @if (file_exists(storage_path("/app/public/kelayakan/" . $item->id_aktivitas_harian . "/" . $item->file_enc)))
+                            <a class="fancybox" rel="ligthbox"
+                                href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
+                                <img class="img-fluid"
+                                    src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
+                                    srcset="">
+                            </a>
+                            @else
+                                <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                            @endif
+                        @endforeach
                     </div>
                 </section>
             </div>
@@ -393,7 +418,16 @@
         <div class="footer mt1">
             <div class="row col-md-12" style="padding: 0;float: right; margin: 0 1cm 2rem 0;transform: translateY(-2rem); display: block; text-align:center">
                 <p>Tanda Tangan</p>
-                <img class="imagIttd p-setengah mb1 " src="http://devwms.petrokimia-gresik.com/watch/1b57a198-6fa0-4022-9cd4-6e5d2fb9e958.jpg?un=7845&ctg=aktivitas_harian&src=1b57a198-6fa0-4022-9cd4-6e5d2fb9e958.jpg" alt="" srcset="">
+                @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $aktivitasHarian->id . "/" . $aktivitasHarian->ttd)))
+                    <a class="fancybox" rel="ligthbox"
+                        href="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}">
+                        <img class="img-fluid"
+                            src="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}" alt=""
+                            srcset="">
+                    </a>
+                @else
+                    <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                @endif
             </div>
         </div>
     </div>
