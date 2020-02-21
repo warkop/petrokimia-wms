@@ -365,7 +365,7 @@
                     <br>
                     <div class="row">
                     @if ($fotoKelayakanAfter->isEmpty())
-                        <span><strong>Tidak ada foto</strong></span>
+                        <h4>Tidak ada foto<h4>
                     @endif
                     </div>
                     <div class="kt-scroll" data-scroll="true">

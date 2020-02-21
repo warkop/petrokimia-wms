@@ -363,8 +363,11 @@
                     <label class="boldd-500 col-md-12 mb1">
                         Foto Truk
                     </label>
-                    @foreach ($aktivitasFoto as $item)
-                        <div class="col-md-3">
+                    <div class="col-md-3">
+                        @if ($aktivitasFoto->isEmpty()) 
+                            <h4>Tidak ada foto</h4>
+                        @endif
+                        @foreach ($aktivitasFoto as $item)
                             @if ($item->fotoJenis)
                                 <h6> {{$item->fotoJenis->nama}} </h6>
                                 @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $item->id_aktivitas_harian . "/" . $item->foto)))
@@ -378,8 +381,8 @@
                                     <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
                                 @endif
                             @endif
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </section>
                 <section class="row col-md-12 mt2 foto-kelayakan" style="margin:0">
                     <label class="boldd-500 col-md-12 mb1">
@@ -406,7 +409,7 @@
                     <div class="col-md-6">
                         <h6> Sesudah </h6>
                          @if ($fotoKelayakanAfter->isEmpty())
-                            <span><strong>Tidak ada foto</strong></span>
+                            <h4>Tidak ada foto<h4>
                         @endif
                          @foreach ($fotoKelayakanAfter as $item)
                             @if (file_exists(storage_path("/app/public/kelayakan/" . $item->id_aktivitas_harian . "/" . $item->file_enc)))
@@ -428,12 +431,9 @@
             <div class="row col-md-12" style="padding: 0;float: right; margin: 0 1cm 2rem 0;transform: translateY(-2rem); display: block; text-align:center">
                 <p>Tanda Tangan</p>
                 @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $aktivitasHarian->id . "/" . $aktivitasHarian->ttd)))
-                    <a class="fancybox" rel="ligthbox"
-                        href="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}">
-                        <img class="img-fluid"
-                            src="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}" alt=""
-                            srcset="">
-                    </a>
+                    <img class="imagIttd p-setengah mb1"
+                        src="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}" alt=""
+                        srcset="">
                 @else
                     <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
                 @endif
