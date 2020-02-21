@@ -450,7 +450,7 @@ class ReportController extends Controller
             )
         );
 
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":I" . $row)->applyFromArray($style_judul_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":J" . $row)->applyFromArray($style_judul_kolom);
         // end : judul kolom
 
         // start : isi kolom
@@ -477,9 +477,9 @@ class ReportController extends Controller
 
             );
 
-            $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":I" . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":J" . $row)->applyFromArray($style_kolom);
 
-            $objSpreadsheet->getActiveSheet()->getStyle('A' . $row . ':I' . $row)->applyFromArray($style_ontop);
+            $objSpreadsheet->getActiveSheet()->getStyle('A' . $row . ':J' . $row)->applyFromArray($style_ontop);
 
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
             $col++;
