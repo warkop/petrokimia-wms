@@ -87,6 +87,8 @@ class LayoutController extends Controller
         ->select(
             'gudang_stok.*'
         )
+        ->join('material', 'material.id', '=', 'gudang_stok.id_material')
+        ->where('kategori', 2)
         ->where('id_gudang', $gudang->id)
         ->orderBy('status')
         ->get();

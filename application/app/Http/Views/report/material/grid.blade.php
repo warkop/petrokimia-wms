@@ -23,7 +23,7 @@
                 </p>
             </div>
         </div>
-        <form action="{{url('report/produk')}}" method="GET" target="_blank">
+        <form action="{{url('report/material')}}" method="GET" target="_blank">
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row mt2">
@@ -104,7 +104,7 @@
     $('#gudang').select2({
         placeholder: "Pilih gudang"
     });
-    $('#produk').select2({
+    $('#material').select2({
         placeholder: "Pilih Material",
         allowClear: true
     });
