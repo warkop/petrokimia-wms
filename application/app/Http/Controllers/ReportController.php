@@ -303,7 +303,7 @@ class ReportController extends Controller
                         $temp = $temp.', '. $key->material->nama;
                     }
 
-                    if ($key->tipe == 2) {
+                    if ($kuantum == '') {
                         $kuantum = $key->jumlah;
                     } else {
                         $kuantum = $kuantum . ', ' . $key->jumlah;
