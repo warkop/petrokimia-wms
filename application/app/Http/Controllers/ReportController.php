@@ -217,6 +217,8 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'NAMA CHECKER');
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PRODUK');
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'KUANTUM');
 
 
         $style_judul_kolom = array(
@@ -237,7 +239,7 @@ class ReportController extends Controller
             )
         );
 
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":G" . $row)->applyFromArray($style_judul_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":H" . $row)->applyFromArray($style_judul_kolom);
         // end : judul kolom
 
         // start : isi kolom
@@ -263,9 +265,9 @@ class ReportController extends Controller
 
             );
             
-            $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":G" . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle("A" . $row . ":H" . $row)->applyFromArray($style_kolom);
 
-            $objSpreadsheet->getActiveSheet()->getStyle('A' . $row . ':G' . $row)->applyFromArray($style_ontop);
+            $objSpreadsheet->getActiveSheet()->getStyle('A' . $row . ':H' . $row)->applyFromArray($style_ontop);
 
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
             $col++;
@@ -291,6 +293,7 @@ class ReportController extends Controller
 
             $col++;
             $temp = '';
+            $kuantum = 0;
 
             foreach ($value->materialTrans as $key) {
                 if ($key->material->kategori == 1){
@@ -299,9 +302,22 @@ class ReportController extends Controller
                     } else {
                         $temp = $temp.', '. $key->material->nama;
                     }
+
+                    if (!empty($key->materialTrans)) {
+                        foreach ($key->materialTrans as $row11) {
+                            if ($row11->tipe == 2) {
+                                $kuantum += $key->materialTrans->jumlah;
+                            } else {
+                                $kuantum -= $key->materialTrans->jumlah;
+                            }
+                        }
+                    }
                 }
             }
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $temp);
+
+            $col++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $kuantum);
 
             $style_no['alignment'] = array(
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
