@@ -52,7 +52,7 @@ jQuery(function ($) {
     const numeric = new AutoNumeric.multiple('.anggaran', { 
         decimalCharacter: ',',
         digitGroupSeparator:'.',
-        allowDecimalPadding: false 
+        allowDecimalPadding: false
     });
 
     // const numeric2 = new AutoNumeric('#anggaran_tkbm', {

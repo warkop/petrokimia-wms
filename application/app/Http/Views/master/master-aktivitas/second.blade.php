@@ -806,7 +806,7 @@ let now = 0;
                 obj.forEach(element => {
                     $("#alat_berat_"+element.id_kategori_alat_berat).attr('checked', true);
                     $("#tempat_anggaran_"+element.id_kategori_alat_berat).show();
-                    $("#anggaran_"+element.id_kategori_alat_berat).val(element.anggaran);
+                    $("#anggaran_"+element.id_kategori_alat_berat).val(helpCurrency(element.anggaran, '', '.', '', ''));
                 });
             },
             error:()=>{
