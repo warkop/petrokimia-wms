@@ -330,8 +330,7 @@ class RealisasiController extends Controller
         $req->validate();
         $user = $req->get('my_auth');
         $karu = Karu::find($user->id_karu);
-        $gudang = Gudang::find($karu->id_gudang)->first();
-        $rencana_harian = RencanaHarian::where('id_gudang', $gudang->id)->orderBy('id', 'desc')->first();
+        $rencana_harian = RencanaHarian::where('id_gudang', $karu->id_gudang)->orderBy('id', 'desc')->first();
 
         if (empty($rencana_harian)) {
             return response()->json([
@@ -366,42 +365,34 @@ class RealisasiController extends Controller
                 $material   = $list_material[$i]['material'];
                 $tipe   = $list_material[$i]['tipe'];
                 $jumlah   = $list_material[$i]['jumlah'];
-                $arr = [
-                    'id_realisasi_material' => $realisasiMaterial->id,
-                    'id_material'           => $material,
-                    'tanggal'               => now(),
-                    'tipe'                  => $tipe,
-                    'jumlah'                => $jumlah,
-                ];
-    
-                (new MaterialTrans)->create($arr);
 
-                $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('id_material', $material)->first();
+                $gudangStok = GudangStok::where('id_gudang', $karu->id_gudang)->where('id_material', $material)->first();
                 if (empty($gudangStok)) {
                     $gudangStok = new GudangStok;
                     $gudangStok->jumlah         = $jumlah;
                 } else {
                     if ($tipe == 1) {
-                        if ($gudangStok->jumlah - $jumlah < 0) {
-                            MaterialTrans::where('id_realisasi_material', $realisasiMaterial->id)->forceDelete();
-                            RealisasiMaterial::find($realisasiMaterial->id)->forceDelete();
-
-                            $this->responseMessage = 'Jumlah yang Anda masukkan melebihi stok yang tersedia!';
-                            $this->responseCode = 403;
-
-                            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
-                            return response()->json($response, $this->responseCode);
-                        }
                         $gudangStok->jumlah         = $gudangStok->jumlah - $jumlah;
                     } else if ($tipe == 2) {
                         $gudangStok->jumlah         = $gudangStok->jumlah + $jumlah;
                     }
                 }
 
-                $gudangStok->id_gudang      = $gudang->id;
+                $gudangStok->id_gudang      = $karu->id_gudang;
                 $gudangStok->id_material    = $material;
                 $gudangStok->status         = 1;
                 $gudangStok->save();
+
+                $arr = [
+                    'id_realisasi_material' => $realisasiMaterial->id,
+                    'id_gudang_stok'        => $gudangStok->id,
+                    'id_material'           => $material,
+                    'tanggal'               => now(),
+                    'tipe'                  => $tipe,
+                    'jumlah'                => $jumlah,
+                ];
+
+                (new MaterialTrans)->create($arr);
 
             }
         }
