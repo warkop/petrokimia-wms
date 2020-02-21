@@ -237,6 +237,7 @@
                         <button type="button" class="btn btn-wms btn-lg" onclick="approve()">Approve</button>
                         @endempty
                         <button type="button" class="btn btn-primary btn-lg" onclick="@if($aktivitasHarian->approve == null)loadKeluhan()@else loadDetail()@endif">Keluhan</button>
+                        <a href="{{url('penerimaan-gp/cetak-aktivitas')}}" type="button" class="btn btn-success btn-lg" target="_blank" > <i class="fa fa-print"></i> Cetak</a>
                     </div>
                 </div>
             </div>
