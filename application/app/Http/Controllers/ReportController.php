@@ -305,9 +305,17 @@ class ReportController extends Controller
                     }
 
                     if ($kuantum == '') {
-                        $kuantum = $key->jumlah;
+                        if ($key->tipe == 1) {
+                            $kuantum = '-' . $key->jumlah;
+                        } else {
+                            $kuantum = $key->jumlah;
+                        }
                     } else {
-                        $kuantum = $kuantum . ', ' . $key->jumlah;
+                        if ($key->tipe == 1) {
+                            $kuantum = $kuantum . ', ' . '-' . $key->jumlah;
+                        } else {
+                            $kuantum = $kuantum . ', ' . $key->jumlah;
+                        }
                     }
                 }
             }
