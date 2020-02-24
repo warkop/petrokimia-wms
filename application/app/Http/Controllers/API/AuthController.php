@@ -75,9 +75,11 @@ class AuthController extends Controller
                                 $access_token = $cek_user['api_token'];
                             }
 
-                            $m_user->device         = $device_id;
+                            $information = get_browser($request->header('User-Agent'), true);
+
+                            $m_user->device         = $information['device_type'];
                             $m_user->user_gcid      = $user_gcid;
-                            $m_user->os_type        = $os_type;
+                            $m_user->os_type        = $information['platform'];
                             $m_user->imei           = $imei;
                             $m_user->build_number   = $build_number;
                             $m_user->ip_address     = $ip_address;
@@ -153,10 +155,11 @@ class AuthController extends Controller
                         } else {
                             $access_token = $cek_user['api_token'];
                         }
+                        $information = get_browser($request->header('User-Agent'), true);
 
-                        $m_user->device         = $device_id;
+                        $m_user->device         = $information['device_type'];
                         $m_user->user_gcid      = $user_gcid;
-                        $m_user->os_type        = $os_type;
+                        $m_user->os_type        = $information['platform'];
                         $m_user->imei           = $imei;
                         $m_user->build_number   = $build_number;
                         $m_user->ip_address     = $ip_address;
