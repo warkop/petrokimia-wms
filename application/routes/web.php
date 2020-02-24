@@ -248,10 +248,6 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/aktivitas-harian', 'ReportController@aktivitasHarian');
         Route::get('/log-sheet', 'ReportController@logSheet');
     });
-
-    Route::get('/main', function () {
-        return view('layout.main');
-    });
 });
 
 Route::get('/master-grup', function () {
