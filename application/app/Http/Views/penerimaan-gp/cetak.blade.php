@@ -359,76 +359,10 @@
                         </table>
                     </div>
                 </section>
-                <section class="row col-md-12 mt2" style="margin:0">
-                    <label class="boldd-500 col-md-12 mb1">
-                        Foto Truk
-                    </label>
-                        @foreach ($aktivitasFoto as $item)
-                        <div class="col-md-4" style="margin: .5rem 0;">
-                            @if ($aktivitasFoto->isEmpty()) 
-                                <h4>Tidak ada foto</h4>
-                            @endif
-                            @if ($item->fotoJenis)
-                                <h6 style="font-weight: normal !important;"> {{$item->fotoJenis->nama}} </h6>
-                                @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $item->id_aktivitas_harian . "/" . $item->foto)))
-                                    <a class="fancybox" rel="ligthbox"
-                                        href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}">
-                                        <img class="img-fluid"
-                                            src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}" alt=""
-                                            srcset="">
-                                    </a>
-                                @else
-                                    <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
-                                @endif
-                            @endif
-                        </div>
-                        @endforeach
-                </section>
-                <section class="row col-md-12 mt2 foto-kelayakan" style="margin:0">
-                    <label class="boldd-500 col-md-12 mb1">
-                        Foto Kelayakan
-                    </label>
-                    <div class="col-md-6">
-                        <h6 style="font-weight: normal !important;"> Sebelum </h6>
-                        @if ($fotoKelayakanBefore->isEmpty())
-                            <h4>Tidak ada foto</h4>
-                        @endif
-                        @foreach ($fotoKelayakanBefore as $item)
-                            @if (file_exists(storage_path("/app/public/kelayakan/" . $item->id_aktivitas_harian . "/" . $item->file_enc)))
-                            <a class="fancybox" rel="ligthbox"
-                                href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
-                                <img class="img-fluid"
-                                    src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
-                                    srcset="">
-                            </a>
-                            @else
-                                <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
-                            @endif
-                        @endforeach
-                    </div>
-                    <div class="col-md-6">
-                        <h6 style="font-weight: normal !important;"> Sesudah </h6>
-                         @if ($fotoKelayakanAfter->isEmpty())
-                            <h4>Tidak ada foto<h4>
-                        @endif
-                         @foreach ($fotoKelayakanAfter as $item)
-                            @if (file_exists(storage_path("/app/public/kelayakan/" . $item->id_aktivitas_harian . "/" . $item->file_enc)))
-                            <a class="fancybox" rel="ligthbox"
-                                href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
-                                <img class="img-fluid"
-                                    src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
-                                    srcset="">
-                            </a>
-                            @else
-                                <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
-                            @endif
-                        @endforeach
-                    </div>
-                </section>
             </div>
         </div>
-        <div class="footer mt1">
-            <div class="row col-md-12" style="padding: 0;float: right; margin: 0 2cm 2rem 0;transform: translateY(-2rem); display: block; text-align:center">
+        <div class="footer">
+            <div class="row col-md-12" style="padding: 0;float: right; margin: 0 2cm 2rem 0;transform: translateY(-4rem); display: block; text-align:center">
                 <p>Tanda Tangan</p>
                 @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $aktivitasHarian->id . "/" . $aktivitasHarian->ttd)))
                     <img class="imagIttd p-setengah mb1"
@@ -439,6 +373,76 @@
                 @endif
             </div>
         </div>
+    </div>
+    <div class="page" style="padding: 1cm">
+    <section class="row col-md-12 mt2" style="margin:0">
+        <label class="boldd-500 col-md-12 mb1">
+            Foto Truk
+        </label>
+            @foreach ($aktivitasFoto as $item)
+            <div class="col-md-4" style="margin: .5rem 0;">
+                @if ($aktivitasFoto->isEmpty()) 
+                    <h4>Tidak ada foto</h4>
+                @endif
+                @if ($item->fotoJenis)
+                    <h6 style="font-weight: normal !important;"> {{$item->fotoJenis->nama}} </h6>
+                    @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $item->id_aktivitas_harian . "/" . $item->foto)))
+                        <a class="fancybox" rel="ligthbox"
+                            href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}">
+                            <img class="img-fluid"
+                                src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}" alt=""
+                                srcset="">
+                        </a>
+                    @else
+                        <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
+                    @endif
+                @endif
+            </div>
+            @endforeach
+    </section>
+    <section class="row col-md-12 mt2" style="margin:0">
+        <label class="boldd-500 col-md-12 mb1">
+            Foto Kelayakan
+        </label>
+        <div class="col-md-4">
+            <h6 style="font-weight: normal !important;"> Sebelum </h6>
+            @if ($fotoKelayakanBefore->isEmpty())
+                <h4>Tidak ada foto</h4>
+            @endif
+            @foreach ($fotoKelayakanBefore as $item)
+                @if (file_exists(storage_path("/app/public/kelayakan/" . $item->id_aktivitas_harian . "/" . $item->file_enc)))
+                <a class="fancybox" rel="ligthbox"
+                    href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
+                    <img class="img-fluid"
+                        src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
+                        srcset="">
+                </a>
+                @else
+                    <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
+                @endif
+            @endforeach
+        </div>
+    </section>
+    <section class="row col-md-12 mt1" style="margin:0">
+        <div class="col-md-4">
+            <h6 style="font-weight: normal !important;"> Sesudah </h6>
+                @if ($fotoKelayakanAfter->isEmpty())
+                <h4>Tidak ada foto<h4>
+            @endif
+                @foreach ($fotoKelayakanAfter as $item)
+                @if (file_exists(storage_path("/app/public/kelayakan/" . $item->id_aktivitas_harian . "/" . $item->file_enc)))
+                <a class="fancybox" rel="ligthbox"
+                    href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
+                    <img class="img-fluid"
+                        src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
+                        srcset="">
+                </a>
+                @else
+                    <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
+                @endif
+            @endforeach
+        </div>
+    </section>
     </div>
 </div>
 

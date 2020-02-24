@@ -24,13 +24,13 @@ body {
 }
 .page {
     width: 21cm;
-    min-height: 29.7cm;
+    height: 29.7cm !important;
     /* padding: 1cm; */
     margin: 1cm auto;
     border: 1px #D3D3D3 solid;
     border-radius: 5px;
     background: white;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); */
 }
 
 .header {
@@ -46,7 +46,7 @@ body {
     padding: .5cm 2cm !important;
     z-index: 99909;
     /* border: 5px red solid; */
-    min-height: 227mm;
+    height: 22.7cm;
     /* outline: 2cm rgb(11, 117, 2) solid; */
 }
 
@@ -55,25 +55,48 @@ body {
     padding: 0 .5cm !important;
     z-index: 999;
     /* border: 1px green solid; */
-    height: 35mm;
+    height: 3.5cm;
     /* background: whitesmoke; */
 }
 
 
 @page {
-    size: A4;
+    size: legal;
     margin: 0;
 }
 @media print {
     .page {
-        margin: 0;
-        border: initial;
+        /* margin: 0; */
+        /* border: initial;
         border-radius: initial;
         width: initial;
         min-height: initial;
         box-shadow: initial;
-        background: initial;
+        background: initial; */
         page-break-after: always;
+        width: 21cm;
+        height: 29.7cm !important;
+        /* padding: 1cm; */
+        border: none;
+        margin: 0 ;
+        background: white;
+    }
+
+    .header {
+        width:22cm !important;
+    }
+
+    .footer {
+        position: absolute !important;
+        bottom: 2cm !important;
+        float: right !important;
+        right: 0 !important;
+    }
+    /* .imagIttd {
+        margin-top: -1cm;
+    } */
+    .no-print, .no-print * {
+        display: none !important;
     }
 }
 
@@ -344,20 +367,13 @@ h6 {
 	margin-top:16px;
 }
 
-@media print
-{    
-    .no-print, .no-print *
-    {
-        display: none !important;
-    }
-}
 
 ._404fileImg {
     font-size: 8pt !important;
 }
 
 .img-fluid {
-    width: 100% !important;
+    width: 98% !important;
     height: 5cm !important;
     object-fit: cover !important;
 }
