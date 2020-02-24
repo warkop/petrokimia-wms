@@ -15,11 +15,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
 <div class="row row-no-padding row-col-separator-xl" style="background:#fff">
-    <div class="col-md-6 col-lg-6 col-xl-6 col-sm-6 col-xs-6 pointer nav---gation" onclick="location.href='{{url('main')}}';">
+    <div class="col-md-6 col-lg-6 col-xl-6 col-sm-6 col-xs-6 pointer nav---gation" onclick="location.href='{{url('/')}}';">
         <div class="kt-widget24">
             <div class="text-center">
                 <div class="text-center">
-                    <a href="{{url('main')}}">
+                    <a href="{{url('/')}}">
                         <h4> <span><i class=""></i></span> Halaman Depan</h4>
                     </a>
                 </div>

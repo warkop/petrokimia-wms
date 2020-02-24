@@ -109,7 +109,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						<div id="kt_aside_menu" class="kt-aside-menu " data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500">
 							<ul class="kt-menu__nav ">
 								@if (auth()->user()->can('dashboard'))
-								<li id="dashboard-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-area-chart"></span><span class="kt-menu__link-text">Dashboard</span></a></li>
+								<li id="dashboard-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/dashboard')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-area-chart"></span><span class="kt-menu__link-text">Dashboard</span></a></li>
 								@endif
 								@if (auth()->user()->can('layout'))
 								<li id="layout-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/layout')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-map"></span><span class="kt-menu__link-text">Layout</span></a></li>
