@@ -161,6 +161,7 @@ class AuthController extends Controller
                         $m_user->build_number   = $build_number;
                         $m_user->ip_address     = $ip_address;
                         $m_user->mac_address    = $mac_address;
+                        $m_user->last_login     = now();
                         $m_user->save();
                         
 
