@@ -19,7 +19,10 @@ Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('/authenticate', 'Auth\LoginController@authenticate')->name('authenticate');
 Route::get('watch/{nama}/', 'WatchController@default');
 Route::group(['middleware' => ['eauth', 'revalidate']], function () {
-    Route::get('/', 'DashboardController@index');
+    Route::get('/', function(){
+        return view('layout.main');
+    });
+    Route::get('/dashboard', 'DashboardController@index');
     
     Route::group(['prefix' => 'master-aktivitas', 'middleware' => 'can:data-master'], function () {
         Route::get('/', 'AktivitasController@index');
