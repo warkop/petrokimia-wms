@@ -229,22 +229,38 @@ class AuthController extends Controller
             // }
             
             $this->responseMessage = 'Berhasil melakukan logout.';
-            if ($data->role_id == 5) {
-                $karu = Karu::find($data->id_karu);
-                $rencanaHarian = RencanaHarian::where('id_gudang', $karu->id_gudang)->get();
 
-                foreach ($rencanaHarian as $key) {
-                    $realisasi = Realisasi::where('id_rencana', $key->id)->where('draft', 0)->first();
-                    if (empty($realisasi)) {
-                        $this->responseMessage = 'Masih ada Rencana Harian yang belum terealisasi!';
-                    }
-                }                
+            if ($req->input('force') == 1) {
+                $this->writeLog('Logout', 4, 'User dengan username ' . $data->username . ' berhasil logout');
+
+                DB::table('users')->where('id', $data->id)->update(['api_token' => null, 'user_gcid' => null]);
+                $this->responseCode = 200;
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            } else {
+                if ($data->role_id == 5) {
+                    $karu = Karu::find($data->id_karu);
+                    $rencanaHarian = RencanaHarian::where('id_gudang', $karu->id_gudang)->get();
+    
+                    foreach ($rencanaHarian as $key) {
+                        $realisasi = Realisasi::where('id_rencana', $key->id)->where('draft', 0)->first();
+                        if (empty($realisasi)) {
+                            $this->responseMessage = 'Masih ada Rencana Harian yang belum terealisasi!';
+                            $this->responseCode = 403;
+                            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                            return response()->json($response, $this->responseCode);
+                        }
+                    }                
+                }
+    
+                $this->writeLog('Logout', 4, 'User dengan username ' . $data->username . ' berhasil logout');
+    
+                DB::table('users')->where('id', $data->id)->update(['api_token' => null, 'user_gcid' => null]);
+                $this->responseCode = 200;
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
             }
 
-            $this->writeLog('Logout', 4, 'User dengan username ' . $data->username . ' berhasil logout');
-
-            DB::table('users')->where('id', $data->id)->update(['api_token' => null, 'user_gcid' => null]);
-            $this->responseCode = 200;
             
         }
         $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
