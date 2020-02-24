@@ -29,6 +29,17 @@ $(document).ready(function () {
         }
     });
 
+    jQuery(".anggaran").autoNumeric('init', {
+        aSep: '.',
+        aDec: ',',
+        aSign: '',
+        aPad: false,
+        minimumValue: '0'
+    });
+    jQuery(function ($) {
+
+    });
+
     // $('.anggaran').AutoNumeric('init', {
     //     aSep: '.',
     //     aDec: ',',
@@ -48,20 +59,7 @@ $(document).ready(function () {
     // const numeric = new AutoNumeric('.anggaran', { allowDecimalPadding: false });
 });
 
-jQuery(function ($) {
-    const numeric = new AutoNumeric.multiple('.anggaran', { 
-        decimalCharacter: ',',
-        digitGroupSeparator:'.',
-        allowDecimalPadding: false
-    });
 
-    // const numeric2 = new AutoNumeric('#anggaran_tkbm', {
-    //     decimalCharacter: ',',
-    //     digitGroupSeparator: '.',
-    //     allowDecimalPadding: false
-    // });
-    // console.log(numeric);
-});
 
 let load_table = function () {
     datatable = $(tableTarget);

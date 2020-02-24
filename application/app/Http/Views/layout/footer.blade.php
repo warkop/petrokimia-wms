@@ -58,7 +58,8 @@
 
 		<!--begin::Page Scripts(used by this page) -->
 		{{-- <script src="{{ aset_extends('plugin/autoNumeric.js') }}" type="text/javascript"></script> --}}
-		<script src="https://cdn.jsdelivr.net/npm/autonumeric@4.2.0"></script>
+		{{-- <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.5.0"></script> --}}
+		<script src="http://www.decorplanit.com/plugin/autoNumeric-1.9.41.js"></script>
 		<!--end::Page Scripts -->
 		
 		<!--begin::Global App Bundle(used by all pages) -->
