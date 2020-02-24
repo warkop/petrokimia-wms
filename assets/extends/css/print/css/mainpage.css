@@ -86,6 +86,7 @@ body {
 .col-md-3{-ms-flex:0 0 25%;flex:0 0 25%;max-width:25%}
 .col-md-4{-ms-flex:0 0 33.333333%;flex:0 0 33.333333%;max-width:33.333333%}
 .col-md-6{-ms-flex:0 0 50%;flex:0 0 50%;max-width:50%}
+.col-md-7{-ms-flex:0 0 58.33333%;flex:0 0 58.33333%;max-width:58.33333%}
 .col-md-9{-ms-flex:0 0 75%;flex:0 0 75%;max-width:75%}
 .col-md-12{-ms-flex:0 0 100%;flex:0 0 100%;max-width:100%}
 .col-md-8{-ms-flex:0 0 66.666667%;flex:0 0 66.666667%;max-width:66.666667%}
@@ -349,4 +350,14 @@ h6 {
     {
         display: none !important;
     }
+}
+
+._404fileImg {
+    font-size: 8pt !important;
+}
+
+.img-fluid {
+    width: 100%;
+    height: 5cm;
+    object-fit: cover;
 }

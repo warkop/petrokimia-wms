@@ -206,7 +206,7 @@
                                     
                                 </a>
                            
-                                <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                                <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
                             
                         </div>
                     </div>
@@ -363,13 +363,13 @@
                     <label class="boldd-500 col-md-12 mb1">
                         Foto Truk
                     </label>
-                    <div class="col-md-3">
-                        @if ($aktivitasFoto->isEmpty()) 
-                            <h4>Tidak ada foto</h4>
-                        @endif
                         @foreach ($aktivitasFoto as $item)
+                        <div class="col-md-4" style="margin: .5rem 0;">
+                            @if ($aktivitasFoto->isEmpty()) 
+                                <h4>Tidak ada foto</h4>
+                            @endif
                             @if ($item->fotoJenis)
-                                <h6> {{$item->fotoJenis->nama}} </h6>
+                                <h6 style="font-weight: normal !important;"> {{$item->fotoJenis->nama}} </h6>
                                 @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $item->id_aktivitas_harian . "/" . $item->foto)))
                                     <a class="fancybox" rel="ligthbox"
                                         href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}">
@@ -378,18 +378,18 @@
                                             srcset="">
                                     </a>
                                 @else
-                                    <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                                    <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
                                 @endif
                             @endif
+                        </div>
                         @endforeach
-                    </div>
                 </section>
                 <section class="row col-md-12 mt2 foto-kelayakan" style="margin:0">
                     <label class="boldd-500 col-md-12 mb1">
                         Foto Kelayakan
                     </label>
                     <div class="col-md-6">
-                        <h6> Sebelum </h6>
+                        <h6 style="font-weight: normal !important;"> Sebelum </h6>
                         @if ($fotoKelayakanBefore->isEmpty())
                             <h4>Tidak ada foto</h4>
                         @endif
@@ -402,12 +402,12 @@
                                     srcset="">
                             </a>
                             @else
-                                <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                                <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
                             @endif
                         @endforeach
                     </div>
                     <div class="col-md-6">
-                        <h6> Sesudah </h6>
+                        <h6 style="font-weight: normal !important;"> Sesudah </h6>
                          @if ($fotoKelayakanAfter->isEmpty())
                             <h4>Tidak ada foto<h4>
                         @endif
@@ -420,7 +420,7 @@
                                     srcset="">
                             </a>
                             @else
-                                <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                                <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
                             @endif
                         @endforeach
                     </div>
@@ -428,14 +428,14 @@
             </div>
         </div>
         <div class="footer mt1">
-            <div class="row col-md-12" style="padding: 0;float: right; margin: 0 1cm 2rem 0;transform: translateY(-2rem); display: block; text-align:center">
+            <div class="row col-md-12" style="padding: 0;float: right; margin: 0 2cm 2rem 0;transform: translateY(-2rem); display: block; text-align:center">
                 <p>Tanda Tangan</p>
                 @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $aktivitasHarian->id . "/" . $aktivitasHarian->ttd)))
                     <img class="imagIttd p-setengah mb1"
                         src="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}" alt=""
                         srcset="">
                 @else
-                    <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                    <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
                 @endif
             </div>
         </div>
