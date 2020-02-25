@@ -77,9 +77,6 @@ class LoginController extends Controller
 
                 $m_user = Users::withoutGlobalScopes()->find($user->id);
 
-                $information = get_browser($request->header('User-Agent'), true);
-                $m_user->device         = $information['device_type'];
-                $m_user->os_type        = $information['platform'];
                 $m_user->save();
 
                 $this->writeLog('Login', 3, 'User dengan username '.$user->username.' yang mempunyai role '.$role->nama.' berhasil login');
