@@ -111,4 +111,10 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-material', 'API\RealisasiController@getMaterial');
         Route::put('/', 'API\RealisasiController@storeMaterial');
     });
+
+    Route::group(['prefix' => 'version'], function () {
+        Route::get('/', 'API\VersionController@index');
+    });
 });
+
+Route::put('version/', 'API\VersionController@store');

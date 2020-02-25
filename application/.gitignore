@@ -58,5 +58,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
+composer.lock
 # End of https://www.gitignore.io/api/laravel,windows,visualstudiocode
