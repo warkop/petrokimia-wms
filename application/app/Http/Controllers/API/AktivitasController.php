@@ -250,6 +250,8 @@ class AktivitasController extends Controller
             $condition = ' and area_stok.status = 1';
         } else if ($aktivitas->produk_rusak == 1) {
             $condition = ' and area_stok.status = 2';
+        } else if ($aktivitas->produk_rusak == 3) {
+            $condition = ' and area_stok.status = 2';
         } else {
             $condition = ' and area_stok.status = 1';
         }
@@ -334,6 +336,8 @@ class AktivitasController extends Controller
             if ($aktivitas->produk_rusak == 2) {
                 $detail = $detail->where('area_stok.status', 1);
             } else if ($aktivitas->produk_rusak == 1) {
+                $detail = $detail->where('area_stok.status', 2);
+            } else if ($aktivitas->produk_rusak == 3) {
                 $detail = $detail->where('area_stok.status', 2);
             } else {
                 $detail = $detail->where('area_stok.status', 1);
