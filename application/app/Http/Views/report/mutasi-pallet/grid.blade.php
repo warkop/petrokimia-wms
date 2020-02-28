@@ -23,7 +23,7 @@
                 </p>
             </div>
         </div>
-        <form action="{{url('report/mutasi-pallet')}}" method="GET">
+        <form action="{{url('report/mutasi-pallet')}}" method="GET" target="_blank">
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row mt2">
@@ -91,6 +91,7 @@
                     <div class="offset-lg-2">
                         {{-- <a href="{{asset('assets/reports/mutasi-pallet/mutasi-pallet.xlsx')}}"  class="btn btn-success"> <i class="fa fa-print"></i> Cetak Laporan</a> --}}
                         <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
+                        <button type="submit" name="preview" value="true" class="btn btn-warning" download=""> <i class="fa fa-binoculars "></i> Preview Laporan</button>
                     </div>
                 </div>
             </div>

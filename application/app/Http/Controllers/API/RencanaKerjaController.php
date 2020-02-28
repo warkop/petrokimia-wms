@@ -57,7 +57,7 @@ class RencanaKerjaController extends Controller
         ->leftJoin('karu', 'karu.id', '=', 'users.id_karu')
         ->where('rencana_harian.id_gudang', $res_gudang->id)
         ->where(function($query) use ($search){
-            $query->where(DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\')'), 'ILIKE', '%'.date(strtotime($search)).'%');
+            $query->where(DB::raw('TO_CHAR(tanggal, \'dd-mm-yyyy\')'), 'ILIKE', '%'.date('Y-m-d', strtotime($search)).'%');
             $query->orWhere(DB::raw('LOWER(CONCAT(\'shift \', id_shift))'), 'LIKE', '%' . strtolower($search).'%');
             $query->orWhere('karu.nama', 'ILIKE', '%' . $search.'%');
         })

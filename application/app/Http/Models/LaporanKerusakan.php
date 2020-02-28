@@ -56,4 +56,9 @@ class LaporanKerusakan extends Model
     {
         return $this->hasMany(LaporanKerusakanFoto::class, 'id_laporan');
     }
+
+    public function gudang()
+    {
+        return $this->belongsTo(Gudang::class, 'id_gudang');
+    }
 }

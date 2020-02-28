@@ -137,6 +137,14 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
+                                <label>Shift</label>
+                                <select class="form-control" name="shift_id" id="shift_id" readonly placeholder="Pilih shift">
+                                    @foreach ($shift as $item)
+                                        <option value="{{$item->id}}">{{$item->nama}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label>Jumlah (pcs)</label>
                                 <input type="text" class="form-control" name="jumlah" id="jumlah" placeholder="Masukkan jumlah">
                             </div>

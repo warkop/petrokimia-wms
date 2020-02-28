@@ -56,9 +56,11 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::post('/{aktivitas?}', 'API\AktivitasController@storePhotos')->where('aktivitas', '[0-9]+');
         Route::post('/kelayakan', 'API\AktivitasController@storeKelayakanPhotos');
         Route::put('/save-pengembalian', 'API\AktivitasController@storePengembalian');
+        Route::put('/cancel/{aktivitasHarian}', 'API\AktivitasController@cancelAktivitas')->where('id', '[0-9]+');
         
         Route::post('/test-save/{kategoriAlatBerat}', 'API\AktivitasController@testSave');
         Route::get('/isi-stok/{hapus?}', 'API\AktivitasController@isiStok');
+        Route::get('/fill-with-sistro', 'API\AktivitasController@fillWithSistro');
     });
     
     Route::group(['prefix' => 'alat-berat'], function () {
@@ -109,4 +111,10 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/get-material', 'API\RealisasiController@getMaterial');
         Route::put('/', 'API\RealisasiController@storeMaterial');
     });
+
+    Route::group(['prefix' => 'version'], function () {
+        Route::get('/', 'API\VersionController@index');
+    });
 });
+
+Route::put('version/', 'API\VersionController@store');

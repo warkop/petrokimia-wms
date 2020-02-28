@@ -11,6 +11,7 @@ use App\Http\Models\Gudang;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
 use App\Http\Models\ShiftKerja;
+use App\Http\Models\Sistro;
 use App\Http\Resources\MaterialTransResource;
 use Illuminate\Http\Request;
 
@@ -88,25 +89,15 @@ class LogAktivitasController extends Controller
         $data['produk'] = MaterialTransResource::collection($produk);
         $pallet = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_pallet')->get();
         $data['pallet'] = $pallet;
-        $data['id_gudang'] = $aktivitasHarian->id_gudang;        
+        $data['id_gudang'] = $aktivitasHarian->id_gudang;
         $data['list_produk'] = Material::produk()->get();
+        $data['fotoKelayakanBefore'] = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->where('jenis', 1)->get();
+        $data['fotoKelayakanAfter'] = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->where('jenis', 2)->get();
         return view('log-aktivitas.detail', $data);
     }
 
     public function getArea($id_gudang, $id_material, $id_aktivitas_harian)
     {
-        // $areaStok = Area::with('areaStok', 'areaStok.materialTrans')
-        //     ->whereHas('areaStok', function ($query) use ($id_material) {
-        //         $query->where('id_material', $id_material);
-        //     })
-        //     ->whereHas('areaStok.materialTrans', function ($query) use ($id_aktivitas_harian) {
-        //         $query->where('id_aktivitas_harian', $id_aktivitas_harian);
-        //         $query->whereNotNull('id_area_stok');
-        //     })
-        //     ->where('id_gudang', $id_gudang)
-        //     ->orderBy('nama')
-        //     ->get();
-
         $areaStok = MaterialTrans::with('areaStok.area')
         ->where('id_aktivitas_harian', $id_aktivitas_harian)
         ->where('id_material', $id_material)

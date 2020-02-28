@@ -11,15 +11,15 @@
 
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
-    <form action="{{url('report/stok')}}" method="GET">
+    <form action="{{url('report/stok')}}" method="GET" target="_blank">
     <div class="kt-portlet">
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
-                    Laporan Stok
+                    Laporan Posisi Stok
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah form report stok pada <span class="text-ungu kt-font-bolder">Aplikasi WMS
+                    Berikut ini adalah form report posisi stok pada <span class="text-ungu kt-font-bolder">Aplikasi WMS
                         Petrokimia.</span>
                 </p>
             </div>
@@ -60,25 +60,11 @@
                 </div>
             </div>
             <div class="form-group row">
-                <h4 class="col-2 col-form-label text-kiri">Periode</h4>
+                <h4 class="col-2 col-form-label text-kiri">Laporan Per Tanggal</h4>
                 <div class="col-6">
-                    <div class="kel-min">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Start Date</label>
-                                    <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
-                                        placeholder="Pilih tanggal">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>End Date</label>
-                                    <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
-                                        placeholder="Pilih tanggal">
-                                </div>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
+                            placeholder="Pilih tanggal">
                     </div>
                 </div>
             </div>
@@ -92,6 +78,7 @@
                     <div class="offset-lg-2">
                         {{-- <a href="{{asset('assets/reports/stok/stok.xlsx')}}" class="btn btn-success" download> <i class="fa fa-print"></i> Cetak Laporan</a> --}}
                         <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
+                        <button type="submit" name="preview" value="true" class="btn btn-warning" download=""> <i class="fa fa-binoculars "></i> Preview Laporan</button>
                     </div>
                 </div>
             </div>

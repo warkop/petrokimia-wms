@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Rencana Harian')
+@section('title', 'Laporan Produk')
 
 @section('content')
 
@@ -15,15 +15,15 @@
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
-                    Laporan Material
+                    Laporan Produk
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah form report material pada <span class="text-ungu kt-font-bolder">Aplikasi WMS
+                    Berikut ini adalah form report produk pada <span class="text-ungu kt-font-bolder">Aplikasi WMS
                         Petrokimia.</span>
                 </p>
             </div>
         </div>
-        <form action="{{url('report/produk')}}" method="GET">
+        <form action="{{url('report/produk')}}" method="GET" target="_blank">
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row mt2">
@@ -91,6 +91,7 @@
                     <div class="offset-lg-2">
                         {{-- <a href="{{asset('assets/reports/produk/produk.xlsx')}}" class="btn btn-success"> <i class="fa fa-print"></i> Cetak Laporan</a> --}}
                         <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
+                        <button type="submit" name="preview" value="true" class="btn btn-warning" download=""> <i class="fa fa-binoculars "></i> Preview Laporan</button>
                     </div>
                 </div>
             </div>

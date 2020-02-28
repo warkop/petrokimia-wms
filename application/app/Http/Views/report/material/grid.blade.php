@@ -5,7 +5,7 @@
 @section('content')
 
 <script>
-    document.getElementById('report-laporan-material-nav').classList.add('kt-menu__item--active');
+    document.getElementById('report-material-nav').classList.add('kt-menu__item--active');
 </script>
 
 
@@ -15,21 +15,21 @@
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
-                    Laporan Transaksi Material
+                    Laporan Material
                 </h4>
                 <p class="sub">
-                    Berikut ini adalah form report transaksi material pada <span class="text-ungu kt-font-bolder">Aplikasi WMS
+                    Berikut ini adalah form report material pada <span class="text-ungu kt-font-bolder">Aplikasi WMS
                         Petrokimia.</span>
                 </p>
             </div>
         </div>
-        <form action="{{url('report/material')}}" method="GET">
+        <form action="{{url('report/material')}}" method="GET" target="_blank">
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row mt2">
                 <h4 class="col-2 col-form-label text-kiri">Gudang</h4>
                 <div class="col-6">
-                    <select class="form-control m-select2 @error('title') is-invalid @enderror" id="gudang" name="gudang[]" multiple="multiple" style="width: 100%">
+                    <select class="form-control m-select2" id="gudang" name="gudang[]" multiple="multiple" style="width: 100%">
                         @foreach ($gudang as $item)
                             <option value="{{$item->id}}">{{$item->nama}}</option>
                         @endforeach
@@ -51,7 +51,7 @@
                     </div>
                     <div class="mt1" id="textadd" style="display:none;">
                         <select class="form-control m-select2" id="material" name="pilih_material[]" multiple="multiple" style="width:100%">
-                            @foreach ($produk as $item)
+                            @foreach ($material as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>
                             @endforeach
                         </select>
@@ -65,14 +65,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Start Date</label>
+                                    <label>Tanggal Awal</label>
                                     <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
                                         placeholder="Pilih tanggal">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>End Date</label>
+                                    <label>Tanggal Akhir</label>
                                     <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
                                         placeholder="Pilih tanggal">
                                 </div>
@@ -89,8 +89,9 @@
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="offset-lg-2">
-                        {{-- <a href="{{asset('assets/reports/material/material.xlsx')}}" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</a> --}}
+                        {{-- <a href="{{asset('assets/reports/produk/produk.xlsx')}}" class="btn btn-success"> <i class="fa fa-print"></i> Cetak Laporan</a> --}}
                         <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
+                        <button type="submit" name="preview" value="true" class="btn btn-warning" download=""> <i class="fa fa-binoculars "></i> Preview Laporan</button>
                     </div>
                 </div>
             </div>
@@ -104,7 +105,7 @@
         placeholder: "Pilih gudang"
     });
     $('#material').select2({
-        placeholder: "Pilih material",
+        placeholder: "Pilih Material",
         allowClear: true
     });
 
@@ -115,7 +116,7 @@
         orientation: "top left"
     });
 
-    function checkBx() {
+function checkBx() {
   var checkBox = document.getElementById("myCheck");
   var text = document.getElementById("textadd");
   if (checkBox.checked == true){
@@ -130,7 +131,7 @@ function checkSemua() {
     var text = document.getElementById("textadd");
     if (checkBox.checked == true){
         text.style.display = "none";
-        $("#material").val('').trigger('change');
+        $("#pallet").val('').trigger('change');
     } else {
         text.style.display = "block";
     }

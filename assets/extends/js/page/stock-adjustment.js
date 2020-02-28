@@ -542,6 +542,10 @@ function detail(id) {
         $("#tempat_tanggal").html(helpDateFormat(obj_adjustment.tanggal, "li"));
       }
 
+      if (obj_adjustment.shift != null) {
+        $("#tempat_shift").html(obj_adjustment.shift);
+      }
+
       if (obj_adjustment.foto != null) {
         let html =
           '<a id="gambar" target="_blank" href="' +

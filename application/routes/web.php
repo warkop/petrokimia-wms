@@ -19,7 +19,10 @@ Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('/authenticate', 'Auth\LoginController@authenticate')->name('authenticate');
 Route::get('watch/{nama}/', 'WatchController@default');
 Route::group(['middleware' => ['eauth', 'revalidate']], function () {
-    Route::get('/', 'DashboardController@index');
+    Route::get('/', function(){
+        return view('layout.main');
+    });
+    Route::get('/dashboard', 'DashboardController@index');
     
     Route::group(['prefix' => 'master-aktivitas', 'middleware' => 'can:data-master'], function () {
         Route::get('/', 'AktivitasController@index');
@@ -200,6 +203,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::get('/{aktivitasHarian}', 'PenerimaanGpController@show')->where('aktivitasHarian', '[0-9]+');
         Route::get('/list-keluhan/{id}', 'PenerimaanGpController@getListKeluhanGP')->where('id', '[0-9]+');
         Route::get('/get-produk/{id_aktivitas_harian}', 'PenerimaanGpController@getProduk')->where('id_aktivitas_harian', '[0-9]+');
+        Route::get('/cetak-aktivitas/{aktivitasHarian}', 'PenerimaanGpController@print')->where('id_aktivitas_harian', '[0-9]+');
         Route::post('/', 'PenerimaanGpController@json');
         Route::put('/{aktivitasHarian}', 'PenerimaanGpController@store')->where('aktivitasHarian', '[0-9]+');
         Route::patch('/{aktivitasHarian}', 'PenerimaanGpController@approve')->where('aktivitasHarian', '[0-9]+');
@@ -218,31 +222,31 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
     });
 
     Route::group(['prefix' => 'report', 'middleware' => ['eauth:1&7']], function () {
-        Route::get('/laporan-material', 'ReportController@laporanMaterial');
+        Route::get('/laporan-transaksi-material', 'ReportController@laporanTransaksiMaterial');
         Route::get('/laporan-stok', 'ReportController@laporanStok');
         Route::get('/laporan-absen-karyawan', 'ReportController@laporanAbsenKaryawan');
         Route::get('/laporan-mutasi-pallet', 'ReportController@laporanMutasiPallet');
         Route::get('/laporan-mutasi-stok', 'ReportController@laporanMutasiStok');
         Route::get('/laporan-produk', 'ReportController@laporanProduk');
+        Route::get('/laporan-material', 'ReportController@laporanMaterial');
         Route::get('/laporan-realisasi', 'ReportController@laporanRealisasi');
         Route::get('/laporan-keluhan-alat-berat', 'ReportController@laporanKeluhanAlatBerat');
         Route::get('/laporan-keluhan-gp', 'ReportController@laporanKeluhanGp');
         Route::get('/laporan-aktivitas', 'ReportController@laporanAktivitas');
+        Route::get('/laporan-log-sheet', 'ReportController@laporanLogSheet');
         
-        Route::get('/material', 'ReportController@material');
+        Route::get('/transaksi-material', 'ReportController@transaksiMaterial');
         Route::get('/stok', 'ReportController@stok');
         Route::get('/absen-karyawan', 'ReportController@absenKaryawan');
         Route::get('/mutasi-pallet', 'ReportController@mutasiPallet');
         Route::get('/mutasi-stok', 'ReportController@mutasiStok');
         Route::get('/produk', 'ReportController@produk');
+        Route::get('/material', 'ReportController@material');
         Route::get('/realisasi', 'ReportController@realisasi');
         Route::get('/keluhan-alat-berat', 'ReportController@keluhanAlatBerat');
         Route::get('/keluhan-gp', 'ReportController@keluhanGp');
         Route::get('/aktivitas-harian', 'ReportController@aktivitasHarian');
-    });
-
-    Route::get('/main', function () {
-        return view('layout.main');
+        Route::get('/log-sheet', 'ReportController@logSheet');
     });
 });
 

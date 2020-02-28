@@ -92,6 +92,10 @@ class AktivitasHarian extends Model
                 'aktivitas_harian.created_at as tanggal', 
                 'gudang.nama as nama_gudang', 
                 'shift_kerja.nama as nama_shift',
+                'aktivitas_harian.nopol',
+                'aktivitas_harian.driver',
+                'aktivitas_harian.posto',
+                'shift_kerja.nama as nama_shift',
                 'approve'
             )
             ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
@@ -103,6 +107,9 @@ class AktivitasHarian extends Model
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
                 $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orwhere(DB::raw('LOWER(nopol)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orwhere(DB::raw('LOWER(driver)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orwhere(DB::raw('LOWER(posto)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere('gudang.nama', 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere('shift_kerja.nama', 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw("TO_CHAR(aktivitas_harian.created_at, 'DD/MM/YYYY')"), 'ILIKE', '%' . strtolower($search) . '%');

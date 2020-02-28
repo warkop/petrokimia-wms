@@ -95,6 +95,14 @@ lines {
                                 <label>Tanggal Kejadian</label>
                                 <input type="text" class="form-control" name="tanggal" id="tanggal" readonly placeholder="Pilih tanggal" value="{{date('d-m-Y')}}">
                             </div>
+                            <div class="form-group">
+                                <label>Shift</label>
+                                <select class="form-control" name="shift_id" id="shift_id" readonly placeholder="Pilih shift">
+                                    @foreach ($shift as $item)
+                                        <option value="{{$item->id}}">{{$item->nama}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
@@ -187,6 +195,12 @@ lines {
                     <div class="col-md-6">
                         <label for="">Foto</label>
                         <h5 id="tempat_gambar"><a id="tempat_link_gambar" target="_blank" href=""><img id="tempat_muncul_gambar" src="" alt="" width="50%"></a></h5>
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-md-6">
+                        <label for="">Shift</label>
+                        <h5 id="tempat_shift"></h5>
                     </div>
                 </div>
                 <div class="row mb-4">

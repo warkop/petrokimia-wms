@@ -10,7 +10,6 @@ let datatable,
 
 $(document).ready(function () {
     loadTable();
-    KTSelect2.init();
 });
 
 const loadTable = function () {

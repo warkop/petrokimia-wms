@@ -77,7 +77,6 @@ class PenerimaanGpController extends Controller
         if ($id_aktivitas_harian) {
             $keluhan = AktivitasKeluhanGp::where('id_aktivitas_harian', $id_aktivitas_harian)->get();
         }
-        // $data = Material::where('nama', 'ILIKE', '%'.strtolower($search).'%')->where('kategori', 1)->orderBy('nama', 'asc')->get();
         
         $data = MaterialTrans::distinct('id_material')
         ->select(
@@ -166,7 +165,6 @@ class PenerimaanGpController extends Controller
         })->firstOrFail();
         $data['title'] = 'Detail Penerimaan GP';
         $data['aktivitasHarian'] = $aktivitasHarian;
-        $data['id_aktivitas_harian'] = $aktivitasHarian->id;
         $data['aktivitasFoto'] = AktivitasFoto::withoutGlobalScopes()->where('id_aktivitas_harian', $aktivitasHarian->id)->get();
 
         $produk = MaterialTrans::select(
@@ -183,10 +181,8 @@ class PenerimaanGpController extends Controller
         ->groupBy('material_trans.id_material', 'material.nama', 'area_stok.id_area', 'material_trans.tipe')
         ->get();
         $data['produk'] = $produk;
-        // dd($data['produk']);
         $pallet = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_pallet')->get();
         $data['pallet'] = $pallet;
-        $data['id_gudang'] = $aktivitasHarian->id_gudang;
         $data['fotoKelayakanBefore'] = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->where('jenis', 1)->get();
         $data['fotoKelayakanAfter'] = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->where('jenis', 2)->get();
 
@@ -208,17 +204,6 @@ class PenerimaanGpController extends Controller
 
     public function getArea($id_gudang, $id_material, $id_aktivitas_harian)
     {
-        // $areaStok = Area::with('areaStok', 'areaStok.materialTrans')
-        // ->whereHas('areaStok', function($query) use ($id_material) {
-        //     $query->where('id_material', $id_material);
-        // })
-        // ->whereHas('areaStok.materialTrans', function($query) use ($id_aktivitas_harian) {
-        //     $query->where('id_aktivitas_harian', $id_aktivitas_harian);
-        // })
-        // ->where('id_gudang', $id_gudang)
-        // ->orderBy('nama')
-        // ->get();
-
         $areaStok = MaterialTrans::select(
             'material_trans.id_material',
             'area_stok.id_area',
@@ -232,5 +217,40 @@ class PenerimaanGpController extends Controller
         ->where('material_trans.id_material', $id_material)
         ->get();
         return response()->json($areaStok, 200);
+    }
+
+    public function print($id)
+    {
+        $aktivitasHarian = AktivitasHarian::where('id', $id)
+            ->whereHas('aktivitas', function ($query) {
+                $query->whereNotNull('pengiriman');
+                $query->whereNotNull('pengaruh_tgl_produksi');
+            })->firstOrFail();
+        $data['title'] = 'Detail Penerimaan GP';
+        $data['aktivitasHarian'] = $aktivitasHarian;
+        $data['aktivitasFoto'] = AktivitasFoto::withoutGlobalScopes()->where('id_aktivitas_harian', $aktivitasHarian->id)->get();
+
+        $produk = MaterialTrans::select(
+            'material_trans.id_material',
+            'material.nama as nama_material',
+            'area.nama as nama_area',
+            'area_stok.id_area',
+            'material_trans.tipe',
+            'area_stok.tanggal',
+            'material_trans.jumlah'
+        )
+            ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
+            ->leftJoin('area_stok', 'area_stok.id', '=', 'material_trans.id_area_stok')
+            ->leftJoin('area', 'area_stok.id_area', '=', 'area.id')
+            ->where('id_aktivitas_harian', $aktivitasHarian->id)
+            ->whereNotNull('status_produk')
+            ->get();
+        $data['produk'] = $produk;
+        $pallet = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_pallet')->get();
+        $data['pallet'] = $pallet;
+        $data['fotoKelayakanBefore'] = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->where('jenis', 1)->get();
+        $data['fotoKelayakanAfter'] = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->where('jenis', 2)->get();
+
+        return view('penerimaan-gp.cetak', $data);
     }
 }

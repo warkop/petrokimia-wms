@@ -23,7 +23,7 @@
             </div>
         </div>
         
-        <form action="{{ url('report/keluhan-gp') }}" method="GET">
+        <form action="{{ url('report/keluhan-gp') }}" method="GET" target="_blank">
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row">
@@ -107,6 +107,7 @@
                 <div class="row">
                     <div class="offset-lg-2">
                         <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
+                        <button type="submit" name="preview" value="true" class="btn btn-warning" download=""> <i class="fa fa-binoculars "></i> Preview Laporan</button>
                     </div>
                 </div>
             </div>

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
+use App\Http\Models\GudangStok;
 use App\Http\Models\Karu;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
@@ -39,13 +40,13 @@ class LayoutController extends Controller
             return false;
         }
 
-        return $gudang->id;
+        return $gudang;
     }
 
     public function index(Request $req)
     {
         $search = strip_tags($req->input('search'));
-        $id_gudang = $this->getCheckerGudang();
+        $gudang = $this->getCheckerGudang();
         $res = Area::select(
                 'area.id', 
                 'area.nama as nama_area', 
@@ -66,7 +67,7 @@ class LayoutController extends Controller
                 END AS text_tipe_area')
             )
             ->join('gudang as g', 'area.id_gudang', '=', 'g.id')
-            ->where('id_gudang', $id_gudang)
+            ->where('id_gudang', $gudang->id)
             ->where(function ($where) use ($search) {
                 $where->where(DB::raw('LOWER(area.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('LOWER(g.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
@@ -82,10 +83,67 @@ class LayoutController extends Controller
             ->orderBy('area.nama', 'asc')
             ->paginate(10);
 
+        $listPallet = DB::table('gudang_stok')
+        ->select(
+            'gudang_stok.*'
+        )
+        ->join('material', 'material.id', '=', 'gudang_stok.id_material')
+        ->where('kategori', 2)
+        ->where('id_gudang', $gudang->id)
+        ->orderBy('status')
+        ->get();
+
+        $stok       = 0;
+        $terpakai   = 0;
+        $kosong     = 0;
+        $rusak      = 0;
+
+        foreach ($listPallet as $key) {
+            if ($key->status == 1) {
+                $stok = $stok + $key->jumlah;
+            }
+            if ($key->status == 2) {
+                $terpakai = $terpakai + $key->jumlah;
+            }
+            if ($key->status == 3) {
+                $kosong = $kosong + $key->jumlah;
+            }
+            if ($key->status == 4) {
+                $rusak = $rusak + $key->jumlah;
+            }
+        }
+
+        $produkNormal = 0;
+        $produkRusak = 0;
+
+        $produk = AreaStok::select('*')
+        ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
+        ->where('id_gudang', $gudang->id)
+        ->get();
+
+        foreach ($produk as $key) {
+            if ($key->status == 1) {
+                $produkNormal += $key->jumlah;
+            } else {
+                $produkRusak += $key->jumlah;
+            }
+        }
+
         $obj =  AktivitasResource::collection($res)->additional([
+            'pallet' => [
+                'stok'      => $stok,
+                'terpakai'  => $terpakai,
+                'kosong'    => $kosong,
+                'rusak'     => $rusak,
+            ],
+            'produk' => [
+                'total'     => $produkNormal+$produkRusak,
+                'normal'    => $produkNormal,
+                'rusak'     => $produkRusak,
+            ],
             'status' => [
-                'message' => '',
-                'code' => Response::HTTP_OK
+                'message'   => '',
+                'code'      => Response::HTTP_OK
             ],
         ], Response::HTTP_OK);
 
@@ -101,12 +159,12 @@ class LayoutController extends Controller
             'material.nama as nama_material',
             'area_stok.tanggal',
             'area_stok.jumlah',
-            'area.kapasitas'
+            'area.kapasitas',
+            'area_stok.status'
         )
         ->leftJoin('material', 'area_stok.id_material', '=', 'material.id')
         ->leftJoin('area', 'area_stok.id_area', '=', 'area.id')
         ->where('id_area',$id_area)
-        ->where('area_stok.status', 1)
         ->get();
 
         $obj =  AktivitasResource::collection($res)->additional([

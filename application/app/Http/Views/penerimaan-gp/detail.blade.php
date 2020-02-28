@@ -4,8 +4,6 @@
 
 @section('content')
 
-<link rel="stylesheet" href="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.css')}}">
-
 <style>
     .br {
     border-radius: 8px;  
@@ -102,8 +100,8 @@
                     <div class="row mb1">
                         <div class="col-12">
                             <label>Paket Alat Berat</label>
-                            @php $no = 1; @endphp
                             <h5 class="boldd"> 
+                                @php $no = 1; @endphp
                                 @foreach ($aktivitasHarian->aktivitasHarianAlatBerat as $key)
                                 {{ $no.'. '.$key->nomor_lambung}} <br>
                                 @php $no++ @endphp
@@ -119,14 +117,32 @@
                     </div>
                     <div class="row mb1">
                         <div class="col-12">
+                            <label>Nopol</label>
+                            <h5 class="boldd"> {{$aktivitasHarian->nopol??'-'}}</h5>
+                        </div>
+                    </div>
+                    <div class="row mb1">
+                        <div class="col-12">
+                            <label>Driver</label>
+                            <h5 class="boldd"> {{$aktivitasHarian->driver??'-'}}</h5>
+                        </div>
+                    </div>
+                    <div class="row mb1">
+                        <div class="col-12">
+                            <label>No. SO</label>
+                            <h5 class="boldd"> {{$aktivitasHarian->posto??'-'}}</h5>
+                        </div>
+                    </div>
+                    <div class="row mb1">
+                        <div class="col-12">
                             <label>Foto Truk</label><br>
-                            <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_2"> Lihat Gambar</a>
+                            <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_2"> Lihat Foto</a>
                         </div>
                     </div>
                     <div class="row mb1">
                         <div class="col-12">
                             <label>Foto Kelayakan</label><br>
-                            <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_kelayakan"> Lihat Gambar</a>
+                            <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_kelayakan"> Lihat Foto</a>
                         </div>
                     </div>
                 </div>
@@ -194,6 +210,21 @@
                             @endforeach
                             <div class="border-pembatas mb1"></div>
                         </div>
+                        <div class="row mb1">
+                        <div class="col-12">
+                            <label>Tanda Tangan</label><br>
+                            @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $aktivitasHarian->id . "/" . $aktivitasHarian->ttd)))
+                                <a class="fancybox" rel="ligthbox"
+                                    href="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}">
+                                    <img class="img-fluid"
+                                        src="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}" alt=""
+                                        srcset="">
+                                </a>
+                            @else
+                                <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                            @endif
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -206,6 +237,7 @@
                         <button type="button" class="btn btn-wms btn-lg" onclick="approve()">Approve</button>
                         @endempty
                         <button type="button" class="btn btn-primary btn-lg" onclick="@if($aktivitasHarian->approve == null)loadKeluhan()@else loadDetail()@endif">Keluhan</button>
+                        <a href="{{url('penerimaan-gp/cetak-aktivitas/'.$aktivitasHarian->id)}}" type="button" class="btn btn-success btn-lg" target="_blank" > <i class="fa fa-print"></i> Cetak</a>
                     </div>
                 </div>
             </div>
@@ -264,12 +296,16 @@
                                 @if ($item->fotoJenis)
                                 <div class="col-4">
                                     <label class="boldd">Foto {{$item->fotoJenis->nama}}</label>
-                                    <a class="fancybox" rel="ligthbox"
-                                        href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}">
-                                        <img class="img-fluid"
-                                            src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}" alt=""
-                                            srcset="">
-                                    </a>
+                                    @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $item->id_aktivitas_harian . "/" . $item->foto)))
+                                        <a class="fancybox" rel="ligthbox"
+                                            href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}">
+                                            <img class="img-fluid"
+                                                src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}" alt=""
+                                                srcset="">
+                                        </a>
+                                    @else
+                                        <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                                    @endif
                                 </div>
                                 @endif
                             @endforeach
@@ -308,12 +344,16 @@
                             @foreach ($fotoKelayakanBefore as $item)
                                 <div class="col-4">
                                     {{-- <label class="boldd">Foto {{$item->foto}}</label> --}}
+                                    @if (file_exists(storage_path("/app/public/kelayakan/" . $item->id_aktivitas_harian . "/" . $item->file_enc)))
                                     <a class="fancybox" rel="ligthbox"
                                         href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
                                         <img class="img-fluid"
                                             src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
                                             srcset="">
                                     </a>
+                                    @else
+                                        <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
@@ -325,7 +365,7 @@
                     <br>
                     <div class="row">
                     @if ($fotoKelayakanAfter->isEmpty())
-                        <span><strong>Tidak ada foto</strong></span>
+                        <h4>Tidak ada foto<h4>
                     @endif
                     </div>
                     <div class="kt-scroll" data-scroll="true">
@@ -334,12 +374,16 @@
                             @foreach ($fotoKelayakanAfter as $item)
                                 <div class="col-4">
                                     {{-- <label class="boldd">Foto {{$item->foto}}</label> --}}
+                                    @if (file_exists(storage_path("/app/public/kelayakan/" . $item->id_aktivitas_harian . "/" . $item->file_enc)))
                                     <a class="fancybox" rel="ligthbox"
                                         href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
                                         <img class="img-fluid"
                                             src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
                                             srcset="">
                                     </a>
+                                    @else
+                                        <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
@@ -431,10 +475,9 @@
 </div>
 
 
-<script src="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.js')}}"></script>
 <script type="text/javascript">
-const id_gudang = "{{$id_gudang}}";
-const id_aktivitas_harian = "{{$id_aktivitas_harian}}";
+const id_gudang = "{{$aktivitasHarian->id_gudang}}";
+const id_aktivitas_harian = "{{$aktivitasHarian->id}}";
 
 let datatable,
     tableTarget = "#kt_table_1",

@@ -109,7 +109,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						<div id="kt_aside_menu" class="kt-aside-menu " data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500">
 							<ul class="kt-menu__nav ">
 								@if (auth()->user()->can('dashboard'))
-								<li id="dashboard-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-area-chart"></span><span class="kt-menu__link-text">Dashboard</span></a></li>
+								<li id="dashboard-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/dashboard')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-area-chart"></span><span class="kt-menu__link-text">Dashboard</span></a></li>
 								@endif
 								@if (auth()->user()->can('layout'))
 								<li id="layout-nav" class="kt-menu__item" aria-haspopup="true"><a href="{{url('/layout')}}" class="kt-menu__link "><span class="kt-menu__link-icon la la-map"></span><span class="kt-menu__link-text">Layout</span></a></li>
@@ -165,16 +165,18 @@ License: You must have a valid license purchased only from themeforest(the above
 									<div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
 										<ul class="kt-menu__subnav">
 											{{-- <li id="report-laporan-material-nav" class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Data Master</span></span></li> --}}
-											<li id="report-laporan-material-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-material')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Laporan Transaksi Material</span></a></li>
-											<li id="report-laporan-stok-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-stok')}}" class="kt-menu__link" ><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Laporan Stok</span></a></li>
+											<li id="report-laporan-transaksi-material-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-transaksi-material')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Transaksi Material</span></a></li>
+											<li id="report-laporan-stok-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-stok')}}" class="kt-menu__link" ><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Posisi Stok</span></a></li>
 											{{-- <li id="report-absen-karyawan-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-absen-karyawan')}}" class="kt-menu__link" ><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Absen Karyawan</span></a></li> --}}
 											<li id="report-mutasi-pallet-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-mutasi-pallet')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Mutasi Pallet</span></a></li>
 											<li id="report-mutasi-stok-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-mutasi-stok')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Mutasi Stok</span></a></li>
-											<li id="report-produk-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-produk')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Laporan Material</span></a></li>
+											<li id="report-produk-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-produk')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Produk</span></a></li>
+											<li id="report-material-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-material')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Material</span></a></li>
 											<li id="report-realisasi-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-realisasi')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Realisasi</span></a></li>
 											<li id="report-keluhan-alat-berat-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-keluhan-alat-berat')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Keluhan Alat Berat</span></a></li>
 											<li id="report-keluhan-gp-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-keluhan-gp')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Keluhan GP</span></a></li>
 											<li id="report-aktivitas-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-aktivitas')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Aktivitas</span></a></li>
+											<li id="report-log-sheet-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-log-sheet')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Log Sheet</span></a></li>
 										</ul>
 									</div>
 								</li>

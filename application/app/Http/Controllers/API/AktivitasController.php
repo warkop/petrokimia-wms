@@ -41,6 +41,7 @@ use App\Http\Resources\GetSistroResource;
 use App\Http\Resources\HistoryMaterialAreaResource;
 use App\Http\Resources\ListNotifikasiResource;
 use App\Notifications\Pengiriman;
+use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -245,9 +246,9 @@ class AktivitasController extends Controller
         $search = strip_tags($req->input('search'));
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
         $condition = '';
-        if ($aktivitas->produk_rusak != 2) {
+        if ($aktivitas->produk_rusak == 2) {
             $condition = ' and area_stok.status = 1';
-        } else if ($aktivitas->produk_rusak != 1) {
+        } else if ($aktivitas->produk_rusak == 1) {
             $condition = ' and area_stok.status = 2';
         } else {
             if ($aktivitas->produk_stok != null) {
@@ -272,7 +273,7 @@ class AktivitasController extends Controller
             ;
 
             if ($pindah == false) {
-                $resource = $resource->where('id_material', $id_material)->where('area_stok.status', 1);
+                $resource = $resource->where('id_material', $id_material);
             }
             $resource = $resource->get();
         } else {
@@ -332,9 +333,9 @@ class AktivitasController extends Controller
                 ->join('area', 'area.id', '=', 'area_stok.id_area')
                 ->where('id_material', $id_material)
                 ->where('area_stok.id_area', $id_area);
-            if ($aktivitas->produk_rusak != 2) {
+            if ($aktivitas->produk_rusak == 2) {
                 $detail = $detail->where('area_stok.status', 1);
-            } else if ($aktivitas->produk_rusak != 1) {
+            } else if ($aktivitas->produk_rusak == 1) {
                 $detail = $detail->where('area_stok.status', 2);
             } else {
                 if ($aktivitas->produk_stok != null) {
@@ -487,9 +488,19 @@ class AktivitasController extends Controller
         $aktivitasHarian->dikembalikan      = $req->input('dikembalikan');
         $aktivitasHarian->alasan            = $req->input('alasan');
         $aktivitasHarian->so                = $req->input('so');
+        $aktivitasHarian->posto             = $req->input('posto');
         $aktivitasHarian->id_yayasan        = $req->input('id_yayasan');
         $aktivitasHarian->id_tkbm           = $req->input('id_tkbm');
         $aktivitasHarian->draft             = $draft;
+
+        if (!empty($req->input('sistro'))) {
+            $sistro = Sistro::where('tiketno', $req->input('sistro'))->orWhere('bookingno', $req->input('sistro'))->first();
+            if (!empty($sistro)) {
+                $aktivitasHarian->nopol   = $sistro->nopol;
+                $aktivitasHarian->driver  = $sistro->driver;
+                $aktivitasHarian->posto   = $sistro->posto;
+            }
+        }
 
         $aktivitasHarian->save();
 
@@ -516,35 +527,17 @@ class AktivitasController extends Controller
 
                         for ($k = 0; $k < $jums_list_jumlah; $k++) {
                             if ($list_jumlah[$k]['tanggal'] != null) {
-                                if ($res_aktivitas->fifo != null) { //jika FIFO
-                                    $area_stok = AreaStok::where('id_area', $id_area)
-                                    ->where('id_material', $produk)
-                                    ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                    ->where('status', $status_produk)
-                                    ->orderBy('tanggal', 'asc')
-                                    ->first();
-                                } else {
-                                    $area_stok = AreaStok::where('id_area', $id_area)
-                                    ->where('id_material', $produk)
-                                    ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                    ->where('status', $status_produk)
-                                    ->first();
-                                }
+                                $area_stok = AreaStok::where('id_area', $id_area)
+                                ->where('id_material', $produk)
+                                ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                ->where('status', $status_produk)
+                                ->first();
                             } else {
-                                if ($res_aktivitas->fifo != null) { //jika FIFO
-                                    $area_stok = AreaStok::where('id_area', $id_area)
-                                        ->where('id_material', $produk)
-                                        ->whereNull('tanggal')
-                                        ->where('status', $status_produk)
-                                        ->orderBy('tanggal', 'asc')
-                                        ->first();
-                                } else {
-                                    $area_stok = AreaStok::where('id_area', $id_area)
-                                        ->where('id_material', $produk)
-                                        ->whereNull('tanggal')
-                                        ->where('status', $status_produk)
-                                        ->first();
-                                }
+                                $area_stok = AreaStok::where('id_area', $id_area)
+                                    ->where('id_material', $produk)
+                                    ->whereNull('tanggal')
+                                    ->where('status', $status_produk)
+                                    ->first();
                             }
 
                             if (!empty($area_stok)) {
@@ -776,14 +769,14 @@ class AktivitasController extends Controller
                     $aktivitasFoto = new AktivitasFoto;
 
                     $foto[$i]->storeAs('/public/aktivitas_harian/' . $id_aktivitas_harian, $foto[$i]->getClientOriginalName());
-
+        
                     $arrayFoto = [
                         'id_aktivitas_harian'       => $id_aktivitas_harian,
-                        'id_foto_jenis'             => isset($foto_jenis[$i]),
+                        'id_foto_jenis'             => (isset($foto_jenis[$i])? $foto_jenis[$i]:null),
                         'foto'                      => $foto[$i]->getClientOriginalName(),
                         'size'                      => $foto[$i]->getSize(),
-                        'lat'                       => isset($lat[$i]),
-                        'lng'                       => isset($lng[$i]),
+                        'lat'                       => (isset($lat[$i])? $lat[$i]:null),
+                        'lng'                       => (isset($lng[$i])? $lng[$i]:null),
                         'created_by'                => $res_user->id,
                         'created_at'                => date('Y-m-d H:i:s'),
                     ];
@@ -948,31 +941,15 @@ class AktivitasController extends Controller
     
                                 for ($k = 0; $k < $jums_list_jumlah; $k++) {
                                     if ($list_jumlah[$k]['tanggal'] != null) {
-                                        if ($aktivitasGudang->aktivitas->fifo != null) { //jika FIFO
-                                            $area_stok = AreaStok::where('id_area', $id_area)
-                                                ->where('id_material', $produk)
-                                                ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                                ->orderBy('tanggal', 'asc')
-                                                ->first();
-                                        } else {
-                                            $area_stok = AreaStok::where('id_area', $id_area)
-                                                ->where('id_material', $produk)
-                                                ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                                                ->first();
-                                        }
+                                        $area_stok = AreaStok::where('id_area', $id_area)
+                                            ->where('id_material', $produk)
+                                            ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                            ->first();
                                     } else {
-                                        if ($aktivitasGudang->aktivitas->fifo != null) { //jika FIFO
-                                            $area_stok = AreaStok::where('id_area', $id_area)
-                                                ->where('id_material', $produk)
-                                                ->whereNull('tanggal')
-                                                ->orderBy('tanggal', 'asc')
-                                                ->first();
-                                        } else {
-                                            $area_stok = AreaStok::where('id_area', $id_area)
-                                                ->where('id_material', $produk)
-                                                ->whereNull('tanggal')
-                                                ->first();
-                                        }
+                                        $area_stok = AreaStok::where('id_area', $id_area)
+                                            ->where('id_material', $produk)
+                                            ->whereNull('tanggal')
+                                            ->first();
                                     }
     
                                     if (!empty($area_stok)) {
@@ -1578,8 +1555,6 @@ class AktivitasController extends Controller
             'data'      => $wannaSave,
         ];
 
-        // dd($produk);
-
         if ($produk != null) {
             $this->responseData['produk']    = $produk;
         }
@@ -1593,12 +1568,12 @@ class AktivitasController extends Controller
 
     public function history(Request $req) //memuat history
     {
-        // $nama = $req->nama;
         $shift = $req->input('shift');
-        // $tanggal = date('Y-m-d', strtotime($req->tanggal));
 
         $gudang = $this->getCheckerGudang();
         $search = $req->input('search');
+        $tanggal_awal = $req->input('tanggal_awal');
+        $tanggal_selesai = $req->input('tanggal_selesai');
         $my_auth = $req->get('my_auth');
         $user = Users::findOrFail($my_auth->id_user);
         
@@ -1617,7 +1592,13 @@ class AktivitasController extends Controller
             'tenaga_kerja_non_organik.nama as nama_checker',
             'karu.nama as nama_karu',
             'shift_kerja.nama as nama_shift',
-            'aktivitas_harian.id_shift'
+            'aktivitas_harian.id_shift',
+            'aktivitas.cancelable',
+            'aktivitas_harian.canceled',
+            'aktivitas_harian.cancelable as aktivitas_harian_cancelable',
+            'aktivitas_harian.nopol',
+            'aktivitas_harian.driver',
+            'aktivitas_harian.posto'
         )
             ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
             ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
@@ -1630,28 +1611,24 @@ class AktivitasController extends Controller
                 $where->orWhere('id_gudang_tujuan', $gudang->id);
             })
             ->whereNull('ref_number')
-            ->where(function ($where) use ($search) {
+            ->where(function ($where) use ($search, $tanggal_awal, $tanggal_selesai) {
                 $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('LOWER(gudang.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('LOWER(tenaga_kerja_non_organik.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-                // $where->orWhere('aktivitas_harian.updated_at', date('Y-m-d', strtotime($search)));
+                $where->orWhere(DB::raw('LOWER(aktivitas_harian.nopol)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw('LOWER(aktivitas_harian.driver)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw('LOWER(aktivitas_harian.posto)'), 'ILIKE', '%' . strtolower($search) . '%');
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('aktivitas_harian.created_at', 'desc')
             ;
             
-        if ($shift != null) {
+        if (!empty($shift)) {
             $res = $res->where('aktivitas_harian.id_shift', $shift);
-            // foreach ($shift as $key => $value) {
-            //     $res = $res->where('aktivitas_harian.id_shift', $value);
-            // }
         }
 
-        // if (!empty($shift)) {
-        //     $res = $res->where('aktivitas_harian.id_shift', $shift[0]);
-        //     foreach ($shift as $key => $value) {
-        //         $res = $res->where('aktivitas_harian.id_shift', $value);
-        //     }
-        // }
+        if (!empty($tanggal_awal) && !empty($tanggal_selesai)) {
+            $res = $res->whereBetween('aktivitas_harian.created_at', [date('Y-m-d', strtotime($tanggal_awal)), date('Y-m-d', strtotime($tanggal_selesai . '+1 day'))]);
+        }
 
         $obj =  AktivitasResource::collection($res->paginate(10))->additional([
             'status' => [
@@ -1692,10 +1669,16 @@ class AktivitasController extends Controller
             'id_yayasan',
             'aktivitas.peminjaman',
             'aktivitas_harian.dikembalikan',
+            'aktivitas.cancelable',
+            'aktivitas_harian.canceled',
+            'aktivitas_harian.cancelable as aktivitas_harian_cancelable',
             'users.id_tkbm',
             'alasan',
             'ttd',
             'draft',
+            'nopol',
+            'driver',
+            'posto',
             DB::raw('(SELECT nama gudang FROM gudang WHERE id = aktivitas_harian.id_gudang)
                     AS text_gudang'),
             DB::raw('(SELECT nama FROM alat_berat_kat WHERE id = id_kategori)
@@ -1740,10 +1723,12 @@ class AktivitasController extends Controller
         ->orderBy('aktivitas_harian.id', 'desc')
         ->get();
 
-        if ($res[0]->sistro) {
-            $sistro = Sistro::where('tiketno', $res[0]->sistro)->orWhere('bookingno', $res[0]->sistro)->firstOrFail();
-        } else {
-            $sistro = null;
+        if (!$res->isEmpty()) {
+            if ($res[0]->sistro) {
+                $sistro = Sistro::where('tiketno', $res[0]->sistro)->orWhere('bookingno', $res[0]->sistro)->firstOrFail();
+            } else {
+                $sistro = null;
+            }
         }
 
         $res_produk = MaterialTrans::select(
@@ -1800,12 +1785,11 @@ class AktivitasController extends Controller
         )
         ->join('alat_berat', 'aktivitas_harian_alat_berat.id_alat_berat', '=', 'alat_berat.id')
         ->join('alat_berat_kat', 'alat_berat.id_kategori', '=', 'alat_berat_kat.id')
-        // ->where('alat_berat.status', 1)
         ->where('id_aktivitas_harian', $id)
         ->get();
 
         $obj = (new AktivitasResource($res))->additional([
-            'sistro' => $sistro,
+            'sistro' => $sistro??null,
             'produk' => $res_produk,
             'pallet' => $res_pallet,
             'alat_berat' => $list_alat_berat,
@@ -1827,27 +1811,19 @@ class AktivitasController extends Controller
             'id_area',
             'area.nama as nama_area',
             'material_trans.tipe',
+            'material_trans.status_produk',
+            'material_trans.status_pallet',
             'tanggal',
+            'material.nama as nama_barang',
             'material_trans.jumlah'
         )
-            // ->leftJoin('area_stok', 'area_stok.id', '=', 'material_trans.id_area_stok')
             ->leftJoin('area', 'area.id', '=', 'material_trans.id_area')
+            ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
             ->where('id_aktivitas_harian', $id_aktivitas_harian)
             ->where('material_trans.id_material', $id_material)
             ;
 
-        // $aktivitasHarian = AktivitasHarian::where('ref_number', $id_aktivitas_harian)->first();
-        // $resApprove = [];
-        // if (!empty($aktivitasHarian)) {
-        //     $resApprove = AktivitasHarianArea::with('areaStok')
-        //         ->where('id_aktivitas_harian', $aktivitasHarian->id)
-        //         ->whereHas('areaStok', function ($query) use ($id_material) {
-        //             $query->where('id_material', $id_material);
-        //         })->get();
-        // }
-
         $obj = HistoryMaterialAreaResource::collection($res->get())->additional([
-            // 'dataApprove' => HistoryMaterialAreaResource::collection($resApprove),
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK
@@ -1900,8 +1876,9 @@ class AktivitasController extends Controller
             'driver'            => $sistro->driver,
             'sistro_qty'        => (double)$sistro->qty,
             'tanggal'           => $sistro->tanggal,
-            'tujuan'            => $gudangTujuan->id,
-            'nama_tujuan'       => $gudangTujuan->nama,
+            'posto'             => $sistro->posto,
+            'tujuan'            => ($gudangTujuan == null) ? '-' : $gudangTujuan->id,
+            'nama_tujuan'       => ($gudangTujuan == null) ? '-' : $gudangTujuan->nama,
         ];
 
         return response()->json(['data' => [$data], 'status' => [
@@ -1953,8 +1930,7 @@ class AktivitasController extends Controller
                 $query->orWhere('end_date', '>', now());
             })
             ->get();
-        // dd($rencanaTkbm->toArray());
-        // dd($user);
+
         foreach ($rencanaTkbm as $key) {
             $user = Users::where('id_tkbm', $key->id_tkbm)->first();
             if (!empty($user)) {
@@ -2073,10 +2049,189 @@ class AktivitasController extends Controller
                     'tanggal'       => '2019-12-25',
                     'jumlah'        => 100
                 ])->save();
+            }
+        }
+    }
 
-                // $areaStok->materialTrans()->saveMany([
-                //     new MaterialTrans()
-                // ]);
+    public function cancelAktivitas(AktivitasHarian $aktivitasHarian)
+    {
+        $user       = request()->get('my_auth');
+        $res_user   = Users::findOrFail($user->id_user);
+
+        if (empty($aktivitasHarian->aktivitas->cancelable)) {
+            $this->responseCode     = 403;
+            $this->responseMessage  = 'Aktivitas tidak bersifat cancelable!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+
+        if (!empty($aktivitasHarian->canceled)) {
+            $this->responseCode     = 403;
+            $this->responseMessage  = 'Aktivitas sudah dicancel!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+
+        if ($aktivitasHarian->draft == 0) {
+            $res = MaterialTrans::where('id_aktivitas_harian', $aktivitasHarian->id)->get();
+
+            try {
+                DB::transaction(function () use ($res, $aktivitasHarian, $res_user) {
+                    DB::table('aktivitas_harian')->where('id', $aktivitasHarian->id)->update([
+                        'canceled' => 1,
+                    ]);
+
+                    $id = DB::table('aktivitas_harian')->insertGetId([
+                        'id_shift'          => $aktivitasHarian->id_shift,
+                        'id_karu'           => $aktivitasHarian->id_karu,
+                        'id_aktivitas'      => $aktivitasHarian->id_aktivitas,
+                        'id_gudang'         => $aktivitasHarian->id_gudang,
+                        'id_gudang_tujuan'  => $aktivitasHarian->id_gudang_tujuan,
+                        'ref_number'        => $aktivitasHarian->id,
+                        'sistro'            => $aktivitasHarian->sistro,
+                        'approve'           => $aktivitasHarian->approve,
+                        'kelayakan_before'  => $aktivitasHarian->kelayakan_before,
+                        'kelayakan_after'   => $aktivitasHarian->kelayakan_after,
+                        'dikembalikan'      => $aktivitasHarian->dikembalikan,
+                        'alasan'            => $aktivitasHarian->alasan,
+                        'so'                => $aktivitasHarian->so,
+                        'id_yayasan'        => $aktivitasHarian->id_yayasan,
+                        'id_tkbm'           => $aktivitasHarian->id_tkbm,
+                        'draft'             => $aktivitasHarian->draft,
+                        'cancelable'        => 1,
+                        'created_by'        => $res_user->id,
+                        'updated_by'        => $res_user->id,
+                        'created_at'        => now(),
+                        'updated_at'        => now(),
+                    ]);
+                    
+                    //produk
+                    foreach ($res as $key) {
+                        if (!empty($key->status_produk)) {
+                            if ($key->tipe == 1) {
+                                $areaStok = AreaStok::find($key->id_area_stok);
+
+                                $latestTotal = $areaStok->jumlah + $key->jumlah;
+
+                                DB::table('material_trans')->insert([
+                                    'tipe'                  => 2,
+                                    'jumlah'                => $key->jumlah,
+                                    'tanggal'               => $key->tanggal,
+                                    'id_material'           => $key->id_material,
+                                    'id_aktivitas_harian'   => $id,
+                                    'status_produk'         => $key->status_produk,
+                                    'id_area_stok'          => $key->id_area_stok,
+                                    'id_area'               => $key->id_area,
+                                    'shift_id'              => $key->shift_id,
+                                ]);
+
+                                DB::table('area_stok')
+                                ->where('id', $key->id_area_stok)
+                                ->update([
+                                    'jumlah'      => $latestTotal,
+                                ]);
+                            } else {
+                                $areaStok = AreaStok::findOrFail($key->id_area_stok);
+
+                                $latestTotal = $areaStok->jumlah - $key->jumlah;
+
+                                DB::table('material_trans')->insert([
+                                    'tipe'                  => 1,
+                                    'jumlah'                => $key->jumlah,
+                                    'tanggal'               => $key->tanggal,
+                                    'id_material'           => $key->id_material,
+                                    'id_aktivitas_harian'   => $id,
+                                    'status_produk'         => $key->status_produk,
+                                    'id_area_stok'          => $key->id_area_stok,
+                                    'id_area'               => $key->id_area,
+                                    'shift_id'              => $key->shift_id,
+                                ]);
+
+                                DB::table('area_stok')
+                                    ->where('id', $key->id_area_stok)
+                                    ->update([
+                                        'jumlah'      => $latestTotal,
+                                    ]);
+                            }
+                        }
+
+                        //pallet
+                        if (!empty($key->status_pallet)) {
+                            if ($key->tipe == 1) {
+                                $gudangStok = GudangStok::find($key->id_gudang_stok);
+
+                                $latestTotal = $gudangStok->jumlah + $key->jumlah;
+
+                                DB::table('material_trans')->insert([
+                                    'tipe'                  => 2,
+                                    'jumlah'                => $key->jumlah,
+                                    'tanggal'               => $key->tanggal,
+                                    'id_material'           => $key->id_material,
+                                    'id_aktivitas_harian'   => $id,
+                                    'status_pallet'         => $key->status_pallet,
+                                    'id_gudang_stok'        => $key->id_gudang_stok,
+                                    'id_area'               => $key->id_area,
+                                    'shift_id'              => $key->shift_id,
+                                ]);
+
+                                DB::table('gudang_stok')
+                                    ->where('id', $key->id_gudang_stok)
+                                    ->update([
+                                        'jumlah'      => $latestTotal,
+                                    ]);
+                            } else {
+                                $gudangStok = GudangStok::find($key->id_gudang_stok);
+
+                                $latestTotal = $gudangStok->jumlah - $key->jumlah;
+
+                                DB::table('material_trans')->insert([
+                                    'tipe'                  => 1,
+                                    'jumlah'                => $key->jumlah,            
+                                    'tanggal'               => $key->tanggal,
+                                    'id_material'           => $key->id_material,
+                                    'id_aktivitas_harian'   => $id,
+                                    'status_pallet'         => $key->status_pallet,
+                                    'id_gudang_stok'        => $key->id_gudang_stok,
+                                    'id_area'               => $key->id_area,
+                                    'shift_id'              => $key->shift_id,
+                                ]);
+
+                                DB::table('gudang_stok')
+                                    ->where('id', $key->id_gudang_stok)
+                                    ->update([
+                                        'jumlah'      => $latestTotal,
+                                    ]);
+                            }
+                        }
+                    }
+                });
+                $this->responseCode     = 200;
+                $this->responseMessage  = 'Aktivitas berhasil dicancel';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            } catch (Exception $e) {
+                $this->responseCode     = 500;
+                $this->responseMessage  = $e->getMessage();
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            } 
+        } else {
+            $this->responseCode     = 403;
+            $this->responseMessage  = 'Aktivitas dalam keadaan draft, tidak perlu dicancel!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+        }
+        return response()->json($response, $this->responseCode);
+    }
+
+    public function fillWithSistro()
+    {
+        $res = AktivitasHarian::whereNotNull('sistro')->get();
+
+        foreach ($res as $key) {
+            $sistro = Sistro::where('tiketno', $key->sistro)->orWhere('bookingno', $key->sistro)->first();
+            if (!empty($sistro)) {
+                $key->nopol     = $sistro->nopol;
+                $key->driver    = $sistro->driver;
+                $key->posto     = $sistro->posto;
+                $key->save();
             }
         }
     }

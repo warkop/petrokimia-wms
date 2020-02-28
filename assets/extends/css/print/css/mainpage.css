@@ -1,0 +1,379 @@
+@font-face {
+    font-family: "ArialGreek";
+    src: url("css/font/ArialGreek.eot");
+    src: url("font/ArialGreek.woff") format("woff"),
+    /* url("font/ArialGreek.otf") format("opentype"); */
+    }
+
+    @import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
+
+    @media print { body { -webkit-print-color-adjust: exact; } }
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #FAFAFA;
+    font-size: 11pt;
+    /* font-family: 'ArialGreek', Arial, sans-serif; */
+    font-family: 'Poppins', sans-serif;
+    
+}
+* {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+.page {
+    width: 21cm;
+    height: 29.7cm !important;
+    /* padding: 1cm; */
+    margin: 1cm auto;
+    border: 1px #D3D3D3 solid;
+    border-radius: 5px;
+    background: white;
+    /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); */
+}
+
+.header {
+    padding: .5cm !important;
+    z-index: 999;
+    /* border: 1px green solid; */
+    height: 35mm;
+    background: whitesmoke;
+}
+
+
+.isi {
+    padding: .5cm 2cm !important;
+    z-index: 99909;
+    /* border: 5px red solid; */
+    height: 22.7cm;
+    /* outline: 2cm rgb(11, 117, 2) solid; */
+}
+
+
+.footer {
+    padding: 0 .5cm !important;
+    z-index: 999;
+    /* border: 1px green solid; */
+    height: 3.5cm;
+    /* background: whitesmoke; */
+}
+
+
+@page {
+    size: legal;
+    margin: 0;
+}
+@media print {
+    .page {
+        /* margin: 0; */
+        /* border: initial;
+        border-radius: initial;
+        width: initial;
+        min-height: initial;
+        box-shadow: initial;
+        background: initial; */
+        page-break-after: always;
+        width: 21cm;
+        height: 29.7cm !important;
+        /* padding: 1cm; */
+        border: none;
+        margin: 0 ;
+        background: white;
+    }
+
+    .header {
+        width:22cm !important;
+    }
+
+    .footer {
+        position: absolute !important;
+        bottom: 2cm !important;
+        float: right !important;
+        right: 0 !important;
+    }
+    /* .imagIttd {
+        margin-top: -1cm;
+    } */
+    .no-print, .no-print * {
+        display: none !important;
+    }
+}
+
+.row{display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;margin-right:-15px;margin-left:-15px; padding: .1cm 0cm}
+.col-md-seperemepat{-ms-flex:0 0 2.0833325%;flex:0 0 2.0833325%;max-width:2.0833325%}
+.col-md-setengah{-ms-flex:0 0 4.166665%;flex:0 0 4.166665%;max-width:4.166665%}
+.col-md-kusus-padding{-ms-flex:0 0 2.1833325%;flex:0 0 2.1833325%;max-width:2.1833325%}
+.col-md-1{-ms-flex:0 0 8.333333%;flex:0 0 8.333333%;max-width:8.333333%}
+.col-md-2{-ms-flex:0 0 16.666667%;flex:0 0 16.666667%;max-width:16.666667%}
+.col-md-3{-ms-flex:0 0 25%;flex:0 0 25%;max-width:25%}
+.col-md-4{-ms-flex:0 0 33.333333%;flex:0 0 33.333333%;max-width:33.333333%}
+.col-md-6{-ms-flex:0 0 50%;flex:0 0 50%;max-width:50%}
+.col-md-7{-ms-flex:0 0 58.33333%;flex:0 0 58.33333%;max-width:58.33333%}
+.col-md-9{-ms-flex:0 0 75%;flex:0 0 75%;max-width:75%}
+.col-md-12{-ms-flex:0 0 100%;flex:0 0 100%;max-width:100%}
+.col-md-8{-ms-flex:0 0 66.666667%;flex:0 0 66.666667%;max-width:66.666667%}
+.text-center{text-align:center!important}
+
+
+.underline {
+    text-decoration: underline;
+}
+
+.margin-top5 {
+    margin-top: 5mm;
+}
+
+.margin-top10 {
+    margin-top: 10mm;
+}
+
+.margin-top15 {
+    margin-top: 15mm;
+}
+
+.margin-top20 {
+    margin-top: 20mm;
+}
+
+.margin-top25 {
+    margin-top: 25mm;
+}
+
+.boldd{
+    font-weight: bold;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.mb1 {
+    margin-bottom: 1rem !important;
+}
+
+.mb1koma5 {
+    margin-bottom: 1.5rem !important;
+}
+
+.mb2 {
+    margin-bottom: 2rem !important;
+}
+
+.mb3 {
+    margin-bottom: 3rem !important;
+}
+
+.mb4 {
+    margin-bottom: 4rem !important;
+}
+
+.mb5 {
+    margin-bottom: 5rem !important;
+}
+
+.mb6 {
+    margin-bottom: 6rem !important;
+}
+
+.mt1 {
+    margin-top: 1rem !important;
+}
+
+.mt2 {
+    margin-top: 2rem !important;
+}
+
+.mt3 {
+    margin-top: 3rem !important;
+}
+
+.mt4 {
+    margin-top: 4rem !important;
+}
+
+.mt5 {
+    margin-top: 5rem;
+}
+
+.mt6 {
+    margin-top: 6rem !important;
+}
+
+.mt-setengah {
+    margin-top: .5rem !important;
+}
+
+.mt-min-setengah {
+    margin-top: -.5rem !important;
+}
+
+.mt-min-1 {
+    margin-top: -.1rem !important;
+}
+
+.mt-min-2 {
+    margin-top: -2rem !important;
+}
+
+.mt-min-3 {
+    margin-top: -3rem !important;
+}
+
+.mt-min-4 {
+    margin-top: -4rem !important;
+}
+
+.mt-min-5 {
+    margin-top: -5rem !important;
+}
+
+.mt-min-6 {
+    margin-top: -6rem !important;
+}
+
+.ml-setengah {
+    margin-left: .5rem !important;
+}
+
+.ml1 {
+    margin-left: 1rem !important;
+}
+
+.ml2 {
+    margin-left: 2rem !important;
+}
+
+.ml3 {
+    margin-left: 3rem !important;
+}
+
+.ml4 {
+    margin-left: 4rem !important;
+}
+
+.ml5 {
+    margin-left: 5rem !important;
+}
+
+.ml6 {
+    margin-left: 6rem !important;
+}
+
+.mr-setengah {
+    margin-right: .5rem !important;
+}
+
+.mr1 {
+    margin-right: 1rem !important;
+}
+
+.mr2 {
+    margin-right: 2rem !important;
+}
+
+.mr3 {
+    margin-right: 3rem !important;
+}
+
+.mrl4 {
+    margin-right: 4rem !important;
+}
+
+.mr5 {
+    margin-right: 5rem !important;
+}
+
+.mr6 {
+    margin-right: 6rem !important;
+}
+
+.mt6 {
+    margin-top: 6rem !important;
+}
+
+.mt-seperempat {
+    margin-top: .25rem !important;
+}
+.mb-seperempat {
+    margin-bottom: .25rem !important;
+}
+
+.mb-setengah {
+    margin-bottom: .5rem !important;
+}
+
+label {
+    font-size: 13px;
+} p{ margin: .3rem 0 !important; }
+
+table {
+    /* font-family: arial, sans-serif; */
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+td, th {
+border: 1px solid #dddddd;
+text-align: left;
+padding: 8px;
+font-size: 8pt;;
+}
+
+tr:nth-child(even) {
+background-color: #f9f9f9;
+}
+
+.imagImage{
+    width: 5cm;
+    height: 5cm;
+    object-fit: cover;
+}
+
+.p-setengah {
+    padding: .5rem !important;;
+}
+
+h6 {
+    margin: 0 !important;
+}
+
+.foto-kelayakan img {
+    width: 100% !important;
+    height: 6cm !important;
+    object-fit: cover;
+}
+
+.imagIttd {
+    width: 5cm;
+    height: 3cm;
+    object-fit: cover;
+}
+
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:#0abb87;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px #999;
+}
+
+.my-float{
+	margin-top:16px;
+}
+
+
+._404fileImg {
+    font-size: 8pt !important;
+}
+
+.img-fluid {
+    width: 98% !important;
+    height: 5cm !important;
+    object-fit: cover !important;
+}

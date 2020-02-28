@@ -70,6 +70,9 @@
                         <th>Aktivitas</th>
                         <th>Gudang</th>
                         <th>Shift</th>
+                        <th>Nopol</th>
+                        <th>Driver</th>
+                        <th>No. SO</th>
                         <th>Actions</th>
                     </tr>
                 </thead>

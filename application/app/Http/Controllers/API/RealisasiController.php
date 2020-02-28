@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Area;
 use App\Http\Models\AreaHousekeeperFoto;
+use App\Http\Models\FotoBuruh;
 use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
 use App\Http\Models\Karu;
@@ -52,11 +53,15 @@ class RealisasiController extends Controller
         ->join('tenaga_kerja_non_organik as tk', 'tk.id', '=', 'realisasi_housekeeper.id_tkbm')
         ->join('area', 'area.id', '=', 'realisasi_housekeeper.id_area')
         ->where('id_realisasi', $realisasi->id)->with('areaHousekeeperFoto')->get();
+
+        $fotoBuruh = FotoBuruh::where('id_realisasi', $realisasi->id)->get();
         
         $res = collect($realisasi);
         $res = $res->merge([
             'list_housekeeper' => $realisasiHousekeeper, 
-            'url' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_realisasi_housekeeper}}&ctg=realisasi_housekeeper&src={{file_enc}}'
+            'foto_buruh' => $fotoBuruh, 
+            'url' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_realisasi_housekeeper}}&ctg=realisasi_housekeeper&src={{file_enc}}',
+            'url_foto_buruh' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_realisasi}}&ctg=foto_buruh&src={{file_enc}}',
         ]);
 
 
@@ -153,17 +158,10 @@ class RealisasiController extends Controller
         $req->validated();
 
         $id_rencana     = $req->input('id_rencana');
+        $jumlah_buruh   = $req->input('jumlah_buruh');
+        $foto_buruh     = $req->foto_buruh;
         $user           = $req->get('my_auth');
         $rencana        = RencanaHarian::findOrFail($id_rencana);
-
-        if (empty($rencana)) {
-            return response()->json([
-                'status' => [
-                    'message'   => 'Rencana tidak ditemukan',
-                    'code'      => 403,
-                ]
-            ], 403);
-        }
 
         $temp_res = (new Realisasi)->where('id_rencana', $id_rencana)->first();
         (new Realisasi)->where('id_rencana', $id_rencana)->forceDelete();
@@ -176,12 +174,15 @@ class RealisasiController extends Controller
                 Storage::deleteDirectory('/public/realisasi_housekeeper/' . $key->id);
             }
             (new RealisasiHousekeeper)->where('id_realisasi', $temp_res->id)->forceDelete();
+            (new FotoBuruh)->where('id_realisasi', $key->id)->forceDelete();
+            Storage::deleteDirectory('/public/foto_buruh/' . $key->id);
         }
 
         $housekeeper    = $req->input('housekeeper');
         $housekeeper    = array_values((array)$housekeeper);
 
         $realisasi->id_rencana  = $id_rencana;
+        $realisasi->jumlah_buruh  = $jumlah_buruh;
         $realisasi->tanggal     = now();
         $realisasi->created_at  = now();
         $realisasi->created_by  = $user->id_user;
@@ -192,9 +193,9 @@ class RealisasiController extends Controller
                 $temp = array_values((array)$req->input('area_housekeeper')[$key]);
                 if (!empty($temp)) {
                     foreach ($temp as $row => $hey) {
-                        if (isset($key,$req->input('foto')[$key])) {
-                            if (isset($req->input('foto')[$key][$row])) {
-                                $foto = $req->input('foto')[$key][$row];
+                        if (isset($key,$req->foto[$key])) {
+                            if (isset($req->foto[$key][$row])) {
+                                $foto = $req->foto[$key][$row];
                             } else {
                                 $foto = '';
                             }
@@ -215,7 +216,7 @@ class RealisasiController extends Controller
                             for ($i = 0; $i < $panjang; $i++) {
                                 if ($foto[$i]->isValid()) {
                                     $areaHousekeeperFoto = new AreaHousekeeperFoto();
-
+                                    // dd($foto[$i]);
                                     storage_path('app/public/realisasi_housekeeper/') . $realisasi_housekeeper->id;
                                     $md5Name = md5_file($foto[$i]->getRealPath());
                                     $guessExtension = $foto[$i]->getClientOriginalExtension();
@@ -239,11 +240,35 @@ class RealisasiController extends Controller
             }
         }
 
-        
+        // dd($foto_buruh);
+        if (!empty($foto_buruh)) {
+            $panjang = count($foto_buruh);
+            for ($i = 0; $i < $panjang; $i++) {
+                $fotoBuruh = new FotoBuruh();
 
-        $housekeeper = RealisasiHousekeeper::where('id_realisasi', $realisasi->id)->get();
+                // storage_path('app/public/foto_buruh/') . $realisasi->id;
+                // dd($foto_buruh[$i]->getRealPath());
+                $md5Name = md5_file($foto_buruh[$i]->getRealPath());
+                $guessExtension = $foto_buruh[$i]->getClientOriginalExtension();
+                $foto_buruh[$i]->storeAs('/public/foto_buruh/' . $realisasi->id, $md5Name . '.' . $guessExtension);
+                $arrayFoto = [
+                    'id_realisasi'              => $realisasi->id,
+                    'foto'                      => $foto_buruh[$i]->getClientOriginalName(),
+                    'size'                      => $foto_buruh[$i]->getSize(),
+                    'ekstensi'                  => $foto_buruh[$i]->getClientOriginalExtension(),
+                    'file_enc'                  => $md5Name . '.' . $guessExtension,
+                    'created_by'                => $user->id_user,
+                    'updated_by'                => $user->id_user,
+                ];
 
-        $this->responseData = ['realisasi' => $realisasi, 'housekeeper' => $housekeeper];
+                $fotoBuruh->create($arrayFoto);
+            }
+        }        
+
+        $housekeeper = RealisasiHousekeeper::with('areaHousekeeperFoto')->where('id_realisasi', $realisasi->id)->get();
+        $fotoBuruh = FotoBuruh::where('id_realisasi', $realisasi->id)->get();
+
+        $this->responseData = ['realisasi' => $realisasi, 'housekeeper' => $housekeeper, 'foto_buruh' => $fotoBuruh];
         $this->responseCode = 200; 
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
@@ -305,8 +330,7 @@ class RealisasiController extends Controller
         $req->validate();
         $user = $req->get('my_auth');
         $karu = Karu::find($user->id_karu);
-        $gudang = Gudang::find($karu->id_gudang)->first();
-        $rencana_harian = RencanaHarian::where('id_gudang', $gudang->id)->orderBy('id', 'desc')->first();
+        $rencana_harian = RencanaHarian::where('id_gudang', $karu->id_gudang)->orderBy('id', 'desc')->first();
 
         if (empty($rencana_harian)) {
             return response()->json([
@@ -341,42 +365,34 @@ class RealisasiController extends Controller
                 $material   = $list_material[$i]['material'];
                 $tipe   = $list_material[$i]['tipe'];
                 $jumlah   = $list_material[$i]['jumlah'];
-                $arr = [
-                    'id_realisasi_material' => $realisasiMaterial->id,
-                    'id_material'           => $material,
-                    'tanggal'               => now(),
-                    'tipe'                  => $tipe,
-                    'jumlah'                => $jumlah,
-                ];
-    
-                (new MaterialTrans)->create($arr);
 
-                $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('id_material', $material)->first();
+                $gudangStok = GudangStok::where('id_gudang', $karu->id_gudang)->where('id_material', $material)->first();
                 if (empty($gudangStok)) {
                     $gudangStok = new GudangStok;
                     $gudangStok->jumlah         = $jumlah;
                 } else {
                     if ($tipe == 1) {
-                        if ($gudangStok->jumlah - $jumlah < 0) {
-                            MaterialTrans::where('id_realisasi_material', $realisasiMaterial->id)->forceDelete();
-                            RealisasiMaterial::find($realisasiMaterial->id)->forceDelete();
-
-                            $this->responseMessage = 'Jumlah yang Anda masukkan melebihi stok yang tersedia!';
-                            $this->responseCode = 403;
-
-                            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
-                            return response()->json($response, $this->responseCode);
-                        }
                         $gudangStok->jumlah         = $gudangStok->jumlah - $jumlah;
                     } else if ($tipe == 2) {
                         $gudangStok->jumlah         = $gudangStok->jumlah + $jumlah;
                     }
                 }
 
-                $gudangStok->id_gudang      = $gudang->id;
+                $gudangStok->id_gudang      = $karu->id_gudang;
                 $gudangStok->id_material    = $material;
                 $gudangStok->status         = 1;
                 $gudangStok->save();
+
+                $arr = [
+                    'id_realisasi_material' => $realisasiMaterial->id,
+                    'id_gudang_stok'        => $gudangStok->id,
+                    'id_material'           => $material,
+                    'tanggal'               => now(),
+                    'tipe'                  => $tipe,
+                    'jumlah'                => $jumlah,
+                ];
+
+                (new MaterialTrans)->create($arr);
 
             }
         }

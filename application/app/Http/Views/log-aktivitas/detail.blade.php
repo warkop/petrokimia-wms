@@ -4,9 +4,6 @@
 
 @section('content')
 
-<link rel="stylesheet" href="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.css')}}">
-
-
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
@@ -67,9 +64,33 @@
                 </div>
                 <div class="row mb1">
                     <div class="col-12">
-                        <label>Gambar</label><br>
+                        <label>Nopol</label>
+                        <h5 class="boldd"> {{$aktivitasHarian->nopol??'-'}}</h5>
+                    </div>
+                </div>
+                <div class="row mb1">
+                    <div class="col-12">
+                        <label>Driver</label>
+                        <h5 class="boldd"> {{$aktivitasHarian->driver??'-'}}</h5>
+                    </div>
+                </div>
+                <div class="row mb1">
+                    <div class="col-12">
+                        <label>No. SO</label>
+                        <h5 class="boldd"> {{$aktivitasHarian->posto??'-'}}</h5>
+                    </div>
+                </div>
+                <div class="row mb1">
+                    <div class="col-12">
+                        <label>Foto Truk</label><br>
                         <a href="#" class="boldd color-green"  data-toggle="modal"
-                        data-target="#kt_modal_2"> Lihat Gambar</a>
+                        data-target="#kt_modal_2"> Lihat Foto</a>
+                    </div>
+                </div>
+                <div class="row mb1">
+                    <div class="col-12">
+                        <label>Foto Kelayakan</label><br>
+                        <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_kelayakan"> Lihat Foto</a>
                     </div>
                 </div>
             </div>
@@ -136,6 +157,21 @@
                             </div>    
                         @endforeach
                         <div class="border-pembatas mb1"></div>
+                    </div>
+                    <div class="row mb1">
+                        <div class="col-12">
+                            <label>Tanda Tangan</label><br>
+                            @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $aktivitasHarian->id . "/" . $aktivitasHarian->ttd)))
+                                <a class="fancybox" rel="ligthbox"
+                                    href="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}">
+                                    <img class="img-fluid"
+                                        src="{{url('watch').'/'.$aktivitasHarian->ttd.'?un='.$aktivitasHarian->id.'&ctg=aktivitas_harian&src='.$aktivitasHarian->ttd}}" alt=""
+                                        srcset="">
+                                </a>
+                            @else
+                                <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -254,6 +290,81 @@
 </div>
 <!--end::Modal-->
 
+<div class="modal fade" id="kt_modal_kelayakan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Foto Kelayakan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form action="">
+                <div class="modal-body">
+                    <div class="row">
+                        <label class="boldd">Kelayakan Sebelum</label>
+                    </div>
+                    <br>
+                    <div class="kt-scroll" data-scroll="true">
+                        <div class="row">
+                            @if ($fotoKelayakanBefore->isEmpty())
+                                <h4>Tidak ada foto</h4>
+                            @endif
+                            @foreach ($fotoKelayakanBefore as $item)
+                                <div class="col-4">
+                                    {{-- <label class="boldd">Foto {{$item->foto}}</label> --}}
+                                    @if (file_exists(storage_path("/app/public/kelayakan/" . $item->id_aktivitas_harian . "/" . $aktivitasHarian->file_enc)))
+                                        <a class="fancybox" rel="ligthbox"
+                                            href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
+                                            <img class="img-fluid"
+                                                src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
+                                                srcset="">
+                                        </a>
+                                    @else
+                                        <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <label class="boldd">Kelayakan Sesudah</label>
+                    </div>
+                    <br>
+                    <div class="row">
+                    @if ($fotoKelayakanAfter->isEmpty())
+                        <span><strong>Tidak ada foto</strong></span>
+                    @endif
+                    </div>
+                    <div class="kt-scroll" data-scroll="true">
+                        <div class="row mb2">
+                            {{-- @php dd($fotoKelayakanAfter->isEmpty()) @endphp --}}
+                            @foreach ($fotoKelayakanAfter as $item)
+                                <div class="col-4">
+                                    {{-- <label class="boldd">Foto {{$item->foto}}</label> --}}
+                                    @if (file_exists(storage_path("/app/public/kelayakan/" . $item->id_aktivitas_harian . "/" . $item->file_enc)))
+                                        <a class="fancybox" rel="ligthbox"
+                                            href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}">
+                                            <img class="img-fluid"
+                                                src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=kelayakan&src='.$item->file_enc}}" alt=""
+                                                srcset="">
+                                        </a>
+                                    @else
+                                        <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-clean" data-dismiss="modal">Tutup</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!--begin::Modal-->
 <div class="modal fade" id="kt_modal_2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -272,12 +383,16 @@
                             @foreach ($aktivitasFoto as $item)
                                 <div class="col-4">
                                     <label class="boldd">Foto {{$item->fotoJenis->nama}}</label>
-                                    <a class="fancybox" rel="ligthbox"
-                                        href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}">
-                                        <img class="img-fluid"
-                                            src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}" alt=""
-                                            srcset="">
-                                    </a>
+                                    @if (file_exists(storage_path("/app/public/aktivitas_harian/" . $item->id_aktivitas_harian . "/" . $item->foto)))
+                                        <a class="fancybox" rel="ligthbox"
+                                            href="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}">
+                                            <img class="img-fluid"
+                                                src="{{url('watch').'/'.$item->foto.'?un='.$item->id_aktivitas_harian.'&ctg=aktivitas_harian&src='.$item->foto}}" alt=""
+                                                srcset="">
+                                        </a>
+                                    @else
+                                        <span class="kt-link kt-link--brand kt-font-bolder"><strong>File Tidak ada di server</strong></span>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
@@ -292,7 +407,6 @@
 </div>
 <!--end::Modal-->
 
-<script src="{{asset('assets/extends/plugin/fancybox-simple/jquery.fancybox.min.js')}}"></script>
 <script type="text/javascript">
     const id_gudang = "{{$id_gudang}}";
     const id_aktivitas_harian = "{{$id_aktivitas_harian}}";
@@ -302,7 +416,9 @@
 
     $(".fancybox").fancybox({
         openEffect: "none",
-
+        helpers   : { 
+            overlay : null
+        },
         closeEffect: "none"
     });
 
