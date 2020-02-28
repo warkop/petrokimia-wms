@@ -273,7 +273,7 @@ class AktivitasController extends Controller
             ;
 
             if ($pindah == false) {
-                $resource = $resource->where('id_material', $id_material)->where('area_stok.status', 1);
+                $resource = $resource->where('id_material', $id_material);
             }
             $resource = $resource->get();
         } else {
