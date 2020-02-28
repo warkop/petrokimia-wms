@@ -940,6 +940,8 @@ class GenerateExcel implements ShouldQueue
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="' . $nama_file . '"');
         $writer->save('php://output');
+
+        return response()->download(storage_path() . '/app/public/excel/' . $nama_file);
     }
 
     /**
@@ -960,7 +962,6 @@ class GenerateExcel implements ShouldQueue
 
         if ($this->option == 'stok') {
             $this->generateExcelStok($this->parameter['res'], $this->parameter['nama_file'], $this->parameter['resProduk'], $this->parameter['resArea'], $this->parameter['tgl_awal'], $this->parameter['tgl_akhir']);
-            return response()->download(storage_path() . '/app/public/excel/' . $this->parameter['nama_file']);
         }
     }
 }
