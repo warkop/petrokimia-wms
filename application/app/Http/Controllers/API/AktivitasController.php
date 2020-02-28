@@ -246,9 +246,9 @@ class AktivitasController extends Controller
         $search = strip_tags($req->input('search'));
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
         $condition = '';
-        if ($aktivitas->produk_rusak != 2) {
+        if ($aktivitas->produk_rusak == 2) {
             $condition = ' and area_stok.status = 1';
-        } else if ($aktivitas->produk_rusak != 1) {
+        } else if ($aktivitas->produk_rusak == 1) {
             $condition = ' and area_stok.status = 2';
         } else {
             if ($aktivitas->produk_stok != null) {
