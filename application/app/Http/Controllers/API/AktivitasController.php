@@ -251,9 +251,7 @@ class AktivitasController extends Controller
         } else if ($aktivitas->produk_rusak == 1) {
             $condition = ' and area_stok.status = 2';
         } else {
-            if ($aktivitas->produk_stok != null) {
-                $condition = ' and area_stok.status = 1';
-            }
+            $condition = ' and area_stok.status = 1';
         }
         
         if ($aktivitas->pengaruh_tgl_produksi != null) {
@@ -338,9 +336,7 @@ class AktivitasController extends Controller
             } else if ($aktivitas->produk_rusak == 1) {
                 $detail = $detail->where('area_stok.status', 2);
             } else {
-                if ($aktivitas->produk_stok != null) {
-                    $detail = $detail->where('area_stok.status', 1);
-                }
+                $detail = $detail->where('area_stok.status', 1);
             }
             if ($aktivitas->fifo != null) {
                 $detail = $detail->orderBy('tanggal', 'ASC');
