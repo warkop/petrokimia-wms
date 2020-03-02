@@ -230,7 +230,7 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
     rtl: KTUtil.isRTL(),
     todayHighlight: true,
     format: 'dd-mm-yyyy',
-    clearBtn: true,
+    // clearBtn: true,
     orientation: "bottom left"
   });
 

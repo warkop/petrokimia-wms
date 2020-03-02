@@ -98,7 +98,7 @@ class AktivitasController extends Controller
         $aktivitas->tanda_tangan               = $req->input('tanda_tangan');
         $aktivitas->butuh_approval             = $req->input('butuh_approval');
         $aktivitas->so                         = $req->input('so');
-        $aktivitas->tanpa_tanggal              = $req->input('tanpa_tanggal');
+        // $aktivitas->tanpa_tanggal              = $req->input('tanpa_tanggal');
         $aktivitas->penyusutan                 = $req->input('penyusutan');
         $aktivitas->kode_aktivitas             = $req->input('kode_aktivitas');
         $aktivitas->penerimaan_gi              = $req->input('penerimaan_gi');

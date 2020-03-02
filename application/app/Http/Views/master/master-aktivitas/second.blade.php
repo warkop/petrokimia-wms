@@ -214,14 +214,14 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="row form-group mb-0 mb2">
+                            {{-- <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Apabila tidak perlu tanggal produksi, biasanya untuk produk rusak">
                                         <input type="checkbox" name="tanpa_tanggal" id="tanpa_tanggal" value="1"> Tanpa Tanggal Produksi
                                         <span></span>
                                     </label>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="col-md-4 col-lg-4">
                             <div class="row form-group mb-0 mb2">
