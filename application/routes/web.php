@@ -18,7 +18,7 @@ Route::get('/login', 'Auth\LoginController@index')->name('login');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('/authenticate', 'Auth\LoginController@authenticate')->name('authenticate');
 Route::get('watch/{nama}/', 'WatchController@default');
-Route::group(['middleware' => ['eauth', 'revalidate']], function () {
+Route::group(['middleware' => ['auth']], function () {
     Route::get('/', function(){
         return view('layout.main');
     });
@@ -221,7 +221,7 @@ Route::group(['middleware' => ['eauth', 'revalidate']], function () {
         Route::post('/', 'LogAktivitasUserController@json');
     });
 
-    Route::group(['prefix' => 'report', 'middleware' => ['eauth:1&7']], function () {
+    Route::group(['prefix' => 'report', 'middleware' => ['can:report']], function () {
         Route::get('/laporan-transaksi-material', 'ReportController@laporanTransaksiMaterial');
         Route::get('/laporan-stok', 'ReportController@laporanStok');
         Route::get('/laporan-absen-karyawan', 'ReportController@laporanAbsenKaryawan');
