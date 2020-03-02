@@ -52,7 +52,7 @@
                             <div class="row">
                                 <div class="col-4 col-form-label">
                                     <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="radio" name="selector" value="1" id="selector_produk_stok"> Produk
+                                        <input type="checkbox" name="selector_produk_stok" value="1" id="selector_produk_stok"> Produk
                                         <span></span>
                                     </label>
                                 </div>
@@ -68,7 +68,7 @@
                             <div class="row">
                                 <div class="col-4 col-form-label">
                                     <label class="kt-checkbox kt-checkbox--brand">
-                                        <input type="radio" name="selector" value="2" id="selector_produk_rusak"> Produk rusak
+                                        <input type="checkbox" name="selector_produk_rusak" value="2" id="selector_produk_rusak"> Produk rusak
                                         <span></span>
                                     </label>
                                 </div>
@@ -709,21 +709,31 @@ let now = 0;
         document.getElementById('pengaruh_tgl_produksi_hidden').disabled = true;
     }
 
-    $('input[type=radio][name=selector]').change(function() {
-        if (this.value == 1) {
-            $("#produk_stok").attr('disabled',false);
-            $("#produk_stok").selectpicker('refresh');
-            $("#produk_rusak").val("");
-            $("#produk_rusak").attr('disabled',true);
-            $("#produk_rusak").selectpicker('refresh');
-        } else if (this.value == 2) {
-            $("#produk_rusak").attr('disabled',false);
-            $("#produk_rusak").selectpicker('refresh');
-            $("#produk_stok").val("");
-            $("#produk_stok").attr('disabled',true);
-            $("#produk_stok").selectpicker('refresh');
-        }
+    $("#selector_produk_stok").change(function(){
+        $("#produk_stok").attr('disabled',false);
+        $("#produk_stok").selectpicker('refresh');
     });
+
+    $("#selector_produk_rusak").change(function(){
+        $("#produk_rusak").attr('disabled',false);
+        $("#produk_rusak").selectpicker('refresh');
+    });
+
+    // $('input[type=radio][name=selector]').change(function() {
+    //     if (this.value == 1) {
+    //         $("#produk_stok").attr('disabled',false);
+    //         $("#produk_stok").selectpicker('refresh');
+    //         $("#produk_rusak").val("");
+    //         $("#produk_rusak").attr('disabled',true);
+    //         $("#produk_rusak").selectpicker('refresh');
+    //     } else if (this.value == 2) {
+    //         $("#produk_rusak").attr('disabled',false);
+    //         $("#produk_rusak").selectpicker('refresh');
+    //         $("#produk_stok").val("");
+    //         $("#produk_stok").attr('disabled',true);
+    //         $("#produk_stok").selectpicker('refresh');
+    //     }
+    // });
 
     $('#upload_foto').on('change', function(e){
         if(e.target.checked){

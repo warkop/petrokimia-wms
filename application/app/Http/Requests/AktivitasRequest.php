@@ -3,8 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Factory;
 
 class AktivitasRequest extends FormRequest
 {
@@ -35,8 +33,8 @@ class AktivitasRequest extends FormRequest
 
         $rules = [
             'nama'                      => 'required',
-            'produk_stok'               => 'nullable|numeric',
-            'produk_rusak'              => 'nullable|numeric',
+            'produk_stok'               => 'nullable|numeric|different:produk_rusak',
+            'produk_rusak'              => 'nullable|numeric|different:produk_stok',
             'pallet_stok'               => 'nullable|numeric',
             'pallet_dipakai'            => 'nullable|numeric',
             'pallet_kosong'             => 'nullable|numeric',
