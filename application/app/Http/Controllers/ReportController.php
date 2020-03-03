@@ -4285,6 +4285,7 @@ class ReportController extends Controller
             ->leftJoin('alat_berat', 'alat_berat.id', '=', 'aktivitas_harian_alat_berat.id_alat_berat')
             ->leftJoin('alat_berat_kat', 'alat_berat_kat.id', '=', 'alat_berat.id_kategori')
             ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
+            ->whereNotNull('butuh_alat_berat')
             ->latest('aktivitas_harian.updated_at')
             ;
 
@@ -4603,6 +4604,7 @@ class ReportController extends Controller
             ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
             ->leftJoin('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
             ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
+            ->whereNotNull('butuh_tkbm')
             ->latest('aktivitas_harian.updated_at')
             ;
 
