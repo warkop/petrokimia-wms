@@ -4277,7 +4277,6 @@ class ReportController extends Controller
             'aktivitas.nama as nama_aktivitas',
             'gudang.nama as nama_gudang',
             'alat_berat_kat.nama as nama_kategori',
-            DB::raw('(SELECT SUM(jumlah) FROM material_trans WHERE material_trans.id_aktivitas_harian = aktivitas_harian.id) as tonase'),
             DB::raw('(SELECT anggaran FROM aktivitas_alat_berat WHERE aktivitas_alat_berat.id_kategori_alat_berat = alat_berat_kat.id AND aktivitas_alat_berat.id_aktivitas = aktivitas.id LIMIT 1) as anggaran')
             )
             ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'aktivitas_harian_alat_berat.id_aktivitas_harian')
@@ -4505,7 +4504,13 @@ class ReportController extends Controller
 
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->tonase);
+            $tonase = MaterialTrans::select('jumlah')->whereNotNull('status_produk')->where('id_aktivitas_harian', $value->id)->get();
+            $jumlahTonase = 0;
+            foreach ($tonase as $key) {
+                $jumlahTonase += $key->jumlah;
+            }
+
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlahTonase);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
@@ -4515,7 +4520,7 @@ class ReportController extends Controller
             
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. '. $value->tonase*$value->anggaran);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. '. $jumlahTonase*$value->anggaran);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $row++;
@@ -4584,7 +4589,6 @@ class ReportController extends Controller
                 ->withInput();
         }
         $gudang             = request()->input('gudang');
-        $jenis_alat_berat   = request()->input('jenis_alat_berat');
         $aktivitas          = request()->input('aktivitas');
         $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
@@ -4592,9 +4596,12 @@ class ReportController extends Controller
         $res = DB::table('aktivitas_harian')
             ->select(
             'aktivitas_harian.*',
-            'aktivitas.anggaran_tkbm'
+            'aktivitas.anggaran_tkbm',
+            'gudang.nama as nama_gudang',
+            'aktivitas.nama as nama_aktivitas'
             )
             ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+            ->leftJoin('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
             ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
             ->latest('aktivitas_harian.updated_at')
             ;
@@ -4784,20 +4791,22 @@ class ReportController extends Controller
 
             $col++;
             $abjad++;
-            $gudang = Gudang::find($value->id_gudang);
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $gudang->nama);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama_gudang);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $abjad++;
-            $aktivitas = Aktivitas::find($value->id_aktivitas);
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $aktivitas->nama);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama_aktivitas);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $abjad++;
-            $tonase = MaterialTrans::where('id_aktivitas_harian', $value->id)->get()->sum('jumlah');
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tonase);
+            $tonase = MaterialTrans::select('jumlah')->whereNotNull('status_produk')->where('id_aktivitas_harian', $value->id)->get();
+            $jumlahTonase = 0;
+            foreach ($tonase as $key) {
+                $jumlahTonase += $key->jumlah;
+            }
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlahTonase);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
@@ -4807,7 +4816,7 @@ class ReportController extends Controller
 
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . $tonase * $value->anggaran_tkbm);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . $jumlahTonase * $value->anggaran_tkbm);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $row++;
