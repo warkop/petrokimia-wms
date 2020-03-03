@@ -29,7 +29,7 @@
                 <div class="row mb1">
                     <div class="col-12">
                         <label>Jenis Aktivitas</label>
-                        <h5 class="boldd"> {{$aktivitasHarian->aktivitas->nama}}</h5>
+                        <h5 class="boldd"> {{$aktivitasHarian->aktivitas->nama??'-'}}</h5>
                     </div>
                 </div>
                 <div class="row mb1">
@@ -76,7 +76,7 @@
                 </div>
                 <div class="row mb1">
                     <div class="col-12">
-                        <label>No. SO</label>
+                        <label>No. SO / Posto</label>
                         <h5 class="boldd"> {{$aktivitasHarian->posto??'-'}}</h5>
                     </div>
                 </div>
@@ -177,6 +177,15 @@
             </div>
         </div>
     </div>
+    <div class="kt-portlet__foot">
+            <div class="kt-form__actions">
+                <div class="row">
+                    <div class="col-10">
+                        <a href="{{url('log-aktivitas/cetak-aktivitas/'.$aktivitasHarian->id)}}" type="button" class="btn btn-success btn-lg" target="_blank" > <i class="fa fa-print"></i> Cetak</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
 <!--End::Dashboard 6-->
 </div>

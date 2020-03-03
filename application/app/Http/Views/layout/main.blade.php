@@ -183,7 +183,7 @@
                                         <li class="kt-nav__item">
                                             <a href="{{('/log-aktivitas-user')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-line-chart"></i>
-                                                <span class="kt-nav__link-text">Log Aktivitas</span>
+                                                <span class="kt-nav__link-text">Log Aktivitas User</span>
                                             </a>
                                         </li>
                                         @endif
