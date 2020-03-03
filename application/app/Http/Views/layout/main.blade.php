@@ -141,12 +141,14 @@
                                         class="la la-laptop"></i> Main Menu</button>
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <ul class="kt-nav">
+                                        @if (auth()->user()->can('layout'))
                                         <li class="kt-nav__item">
                                             <a href="{{('layout')}}" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-map"></i>
                                                 <span class="kt-nav__link-text">Layout</span>
                                             </a>
                                         </li>
+                                        @endif
                                         @if (auth()->user()->can('gudang'))
                                         <li class="kt-nav__item">
                                             <a href="{{('gudang')}}" class="kt-nav__link">

@@ -9,15 +9,19 @@ use App\Http\Models\Area;
 use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
+use App\Http\Models\Karu;
 use App\Http\Models\KategoriAlatBerat;
 use App\Http\Models\Keluhan;
 use App\Http\Models\LaporanKerusakan;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
+use App\Http\Models\RencanaHarian;
+use App\Http\Models\RencanaTkbm;
 use App\Http\Models\ShiftKerja;
 use App\Http\Models\TenagaKerjaNonOrganik;
 use App\Http\Models\Users;
 use App\Http\Models\Yayasan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -26,12 +30,45 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ReportController extends Controller
 {
+    private function getCheckerGudang($id_role)
+    { //untuk memperoleh informasi checker ini sekarang berada di gudang mana
+        if ($id_role == 3) {
+            $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
+                ->where('id_tkbm', auth()->user()->id_tkbm)
+                ->orderBy('rencana_harian.id', 'desc')
+                ->take(1)->first();
+
+            if (empty($rencana_tkbm)) {
+                $this->responseCode = 500;
+                $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+                return response()->json($response, $this->responseCode);
+            }
+            $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
+            $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
+        } else if ($id_role == 5) {
+            $karu   = Karu::find(auth()->user()->id_karu);
+            $gudang = Gudang::find($karu->id_gudang);
+        } else {
+            return false;
+        }
+
+        return $gudang;
+    }
+
     public function laporanAktivitas()
     {
         $data['title'] = 'Laporan Aktivitas';
         $data['aktivitas'] = Aktivitas::whereNull('penerimaan_gi')->get();
         $data['shift'] = ShiftKerja::get();
-        $data['gudang'] = Gudang::internal()->get();
+        $gudang = Gudang::internal();
+
+        $localGudang = $this->getCheckerGudang(auth()->user()->role_id);
+
+        if ($localGudang) {
+            $gudang = $gudang->where('id', $localGudang->id);
+        }
+        $data['gudang'] = $gudang->get();
         return view('report.aktivitas.grid', $data);
     }
 
@@ -123,8 +160,15 @@ class ReportController extends Controller
             }
         })
         ->where('status', $status_tindak_lanjut)
-        ->where('jenis', '2')
-        ->get();
+        ->where('jenis', '2');
+
+        $localGudang = $this->getCheckerGudang(auth()->user()->role_id);
+
+        if ($localGudang) {
+            $res = $res->where('id_gudang', $localGudang->id);
+        }
+
+        $res = $res->get();
 
         if (!is_dir(storage_path() . '/app/public/excel/')) {
             mkdir(storage_path() . '/app/public/excel', 755);
@@ -597,7 +641,16 @@ class ReportController extends Controller
     public function laporanProduk()
     {
         $data['title'] = 'Laporan Produk';
-        $data['gudang'] = Gudang::internal()->get();
+
+        $gudang = Gudang::internal();
+
+        $localGudang = $this->getCheckerGudang(auth()->user()->role_id);
+
+        if ($localGudang) {
+            $gudang = $gudang->where('id', $localGudang->id);
+        }
+
+        $data['gudang'] = $gudang->get();
         $data['produk'] = Material::produk()->get();
         return view('report.produk.grid', $data);
     }
@@ -1028,7 +1081,14 @@ class ReportController extends Controller
     public function laporanMaterial()
     {
         $data['title'] = 'Laporan Material';
-        $data['gudang'] = Gudang::internal()->get();
+        $gudang = Gudang::internal();
+
+        $localGudang = $this->getCheckerGudang(auth()->user()->role_id);
+
+        if ($localGudang) {
+            $gudang = $gudang->where('id', $localGudang->id);
+        }
+        $data['gudang'] = $gudang->get();
         $data['material'] = Material::orderBy('kategori', 'asc')->get();
         return view('report.material.grid', $data);
     }
@@ -1063,11 +1123,10 @@ class ReportController extends Controller
 
         $res = AreaStok::distinct()->select(
             'id_material',
-            'id_area'
         )
             ->with('material')
             ->with('area', 'area.gudang')
-            ->where('status', 1);
+        ;
 
         $resPallet = GudangStok::with('gudang');
 
@@ -1535,13 +1594,42 @@ class ReportController extends Controller
     public function laporanMutasiPallet()
     {
         $data['title'] = 'Laporan Pallet';
-        $data['gudang'] = Gudang::internal()->get();
+        $gudang = Gudang::internal();
+
+        $localGudang = $this->getCheckerGudang(auth()->user()->role_id);
+
+        if ($localGudang) {
+            $gudang = $gudang->where('id', $localGudang->id);
+        }
+
+        $data['gudang'] = $gudang->get();
         $data['pallet'] = Material::pallet()->get();
         return view('report.mutasi-pallet.grid', $data);
     }
 
     public function mutasiPallet()
     {
+        $validator = Validator::make(
+            request()->all(),[
+            'gudang' => 'required',
+            'tgl_awal' => 'required|before_or_equal:tgl_akhir',
+            'tgl_akhir' => 'required|after_or_equal:tgl_awal',
+        ],[
+            'required' => ':attribute wajib diisi!',
+            'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
+            'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
+        ],[
+            'gudang' => 'Gudang',
+            'tgl_awal' => 'Tanggal Awal',
+            'tgl_akhir' => 'Tanggal Akhir',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('report/laporan-mutasi-pallet')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $gudang             = request()->input('gudang'); //multi
         $pallet             = request()->input('pallet');
         $pilih_pallet       = request()->input('pilih_pallet'); //multi
@@ -2151,7 +2239,15 @@ class ReportController extends Controller
 
     public function laporanRealisasi()
     {
-        $data['gudang']     = Gudang::internal()->get();
+        $gudang = Gudang::internal();
+
+        $localGudang = $this->getCheckerGudang(auth()->user()->role_id);
+
+        if ($localGudang) {
+            $gudang = $gudang->where('id', $localGudang->id);
+        }
+
+        $data['gudang']     = $gudang->get();
         $data['produk']     = Material::produk()->get();
         $data['shift']      = ShiftKerja::orderBy('nama', 'asc')->get();
         $data['aktivitas']  = Aktivitas::nonPenerimaanGi()->get();
@@ -2477,6 +2573,12 @@ class ReportController extends Controller
             })
             ;
 
+        $localGudang = $this->getCheckerGudang(auth()->user()->role_id);
+
+        if ($localGudang) {
+            $res = $res->where('g.id', $localGudang->id);
+        }
+
         if ($gudang) {
             $res = $res->where(function ($query) use ($gudang) {
                 $query->where('id_gudang', $gudang[0]);
@@ -2707,7 +2809,15 @@ class ReportController extends Controller
     public function laporanTransaksiMaterial()
     {
         $data['title'] = 'Laporan Transaksi Material';
-        $data['gudang'] = Gudang::internal()->get();
+        $gudang = Gudang::internal();
+
+        $localGudang = $this->getCheckerGudang(auth()->user()->role_id);
+
+        if ($localGudang) {
+            $gudang = $gudang->where('id', $localGudang->id);
+        }
+        
+        $data['gudang'] = $gudang->get();
         $data['produk'] = Material::produk()->get();
         return view('report.transaksi-material.grid', $data);
     }
@@ -3095,7 +3205,16 @@ class ReportController extends Controller
     public function laporanStok()
     {
         $data['title'] = 'Laporan Stok';
-        $data['gudang'] = Gudang::all();
+
+        $gudang = new Gudang;
+
+        $localGudang = $this->getCheckerGudang(auth()->user()->role_id);
+
+        if ($localGudang) {
+            $gudang = $gudang->where('id', $localGudang->id);
+        }
+
+        $data['gudang'] = $gudang->get();
         $data['produk'] = Material::produk()->get();
         return view('report.stok.grid', $data);
     }
@@ -3698,7 +3817,14 @@ class ReportController extends Controller
     {
         $data['title'] = 'Laporan Log Sheet';
         $data['shift'] = ShiftKerja::get();
-        $data['gudang'] = Gudang::internal()->get();
+        $gudang = Gudang::internal();
+
+        $localGudang = $this->getCheckerGudang(auth()->user()->role_id);
+
+        if ($localGudang) {
+            $gudang = $gudang->where('id', $localGudang->id);
+        }
+        $data['gudang'] = $gudang->get();
         $data['produk'] = Material::produk()->get();
         return view('report.log-sheet.grid', $data);
     }
