@@ -1122,7 +1122,7 @@ class ReportController extends Controller
         $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
 
         $res = AreaStok::distinct()->select(
-            'id_material',
+            'id_material'
         )
             ->with('material')
             ->with('area', 'area.gudang')
