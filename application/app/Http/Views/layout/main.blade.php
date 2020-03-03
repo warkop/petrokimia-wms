@@ -265,6 +265,18 @@
                                                 <span class="kt-nav__link-text">Log Sheet</span>
                                             </a>
                                         </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('report/laporan-biaya-alat-berat')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon la la-bicycle"></i>
+                                                <span class="kt-nav__link-text">Biaya Alat Berat</span>
+                                            </a>
+                                        </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('report/laporan-biaya-tkbm')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon la la-bicycle"></i>
+                                                <span class="kt-nav__link-text">Biaya TKBM</span>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
