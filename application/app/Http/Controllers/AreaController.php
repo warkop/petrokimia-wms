@@ -59,15 +59,6 @@ class AreaController extends Controller
 
     public function store(AreaRequest $req, Area $models, $id_gudang)
     {
-        // $rules = [
-        //     'nama'              => [
-        //         'required',
-        //         Rule::unique('area', 'nama')->ignore(\Request::instance()->id)
-        //     ],
-        //     'kapasitas'         => 'numeric|between:0,9999.9999',
-        //     'tipe'              => 'required',
-        // ];
-
         $req->validated();
 
         $action = $req->input('action');
@@ -75,20 +66,13 @@ class AreaController extends Controller
             $rules['id'] = 'required';
         }
 
-        // $validator = Validator::make($req->all(), $rules);
-        // if ($validator->fails()) {
-        //     $this->responseCode                 = 422;
-        //     $this->responseStatus               = 'Missing Param';
-        //     $this->responseMessage              = 'Silahkan isi form dengan benar terlebih dahulu';
-        //     $this->responseData['error_log']    = $validator->errors();
-        // } else {
         $id = $req->input('id');
 
         if (!empty($id)) {
             $models = Area::find($id);
-            $models->updated_by = session('userdata')['id_user'];
+            $models->updated_by = auth()->id();
         } else {
-            $models->created_by = session('userdata')['id_user'];
+            $models->created_by = auth()->id();
         }
 
         $models->id_gudang      = $id_gudang;
@@ -105,7 +89,6 @@ class AreaController extends Controller
             $this->responseCode = 200;
             $this->responseMessage = 'Data berhasil disimpan';
         }
-        // }
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);

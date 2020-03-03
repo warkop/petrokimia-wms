@@ -25,7 +25,7 @@ class LogAktivitasController extends Controller
     public function index()
     {
         $data['shift'] = ShiftKerja::get();
-        $data['gudang'] = Gudang::get();
+        $data['gudang'] = Gudang::internal()->get();
         return view('log-aktivitas.grid', $data);
     }
 
@@ -61,11 +61,13 @@ class LogAktivitasController extends Controller
         $page = ($start / $perpage) + 1;
 
         if ($page >= 0) {
-            $result = $models->jsonGrid($start, $perpage, $search, false, $sort, $field, $condition);
-            $total  = $models->jsonGrid($start, $perpage, $search, true, $sort, $field, $condition);
+            $temp = $models->jsonGrid($start, $perpage, $search, $sort, $field, $condition);
+            $result = $temp['result'];
+            $total  = $temp['count'];
         } else {
-            $result = $models::orderBy($field, $sort)->get();
-            $total  = $models::all()->count();
+            $temp = $models::orderBy($field, $sort)->get();
+            $result = $temp;
+            $total  = $temp->count();
         }
         $this->responseCode = 200;
         $this->responseData = array("sEcho" => $echo, "iTotalRecords" => $total, "iTotalDisplayRecords" => $total, "aaData" => $result);
@@ -103,5 +105,46 @@ class LogAktivitasController extends Controller
         ->where('id_material', $id_material)
         ->get();
         return response()->json($areaStok, 200);
+    }
+
+    public function print($id)
+    {
+        $aktivitasHarian = AktivitasHarian::where('id', $id)
+            ->with(['aktivitas' => function ($query) {
+                $query->whereNotNull('pengiriman');
+                $query->whereNotNull('pengaruh_tgl_produksi');
+                $query->withoutGlobalScopes();
+            }])
+            ->whereHas('aktivitas', function ($query) {
+                $query->whereNotNull('pengiriman');
+                $query->whereNotNull('pengaruh_tgl_produksi');
+                $query->withoutGlobalScopes();
+            })->firstOrFail();
+        $data['title'] = 'Cetak Aktivitas';
+        $data['aktivitasHarian'] = $aktivitasHarian;
+        $data['aktivitasFoto'] = AktivitasFoto::withoutGlobalScopes()->where('id_aktivitas_harian', $aktivitasHarian->id)->get();
+
+        $produk = MaterialTrans::select(
+            'material_trans.id_material',
+            'material.nama as nama_material',
+            'area.nama as nama_area',
+            'area_stok.id_area',
+            'material_trans.tipe',
+            'area_stok.tanggal',
+            'material_trans.jumlah'
+        )
+            ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
+            ->leftJoin('area_stok', 'area_stok.id', '=', 'material_trans.id_area_stok')
+            ->leftJoin('area', 'area_stok.id_area', '=', 'area.id')
+            ->where('id_aktivitas_harian', $aktivitasHarian->id)
+            ->whereNotNull('status_produk')
+            ->get();
+        $data['produk'] = $produk;
+        $pallet = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_pallet')->get();
+        $data['pallet'] = $pallet;
+        $data['fotoKelayakanBefore'] = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->where('jenis', 1)->get();
+        $data['fotoKelayakanAfter'] = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->where('jenis', 2)->get();
+
+        return view('log-aktivitas.cetak', $data);
     }
 }

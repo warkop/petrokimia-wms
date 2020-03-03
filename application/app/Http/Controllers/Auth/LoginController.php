@@ -62,25 +62,8 @@ class LoginController extends Controller
 
             $data = ['username' => $username, 'password' => $password];           
             if (Auth::attempt($data)) {
-                $user = Auth::user();
-                $session['userdata']                = $data;
-                $session['userdata']['id_user']     = $user->id;
-                $session['userdata']['username']    = $user->username;
-                $session['userdata']['fullname']    = $user->name;
-                $session['userdata']['email']       = $user->email;
-                $session['userdata']['role_id']     = $user->role_id;
-
-                $role = Role::find($user->role_id);
-                $session['userdata']['role_name'] = $role->nama;
-
-                session($session);
-
-                $m_user = Users::withoutGlobalScopes()->find($user->id);
-
-                $m_user->save();
-
-                $this->writeLog('Login', 3, 'User dengan username '.$user->username.' yang mempunyai role '.$role->nama.' berhasil login');
-                return $request->expectsJson() ? response()->json(helpResponse(200, ['user' => $user], 'Selamat Anda berhasil login'), 200) : redirect()->intended('home');
+                $this->writeLog('Login', 3, 'User dengan username '.auth()->user()->username.' yang mempunyai role '.auth()->user()->role->nama.' berhasil login');
+                return $request->expectsJson() ? response()->json(helpResponse(200, ['user' => ''], 'Selamat Anda berhasil login'), 200) : redirect()->intended('home');
             }else{
                 $alerts[] = array('warning', 'Username atau Password Anda salah', 'Pemberitahuan');
                 $request->session()->flash('alerts', $alerts);

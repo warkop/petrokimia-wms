@@ -225,8 +225,9 @@ class PenerimaanGpController extends Controller
             ->whereHas('aktivitas', function ($query) {
                 $query->whereNotNull('pengiriman');
                 $query->whereNotNull('pengaruh_tgl_produksi');
+                $query->withoutGlobalScopes();
             })->firstOrFail();
-        $data['title'] = 'Detail Penerimaan GP';
+        $data['title'] = 'Cetak Penerimaan GP';
         $data['aktivitasHarian'] = $aktivitasHarian;
         $data['aktivitasFoto'] = AktivitasFoto::withoutGlobalScopes()->where('id_aktivitas_harian', $aktivitasHarian->id)->get();
 

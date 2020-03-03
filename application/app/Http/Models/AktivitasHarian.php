@@ -83,7 +83,7 @@ class AktivitasHarian extends Model
         return $this->belongsToMany(AlatBerat::class, 'aktivitas_harian_alat_berat', 'id_aktivitas_harian', 'id_alat_berat');
     }
 
-    public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
+    public function jsonGrid($start = 0, $length = 10, $search = '', $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table($this->table)
             ->select(
@@ -122,13 +122,10 @@ class AktivitasHarian extends Model
             }
         }
 
-        if ($count == true) {
-            $result = $result->count();
-        } else {
-            $result  = $result->offset($start)->limit($length)->orderBy($field, $sort)->get();
-        }
+        $count      = $result->count();
+        $result     = $result->offset($start)->limit($length)->orderBy($field, $sort)->get();
 
-        return $result;
+        return ['result' => $result, 'count' => $count];
     }
 
     public function jsonGridGp($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
