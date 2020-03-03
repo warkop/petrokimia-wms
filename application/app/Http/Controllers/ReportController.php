@@ -1130,7 +1130,10 @@ class ReportController extends Controller
             ->with('area', 'area.gudang')
         ;
 
-        $resPallet = GudangStok::with('gudang');
+        $resPallet = GudangStok::select(
+            'id_gudang',
+            'id_material'
+        )->distinct()->with('gudang');
 
         $resGudang = Gudang::internal()->get();
         
