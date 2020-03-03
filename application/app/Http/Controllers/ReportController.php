@@ -4273,10 +4273,18 @@ class ReportController extends Controller
             ->select(
             'aktivitas_harian_alat_berat.*',
             'aktivitas_harian.*',
-            'alat_berat.id_kategori'
+            'alat_berat.id_kategori',
+            'aktivitas.nama as nama_aktivitas',
+            'gudang.nama as nama_gudang',
+            'alat_berat_kat.nama as nama_kategori',
+            DB::raw('(SELECT SUM(jumlah) FROM material_trans WHERE material_trans.id_aktivitas_harian = aktivitas_harian.id) as tonase'),
+            DB::raw('(SELECT anggaran FROM aktivitas_alat_berat WHERE aktivitas_alat_berat.id_kategori_alat_berat = alat_berat_kat.id AND aktivitas_alat_berat.id_aktivitas = aktivitas.id LIMIT 1) as anggaran')
             )
             ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'aktivitas_harian_alat_berat.id_aktivitas_harian')
+            ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+            ->leftJoin('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
             ->leftJoin('alat_berat', 'alat_berat.id', '=', 'aktivitas_harian_alat_berat.id_alat_berat')
+            ->leftJoin('alat_berat_kat', 'alat_berat_kat.id', '=', 'alat_berat.id_kategori')
             ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
             ->latest('aktivitas_harian.updated_at')
             ;
@@ -4321,7 +4329,6 @@ class ReportController extends Controller
             $preview = true;
         }
         $res = $res->get();
-        // dd($res->toArray());
 
         $this->generateExcelBiayaAlatBerat($res, $nama_file, $resGudang, $resAktivitas, $resJenisAlatBerat, $tgl_awal, $tgl_akhir, $preview);
     }
@@ -4483,38 +4490,32 @@ class ReportController extends Controller
 
             $col++;
             $abjad++;
-            $gudang = Gudang::find($value->id_gudang);
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $gudang->nama);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama_gudang);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $abjad++;
-            $aktivitas = Aktivitas::find($value->id_aktivitas);
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $aktivitas->nama);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama_aktivitas);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $abjad++;
-            $kategoriAlatBerat = KategoriAlatBerat::find($value->id_kategori);
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $kategoriAlatBerat->nama);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama_kategori);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $abjad++;
-            $tonase = MaterialTrans::where('id_aktivitas_harian', $value->id)->get()->sum('jumlah');
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tonase);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->tonase);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $abjad++;
-            $aktivitasAlatBerat = AktivitasAlatBerat::where('id_kategori_alat_berat', $value->id_kategori)->where('id_aktivitas', $value->id_aktivitas)->first();
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. '.$aktivitasAlatBerat->anggaran);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. '.$value->anggaran);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
             
             $col++;
             $abjad++;
-            $aktivitasAlatBerat = AktivitasAlatBerat::where('id_kategori_alat_berat', $value->id_kategori)->where('id_aktivitas', $value->id_aktivitas)->first();
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. '.$tonase*$aktivitasAlatBerat->anggaran);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. '. $value->tonase*$value->anggaran);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $row++;
