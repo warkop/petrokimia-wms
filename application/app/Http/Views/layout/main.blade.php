@@ -184,7 +184,7 @@
                                         @if (auth()->user()->can('log-aktivitas-user'))
                                         <li class="kt-nav__item">
                                             <a href="{{('/log-aktivitas-user')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-line-chart"></i>
+                                                <i class="kt-nav__link-icon la la-motorcycle"></i>
                                                 <span class="kt-nav__link-text">Log Aktivitas User</span>
                                             </a>
                                         </li>
@@ -231,7 +231,7 @@
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-material')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon fa fa-boxes"></i>
+                                                <i class="kt-nav__link-icon fa fa-warehouse"></i>
                                                 <span class="kt-nav__link-text">Material</span>
                                             </a>
                                         </li>
@@ -261,19 +261,19 @@
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-log-sheet')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-bicycle"></i>
+                                                <i class="kt-nav__link-icon la la-empire"></i>
                                                 <span class="kt-nav__link-text">Log Sheet</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-biaya-alat-berat')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-bicycle"></i>
+                                                <i class="kt-nav__link-icon la la-dollar"></i>
                                                 <span class="kt-nav__link-text">Biaya Alat Berat</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-biaya-tkbm')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-bicycle"></i>
+                                                <i class="kt-nav__link-icon la la-euro"></i>
                                                 <span class="kt-nav__link-text">Biaya TKBM</span>
                                             </a>
                                         </li>
