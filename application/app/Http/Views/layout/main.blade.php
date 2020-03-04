@@ -277,6 +277,12 @@
                                                 <span class="kt-nav__link-text">Biaya TKBM</span>
                                             </a>
                                         </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('report/laporan-biaya-pallet')}}" class="kt-nav__link">
+                                                <i class="kt-nav__link-icon la la-bitcoin"></i>
+                                                <span class="kt-nav__link-text">Biaya Pallet</span>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
