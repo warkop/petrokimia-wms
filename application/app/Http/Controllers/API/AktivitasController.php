@@ -34,6 +34,7 @@ use App\Http\Requests\ApiAktivitasPengembalianRequest;
 use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Requests\ApiSaveKelayakanPhotos;
 use App\Http\Requests\ApiSavePhotosRequest;
+use App\Http\Requests\ApiSaveUploadBaRequest;
 use App\Http\Resources\AktivitasResource;
 use App\Http\Resources\AlatBeratResource;
 use App\Http\Resources\AreaPenerimaanGiResource;
@@ -1643,8 +1644,6 @@ class AktivitasController extends Controller
     public function detailHistory($id) //memuat detail history
     {
         $gudang = $this->getCheckerGudang();
-        $my_auth = request()->get('my_auth');
-        $user = Users::findOrFail($my_auth->id_user);
 
         $res = AktivitasHarian::select(
             'aktivitas_harian.id',
@@ -1679,6 +1678,7 @@ class AktivitasController extends Controller
             'nopol',
             'driver',
             'posto',
+            'ba',
             DB::raw('(SELECT nama gudang FROM gudang WHERE id = aktivitas_harian.id_gudang)
                     AS text_gudang'),
             DB::raw('(SELECT nama FROM alat_berat_kat WHERE id = id_kategori)
@@ -1794,6 +1794,7 @@ class AktivitasController extends Controller
             'pallet' => $res_pallet,
             'alat_berat' => $list_alat_berat,
             'file' => $foto,
+            'ba' => '{{base_url}}/watch/{{ba}}?un={{id_aktivitas_harian}}&ctg=ba&src={{ba}}',
             'url' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_aktivitas_harian}}&ctg=aktivitas_harian&src={{foto}}',
             'status' => [
                 'message' => '',
@@ -2234,5 +2235,37 @@ class AktivitasController extends Controller
                 $key->save();
             }
         }
+    }
+
+    public function uploadBa(ApiSaveUploadBaRequest $req, AktivitasHarian $aktivitasHarian)
+    {
+        $req->validated();
+        if ($aktivitasHarian->canceled == null) {
+            return response()->json([
+                'data' => [],
+                'status' => [
+                    'message' => 'Hanya aktivitas sudah dicancel yang bisa mengupload!',
+                    'code' => 403,
+                ]
+            ], 403);
+        }
+
+        Storage::deleteDirectory('/public/ba/' . $aktivitasHarian->id);
+        $berkas = $req->file('berkas');
+        if (!empty($berkas)) {
+            if ($berkas->isValid()) {
+                $berkas->storeAs('/public/ba/' . $aktivitasHarian->id, $berkas->getClientOriginalName());
+                $aktivitasHarian->ba = $berkas->getClientOriginalName();
+                $aktivitasHarian->save();
+            }
+        }
+
+        return response()->json([
+            'data' => $berkas,
+            'status' => [
+                'message' => 'Berhasil disimpan',
+                'code' => Response::HTTP_CREATED,
+            ]
+        ], Response::HTTP_CREATED);
     }
 }
