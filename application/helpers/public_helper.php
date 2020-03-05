@@ -234,6 +234,25 @@ function helpSecSql($var)
 	return addslashes(strtolower($var));
 }
 
+function helpCurrency($nominal, $start = '', $pemisah = '.', $end = '')
+{
+	$nominal = empty($nominal) ? 0 : $nominal;
+	$angka_belakang = ',00';
+	$temp_rp = explode('.', $nominal);
+
+	if ($end == '') {
+		$angka_belakang = '';
+	}
+
+	if (count($temp_rp) > 1) {
+		$nominal = $temp_rp[0];
+		$angka_belakang = ',' . $temp_rp[1];
+	}
+
+	$hasil = $start . number_format($nominal, 0, "", $pemisah) . $angka_belakang . $end;
+	return $hasil;
+}
+
 /**
  * Function helpTerbilang
  * Fungsi ini digunakan untuk merubah angka yang dimasukkan menjadi ejaan

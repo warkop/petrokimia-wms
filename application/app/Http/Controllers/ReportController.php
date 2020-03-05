@@ -4052,16 +4052,6 @@ class ReportController extends Controller
         $totalMasuk = 0;
         $totalKeluar = 0;
         foreach ($res as $value) {
-            $col = 1;
-            $abjad = 'A';
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama);
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
-
-            $col++;
-            $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->tanggal)));
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
-
             $jumlah =0;
             $jumlahStokAwal = 0;
 
@@ -4147,12 +4137,7 @@ class ReportController extends Controller
                 }
             }
 
-            $jumlahStokAwal = $pre_masuk - $pre_keluar;
-
-            $col++;
-            $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlahStokAwal);
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $jumlahStokAwal = $pre_masuk - $pre_keluar; 
 
             $masuk = 0;
             $keluar = 0;
@@ -4164,24 +4149,40 @@ class ReportController extends Controller
                 }
             }
             $jumlah  = $pre_masuk - $pre_keluar + $masuk - $keluar;
-            
-            $col++;
-            $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $masuk);
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
-            $col++;
-            $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $keluar);
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
-
-            $col++;
-            $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlah);
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
-
-            $totalMasuk += $masuk;
-            $totalKeluar += $keluar;
+            if ($masuk > 0 || $keluar > 0) {
+                $col = 1;
+                $abjad = 'A';
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+    
+                $col++;
+                $abjad++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->tanggal)));
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+    
+                $col++;
+                $abjad++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlahStokAwal);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+                
+                $col++;
+                $abjad++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $masuk);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+    
+                $col++;
+                $abjad++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $keluar);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+    
+                $col++;
+                $abjad++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlah);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+                $totalMasuk += $masuk;
+                $totalKeluar += $keluar;
+            }
 
             $row++;
         }
@@ -4480,6 +4481,7 @@ class ReportController extends Controller
 
         // start : isi kolom
         $no = 1;
+        $totalBiaya = 0;
         foreach ($res as $value) {
             $col = 1;
             $abjad = 'A';
@@ -4509,22 +4511,37 @@ class ReportController extends Controller
                 $jumlahTonase += $key->jumlah;
             }
 
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlahTonase);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, helpCurrency($jumlahTonase));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. '.$value->anggaran);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. '. helpCurrency($value->anggaran));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
             
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. '. $jumlahTonase*$value->anggaran);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. '. helpCurrency($jumlahTonase*$value->anggaran));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $biaya = $jumlahTonase * $value->anggaran;
+            $totalBiaya += $biaya;
 
             $row++;
             $no++;
         }
+        $col = 1;
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':E' . $row);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '');
+
+        $col = 6;
+        $abjad = 'F';
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total Biaya');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+
+        $col++;
+        $abjad++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($totalBiaya));
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle('Laporan Biaya Alat Berat');
         // end : isi kolom
@@ -4780,9 +4797,8 @@ class ReportController extends Controller
         // end : judul kolom
 
         // start : isi kolom
-        $totalMasuk = 0;
-        $totalKeluar = 0;
         $no = 1;
+        $totalBiaya = 0;
         foreach ($res as $value) {
             $col = 1;
             $abjad = 'A';
@@ -4806,22 +4822,38 @@ class ReportController extends Controller
             foreach ($tonase as $key) {
                 $jumlahTonase += $key->jumlah;
             }
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlahTonase);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, helpCurrency($jumlahTonase));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp . ' . $value->anggaran_tkbm);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp . ' . helpCurrency($value->anggaran_tkbm));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . $jumlahTonase * $value->anggaran_tkbm);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($jumlahTonase * $value->anggaran_tkbm));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $biaya = $jumlahTonase * $value->anggaran_tkbm;
+            $totalBiaya += $biaya;
 
             $row++;
             $no++;
         }
+
+        $col = 1;
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '');
+
+        $col = 5;
+        $abjad = 'E';
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total Biaya');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+
+        $col++;
+        $abjad++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($totalBiaya));
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle('Laporan Biaya TKBM');
@@ -5078,9 +5110,8 @@ class ReportController extends Controller
         // end : judul kolom
 
         // start : isi kolom
-        $totalMasuk = 0;
-        $totalKeluar = 0;
         $no = 1;
+        $totalBiaya = 0;
         foreach ($res as $value) {
             $col = 1;
             $abjad = 'A';
@@ -5104,22 +5135,38 @@ class ReportController extends Controller
             foreach ($tonase as $key) {
                 $jumlahTonase += $key->jumlah;
             }
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlahTonase);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, helpCurrency($jumlahTonase));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp . ' . $value->anggaran_tkbm);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp . ' . helpCurrency($value->anggaran_pallet));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . $jumlahTonase * $value->anggaran_tkbm);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($jumlahTonase * $value->anggaran_pallet));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $biaya = $jumlahTonase * $value->anggaran_pallet;
+            $totalBiaya += $biaya;
 
             $row++;
             $no++;
         }
+
+        $col = 1;
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '');
+
+        $col=5;
+        $abjad = 'E';
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total Biaya');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+
+        $col++;
+        $abjad++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($totalBiaya));
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle('Laporan Biaya Pallet');
