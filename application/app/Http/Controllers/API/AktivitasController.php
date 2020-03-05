@@ -263,7 +263,7 @@ class AktivitasController extends Controller
                 'area.id',
                 'area.nama',
                 'area.kapasitas',
-                'area_stok.tanggal',
+                DB::raw("COALESCE(TO_CHAR(area_stok.tanggal, 'YYYY-MM-DD'), TO_CHAR(now(),'YYYY-MM-DD')) as tanggal"),
                 'area.tipe',
                 'area_stok.id_material',
                 DB::raw('COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.$condition.'),0) as jumlah'),
