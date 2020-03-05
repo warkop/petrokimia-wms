@@ -33,8 +33,8 @@ class AktivitasRequest extends FormRequest
 
         $rules = [
             'nama'                      => 'required',
-            'produk_stok'               => 'nullable|numeric|different:produk_rusak',
-            'produk_rusak'              => 'nullable|numeric|different:produk_stok',
+            // 'produk_stok'               => 'nullable|numeric',
+            // 'produk_rusak'              => 'nullable|numeric',
             'pallet_stok'               => 'nullable|numeric',
             'pallet_dipakai'            => 'nullable|numeric',
             'pallet_kosong'             => 'nullable|numeric',
@@ -56,6 +56,19 @@ class AktivitasRequest extends FormRequest
             'alat_berat.*'              => 'nullable|numeric',
             'kode_aktivitas'            => 'nullable|size:3',
         ];
+
+        if (request()->produk_rusak != null && request()->produk_stok  != null) {
+            $rules['produk_rusak'] = 'nullable|numeric|different:produk_stok';
+            $rules['produk_stok'] = 'nullable|numeric|different:produk_rusak';
+        } else {
+            if (request()->produk_rusak == null) {
+                $rules['produk_stok'] = 'nullable|numeric';
+            }
+
+            if (request()->produk_stok == null) {
+                $rules['produk_rusak'] = 'nullable|numeric';
+            }
+        }
 
         if (request()->pallet_stok != null) {
         }
