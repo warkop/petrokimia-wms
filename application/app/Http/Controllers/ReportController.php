@@ -3869,8 +3869,7 @@ class ReportController extends Controller
             'area_stok.id',
             'id_material',
             'id_area',
-            'area.nama',
-            'tanggal'
+            'area.nama'
         )
         ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
         ->where('id_gudang', $gudang)
@@ -4018,10 +4017,10 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'AREA');
         $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_kolom);
 
-        $abjadOri++;
-        $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TANGGAL PRODUKSI');
-        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_kolom);
+        // $abjadOri++;
+        // $col++;
+        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TANGGAL PRODUKSI');
+        // $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_kolom);
 
         $abjadOri++;
         $col++;
@@ -4156,10 +4155,10 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
     
-                $col++;
-                $abjad++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->tanggal)));
-                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+                // $col++;
+                // $abjad++;
+                // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->tanggal)));
+                // $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
     
                 $col++;
                 $abjad++;
@@ -4182,9 +4181,9 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
                 $totalMasuk += $masuk;
                 $totalKeluar += $keluar;
+                $row++;
             }
 
-            $row++;
         }
         $col = 3;
         $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':' . 'C' . $row);
