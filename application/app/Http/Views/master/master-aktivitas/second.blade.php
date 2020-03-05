@@ -709,14 +709,26 @@ let now = 0;
         document.getElementById('pengaruh_tgl_produksi_hidden').disabled = true;
     }
 
-    $("#selector_produk_stok").change(function(){
-        $("#produk_stok").attr('disabled',false);
-        $("#produk_stok").selectpicker('refresh');
+    $("#selector_produk_stok").click(function(){
+        if(this.checked) {
+            $('#produk_stok').attr('disabled',false);
+            $("#produk_stok").selectpicker('refresh');
+        } else {
+            $("#produk_stok").val("").change();
+            $("#produk_stok").attr('disabled',true);
+            $("#produk_stok").selectpicker('refresh');
+        }
     });
 
     $("#selector_produk_rusak").change(function(){
-        $("#produk_rusak").attr('disabled',false);
-        $("#produk_rusak").selectpicker('refresh');
+        if(this.checked) {
+            $('#produk_rusak').attr('disabled',false);
+            $("#produk_rusak").selectpicker('refresh');
+        } else {
+            $("#produk_rusak").val("").change();
+            $("#produk_rusak").attr('disabled',true);
+            $("#produk_rusak").selectpicker('refresh');
+        }
     });
 
     // $('input[type=radio][name=selector]').change(function() {
