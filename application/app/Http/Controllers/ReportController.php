@@ -4052,16 +4052,6 @@ class ReportController extends Controller
         $totalMasuk = 0;
         $totalKeluar = 0;
         foreach ($res as $value) {
-            $col = 1;
-            $abjad = 'A';
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama);
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
-
-            $col++;
-            $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->tanggal)));
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
-
             $jumlah =0;
             $jumlahStokAwal = 0;
 
@@ -4147,12 +4137,7 @@ class ReportController extends Controller
                 }
             }
 
-            $jumlahStokAwal = $pre_masuk - $pre_keluar;
-
-            $col++;
-            $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlahStokAwal);
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $jumlahStokAwal = $pre_masuk - $pre_keluar; 
 
             $masuk = 0;
             $keluar = 0;
@@ -4164,24 +4149,40 @@ class ReportController extends Controller
                 }
             }
             $jumlah  = $pre_masuk - $pre_keluar + $masuk - $keluar;
-            
-            $col++;
-            $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $masuk);
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
-            $col++;
-            $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $keluar);
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
-
-            $col++;
-            $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlah);
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
-
-            $totalMasuk += $masuk;
-            $totalKeluar += $keluar;
+            if ($masuk > 0 || $keluar > 0) {
+                $col = 1;
+                $abjad = 'A';
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+    
+                $col++;
+                $abjad++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->tanggal)));
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+    
+                $col++;
+                $abjad++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlahStokAwal);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+                
+                $col++;
+                $abjad++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $masuk);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+    
+                $col++;
+                $abjad++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $keluar);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+    
+                $col++;
+                $abjad++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlah);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+                $totalMasuk += $masuk;
+                $totalKeluar += $keluar;
+            }
 
             $row++;
         }
