@@ -25,7 +25,13 @@ class ListNotifikasiResource extends Resource
             'asal_gudang'           => $this->gudang->nama,
             'gudang_tujuan'         => $this->gudangTujuan->nama,
             'waktu'                 => $this->created_at,
-            'created_at'            => $this->created_at,
+            'created_at'            => [
+                'date' => date('Y-m-d H:i:s', strtotime(
+                    $this->created_at
+                )),
+                'timezone_type' => 3,
+                'timezone' => 'Asia/Jakarta'
+            ],
         ];
     }
 }
