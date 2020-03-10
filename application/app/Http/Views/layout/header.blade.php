@@ -44,4 +44,12 @@
 		<script src="{{aset_extends('plugin/ladda/dist/ladda.min.js')}}"></script>
 		<script src="{{ aset_extends('js/energeek.js') }}" type="text/javascript"></script>
 	
-		
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-102442286-15"></script>
+		<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'UA-102442286-15');
+		</script>
