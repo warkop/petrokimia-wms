@@ -40,6 +40,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::get('/read-notif', 'API\AktivitasController@readNotif');
         Route::get('/unread-notif', 'API\AktivitasController@unreadNotif');
         Route::post('/mark-as-read', 'API\AktivitasController@markAsRead');
+        Route::get('/test-firebase', 'API\AktivitasController@testFirebase');
 
         Route::get('/load-penerimaan/{id}', 'API\AktivitasController@loadPenerimaan')->where('id', '[0-9]+');
         Route::get('/get-area-from-pengirim/{id}', 'API\AktivitasController@getAreaFromPengirim')->where('id', '[0-9]+');
