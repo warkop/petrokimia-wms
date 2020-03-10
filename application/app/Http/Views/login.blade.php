@@ -33,6 +33,15 @@
     <script src="{{aset_extends('plugin/ladda/dist/ladda.min.js')}}"></script>
     <script src="{{aset_tema('vendors/general/sweetalert2/dist/sweetalert2.min.js')}}" type="text/javascript"></script>
     <script src="{{aset_tema('vendors/custom/components/vendors/sweetalert2/init.js')}}" type="text/javascript"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-102442286-15"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-102442286-15');
+    </script>
 </head>
 <body>
     <div class="body">
