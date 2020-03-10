@@ -96,9 +96,10 @@ class ApiAktivitasRequest extends FormRequest
         $gudang = $this->getRencana();
         
 
+
         $rules = [
             'id_aktivitas'      => 'required|exists:aktivitas,id',
-            'id_gudang_tujuan'  => 'nullable|exists:gudang,id',
+            'id_gudang_tujuan'  => 'nullable|exists:gudang,id|not_in:'.$gudang->id,
             'id_alat_berat'     => 'nullable|exists:alat_berat,id',
             'id_tkbm'           => [
                 'nullable',
@@ -352,6 +353,7 @@ class ApiAktivitasRequest extends FormRequest
             'list_pallet.*.jumlah.max'                                      => ':attribute melebihi kapasitas di gudang yaitu :max pcs!',
             'min'           => ':attribute harus minimal :max pcs!',
             'date_format'   => ':attribute tanggal harus dengan format tanggal-bulan-tahun, contoh: 13-05-2018',
+            'not_in'        => ':attribute tidak boleh sama dengan gudang Anda sendiri',
         ];
     }
 
