@@ -20,7 +20,13 @@ class AreaPenerimaanGiResource extends Resource
             // 'nama_material' => $this->areaStok->material->nama,
             // 'id_material'   => $this->areaStok->id_material,
             'id_area'       => $this->areaStok->id_area,
-            'tanggal'       => $this->areaStok->tanggal,
+            'tanggal'       => [
+                'date' => date('Y-m-d H:i:s', strtotime(
+                    $this->areaStok->tanggal
+                )),
+                'timezone_type' => 3,
+                'timezone' => 'Asia/Jakarta'
+            ],
             'jumlah'        => $this->areaStok->jumlah,
             'kapasitas'     => $this->areaStok->area->kapasitas,
         ];
