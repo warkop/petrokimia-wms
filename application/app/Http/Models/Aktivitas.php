@@ -34,7 +34,15 @@ class Aktivitas extends CustomModel
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table('aktivitas')
-            ->select('id AS id', 'kode_aktivitas', 'nama AS nama', DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\') AS start_date'), DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\') AS end_date'));
+            ->select(
+                'id', 
+                'kode_aktivitas', 
+                'nama', 
+                DB::raw('TO_CHAR(start_date, \'dd-mm-yyyy\') AS start_date'), 
+                DB::raw('TO_CHAR(end_date, \'dd-mm-yyyy\') AS end_date')
+            )
+            ->whereNull('penerimaan_gi')
+            ;
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {

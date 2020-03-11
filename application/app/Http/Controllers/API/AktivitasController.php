@@ -889,10 +889,7 @@ class AktivitasController extends Controller
             return response()->json($response, $this->responseCode);
         }
 
-        $aktivitasGudang = AktivitasGudang::with('aktivitas')->whereHas('aktivitas', function ($query) {
-            $query->whereNotNull('penerimaan_gi');
-        })
-        ->where('id_gudang', $gudang->id)
+        $aktivitasGudang = Aktivitas::whereNotNull('penerimaan_gi')
         ->first();
         
         if ($aktivitasHarian->approve != null) {
@@ -903,12 +900,11 @@ class AktivitasController extends Controller
         }
 
         if (!empty($aktivitasGudang)) {
-            if ($aktivitasGudang->aktivitas->penerimaan_gi != null) {
+            if ($aktivitasGudang != null) {
                 $wannaSave = new AktivitasHarian;
                 $wannaSave->ref_number        = $aktivitasHarian->id;
-                $wannaSave->id_aktivitas      = $aktivitasGudang->id_aktivitas;
+                $wannaSave->id_aktivitas      = $aktivitasGudang->id;
                 $wannaSave->id_gudang         = $gudang->id;
-                // $wannaSave->id_karu           = $gudang->id_karu;
                 $wannaSave->id_shift          = $rencana_tkbm->id_shift;
                 $wannaSave->id_area           = $req->input('id_pindah_area');
                 $wannaSave->id_alat_berat     = $req->input('id_alat_berat');
@@ -922,7 +918,7 @@ class AktivitasController extends Controller
                 $aktivitasHarian->approve = date('Y-m-d H:i:s');
                 $aktivitasHarian->save();
     
-                if ($aktivitasGudang->aktivitas->pengaruh_tgl_produksi != null) { //jika tidak pengaruh tanggal produksi dicentang
+                if ($aktivitasGudang->pengaruh_tgl_produksi != null) { //jika tidak pengaruh tanggal produksi dicentang
                     $list_produk = $req->input('list_produk');
     
                     if (!empty($list_produk)) {
@@ -1039,21 +1035,12 @@ class AktivitasController extends Controller
                                             $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                                             return response()->json($response, $this->responseCode);
                                         }
-    
-                                        // $arr = [
-                                        //     'id_material'   => $produk,
-                                        //     'id_area'       => $id_area,
-                                        //     'jumlah'        => $list_jumlah[$k]['jumlah'],
-                                        //     'tanggal'       => date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])),
-                                        // ];
 
                                         $area_stok->id_material   = $produk;
                                         $area_stok->id_area       = $id_area;
                                         $area_stok->tanggal       = date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']));
 
                                         $area_stok->save();
-    
-                                        // $saved_area_stok = $area_stok->create($arr);
     
                                         $material_trans = new MaterialTrans;
     
@@ -1121,7 +1108,7 @@ class AktivitasController extends Controller
                     }
                 }
     
-                if ($aktivitasGudang->aktivitas->penerimaan_gi != null) {
+                if ($aktivitasGudang->penerimaan_gi != null) {
                     $tkbm = TenagaKerjaNonOrganik::findOrFail($res_user->id_tkbm);
                     $message = 'Pengiriman Gudang Internal pada gudang '. $gudang->nama.' berhasil di setujui oleh '.$tkbm->nama;
                     $this->storeNotification($aktivitasHarian, $message, true);
