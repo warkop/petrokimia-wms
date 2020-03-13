@@ -4189,15 +4189,15 @@ class ReportController extends Controller
 
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalMasukKeseluruhan, 2));
-        // $objSpreadsheet->getActiveSheet()->getStyle('C' . $row)->applyFromArray($style_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle('C' . $row)->applyFromArray($style_kolom);
 
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalKeluarKeseluruhan, 2));
-        // $objSpreadsheet->getActiveSheet()->getStyle('D' . $row)->applyFromArray($style_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle('D' . $row)->applyFromArray($style_kolom);
         
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalStokAkhir, 2));
-        // $objSpreadsheet->getActiveSheet()->getStyle('E' . $row)->applyFromArray($style_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle('E' . $row)->applyFromArray($style_kolom);
 
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle("Laporan Log Sheet");
