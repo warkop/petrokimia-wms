@@ -3874,9 +3874,11 @@ class ReportController extends Controller
         ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
         ->where('id_gudang', $gudang)
         ->where('id_material', $pilih_produk)
+        ->orderBy('id_area')
         ->get()
+        ->groupBy('id_area')
         ;
-
+        dd($res);
         $nama_file = date("YmdHis") . '_logsheet.xlsx';
 
         $resGudang = Gudang::find($gudang);
@@ -4050,131 +4052,124 @@ class ReportController extends Controller
        
         $totalMasuk = 0;
         $totalKeluar = 0;
-        foreach ($res as $value) {
+        foreach ($res as $roww) {
             $jumlah =0;
             $jumlahStokAwal = 0;
 
-            if ($resShift->id == 1) {
-                $stokTanggalSebelum = DB::table('material_trans')
-                    ->where('material_trans.id_area_stok', $value->id)
-                    ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
-                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                            ->where('draft', 0)
-                            ;
-                    })
-                    ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
-                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                            ;
-                    })
-                    ->where(function ($query) use ($tanggal) {
-                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 07:00:00')));
-                        $query->orWhere('material_adjustment.tanggal', '<', $tanggal);
-                    })
-                    ->get();
-            } else if ($resShift->id == 2) {
-                $stokTanggalSebelum = DB::table('material_trans')
-                    ->where('material_trans.id_area_stok', $value->id)
-                    ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
-                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                            ->where('draft', 0)
-                            ;
-                    })
-                    ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
-                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                            ;
-                    })
-                    ->where(function ($query) use ($tanggal) {
-                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 15:00:00')));
-                        $query->orWhere('material_adjustment.tanggal', '<', $tanggal);
-                    })
-                    ->get();
-            } else if ($resShift->id == 3) {
-                $stokTanggalSebelum = DB::table('material_trans')
-                    ->where('material_trans.id_area_stok', $value->id)
-                    ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
-                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                            ->where('draft', 0)
-                            ;
-                    })
-                    ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
-                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                            ;
-                    })
-                    ->where(function($query) use ($tanggal){
-                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<=', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00 -1 day')));
-                        $query->orWhere('material_adjustment.tanggal', '<=', date('Y-m-d', strtotime($tanggal . '-1 day')));
-                    })
-                    ->get();
-            }
-
-            $stokTanggalIni = DB::table('material_trans')
-                ->where('material_trans.id_area_stok', $value->id)
-                ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
-                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                    ->where('draft', 0)
-                    ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $tanggal)
-                    ;
-                })
-                ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
-                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                    ->where('material_adjustment.tanggal', $tanggal);
-                })
-                ->where(
-                    function ($query) use ($resShift) {
-                    $query->where('id_shift', $resShift->id);
-                    $query->orWhere('shift', $resShift->id);
-                })
-                ->get();
-
-            $pre_masuk = 0;
-            $pre_keluar = 0;
-            foreach ($stokTanggalSebelum as $preKey) {
-                if ($preKey->tipe == 2) {
-                    $pre_masuk = $pre_masuk + $preKey->jumlah;
-                } else if ($preKey->tipe == 1) {
-                    $pre_keluar = $pre_keluar + $preKey->jumlah;
+            foreach ($roww as $value) {
+                if ($resShift->id == 1) {
+                    $stokTanggalSebelum = DB::table('material_trans')
+                        ->where('material_trans.id_area_stok', $value->id)
+                        ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
+                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                                ->where('draft', 0);
+                        })
+                        ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
+                            $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment');
+                        })
+                        ->where(function ($query) use ($tanggal) {
+                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 07:00:00')));
+                            $query->orWhere('material_adjustment.tanggal', '<', $tanggal);
+                        })
+                        ->get();
+                } else if ($resShift->id == 2) {
+                    $stokTanggalSebelum = DB::table('material_trans')
+                        ->where('material_trans.id_area_stok', $value->id)
+                        ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
+                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                                ->where('draft', 0);
+                        })
+                        ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
+                            $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment');
+                        })
+                        ->where(function ($query) use ($tanggal) {
+                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 15:00:00')));
+                            $query->orWhere('material_adjustment.tanggal', '<', $tanggal);
+                        })
+                        ->get();
+                } else if ($resShift->id == 3) {
+                    $stokTanggalSebelum = DB::table('material_trans')
+                        ->where('material_trans.id_area_stok', $value->id)
+                        ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
+                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                                ->where('draft', 0);
+                        })
+                        ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
+                            $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment');
+                        })
+                        ->where(function ($query) use ($tanggal) {
+                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<=', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00 -1 day')));
+                            $query->orWhere('material_adjustment.tanggal', '<=', date('Y-m-d', strtotime($tanggal . '-1 day')));
+                        })
+                        ->get();
                 }
-            }
 
-            $jumlahStokAwal = $pre_masuk - $pre_keluar; 
+                $stokTanggalIni = DB::table('material_trans')
+                    ->where('material_trans.id_area_stok', $value->id)
+                    ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                            ->where('draft', 0)
+                            ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $tanggal);
+                    })
+                    ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
+                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                            ->where('material_adjustment.tanggal', $tanggal);
+                    })
+                    ->where(
+                        function ($query) use ($resShift) {
+                            $query->where('id_shift', $resShift->id);
+                            $query->orWhere('shift', $resShift->id);
+                        }
+                    )
+                    ->get();
 
-            $masuk = 0;
-            $keluar = 0;
-            foreach ($stokTanggalIni as $singletonKey) {
-                if ($singletonKey->tipe == 2) {
-                    $masuk = $masuk + $singletonKey->jumlah;
-                } else if ($singletonKey->tipe == 1) {
-                    $keluar = $keluar + $singletonKey->jumlah;
+                $pre_masuk = 0;
+                $pre_keluar = 0;
+                foreach ($stokTanggalSebelum as $preKey) {
+                    if ($preKey->tipe == 2) {
+                        $pre_masuk = $pre_masuk + $preKey->jumlah;
+                    } else if ($preKey->tipe == 1) {
+                        $pre_keluar = $pre_keluar + $preKey->jumlah;
+                    }
                 }
-            }
-            $jumlah  = $pre_masuk - $pre_keluar + $masuk - $keluar;
 
-            // if ($masuk > 0 || $keluar > 0) {
+                $jumlahStokAwal = $pre_masuk - $pre_keluar;
+
+                $masuk = 0;
+                $keluar = 0;
+                foreach ($stokTanggalIni as $singletonKey) {
+                    if ($singletonKey->tipe == 2) {
+                        $masuk = $masuk + $singletonKey->jumlah;
+                    } else if ($singletonKey->tipe == 1) {
+                        $keluar = $keluar + $singletonKey->jumlah;
+                    }
+                }
+                $jumlah  = $pre_masuk - $pre_keluar + $masuk - $keluar;
+
+                
+            }
+
+            if ($jumlahStokAwal > 0) {
                 $col = 1;
                 $abjad = 'A';
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama);
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $roww[0]->nama);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
-    
-                // $col++;
-                // $abjad++;
-                // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->tanggal)));
-                // $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
-    
+
                 $col++;
                 $abjad++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, number_format($jumlahStokAwal,2));
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, number_format($jumlahStokAwal, 2));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
-                
+
                 $col++;
                 $abjad++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, number_format($masuk, 2));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
-    
+
                 $col++;
                 $abjad++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, number_format($keluar, 2));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
-    
+
                 $col++;
                 $abjad++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, number_format($jumlah, 2));
@@ -4182,7 +4177,7 @@ class ReportController extends Controller
                 $totalMasuk += $masuk;
                 $totalKeluar += $keluar;
                 $row++;
-            // }
+            }
         }
         $col = 3;
         $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':' . 'C' . $row);
