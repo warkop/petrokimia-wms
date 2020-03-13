@@ -4050,8 +4050,8 @@ class ReportController extends Controller
         foreach ($res as $roww) {
             $jumlah =0;
             $jumlahStokAwal = 0;
-            $masuk = 0;
-            $keluar = 0;
+            $totalMasuk = 0;
+            $totalKeluar = 0;
             foreach ($roww as $value) {
                 if ($resShift->id == 1) {
                     $stokTanggalSebelum = DB::table('material_trans')
@@ -4131,14 +4131,20 @@ class ReportController extends Controller
 
                 $jumlahStokAwal += $pre_masuk - $pre_keluar;
 
+                $masuk = 0;
+                $keluar = 0;
                 
                 foreach ($stokTanggalIni as $singletonKey) {
                     if ($singletonKey->tipe == 2) {
-                        $masuk += $masuk + $singletonKey->jumlah;
+                        $masuk = $masuk + $singletonKey->jumlah;
                     } else if ($singletonKey->tipe == 1) {
-                        $keluar += $keluar + $singletonKey->jumlah;
+                        $keluar = $keluar + $singletonKey->jumlah;
                     }
                 }
+
+                $totalMasuk += $masuk;
+                $totalKeluar += $keluar;
+
                 $jumlah  += $pre_masuk - $pre_keluar + $masuk - $keluar;
 
                 
@@ -4157,12 +4163,12 @@ class ReportController extends Controller
 
                 $col++;
                 $abjad++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, number_format($masuk, 2));
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, number_format($totalMasuk, 2));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
                 $col++;
                 $abjad++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, number_format($keluar, 2));
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, number_format($totalKeluar, 2));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
 
                 $col++;
