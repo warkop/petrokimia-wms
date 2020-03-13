@@ -4045,6 +4045,7 @@ class ReportController extends Controller
 
         // start : isi kolom
        
+        $totalStokAwal = 0;
         $totalMasukKeseluruhan = 0;
         $totalKeluarKeseluruhan = 0;
         $totalStokAkhir = 0;
@@ -4176,16 +4177,22 @@ class ReportController extends Controller
                 $abjad++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($jumlah, 2));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+
+                $totalStokAwal += $jumlahStokAwal;
                 $totalMasukKeseluruhan += $totalMasuk;
                 $totalKeluarKeseluruhan += $totalKeluar;
                 $totalStokAkhir += $jumlah;
+
                 $row++;
             }
         }
         $col = 2;
-        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':' . 'B' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, 'Total');
         $objSpreadsheet->getActiveSheet()->getStyle('A'. $row)->applyFromArray($style_judul_kolom);
+
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalStokAwal, 2));
+        $objSpreadsheet->getActiveSheet()->getStyle('B' . $row)->applyFromArray($style_kolom);
 
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalMasukKeseluruhan, 2));
