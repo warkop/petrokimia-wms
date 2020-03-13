@@ -4050,7 +4050,8 @@ class ReportController extends Controller
         foreach ($res as $roww) {
             $jumlah =0;
             $jumlahStokAwal = 0;
-
+            $masuk = 0;
+            $keluar = 0;
             foreach ($roww as $value) {
                 if ($resShift->id == 1) {
                     $stokTanggalSebelum = DB::table('material_trans')
@@ -4085,11 +4086,11 @@ class ReportController extends Controller
                 } else if ($resShift->id == 3) {
                     $stokTanggalSebelum = DB::table('material_trans')
                         ->where('material_trans.id_area_stok', $value->id)
-                        ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
+                        ->leftJoin('aktivitas_harian', function ($join) {
                             $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                                 ->where('draft', 0);
                         })
-                        ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
+                        ->leftJoin('material_adjustment', function ($join) {
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment');
                         })
                         ->where(function ($query) use ($tanggal) {
@@ -4101,12 +4102,12 @@ class ReportController extends Controller
 
                 $stokTanggalIni = DB::table('material_trans')
                     ->where('material_trans.id_area_stok', $value->id)
-                    ->leftJoin('aktivitas_harian', function ($join) use ($resShift, $tanggal) {
+                    ->leftJoin('aktivitas_harian', function ($join) use ($tanggal) {
                         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                             ->where('draft', 0)
                             ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $tanggal);
                     })
-                    ->leftJoin('material_adjustment', function ($join) use ($resShift, $tanggal) {
+                    ->leftJoin('material_adjustment', function ($join) use ($tanggal) {
                         $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                             ->where('material_adjustment.tanggal', $tanggal);
                     })
@@ -4130,8 +4131,7 @@ class ReportController extends Controller
 
                 $jumlahStokAwal += $pre_masuk - $pre_keluar;
 
-                $masuk = 0;
-                $keluar = 0;
+                
                 foreach ($stokTanggalIni as $singletonKey) {
                     if ($singletonKey->tipe == 2) {
                         $masuk += $masuk + $singletonKey->jumlah;
