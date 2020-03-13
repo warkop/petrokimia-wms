@@ -4017,32 +4017,27 @@ class ReportController extends Controller
         $row = 6;
         $abjadOri = 'A';
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'AREA');
-        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_kolom);
-
-        // $abjadOri++;
-        // $col++;
-        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TANGGAL PRODUKSI');
-        // $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
 
         $abjadOri++;
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'STOK AWAL');
-        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
 
         $abjadOri++;
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PEMASUKAN');
-        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
         
         $abjadOri++;
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PENGELUARAN');
-        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
         
         $abjadOri++;
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'STOK AKHIR');
-        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
 
         $row = 7;
         
@@ -4133,18 +4128,18 @@ class ReportController extends Controller
                     }
                 }
 
-                $jumlahStokAwal = $pre_masuk - $pre_keluar;
+                $jumlahStokAwal += $pre_masuk - $pre_keluar;
 
                 $masuk = 0;
                 $keluar = 0;
                 foreach ($stokTanggalIni as $singletonKey) {
                     if ($singletonKey->tipe == 2) {
-                        $masuk = $masuk + $singletonKey->jumlah;
+                        $masuk += $masuk + $singletonKey->jumlah;
                     } else if ($singletonKey->tipe == 1) {
-                        $keluar = $keluar + $singletonKey->jumlah;
+                        $keluar += $keluar + $singletonKey->jumlah;
                     }
                 }
-                $jumlah  = $pre_masuk - $pre_keluar + $masuk - $keluar;
+                $jumlah  += $pre_masuk - $pre_keluar + $masuk - $keluar;
 
                 
             }
