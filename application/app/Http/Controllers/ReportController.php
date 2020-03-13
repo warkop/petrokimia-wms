@@ -4047,6 +4047,7 @@ class ReportController extends Controller
        
         $totalMasukKeseluruhan = 0;
         $totalKeluarKeseluruhan = 0;
+        $totalStokAkhir = 0;
         foreach ($res as $roww) {
             $jumlah =0;
             $jumlahStokAwal = 0;
@@ -4177,22 +4178,25 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
                 $totalMasukKeseluruhan += $totalMasuk;
                 $totalKeluarKeseluruhan += $totalKeluar;
+                $totalStokAkhir += $jumlah;
                 $row++;
             }
         }
         $col = 3;
-        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':' . 'C' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':' . 'B' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, 'Total');
         $objSpreadsheet->getActiveSheet()->getStyle('A'. $row)->applyFromArray($style_judul_kolom);
 
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalMasukKeseluruhan);
-        $objSpreadsheet->getActiveSheet()->getStyle('D' . $row)->applyFromArray($style_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle('C' . $row)->applyFromArray($style_kolom);
 
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalKeluarKeseluruhan);
+        $objSpreadsheet->getActiveSheet()->getStyle('D' . $row)->applyFromArray($style_kolom);
+
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalStokAkhir);
         $objSpreadsheet->getActiveSheet()->getStyle('E' . $row)->applyFromArray($style_kolom);
-        // $objSpreadsheet->getActiveSheet()->getStyle('F' . $row)->applyFromArray($style_kolom);
 
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle("Laporan Log Sheet");
