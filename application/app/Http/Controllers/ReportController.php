@@ -4045,8 +4045,8 @@ class ReportController extends Controller
 
         // start : isi kolom
        
-        $totalMasuk = 0;
-        $totalKeluar = 0;
+        $totalMasukKeseluruhan = 0;
+        $totalKeluarKeseluruhan = 0;
         foreach ($res as $roww) {
             $jumlah =0;
             $jumlahStokAwal = 0;
@@ -4175,8 +4175,8 @@ class ReportController extends Controller
                 $abjad++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($jumlah, 2));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
-                $totalMasuk += $masuk;
-                $totalKeluar += $keluar;
+                $totalMasukKeseluruhan += $totalMasuk;
+                $totalKeluarKeseluruhan += $totalKeluar;
                 $row++;
             }
         }
@@ -4186,11 +4186,11 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getStyle('A'. $row)->applyFromArray($style_judul_kolom);
 
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalMasuk);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalMasukKeseluruhan);
         $objSpreadsheet->getActiveSheet()->getStyle('D' . $row)->applyFromArray($style_kolom);
 
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalKeluar);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalKeluarKeseluruhan);
         $objSpreadsheet->getActiveSheet()->getStyle('E' . $row)->applyFromArray($style_kolom);
         // $objSpreadsheet->getActiveSheet()->getStyle('F' . $row)->applyFromArray($style_kolom);
 
