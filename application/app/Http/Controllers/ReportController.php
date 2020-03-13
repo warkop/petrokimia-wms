@@ -3878,7 +3878,7 @@ class ReportController extends Controller
         ->get()
         ->groupBy('id_area')
         ;
-        dd($res);
+        // dd($res);
         $nama_file = date("YmdHis") . '_logsheet.xlsx';
 
         $resGudang = Gudang::find($gudang);
