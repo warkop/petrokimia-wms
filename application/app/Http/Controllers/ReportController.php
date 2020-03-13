@@ -4149,7 +4149,7 @@ class ReportController extends Controller
             }
             $jumlah  = $pre_masuk - $pre_keluar + $masuk - $keluar;
 
-            if ($masuk > 0 || $keluar > 0) {
+            // if ($masuk > 0 || $keluar > 0) {
                 $col = 1;
                 $abjad = 'A';
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama);
@@ -4162,28 +4162,27 @@ class ReportController extends Controller
     
                 $col++;
                 $abjad++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlahStokAwal);
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, number_format($jumlahStokAwal,2));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
                 
                 $col++;
                 $abjad++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $masuk);
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, number_format($masuk, 2));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
     
                 $col++;
                 $abjad++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $keluar);
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, number_format($keluar, 2));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
     
                 $col++;
                 $abjad++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlah);
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, number_format($jumlah, 2));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
                 $totalMasuk += $masuk;
                 $totalKeluar += $keluar;
                 $row++;
-            }
-
+            // }
         }
         $col = 3;
         $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':' . 'C' . $row);
@@ -4197,7 +4196,7 @@ class ReportController extends Controller
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalKeluar);
         $objSpreadsheet->getActiveSheet()->getStyle('E' . $row)->applyFromArray($style_kolom);
-        $objSpreadsheet->getActiveSheet()->getStyle('F' . $row)->applyFromArray($style_kolom);
+        // $objSpreadsheet->getActiveSheet()->getStyle('F' . $row)->applyFromArray($style_kolom);
 
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle("Laporan Log Sheet");
