@@ -4182,7 +4182,7 @@ class ReportController extends Controller
                 $row++;
             }
         }
-        $col = 3;
+        $col = 2;
         $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':' . 'B' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, 'Total');
         $objSpreadsheet->getActiveSheet()->getStyle('A'. $row)->applyFromArray($style_judul_kolom);
