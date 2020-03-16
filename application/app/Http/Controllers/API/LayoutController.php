@@ -176,4 +176,29 @@ class LayoutController extends Controller
 
         return $obj;
     }
+
+    public function detailPallet($status_pallet)
+    {
+        $gudang = $this->getCheckerGudang();
+        $res = GudangStok::select(
+            'gudang_stok.id',
+            'id_material',
+            'material.nama as nama_material',
+            'gudang_stok.jumlah',
+            'gudang_stok.status'
+        )
+            ->leftJoin('material', 'gudang_stok.id_material', '=', 'material.id')
+            ->where('id_gudang', $gudang->id)
+            ->where('status', $status_pallet)
+            ->get();
+
+        $obj =  AktivitasResource::collection($res)->additional([
+            'status' => [
+                'message' => '',
+                'code' => Response::HTTP_OK
+            ],
+        ], Response::HTTP_OK);
+
+        return $obj;
+    }
 }

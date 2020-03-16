@@ -223,6 +223,11 @@ function edit(id = '') {
                 $('#pallet_rusak').val(obj.data['pallet_rusak']).change();
             }
 
+            if (obj.data['status_aktivitas'] != null) {
+                $("#status_aktivitas").selectpicker('refresh');
+                $('#status_aktivitas').val(obj.data['status_aktivitas']).change();
+            }
+
             if (obj.data['upload_foto'] != null) {
                 $('#upload_foto').prop('checked', true);
             }

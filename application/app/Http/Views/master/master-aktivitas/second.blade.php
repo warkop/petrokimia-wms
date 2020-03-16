@@ -146,6 +146,19 @@
                                     </select>
                                 </div>
                             </div>
+
+                        </div>
+                        <div class="kel mb2">
+                            <span><em><strong>Status Aktivitas</strong></em></span>
+                            <div class="row">
+                                <div class="col-6">
+                                    <select class="form-control kt-selectpicker" name="status_aktivitas" id="status_aktivitas">
+                                        <option value="">Bukan Keluar - Masuk</option>
+                                        <option value="1">Keluar</option>
+                                        <option value="2">Masuk</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
