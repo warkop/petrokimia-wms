@@ -780,10 +780,10 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
 
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(7);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(15);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(35);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(25);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
 
         // end : title
         // start : judul kolom
@@ -815,11 +815,13 @@ class ReportController extends Controller
         $abjadPemasukan = $abjadOri;
         $i = 0;
         $row = 6;
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         foreach ($gudang as $key) {
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $key->nama);
             $i++;
             $col++;
             $abjadPemasukan++;
+            $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         }
         $row = 5;
         $abjadPemasukan = chr(ord($abjadPemasukan) - 1);
@@ -835,6 +837,7 @@ class ReportController extends Controller
             $i++;
             $col++;
             $abjadPengeluaran++;
+            $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
         }
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPemasukan . ($row-1) . ':' . $abjadPengeluaran . ($row-1));
@@ -842,18 +845,24 @@ class ReportController extends Controller
         $row = 5;
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Stok Akhir');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
+
         $abjadPengeluaran++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row + 1));
 
         $col++;
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rusak');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
+
         $abjadPengeluaran++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row + 1));
 
         $col++;
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Siap Jual');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
+        
         $abjadPengeluaran++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row + 1));
 
@@ -1225,12 +1234,6 @@ class ReportController extends Controller
 
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
-
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(7);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(15);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(35);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(25);
-
         // end : title
         // start : judul kolom
         $col = 1;
@@ -1238,34 +1241,41 @@ class ReportController extends Controller
         $abjadOri = 'A';
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row + 1));
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadOri)->setAutoSize(true);
 
         $abjadOri++;
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Gudang');
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row + 1));
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadOri)->setAutoSize(true);
 
         $abjadOri++;
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Material');
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row + 1));
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadOri)->setAutoSize(true);
 
         $abjadOri++;
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Stok Awal');
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row + 1));
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadOri)->setAutoSize(true);
 
         $abjadOri++;
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Pemasukan');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadOri)->setAutoSize(true);
 
         $abjadPemasukan = $abjadOri;
         $i = 0;
         $row = 6;
+        // $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadOri)->setAutoSize(true);
         foreach ($gudang as $key) {
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $key->nama);
             $i++;
             $col++;
             $abjadPemasukan++;
+            $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         }
         $row = 5;
         $abjadPemasukan = chr(ord($abjadPemasukan) - 1);
@@ -1281,6 +1291,7 @@ class ReportController extends Controller
             $i++;
             $col++;
             $abjadPengeluaran++;
+            $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
         }
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPemasukan . ($row - 1) . ':' . $abjadPengeluaran . ($row - 1));
@@ -1288,6 +1299,8 @@ class ReportController extends Controller
         $row = 5;
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Stok Akhir');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
+
         $abjadPengeluaran++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row + 1));
 
@@ -1747,6 +1760,13 @@ class ReportController extends Controller
         $objSpreadsheet->createSheet($sheetIndex);
         $objSpreadsheet->setActiveSheetIndex($sheetIndex);
         // start : title
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+
+
         $col = 3;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
@@ -1800,6 +1820,7 @@ class ReportController extends Controller
         $i = 0;
         $row = 6;
         foreach ($gudang as $key) {
+            $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $key->nama);
             $i++;
             $col++;
@@ -1822,6 +1843,7 @@ class ReportController extends Controller
             $i++;
             $col++;
             $abjadPengeluaran++;
+            $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
         }
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total'); //total pengeluaran
         $col++;
@@ -1839,6 +1861,7 @@ class ReportController extends Controller
             $i++;
             $col++;
             $abjadPengeluaran++;
+            $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
         }
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total'); //total pengeluaran
         $col++;
@@ -1849,6 +1872,7 @@ class ReportController extends Controller
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Dipinjam');
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, ($row+1), 'Peminjam');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         $abjadPengeluaran++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . $row);
 
@@ -1856,34 +1880,41 @@ class ReportController extends Controller
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Dikembalikan');
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, ($row + 1), 'Peminjam');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         $abjadPengeluaran++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . $row);
 
         $col++;
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Peralihan Kondisi Bertambah');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         $abjadPengeluaran++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row + 1));
 
         $col++;
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Peralihan Kondisi Berkurang');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         $abjadPengeluaran++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row + 1));
         
         $col++;
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Status');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         $abjadPengeluaran++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row+1));
         
         $col++;
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Stok Akhir');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         $abjadPengeluaran++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row + 1));
-
         $abjad = 'A';
+
+        $abjadPemasukanSpes = chr(ord($abjadPemasukan) + 1);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukanSpes)->setAutoSize(true);
         
         $row = 5;
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadPengeluaran . ($row + 1))->applyFromArray($style_judul_kolom);
@@ -2390,14 +2421,13 @@ class ReportController extends Controller
 
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
-
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(7);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(25);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(40);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(25);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(15);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(40);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(20);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
 
         // end : title
         // start : judul kolom
@@ -2687,12 +2717,12 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_acara);
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(7);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(15);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(35);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(25);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(25);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(25);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
 
         // end : title
         // start : judul kolom
@@ -3597,8 +3627,11 @@ class ReportController extends Controller
         // start : sheet
         $objSpreadsheet->createSheet($sheetIndex);
         $objSpreadsheet->setActiveSheetIndex($sheetIndex);
-        
+
         // start : title
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
         $col = 3;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
@@ -3648,11 +3681,13 @@ class ReportController extends Controller
         $abjadPemasukan = $abjadOri;
         $i = 0;
         $row = 6;
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         foreach ($gudang as $key) {
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $key->nama);
             $i++;
             $col++;
             $abjadPemasukan++;
+            $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         }
         $row = 5;
         
@@ -3668,15 +3703,21 @@ class ReportController extends Controller
             $i++;
             $col++;
             $abjadPengeluaran++;
+            $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
         }
 
         $row = 5;
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPemasukan . $row . ':' . $abjadPengeluaran . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Stok Akhir');
+        
+
+        
         $abjadPengeluaran++;
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row+1));
         $abjad = 'A';
+
         
         $row = 5;
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":". $abjadPengeluaran . ($row+1))->applyFromArray($style_judul_kolom);
