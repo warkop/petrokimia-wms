@@ -1113,13 +1113,13 @@ class ReportController extends Controller
         $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
 
-        $res = AreaStok::distinct()->select(
-            'id_material',
-            'id_area'
-        )
-            ->with('material')
-            ->with('area', 'area.gudang')
-        ;
+        // $res = AreaStok::distinct()->select(
+        //     'id_material',
+        //     'id_area'
+        // )
+        //     ->with('material')
+        //     ->with('area', 'area.gudang')
+        // ;
 
         $resPallet = GudangStok::select(
             'id_gudang',
@@ -1136,12 +1136,12 @@ class ReportController extends Controller
                 }
             })
                 ->get();
-            $res = $res->whereHas('area.gudang', function ($query) use ($gudang) {
-                $query = $query->where('id_gudang', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query = $query->orWhere('id_gudang', $value);
-                }
-            });
+            // $res = $res->whereHas('area.gudang', function ($query) use ($gudang) {
+            //     $query = $query->where('id_gudang', $gudang[0]);
+            //     foreach ($gudang as $key => $value) {
+            //         $query = $query->orWhere('id_gudang', $value);
+            //     }
+            // });
 
             $resPallet = $resPallet->where(function($query) use($gudang) {
                 $query = $query->where('id_gudang', $gudang[0]);
@@ -1152,19 +1152,19 @@ class ReportController extends Controller
         }
 
         if ($material == 2) {
-            $res = $res->where(function ($query) use ($pilih_material) {
-                $query = $query->where('id_material', $pilih_material[0]);
-                foreach ($pilih_material as $key => $value) {
-                    $query = $query->orWhere('id_material', $value);
-                }
-            });
+            // $res = $res->where(function ($query) use ($pilih_material) {
+            //     $query = $query->where('id_material', $pilih_material[0]);
+            //     foreach ($pilih_material as $key => $value) {
+            //         $query = $query->orWhere('id_material', $value);
+            //     }
+            // });
         } else {
             // $res = $res->whereHas('material', function ($query) {
             //     $query = $query->where('kategori', 1);
             // });
         }
 
-        $res = $res->orderBy('id_material')->get()->groupBy('id_material');
+        // $res = $res->orderBy('id_material')->get()->groupBy('id_material');
 
         if (!is_dir(storage_path() . '/app/public/excel/')) {
             mkdir(storage_path() . '/app/public/excel', 755);
@@ -1177,7 +1177,7 @@ class ReportController extends Controller
 
         $resPallet = $resPallet->get();
 
-        // dd($resPallet->toArray());
+        $res = '';
         $nama_file = date("YmdHis") . '_material.xlsx';
         $this->generateExcelMaterial($res, $nama_file, $resGudang, $resPallet, $tgl_awal, $tgl_akhir, $preview);
     }
@@ -1331,116 +1331,116 @@ class ReportController extends Controller
         // start : isi kolom
         $no = 0;
 
-        foreach ($res as $value) {
-            $no++;
-            $col = 1;
-            $row++;
-            $value = $value[0];
+        // foreach ($res as $value) {
+        //     $no++;
+        //     $col = 1;
+        //     $row++;
+        //     $value = $value[0];
 
-            $style_ontop = array(
-                'alignment' => array(
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
-                )
-            );
+        //     $style_ontop = array(
+        //         'alignment' => array(
+        //             'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
+        //         )
+        //     );
 
-            $style_kolom = array(
+        //     $style_kolom = array(
 
-                'borders' => array(
-                    'allBorders' => array(
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-                    )
-                ),
+        //         'borders' => array(
+        //             'allBorders' => array(
+        //                 'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+        //             )
+        //         ),
 
-            );
+        //     );
 
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadPengeluaran . $row)->applyFromArray($style_kolom);
+        //     $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadPengeluaran . $row)->applyFromArray($style_kolom);
 
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':' . $abjadPengeluaran . $row)->applyFromArray($style_ontop);
+        //     $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':' . $abjadPengeluaran . $row)->applyFromArray($style_ontop);
 
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
+        //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
 
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->area->gudang->nama);
+        //     $col++;
+        //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->area->gudang->nama);
 
-            //stok awal
-            $materialTransMengurang = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-                ->where(function ($query) use ($value) {
-                    $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
-                    $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
-                })
-                ->where('id_material', $value->id_material)
-                ->where(function ($query) use ($tgl_awal) {
-                    $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
-                })
-                ->where('status_produk', 1)
-                ->where('tipe', 1)
-                ->sum('jumlah');
-            $materialTransMenambah = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-                ->where(function ($query) use ($value) {
-                    $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
-                    $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
-                })
-                ->where('id_material', $value->id_material)
-                ->where(function ($query) use ($tgl_awal) {
-                    $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
-                })
-                ->where('status_produk', 1)
-                ->where('tipe', 2)
-                ->sum('jumlah');
-            $stokAwal = $materialTransMenambah - $materialTransMengurang;
+        //     //stok awal
+        //     $materialTransMengurang = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+        //         ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
+        //         ->where(function ($query) use ($value) {
+        //             $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
+        //             $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
+        //         })
+        //         ->where('id_material', $value->id_material)
+        //         ->where(function ($query) use ($tgl_awal) {
+        //             $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
+        //             $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
+        //         })
+        //         ->where('status_produk', 1)
+        //         ->where('tipe', 1)
+        //         ->sum('jumlah');
+        //     $materialTransMenambah = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+        //         ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
+        //         ->where(function ($query) use ($value) {
+        //             $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
+        //             $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
+        //         })
+        //         ->where('id_material', $value->id_material)
+        //         ->where(function ($query) use ($tgl_awal) {
+        //             $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
+        //             $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
+        //         })
+        //         ->where('status_produk', 1)
+        //         ->where('tipe', 2)
+        //         ->sum('jumlah');
+        //     $stokAwal = $materialTransMenambah - $materialTransMengurang;
 
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->material->nama);
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAwal, 2));
+        //     $col++;
+        //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->material->nama);
+        //     $col++;
+        //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAwal, 2));
 
-            $stokAkhir = $stokAwal;
-            //pemasukan
-            foreach ($gudang as $item) {
-                $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                    ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-                    ->whereHas('areaStok.area', function ($query) use ($item) {
-                        $query->where('aktivitas_harian.id_gudang_tujuan', $item->id);
-                    })
-                    ->where('tipe', 1)
-                    ->where('id_material', $value->id_material)
-                    ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
-                        $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
-                        $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
-                    })
-                    ->sum('jumlah');
+        //     $stokAkhir = $stokAwal;
+        //     //pemasukan
+        //     foreach ($gudang as $item) {
+        //         $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+        //             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
+        //             ->whereHas('areaStok.area', function ($query) use ($item) {
+        //                 $query->where('aktivitas_harian.id_gudang_tujuan', $item->id);
+        //             })
+        //             ->where('tipe', 1)
+        //             ->where('id_material', $value->id_material)
+        //             ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
+        //                 $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
+        //                 $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
+        //             })
+        //             ->sum('jumlah');
 
-                $stokAkhir += $materialTrans;
-                $col++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 2));
-            }
+        //         $stokAkhir += $materialTrans;
+        //         $col++;
+        //         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 2));
+        //     }
 
-            //pengeluaran
-            foreach ($gudang as $item) {
-                $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                    ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-                    ->whereHas('areaStok.area', function ($query) use ($item) {
-                        $query->where('aktivitas_harian.id_gudang_tujuan', $item->id);
-                    })
-                    ->where('tipe', 2)
-                    ->where('id_material', $value->id_material)
-                    ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
-                        $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
-                        $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
-                    })
-                    ->sum('jumlah');
+        //     //pengeluaran
+        //     foreach ($gudang as $item) {
+        //         $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+        //             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
+        //             ->whereHas('areaStok.area', function ($query) use ($item) {
+        //                 $query->where('aktivitas_harian.id_gudang_tujuan', $item->id);
+        //             })
+        //             ->where('tipe', 2)
+        //             ->where('id_material', $value->id_material)
+        //             ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
+        //                 $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
+        //                 $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
+        //             })
+        //             ->sum('jumlah');
 
-                $stokAkhir -= $materialTrans;
-                $col++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 2));
-            }
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAkhir, 2));
-        }
+        //         $stokAkhir -= $materialTrans;
+        //         $col++;
+        //         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 2));
+        //     }
+        //     $col++;
+        //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAkhir, 2));
+        // }
 
         foreach ($resPallet as $value) {
             $no++;
