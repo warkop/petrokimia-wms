@@ -104,12 +104,17 @@ class MaterialAdjustmentController extends Controller
             $produk_alasan    = array_values((array)$produk_alasan);
 
             for ($i = 0; $i < $panjang; $i++) {
-                $areaStok = AreaStok::where('id_area', $area[$i])->where('id_material', $produk[$i])->where('tanggal', date('Y-m-d', strtotime($tanggal[$i])))->first();
+                $areaStok = AreaStok::where('id_area', $area[$i])
+                ->where('id_material', $produk[$i])
+                ->where('tanggal', date('Y-m-d', strtotime($tanggal[$i])))
+                ->where('status', 1)
+                ->first();
                 if (empty($areaStok)) {
                     $areaStok = new AreaStok;
                     $areaStok->id_area      = $area[$i];
                     $areaStok->id_material  = $produk[$i];
                     $areaStok->tanggal      = date('Y-m-d', strtotime($tanggal[$i]));
+                    $areaStok->status       = 1;
                     $areaStok->jumlah       = $produk_jumlah[$i];
                 } else {
                     if ($action_produk[$i] == 1) {
@@ -149,7 +154,7 @@ class MaterialAdjustmentController extends Controller
             $pallet_alasan    = array_values((array)$pallet_alasan);
 
             for ($i = 0; $i < $panjang; $i++) {
-                $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('id_material', $pallet[$i])->first();
+                $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('id_material', $pallet[$i])->where('status', 1)->first();
                 if (empty($gudangStok)) {
                     $gudangStok = new GudangStok;
                     $gudangStok->id_gudang      = $gudang->id;
