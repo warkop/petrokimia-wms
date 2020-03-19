@@ -29,7 +29,7 @@
             <div class="form-group row">
                 <h4 class="col-2 col-form-label text-kiri">Gudang</h4>
                 <div class="col-6">
-                    <select class="form-control m-select2" id="gudang" name="gudang" style="width: 100%">
+                    <select class="form-control m-select2" id="gudang" name="gudang" style="width: 100%" required>
                         <option></option>
                         @foreach ($gudang as $item)
                             <option value="{{$item->id}}">{{$item->nama}}</option>
@@ -40,7 +40,7 @@
             <div class="form-group row">
                 <h4 class="col-2 col-form-label text-kiri">Shift</h4>
                 <div class="col-6">
-                    <select class="form-control m-select2" id="shift" name="shift" style="width: 100%">
+                    <select class="form-control m-select2" id="shift" name="shift" style="width: 100%" required>
                         <option></option>
                         @foreach ($shift as $item)
                             <option value="{{$item->id}}">{{$item->nama}}</option>
@@ -52,7 +52,7 @@
                 <h4 class="col-2 col-form-label text-kiri">Produk</h4>
                 <div class="col-6">
                     <div class="mt1" id="textadd">
-                        <select class="form-control m-select2" id="pilih" name="pilih_produk" style="width:100%">
+                        <select class="form-control m-select2" id="pilih" name="pilih_produk" style="width:100%" required>
                             <option></option>
                             @foreach ($produk as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>
@@ -65,7 +65,7 @@
                 <h4 class="col-2 col-form-label text-kiri">Tanggal</h4>
                 <div class="col-6">
                     <div class="col-md-6">
-                        <input type="text" class="form-control" id="start_date" name="tanggal" readonly placeholder="Pilih tanggal">
+                        <input type="text" class="form-control" id="start_date" name="tanggal" readonly placeholder="Pilih tanggal" required>
                     </div>
                 </div>
             </div>
