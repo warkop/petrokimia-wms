@@ -177,6 +177,9 @@ License: You must have a valid license purchased only from themeforest(the above
 											<li id="report-keluhan-gp-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-keluhan-gp')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Keluhan GP</span></a></li>
 											<li id="report-aktivitas-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-aktivitas')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Aktivitas</span></a></li>
 											<li id="report-log-sheet-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-log-sheet')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Log Sheet</span></a></li>
+											<li id="report-biaya-alat-berat-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-biaya-alat-berat')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Biaya Alat Berat</span></a></li>
+											<li id="report-biaya-tkbm-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-biaya-tkbm')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Biaya TKBM</span></a></li>
+											<li id="report-biaya-pallet-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-biaya-pallet')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Biaya Pallet</span></a></li>
 										</ul>
 									</div>
 								</li>

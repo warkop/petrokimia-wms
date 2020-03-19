@@ -72,7 +72,7 @@
                         <th>Shift</th>
                         <th>Nopol</th>
                         <th>Driver</th>
-                        <th>No. SO</th>
+                        <th>No. SO / Posto</th>
                         <th>Actions</th>
                     </tr>
                 </thead>

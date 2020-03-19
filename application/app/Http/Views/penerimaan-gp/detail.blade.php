@@ -82,7 +82,7 @@
                     <div class="row mb1">
                         <div class="col-12">
                             <label>Jenis Aktivitas</label>
-                            <h5 class="boldd"> {{$aktivitasHarian->aktivitas->nama}}</h5>
+                            <h5 class="boldd"> {{$aktivitasHarian->aktivitas->nama??'-'}}</h5>
                         </div>
                     </div>
                     <div class="row mb1">
@@ -129,7 +129,7 @@
                     </div>
                     <div class="row mb1">
                         <div class="col-12">
-                            <label>No. SO</label>
+                            <label>No. SO / Posto</label>
                             <h5 class="boldd"> {{$aktivitasHarian->posto??'-'}}</h5>
                         </div>
                     </div>

@@ -24,19 +24,19 @@ class VersionController extends Controller
         $version = Version::orderBy('id', 'desc')->first();
 
         if (!empty($version)) {
-            if ($version_code <= $version->version_code) {
-                $this->responseData = $version_code;
-                $this->responseCode = 403;
-                $this->responseMessage = 'Versi tidak boleh atau kurang dari sama dengan '.$version->version_code.'!';
-            } else {
-                $version = new Version;
-                $version->version_code = $version_code;
-                $version->save();
+            // if ($version_code <= $version->version_code) {
+            //     $this->responseData = $version_code;
+            //     $this->responseCode = 403;
+            //     $this->responseMessage = 'Versi tidak boleh atau kurang dari sama dengan '.$version->version_code.'!';
+            // } else {
+            $version = new Version;
+            $version->version_code = $version_code;
+            $version->save();
 
-                $this->responseData = $version_code;
-                $this->responseCode = 200;
-                $this->responseMessage = 'Versi berhasil ditambahkan!';
-            }
+            $this->responseData = $version_code;
+            $this->responseCode = 200;
+            $this->responseMessage = 'Versi berhasil ditambahkan!';
+            // }
         } else {
             $version = new Version;
             $version->version_code = $version_code;

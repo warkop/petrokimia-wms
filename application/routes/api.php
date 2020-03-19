@@ -57,6 +57,7 @@ Route::group(['middleware' => 'api.auth'], function () {
         Route::post('/kelayakan', 'API\AktivitasController@storeKelayakanPhotos');
         Route::put('/save-pengembalian', 'API\AktivitasController@storePengembalian');
         Route::put('/cancel/{aktivitasHarian}', 'API\AktivitasController@cancelAktivitas')->where('id', '[0-9]+');
+        Route::post('/upload-ba/{aktivitasHarian}', 'API\AktivitasController@uploadBa')->where('aktivitasHarian', '[0-9]+');
         
         Route::post('/test-save/{kategoriAlatBerat}', 'API\AktivitasController@testSave');
         Route::get('/isi-stok/{hapus?}', 'API\AktivitasController@isiStok');
@@ -83,6 +84,7 @@ Route::group(['middleware' => 'api.auth'], function () {
     Route::group(['prefix' => 'layout'], function () {
         Route::get('/', 'API\LayoutController@index');
         Route::get('/{id_area}', 'API\LayoutController@detail')->where('id_area', '[0-9]+');
+        Route::get('/status/{status}', 'API\LayoutController@detailPallet')->where('status', '[0-9]+');
     });
 
     Route::group(['prefix' => 'rencana-kerja'], function () {
@@ -118,3 +120,4 @@ Route::group(['middleware' => 'api.auth'], function () {
 });
 
 Route::put('version/', 'API\VersionController@store');
+Route::get('/test-firebase', 'API\AktivitasController@testFirebase');

@@ -34,6 +34,7 @@ use App\Http\Requests\ApiAktivitasPengembalianRequest;
 use App\Http\Requests\ApiAktivitasRequest;
 use App\Http\Requests\ApiSaveKelayakanPhotos;
 use App\Http\Requests\ApiSavePhotosRequest;
+use App\Http\Requests\ApiSaveUploadBaRequest;
 use App\Http\Resources\AktivitasResource;
 use App\Http\Resources\AlatBeratResource;
 use App\Http\Resources\AreaPenerimaanGiResource;
@@ -262,7 +263,7 @@ class AktivitasController extends Controller
                 'area.id',
                 'area.nama',
                 'area.kapasitas',
-                'area_stok.tanggal',
+                DB::raw("COALESCE(TO_CHAR(area_stok.tanggal, 'YYYY-MM-DD'), TO_CHAR(now(),'YYYY-MM-DD')) as tanggal"),
                 'area.tipe',
                 'area_stok.id_material',
                 DB::raw('COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.$condition.'),0) as jumlah'),
@@ -888,10 +889,7 @@ class AktivitasController extends Controller
             return response()->json($response, $this->responseCode);
         }
 
-        $aktivitasGudang = AktivitasGudang::with('aktivitas')->whereHas('aktivitas', function ($query) {
-            $query->whereNotNull('penerimaan_gi');
-        })
-        ->where('id_gudang', $gudang->id)
+        $aktivitasGudang = Aktivitas::whereNotNull('penerimaan_gi')
         ->first();
         
         if ($aktivitasHarian->approve != null) {
@@ -902,12 +900,11 @@ class AktivitasController extends Controller
         }
 
         if (!empty($aktivitasGudang)) {
-            if ($aktivitasGudang->aktivitas->penerimaan_gi != null) {
+            if ($aktivitasGudang != null) {
                 $wannaSave = new AktivitasHarian;
                 $wannaSave->ref_number        = $aktivitasHarian->id;
-                $wannaSave->id_aktivitas      = $aktivitasGudang->id_aktivitas;
+                $wannaSave->id_aktivitas      = $aktivitasGudang->id;
                 $wannaSave->id_gudang         = $gudang->id;
-                // $wannaSave->id_karu           = $gudang->id_karu;
                 $wannaSave->id_shift          = $rencana_tkbm->id_shift;
                 $wannaSave->id_area           = $req->input('id_pindah_area');
                 $wannaSave->id_alat_berat     = $req->input('id_alat_berat');
@@ -921,7 +918,7 @@ class AktivitasController extends Controller
                 $aktivitasHarian->approve = date('Y-m-d H:i:s');
                 $aktivitasHarian->save();
     
-                if ($aktivitasGudang->aktivitas->pengaruh_tgl_produksi != null) { //jika tidak pengaruh tanggal produksi dicentang
+                if ($aktivitasGudang->pengaruh_tgl_produksi != null) { //jika tidak pengaruh tanggal produksi dicentang
                     $list_produk = $req->input('list_produk');
     
                     if (!empty($list_produk)) {
@@ -1038,21 +1035,12 @@ class AktivitasController extends Controller
                                             $response               = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
                                             return response()->json($response, $this->responseCode);
                                         }
-    
-                                        // $arr = [
-                                        //     'id_material'   => $produk,
-                                        //     'id_area'       => $id_area,
-                                        //     'jumlah'        => $list_jumlah[$k]['jumlah'],
-                                        //     'tanggal'       => date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])),
-                                        // ];
 
                                         $area_stok->id_material   = $produk;
                                         $area_stok->id_area       = $id_area;
                                         $area_stok->tanggal       = date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']));
 
                                         $area_stok->save();
-    
-                                        // $saved_area_stok = $area_stok->create($arr);
     
                                         $material_trans = new MaterialTrans;
     
@@ -1120,7 +1108,7 @@ class AktivitasController extends Controller
                     }
                 }
     
-                if ($aktivitasGudang->aktivitas->penerimaan_gi != null) {
+                if ($aktivitasGudang->penerimaan_gi != null) {
                     $tkbm = TenagaKerjaNonOrganik::findOrFail($res_user->id_tkbm);
                     $message = 'Pengiriman Gudang Internal pada gudang '. $gudang->nama.' berhasil di setujui oleh '.$tkbm->nama;
                     $this->storeNotification($aktivitasHarian, $message, true);
@@ -1643,8 +1631,6 @@ class AktivitasController extends Controller
     public function detailHistory($id) //memuat detail history
     {
         $gudang = $this->getCheckerGudang();
-        $my_auth = request()->get('my_auth');
-        $user = Users::findOrFail($my_auth->id_user);
 
         $res = AktivitasHarian::select(
             'aktivitas_harian.id',
@@ -1679,6 +1665,7 @@ class AktivitasController extends Controller
             'nopol',
             'driver',
             'posto',
+            'ba',
             DB::raw('(SELECT nama gudang FROM gudang WHERE id = aktivitas_harian.id_gudang)
                     AS text_gudang'),
             DB::raw('(SELECT nama FROM alat_berat_kat WHERE id = id_kategori)
@@ -1794,6 +1781,7 @@ class AktivitasController extends Controller
             'pallet' => $res_pallet,
             'alat_berat' => $list_alat_berat,
             'file' => $foto,
+            'ba' => '{{base_url}}/watch/{{ba}}?un={{id_aktivitas_harian}}&ctg=ba&src={{ba}}',
             'url' => '{{base_url}}/watch/{{foto}}?token={{token}}&un={{id_aktivitas_harian}}&ctg=aktivitas_harian&src={{foto}}',
             'status' => [
                 'message' => '',
@@ -1889,7 +1877,7 @@ class AktivitasController extends Controller
 
     public function testFirebase()
     {
-        // send_firebase('');
+        send_firebase('cUPB0QDTmaY%3AAPA91bH2_xBCMhYXEhQf9j-JaNTtKGugs3DLFPBc7wNg627qHooXcyqomepmYvKGgCWihGN54QN6Y-lWWMSIPjJsX-YpakGyIxIPhGeQjRd6AbZ9W4B0qsjlv4fBEtpNeeKgIZMd6tMe', 'Testing Wisnu');
     }
 
     public function listNotifikasi()
@@ -2234,5 +2222,37 @@ class AktivitasController extends Controller
                 $key->save();
             }
         }
+    }
+
+    public function uploadBa(ApiSaveUploadBaRequest $req, AktivitasHarian $aktivitasHarian)
+    {
+        $req->validated();
+        if ($aktivitasHarian->canceled == null) {
+            return response()->json([
+                'data' => [],
+                'status' => [
+                    'message' => 'Hanya aktivitas sudah dicancel yang bisa mengupload!',
+                    'code' => 403,
+                ]
+            ], 403);
+        }
+
+        Storage::deleteDirectory('/public/ba/' . $aktivitasHarian->id);
+        $berkas = $req->file('berkas');
+        if (!empty($berkas)) {
+            if ($berkas->isValid()) {
+                $berkas->storeAs('/public/ba/' . $aktivitasHarian->id, $berkas->getClientOriginalName());
+                $aktivitasHarian->ba = $berkas->getClientOriginalName();
+                $aktivitasHarian->save();
+            }
+        }
+
+        return response()->json([
+            'data' => $berkas,
+            'status' => [
+                'message' => 'Berhasil disimpan',
+                'code' => Response::HTTP_CREATED,
+            ]
+        ], Response::HTTP_CREATED);
     }
 }

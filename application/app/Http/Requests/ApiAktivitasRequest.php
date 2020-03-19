@@ -96,9 +96,10 @@ class ApiAktivitasRequest extends FormRequest
         $gudang = $this->getRencana();
         
 
+
         $rules = [
             'id_aktivitas'      => 'required|exists:aktivitas,id',
-            'id_gudang_tujuan'  => 'nullable|exists:gudang,id',
+            'id_gudang_tujuan'  => 'nullable|exists:gudang,id|not_in:'.$gudang->id,
             'id_alat_berat'     => 'nullable|exists:alat_berat,id',
             'id_tkbm'           => [
                 'nullable',
@@ -154,40 +155,42 @@ class ApiAktivitasRequest extends FormRequest
         }
         $tempJumlahProduk = [];
 
-        for ($i = 0; $i < count($request->list_produk); $i++) {
-            $list_area = $request->list_produk[$i]['list_area'];
-            for ($j = 0; $j < count($list_area); $j++) {
-                $list_jumlah = $list_area[$j]['list_jumlah'];
-                for ($k = 0; $k < count($list_jumlah); $k++) {
-                    if ($list_jumlah[$k]['tanggal'] != null) {
-                        $area_stok = AreaStok::where('id_area', $list_area[$j]['id_area_stok'])
-                            ->where('id_material', $request->list_produk[$i]['produk'])
-                            ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
-                            ->where('status', $request->list_produk[$i]['status_produk'])
-                            ->orderBy('tanggal', 'asc')
-                            ->first();
-                    } else {
-                        $area_stok = AreaStok::where('id_area', $list_area[$j]['id_area_stok'])
-                            ->where('id_material', $request->list_produk[$i]['produk'])
-                            ->whereNull('tanggal')
-                            ->where('status', $request->list_produk[$i]['status_produk'])
-                            ->first();
-                    }
-                    if ($list_area[$j]['tipe'] == 1) {
+        if ($request->list_produk) {
+            for ($i = 0; $i < count($request->list_produk); $i++) {
+                $list_area = $request->list_produk[$i]['list_area'];
+                for ($j = 0; $j < count($list_area); $j++) {
+                    $list_jumlah = $list_area[$j]['list_jumlah'];
+                    for ($k = 0; $k < count($list_jumlah); $k++) {
                         if ($list_jumlah[$k]['tanggal'] != null) {
-                            if (isset(${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk'] . '_' . date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']))})) {
-                                ${'tempJumlahProduk_'.$list_area[$j]['id_area_stok'].'_'.$request->list_produk[$i]['produk'].'_'.date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']))} = ${'tempJumlahProduk_'.$list_area[$j]['id_area_stok'].'_'.$request->list_produk[$i]['produk'].'_'.date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']))} - $list_jumlah[$k]['jumlah'];
-                            } else {
-                                if (!empty($area_stok)) {
-                                    ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk'] . '_' . date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']))} = $area_stok->jumlah;
-                                }
-                            }
+                            $area_stok = AreaStok::where('id_area', $list_area[$j]['id_area_stok'])
+                                ->where('id_material', $request->list_produk[$i]['produk'])
+                                ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                ->where('status', $request->list_produk[$i]['status_produk'])
+                                ->orderBy('tanggal', 'asc')
+                                ->first();
                         } else {
-                            if (isset(${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk']})) {
-                                ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk']} = ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk']} - $list_jumlah[$k]['jumlah'];
+                            $area_stok = AreaStok::where('id_area', $list_area[$j]['id_area_stok'])
+                                ->where('id_material', $request->list_produk[$i]['produk'])
+                                ->whereNull('tanggal')
+                                ->where('status', $request->list_produk[$i]['status_produk'])
+                                ->first();
+                        }
+                        if ($list_area[$j]['tipe'] == 1) {
+                            if ($list_jumlah[$k]['tanggal'] != null) {
+                                if (isset(${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk'] . '_' . date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']))})) {
+                                    ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk'] . '_' . date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']))} = ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk'] . '_' . date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']))} - $list_jumlah[$k]['jumlah'];
+                                } else {
+                                    if (!empty($area_stok)) {
+                                        ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk'] . '_' . date('Y-m-d', strtotime($list_jumlah[$k]['tanggal']))} = $area_stok->jumlah;
+                                    }
+                                }
                             } else {
-                                if (!empty($area_stok)) {
-                                    ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk']} = $area_stok->jumlah;
+                                if (isset(${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk']})) {
+                                    ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk']} = ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk']} - $list_jumlah[$k]['jumlah'];
+                                } else {
+                                    if (!empty($area_stok)) {
+                                        ${'tempJumlahProduk_' . $list_area[$j]['id_area_stok'] . '_' . $request->list_produk[$i]['produk']} = $area_stok->jumlah;
+                                    }
                                 }
                             }
                         }
@@ -195,6 +198,7 @@ class ApiAktivitasRequest extends FormRequest
                 }
             }
         }
+        
 
         if ($request->list_produk) {
             for ($i = 0; $i < count($request->list_produk); $i++) {
@@ -349,6 +353,7 @@ class ApiAktivitasRequest extends FormRequest
             'list_pallet.*.jumlah.max'                                      => ':attribute melebihi kapasitas di gudang yaitu :max pcs!',
             'min'           => ':attribute harus minimal :max pcs!',
             'date_format'   => ':attribute tanggal harus dengan format tanggal-bulan-tahun, contoh: 13-05-2018',
+            'not_in'        => ':attribute tidak boleh sama dengan gudang Anda sendiri',
         ];
     }
 

@@ -106,4 +106,45 @@ class LogAktivitasController extends Controller
         ->get();
         return response()->json($areaStok, 200);
     }
+
+    public function print($id)
+    {
+        $aktivitasHarian = AktivitasHarian::where('id', $id)
+            ->with(['aktivitas' => function ($query) {
+                $query->whereNotNull('pengiriman');
+                $query->whereNotNull('pengaruh_tgl_produksi');
+                $query->withoutGlobalScopes();
+            }])
+            ->whereHas('aktivitas', function ($query) {
+                $query->whereNotNull('pengiriman');
+                $query->whereNotNull('pengaruh_tgl_produksi');
+                $query->withoutGlobalScopes();
+            })->firstOrFail();
+        $data['title'] = 'Cetak Aktivitas';
+        $data['aktivitasHarian'] = $aktivitasHarian;
+        $data['aktivitasFoto'] = AktivitasFoto::withoutGlobalScopes()->where('id_aktivitas_harian', $aktivitasHarian->id)->get();
+
+        $produk = MaterialTrans::select(
+            'material_trans.id_material',
+            'material.nama as nama_material',
+            'area.nama as nama_area',
+            'area_stok.id_area',
+            'material_trans.tipe',
+            'area_stok.tanggal',
+            'material_trans.jumlah'
+        )
+            ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
+            ->leftJoin('area_stok', 'area_stok.id', '=', 'material_trans.id_area_stok')
+            ->leftJoin('area', 'area_stok.id_area', '=', 'area.id')
+            ->where('id_aktivitas_harian', $aktivitasHarian->id)
+            ->whereNotNull('status_produk')
+            ->get();
+        $data['produk'] = $produk;
+        $pallet = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_pallet')->get();
+        $data['pallet'] = $pallet;
+        $data['fotoKelayakanBefore'] = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->where('jenis', 1)->get();
+        $data['fotoKelayakanAfter'] = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->where('jenis', 2)->get();
+
+        return view('log-aktivitas.cetak', $data);
+    }
 }

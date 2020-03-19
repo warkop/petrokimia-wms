@@ -247,7 +247,7 @@
                         Jenis Aktivitas
                     </label>
                     <p class="boldd-500">
-                        {{$aktivitasHarian->aktivitas->nama}}
+                        {{$aktivitasHarian->aktivitas->nama??'-'}}
                     </p>
                 </div>
                 <div class="col-md-6 mb1">

@@ -214,6 +214,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/', 'LogAktivitasController@json');
         Route::get('/{aktivitasHarian}', 'LogAktivitasController@show')->where('aktivitasHarian', '[0-9]+');
         Route::get('/get-area/{id_gudang}/{id_material}/{id_aktivitas_harian}', 'LogAktivitasController@getArea')->where('id_material', '[0-9]+')->where('id_gudang', '[0-9]+')->where('id_aktivitas_harian', '[0-9]+');
+        Route::get('/cetak-aktivitas/{id}', 'LogAktivitasController@print')->where('id', '[0-9]+');
     });
 
     Route::group(['prefix' => 'log-aktivitas-user'], function () {
@@ -234,6 +235,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/laporan-keluhan-gp', 'ReportController@laporanKeluhanGp');
         Route::get('/laporan-aktivitas', 'ReportController@laporanAktivitas');
         Route::get('/laporan-log-sheet', 'ReportController@laporanLogSheet');
+        Route::get('/laporan-biaya-alat-berat', 'ReportController@laporanBiayaAlatBerat');
+        Route::get('/laporan-biaya-tkbm', 'ReportController@laporanBiayaTkbm');
+        Route::get('/laporan-biaya-pallet', 'ReportController@laporanBiayaPallet');
         
         Route::get('/transaksi-material', 'ReportController@transaksiMaterial');
         Route::get('/stok', 'ReportController@stok');
@@ -247,6 +251,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/keluhan-gp', 'ReportController@keluhanGp');
         Route::get('/aktivitas-harian', 'ReportController@aktivitasHarian');
         Route::get('/log-sheet', 'ReportController@logSheet');
+        Route::get('/biaya-alat-berat', 'ReportController@biayaAlatBerat');
+        Route::get('/biaya-tkbm', 'ReportController@biayaTkbm');
+        Route::get('/biaya-pallet', 'ReportController@biayaPallet');
     });
 });
 
