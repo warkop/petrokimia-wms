@@ -4105,7 +4105,13 @@ class ReportController extends Controller
                         })
                         ->where(function ($query) use ($tanggal) {
                             $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 07:00:00')));
-                            $query->orWhere('material_adjustment.tanggal', '<', $tanggal);
+                            $query->orWhere(function ($query) use ($tanggal) {
+                                $query->where('material_adjustment.tanggal', '<', $tanggal);
+                                $query->orWhere(function($query) use ($tanggal){
+                                    $query->where('material_adjustment.tanggal', '=', $tanggal);
+                                    $query->where('material_adjustment.shift', '=', 3);
+                                });
+                            });
                         })
                         ->get();
                 } else if ($resShift->id == 2) {
@@ -4120,7 +4126,18 @@ class ReportController extends Controller
                         })
                         ->where(function ($query) use ($tanggal) {
                             $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 15:00:00')));
-                            $query->orWhere('material_adjustment.tanggal', '<', $tanggal);
+                            $query->orWhere('material_adjustment.tanggal', '<=', $tanggal);
+                            $query->orWhere(function ($query) use ($tanggal) {
+                                    $query->where('material_adjustment.tanggal', '=', $tanggal);
+                                    $query->where(function($query){
+                                        $query->where('material_trans.shift_id', 1);
+                                        $query->orWhere('material_trans.shift_id', '=', 3);
+                                    });
+                            });
+                            // $query->orWhere(function ($query) use ($tanggal) {
+                            //     $query->where('material_adjustment.tanggal', '<=', $tanggal);
+                            //     $query->orWhere('material_adjustment.shift', '=', 1);
+                            // });
                         })
                         ->get();
                 } else if ($resShift->id == 3) {
@@ -4190,7 +4207,7 @@ class ReportController extends Controller
                 
             }
 
-            if ($jumlahStokAwal > 0) {
+            if ($jumlahStokAwal >0 || $totalMasuk > 0 || $totalKeluar > 0) {
                 $col = 1;
                 $abjad = 'A';
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $roww[0]->nama);
