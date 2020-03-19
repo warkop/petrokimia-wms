@@ -196,12 +196,22 @@ class UsersController extends Controller
         $old_password   = $req->old_password;
 
         $res = Users::withoutGlobalScopes()->find($id);
-        if (Hash::check($old_password, $res->password)) {
-            $res->password = Hash::make($new_password);
-            $res->save();
+        if(auth()->user()->id == $id){
+            if (Hash::check($old_password, $res->password)) {
+                $res->password = Hash::make($new_password);
+                $res->save();
+            } else {
+                $this->responseCode = 403;
+                $this->responseMessage = 'Password lama yang Anda masukkan salah!';
+                // $this->responseData = $res;
+
+                $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+                return response()->json($response, $this->responseCode);
+            }
         } else {
             $this->responseCode = 403;
-            $this->responseMessage = 'Password lama yang Anda masukkan salah!';
+            $this->responseMessage = 'Aksi yang Anda lakukan dilarang oleh sistem!<br>';
+            $this->responseMessage .= 'Silahkan hubungi administrator untuk mengetahui info lebih lanjut!';
             // $this->responseData = $res;
 
             $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
