@@ -383,21 +383,21 @@ License: You must have a valid license purchased only from themeforest(the above
 		                                <label>Password Lama</label>
 		                                <div class="input-group">
 		                                    <input type="password" class="form-control input-enter-change pwd" name="old_password" id="old_password" placeholder="Password Lama" aria-describedby="basic-addon2">
-		                                    <div class="input-group-append reveal" style="cursor: pointer;"><span class="input-group-text kt-font-dark" id="basic-addon2">Show</span></div>
+		                                    <div class="input-group-append reveal" style="cursor: pointer;" for="old_password"><span class="input-group-text kt-font-dark" id="basic-addon2">Show</span></div>
 		                                </div>
 		                            </div>
 		                            <div class="form-group" id="tempat_password">
 		                                <label>Password Baru</label>
 		                                <div class="input-group">
 		                                    <input type="password" class="form-control input-enter-change pwd" name="new_password" id="new_password" placeholder="Password Baru" aria-describedby="basic-addon2">
-		                                    <div class="input-group-append reveal" style="cursor: pointer;"><span class="input-group-text kt-font-dark" id="basic-addon2">Show</span></div>
+		                                    <div class="input-group-append reveal" style="cursor: pointer;" for="new_password"><span class="input-group-text kt-font-dark" id="basic-addon2">Show</span></div>
 		                                </div>
 		                            </div>
 		                            <div class="form-group" id="tempat_password_confirmation">
 		                                <label>Konfirmasi Password</label>
 		                                <div class="input-group">
 		                                    <input type="password" class="form-control input-enter-change pwd" name="new_password_confirmation" id="new_password_confirmation" placeholder="Konfirmasi Password" aria-describedby="basic-addon2">
-		                                    <div class="input-group-append reveal" style="cursor: pointer;"><span class="input-group-text kt-font-dark" id="basic-addon2">Show</span></div>
+		                                    <div class="input-group-append reveal" style="cursor: pointer;" for="new_password_confirmation"><span class="input-group-text kt-font-dark" id="basic-addon2">Show</span></div>
 		                                </div>
 		                            </div>
 		                        </div>
@@ -411,119 +411,14 @@ License: You must have a valid license purchased only from themeforest(the above
 		        </div>
 		    </div>
 		</div>
-
+		<script src="{{aset_extends('js/app.js')}}"></script>
 		<script>
-			var ajaxUrl = baseUrl + 'master-user';
 			document.onkeydown = function(evt) {
 				evt = evt || window.event;
 				if (evt.keyCode == 27) {
 					$('.modal').modal('hide');
 				}
 			};
-			function modalChangePassword(id) {
-			    $("#modal_form_ganti_password").modal("show");
-			    $("#id_user").val(id);
-			    $("#old_password").val('');
-			    $("#new_password").val('');
-			    $("#new_password_confirmation").val('');
-			}
-			$('#btn_change').on('click', function (e) {
-		        e.preventDefault();
-		        laddaButton = Ladda.create(this);
-		        laddaButton.start();
-		        changePassword();
-		    });
-
-		    $('.input-enter').on("keyup", function (event) {
-		        event.preventDefault();
-		        if (event.keyCode === 13) {
-		            $("#btn_save").click();
-		        }
-		    });
-
-		    $('.input-enter-change').on("keyup", function (event) {
-		        event.preventDefault();
-		        if (event.keyCode === 13) {
-		            $("#btn_change").click();
-		        }
-		    });
-		    function changePassword() {
-			    const id = $("#id_user").val();
-			    let data = $("#form2").serializeArray();
-			    $.ajax({
-			        url: ajaxUrl +"/change-password-general/"+id,
-			        type:"PATCH",
-			        data: data,
-			        dataType: "json",
-			        headers: {
-			            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-			        },
-			        success:(response) => {
-			            laddaButton.stop();
-			            window.onbeforeunload = false;
-			            $('.btn_close_modal').removeClass('hide');
-			            $('.se-pre-con').hide();
-
-			            let obj = response;
-
-			            if (obj.status == "OK") {
-			                swal.fire('Ok', obj.message, 'success');
-			                $('#modal_form_ganti_password').modal('hide');
-			            } else {
-			                swal.fire('Pemberitahuan', obj.message, 'warning');
-			            }
-			        },
-			        error:response => {
-			            $("#btn_change").prop("disabled", false);
-			            let head = 'Maaf',
-			                message = 'Terjadi kesalahan koneksi',
-			                type = 'error';
-			            laddaButton.stop();
-			            window.onbeforeunload = false;
-			            $('.btn_close_modal').removeClass('hide');
-			            $('.se-pre-con').hide();
-
-			            if (response['status'] == 401 || response['status'] == 419) {
-			                location.reload();
-			            } else {
-			                if (response['status'] != 404 && response['status'] != 500) {
-			                    let obj = JSON.parse(response['responseText']);
-
-			                    if (!$.isEmptyObject(obj.message)) {
-			                        if (obj.code > 450) {
-			                            head = 'Maaf';
-			                            message = obj.message;
-			                            type = 'error';
-			                        } else {
-			                            head = 'Pemberitahuan';
-			                            type = 'warning';
-			                            obj = response.responseJSON.errors;
-			                            message = '';
-			                            if (obj == null) {
-			                                message = response.responseJSON.message;
-			                            } else {
-			                                const temp = Object.values(obj);
-			                                message = '';
-			                                temp.forEach(element => {
-			                                    element.forEach(row => {
-			                                        message += row + "<br>"
-			                                    });
-			                                });
-			                            }
-
-			                            laddaButton.stop();
-			                            window.onbeforeunload = false;
-			                            $('.btn_close_modal').removeClass('hide');
-			                            $('.se-pre-con').hide();
-			                        }
-			                    }
-			                }
-
-			                swal.fire(head, message, type);
-			            }
-			        }
-			    })
-			}
 		</script>
 		
 	</body>
