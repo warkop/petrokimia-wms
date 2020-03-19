@@ -135,10 +135,12 @@
                                 </div>
                             </div>
                             @endif
+                            @if (auth()->user()->can('main-menu'))
                             <div class="col-6 mb2">
                                 <button type="button" class="btn btn-outline-success btn-icon-sm dropdown-toggle"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
                                         class="la la-laptop"></i> Main Menu</button>
+                                
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <ul class="kt-nav">
                                         @if (auth()->user()->can('layout'))
@@ -192,6 +194,7 @@
                                     </ul>
                                 </div>
                             </div>
+                            @endif
                             @if (auth()->user()->can('report'))
                             <div class="col-6 mb2">
                                 <button type="button" class="btn btn-outline-success btn-icon-sm dropdown-toggle"

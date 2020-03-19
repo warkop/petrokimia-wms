@@ -33,26 +33,29 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+        Gate::define('main-menu', function ($user) {
+            return $user->role_id === 1 || $user->role_id === 2 || $user->role_id === 7 || $user->role_id === 6;
+        });
         Gate::define('dashboard', function ($user) {
             return $user->role_id === 1 || $user->role_id === 2;
         });
         Gate::define('layout', function ($user) {
-            return $user->role_id === 1 || $user->role_id === 5 || $user->role_id === 7;
+            return $user->role_id === 1 || $user->role_id === 7;
         });
         Gate::define('gudang', function ($user) {
-            return $user->role_id === 1 || $user->role_id === 5;
+            return $user->role_id === 1;
         });
         Gate::define('penerimaan-gp', function ($user) {
             return $user->role_id === 1 || $user->role_id === 6;
         });
         Gate::define('log-aktivitas', function ($user) {
-            return $user->role_id === 1 || $user->role_id === 3 || $user->role_id === 5;
+            return $user->role_id === 1;
         });
         Gate::define('log-aktivitas-user', function ($user) {
             return $user->role_id === 1;
         });
         Gate::define('data-master', function ($user) {
-            return $user->role_id === 1 || $user->role_id === 5;
+            return $user->role_id === 1;
         });
         Gate::define('data-master-user', function ($user) {
             return $user->role_id === 1;
