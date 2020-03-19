@@ -64,4 +64,10 @@ class DashboardController extends Controller
 
         return view('dashboard.grid', $data);
     }
+
+    public function map()
+    {
+        $data['title'] = 'Map Click';
+        return view('dashboard.mapclick', $data);
+    }
 }
