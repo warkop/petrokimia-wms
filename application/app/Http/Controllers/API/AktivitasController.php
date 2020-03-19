@@ -1194,6 +1194,7 @@ class AktivitasController extends Controller
         $pallet = MaterialTrans::select(
             'id_material',
             'nama as nama_material',
+            'status_pallet',
             'tipe',
             'jumlah'
         )
