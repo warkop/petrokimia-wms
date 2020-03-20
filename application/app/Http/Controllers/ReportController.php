@@ -936,7 +936,6 @@ class ReportController extends Controller
                     $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
                     $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
-                ->where('status_produk', 1)
                 ->where('tipe', 1)
                 ->sum('jumlah')
                 ;
@@ -951,7 +950,6 @@ class ReportController extends Controller
                     $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
                     $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
-                ->where('status_produk', 1)
                 ->where('tipe', 2)
                 ->sum('jumlah');
             $stokAwal = $materialTransMenambah - $materialTransMengurang;
@@ -975,7 +973,6 @@ class ReportController extends Controller
                     $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
                     $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
                 })
-                ->where('status_produk', 1)
                 ->sum('jumlah');
 
                 $stokAkhir += $materialTrans;
@@ -996,7 +993,6 @@ class ReportController extends Controller
                     $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
                     $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
                 })
-                ->where('status_produk', 1)
                 ->sum('jumlah');
 
                 $stokAkhir -= $materialTrans;
@@ -1007,10 +1003,46 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAkhir, 2));
 
             $rusak = 0;
+            $rusakSaldoAwal = 0;
+            
+            //stok awal produk rusak
+            $transRusakMenambah = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
+            ->whereHas('areaStok.area', function ($query) use ($value) {
+                $query->where('id_gudang', $value->area->id_gudang);
+            })
+            ->where('status_produk', 2)
+            ->where('id_material', $value->id_material)
+            ->where(function ($query) use ($tgl_awal) {
+                $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
+                $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
+            })
+            ->where('tipe', 2)
+            ->sum('jumlah');
+
+            $transRusakMengurang = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
+            ->whereHas('areaStok.area', function ($query) use ($value) {
+                $query->where('id_gudang', $value->area->id_gudang);
+            })
+            ->where('status_produk', 2)
+            ->where('id_material', $value->id_material)
+            ->where(function ($query) use ($tgl_awal) {
+                $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
+                $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
+            })
+            ->where('tipe', 1)
+            ->sum('jumlah');
+
+            $rusakSaldoAwal += $transRusakMenambah - $transRusakMengurang;
 
             //jumlah rusak
-            $rusakTambah = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            $rusakTambah = 0;
+            $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
+                ->whereHas('areaStok.area', function ($query) use ($value) {
+                    $query->where('id_gudang', $value->area->id_gudang);
+                })
                 ->where('status_produk', 2)
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
@@ -1019,8 +1051,15 @@ class ReportController extends Controller
                 })
                 ->where('tipe', 2)
                 ->sum('jumlah');
-            $rusakKurang = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+
+            $rusakTambah += $materialTrans;
+
+            $rusakKurang = 0;
+            $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
+                ->whereHas('areaStok.area', function ($query) use ($value) {
+                    $query->where('id_gudang', $value->area->id_gudang);
+                })
                 ->where('status_produk', 2)
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
@@ -1029,8 +1068,11 @@ class ReportController extends Controller
                 })
                 ->where('tipe', 1)
                 ->sum('jumlah');
+            
+            $rusakKurang += $materialTrans;
 
-            $rusak = $rusakTambah - $rusakKurang;
+            //total produk rusak
+            $rusak = $rusakSaldoAwal + $rusakTambah - $rusakKurang;
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($rusak, 2));
 
@@ -4032,7 +4074,7 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getStyle("B" . $row)->applyFromArray($style_ontop);
         
         $row++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'HARI / TGL ' . helpDate($tanggal, 'li'));
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'HARI / TGL ');
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col+1, $row, ': ' . helpDate($tanggal, 'li'));
         $objSpreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(30);
         $objSpreadsheet->getActiveSheet()->getStyle("B" . $row)->applyFromArray($style_ontop);
