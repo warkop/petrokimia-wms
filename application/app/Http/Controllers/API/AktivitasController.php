@@ -1116,9 +1116,9 @@ class AktivitasController extends Controller
     
                 $this->responseCode = 200;
                 $this->responseData = [
-                    'data'      => $wannaSave, 
-                    'produk'    => $produk, 
-                    'pallet'    => $pallet, 
+                    'data'      => $wannaSave??null, 
+                    'produk'    => $produk??null, 
+                    'pallet'    => $pallet??null, 
                 ];
                 $this->responseMessage = 'Data berhasil disimpan!';
                 $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
