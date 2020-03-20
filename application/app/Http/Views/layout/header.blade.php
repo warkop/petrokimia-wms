@@ -11,6 +11,7 @@
 
 		<!--begin:: Global Optional Vendors -->
 		<link href="{{aset_tema()}}vendors/general/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css" rel="stylesheet" type="text/css" />
+		<link href="{{aset_tema()}}vendors/general/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" type="text/css" />
 		<link href="{{aset_tema()}}vendors/general/bootstrap-select/dist/css/bootstrap-select.css" rel="stylesheet" type="text/css" />
 		<link href="{{aset_tema()}}vendors/general/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" rel="stylesheet" type="text/css" />
 		<link href="{{aset_tema()}}vendors/general/dropzone/dist/dropzone.css" rel="stylesheet" type="text/css" />

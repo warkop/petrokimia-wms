@@ -23,6 +23,7 @@ Route::group(['middleware' => ['auth']], function () {
         return view('layout.main');
     });
     Route::get('/dashboard', 'DashboardController@index');
+    Route::get('/map-clicked', 'DashboardController@map');
     
     Route::group(['prefix' => 'master-aktivitas', 'middleware' => 'can:data-master'], function () {
         Route::get('/', 'AktivitasController@index');

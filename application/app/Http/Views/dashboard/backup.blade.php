@@ -12,23 +12,7 @@
 </script>
 @include('layout.header')
 <link rel="stylesheet" href="{{aset_extends('css/global.css')}}">
-<script type="text/javascript" src="{{aset_extends('plugin/gchart/loader.js')}}"></script>
-<!-- <script type="text/javascript" src="{{aset_tema('app/custom/general/crud/forms/widgets/bootstrap-daterangepicker.js')}}"></script>
-<script type="text/javascript" src="{{aset_tema('app/custom/general/crud/forms/widgets/bootstrap-daterangepicker.min.js')}}"></script> -->
-<!-- <script type="text/javascript" src="{{aset_tema('app/custom/general/crud/forms/widgets/select2.js')}}"></script>
-<script type="text/javascript" src="{{aset_tema('app/custom/general/crud/forms/widgets/select2.min.js')}}"></script> -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script> -->
-
-
-<style>
-.mbox {   
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin: 10px 55px 10px 25px;
-    padding-left: 4px;
-}
-</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
 <div class="row row-no-padding row-col-separator-xl" style="background:#fff">
     <div class="col-md-6 col-lg-6 col-xl-6 col-sm-6 col-xs-6 pointer nav---gation" onclick="location.href='{{url('/')}}';">
@@ -89,14 +73,14 @@
                 <div class="kt-portlet">
                     <div class="kt-portlet__head no-border-bottom">
                         <div class="kt-portlet__head-title">
-                            <h4 class="kt-portlet__head-text title_sub pt-4">
+                            <h5 class="kt-portlet__head-text title_sub pt-4">
                                 <br>
-                                Dashboard WMS
+                                Dashboard
                                 </h4>
-                                <!-- <p class="sub">
+                                <p class="sub">
                                     Berikut ini adalah statistk pengiriman barang per-shift pada <span
                                         class="text-ungu kt-font-bolder">Aplikasi WMS Petrokimia.</span>
-                                </p> -->
+                                </p>
                         </div>
                         <div class="kt-portlet__head-toolbar">
                             <div class="kt-portlet__head-group pt-4">
@@ -105,8 +89,8 @@
                         </div>
                     </div>
                     <div class="kt-portlet__body">
-                        <div class=" row" style="margin-bottom:3rem">
-                            <!-- <label class="col-form-label col-2 font-weight-bold">Periode 1</label>
+                        <div class="container row" style="margin-bottom:3rem">
+                            <label class="col-form-label col-2 font-weight-bold">Periode 1</label>
                             <div class="col-3">
                                 <input class="form-control" id="kt_datepicker_1" readonly placeholder="Pilih periode mulai"
                                     type="text" />
@@ -115,111 +99,16 @@
                             <div class="col-3">
                                 <input class="form-control" id="kt_datepicker_2" readonly
                                     placeholder="Pilih periode selesai" type="text" />
-                            </div> -->
-                            <div class="form-group col-md-3">
-                                
-                            
-                            <input type="text" class="form-control" id="kt_daterangepicker_2" readonly placeholder="Pilih Periode" type="text" />
-                            
-                            </div>
-                            <div class="form-group col-md-3">
-                                
-                            <select class="form-control input-enter m-select2" id="pilih_shift" name="param" >
-                                <option disabled selected>Pilih shift</option>
-                                <option>Shift 1</option>
-                                <option>Shift 2</option>
-                                <option>Shift 3</option>
-
-                            </select>
-                            </div>
-                            <div class="form-group col-md-3">
-                                
-                            <select class="form-control input-enter m-select2" id="pilih_gudang" name="param" >
-                                <option disabled selected>Pilih gudang</option>
-                                <option>Gudang PF 2</option>
-                                <option>Gudang Multi Guna</option>
-                                <option>Gudang Curah 50.000</option>
-                            </select>
-                            </div>
-                            <div class="form-group col-md-2">
-                                
-                            <button type="button" class="btn btn-primary" style="width:100%">Filter</button>
-                            </div>
-                            <div class="form-group col-md-1">
-                                
-                            <button type="button" class="btn btn-danger btn-icon"><i class="la la-refresh"></i></button>&nbsp;
                             </div>
                         </div>
-
-                        <div class="row">
-                            <!-- <p> 
+                        <div class="container row">
+                            <p> 
                                 <span class="mr1"> <i class="fa fa-square gd-a-color-1"></i> Gudang Ponska</span>
                                 <span class="mr1"> <i class="fa fa-square gd-a-color-2"></i> Gudang Amurea</span>
                                 <span class="mr1"> <i class="fa fa-square gd-a-color-3"></i> Gudang Petrocas</span>
-                            </p> -->
-                            <div class="col-md-4">
-                            <h5>Realisasi Handling Per Jenis Produk Gudang Gresik</h5>
-                            <div id="jenisproduk" style="width:100%; height:350px;"></div>
-                            </div>
-                            <div class="col-md-4">
-                            <h5>Realisasi Handling Per Gudang</h5><br/>
-                            <div id="gudang" style="width:100%; height:350px;"></div>
-                            </div>
-                            <div class="col-md-4">
-                            <h5>Realisasi Tanase Produk Rusak</h5><br/>
-                            <div id="produkrusak" style="width:100%; height:350px;"></div>
-                            </div>
+                            </p>
                         </div>
-                        <div class="row mt4">
-                            
-                            <div class="col-md-6">
-                            <h5>Produksi VS Pengeluaran</h5>
-                            <div id="produksipengeluaran" style="height: 500px;"></div>
-                            </div>
-                            <div class="col-md-6">
-                            <h5>Kapasitas Muat Buruh VS Realisasi Muat</h5>
-                            <div id="muatan" style="height: 500px;"></div>
-                            </div>
-                           
-                        </div>
-                        <div class="mt4">
-                        <h5>Managemen Layout Produk</h5>
-                        <div class="row mt2">
-                        <div class="col-md-8 pr-0">
-                        <div id="map" style="width:100%; height:500px;"></div>
-                        </div>
-                        <div class="col-md-4 pl-0" style="background-color:#FFC201">
-                            <div >
-                                <div style="text-align: center; margin-top:50%">
-                                    <img src="{{aset_extends('img/logo/map-1.png')}}"/><br/>
-                                    <h5>Data Tidak Tersedia</h5>
-                                    Isi Area nya terlebih dahulu
-                                </div >
-                                    
-                            </div>
-                        
-
-                       
-                        </div>
-                        </div>
-                        </div>
-                        <div class="row mt3 ">
-                            
-                            <div class="col-md-8">
-                            <h5>Diagram Realisasi Penggunaan Alat Berat Gudang Gresik</h5>
-                            <div id="realisasialatberat" style="height: 400px;"></div>
-                            </div>
-                            <div class="col-md-4">
-                            <h5>Laporan Keluhan Alat Berat</h5>
-                            <div id="keluhanmuatan" style="height: 400px;"></div>
-                            </div>
-                           
-                        </div>
-                        <div>
-                        <h5 class="mt4">Stok Palet dan Terplas Per Tanggal 1 Febuary 2020</h5>
-                        <div id="stokpaletbulan" style="height: 500px;"></div>
-                        </div>
-                        <!-- <div class="row">
+                        <div class="row">
                             <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 mb2">
                                 <canvas id="line-chart" width="800" height="300"></canvas>
                             </div>
@@ -284,7 +173,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -351,7 +240,7 @@
             </div> --}}
         {{-- </section> --}}
     </div>
-    <!-- <div class="row">
+    <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-6">
             <div class="kt-portlet">
                 <div class="kt-portlet__head no-border-bottom">
@@ -402,7 +291,7 @@
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
 
 </div>
 
@@ -719,457 +608,3 @@ $(function() {
     });
 </script>
 
-
-<script>
-//Chart
-data_chart=[
-    { periode: '2020-02-02', a: 10, b: 10 , c: 170 ,d: 310, e: 480 ,f: 630},
-    { periode: '2020-02-03', a: 170,b: 350, c: 500 ,d: 300, e: 290 ,f: 540},
-    { periode: '2020-02-04', a: 170,b: 170 , c: 300 ,d: 400, e: 550 ,f: 470},
-    { periode: '2020-02-05', a: 460,b: 10 , c: 300 ,d: 250, e: 620 ,f: 290},
-    { periode: '2020-02-06', a: 720 ,b: 650, c: 480 ,d: 340, e: 590 ,f: 310},
-    { periode: '2020-02-07', a: 290 ,b: 670, c: 480 ,d: 450, e: 390 ,f: 450}
-]
-data_chart2=[
-    { periode: '2020-02-02', a: 600, b: 400 },
-    { periode: '2020-02-03', a: 530,b: 350},
-    { periode: '2020-02-04', a: 500,b: 370 },
-    { periode: '2020-02-05', a: 800,b: 1000 },
-    { periode: '2020-02-06', a: 720 ,b: 650},
-    { periode: '2020-02-07', a: 490 ,b: 670},
-    { periode: '2020-02-07', a: 390 ,b: 570}
-]
-
-</script>
-
-<!-- chart-line -->
-<script>
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart() {
-
-var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Periode');
-    data.addColumn('number', 'Produk ZA');
-    data.addColumn('number', 'Produk Urea');
-    data.addColumn('number', 'Produk SP-36');
-    data.addColumn('number', 'Produk Phonska');
-    data.addColumn('number', 'Produk Phonska Plus');
-    data.addColumn('number', 'Gudang NPX Kebomas');
-    data.addRows([
-    
-    [ '2020-02-02',  10,  10 ,  170 , 310,  480 , 630],
-    [ '2020-02-03',  170, 350,  500 , 300,  290 , 540],
-    [ '2020-02-04',  170,170 ,  300 , 400,  550 , 470],
-    [ '2020-02-05',  460, 10 ,  300 , 250,  620 , 290],
-    [ '2020-02-06',  720 , 650,  480 , 340,  590 , 310],
-    [ '2020-02-07',  290 , 670,  480 , 450,  390 , 450],
-    
-   
-]);
-
-
-var options = {
-    colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
-    legend:{position: 'bottom', maxTextLines:4},
-    vAxis: { gridlines: { count: 5 } },
-    hAxis: { slantedText:true, slantedTextAngle:45 },
-    pointSize: 3,
-    
-};
-
-var chart = new google.visualization.LineChart(document.getElementById('jenisproduk'));
-
-chart.draw(data, options);
-}
-</script>
-
-<!-- chart-line -->
-<script>
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart() {
-
-var data = new google.visualization.DataTable();
-data.addColumn('string', 'Periode');
-    data.addColumn('number', 'Gudang ZA');
-    data.addColumn('number', 'Gudang Urea 1A');
-    data.addColumn('number', 'Gudang PF 1');
-    data.addColumn('number', 'Gudang Phonska');
-    data.addColumn('number', 'Gudang Urea 1B');
-    data.addColumn('number', 'Gudang Multiguna');
-    data.addRows([
-    
-    [ '2020-02-02',  10,  10 ,  170 , 310,  480 , 630],
-    [ '2020-02-03',  170, 350,  500 , 300,  290 , 540],
-    [ '2020-02-04',  170,170 ,  300 , 400,  550 , 470],
-    [ '2020-02-05',  460, 10 ,  300 , 250,  620 , 290],
-    [ '2020-02-06',  720 , 650,  480 , 340,  590 , 310],
-    [ '2020-02-07',  290 , 670,  480 , 450,  390 , 450],
-    
-   
-]);
-
-
-var options = {
-    colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
-    legend:{position: 'bottom', maxTextLines:4},
-    vAxis: { gridlines: { count: 5 } },
-    hAxis: { slantedText:true, slantedTextAngle:45 },
-    pointSize: 3,
-    
-};
-
-var chart = new google.visualization.LineChart(document.getElementById('gudang'));
-
-chart.draw(data, options);
-}
-</script>
-
-<!-- chart-bar -->
-<script>
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart() {
-
-var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Periode');
-    data.addColumn('number', 'Gudang ZA');
-    data.addColumn('number', 'Gudang Urea 1A');
-    data.addColumn('number', 'Gudang PF 1');
-    data.addColumn('number', 'Gudang Phonska');
-    data.addColumn('number', 'Gudang Urea 1B');
-    data.addColumn('number', 'Gudang Multiguna');
-    data.addRows([
-    
-    [ '2020-02-02',  10,  10 ,  170 , 310,  480 , 630],
-    [ '2020-02-03',  170, 350,  500 , 300,  290 , 540],
-    [ '2020-02-04',  170,170 ,  300 , 400,  550 , 470],
-    [ '2020-02-05',  460, 10 ,  300 , 250,  620 , 290],
-    [ '2020-02-06',  720 , 650,  480 , 340,  590 , 310],
-    [ '2020-02-07',  290 , 670,  480 , 450,  390 , 450],
-    
-   
-]);
-
-
-var options = {
-    colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
-    legend:{position: 'bottom', maxTextLines:4},
-    vAxis: { gridlines: { count: 5 } },
-    hAxis: { slantedText:true, slantedTextAngle:45 },
-    
-    
-};
-
-var chart = new google.visualization.BarChart(document.getElementById('produkrusak'));
-
-chart.draw(data, options);
-}
-</script>
-
-<!-- chart-column -->
-<script>
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart() {
-
-var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Jumlah');
-    data.addColumn('number', 'Produksi');
-    data.addColumn('number', 'Pengeluaran');
-    data.addRows([
-    
-    ['2020-02-02',  600, 400 ],
-    ['2020-02-03',  530, 350],
-    ['2020-02-04',  500, 370 ],
-    ['2020-02-05',  800, 1000 ],
-    ['2020-02-06',  720 , 650],
-    ['2020-02-07',  490 , 670],
-    ['2020-02-07',  390 , 570],
-    
-   
-]);
-
-
-var options = {
-    colors: ['#FFC201','#28DAC6'],
-    legend:{position: 'bottom'},
-    vAxis: { gridlines: { count: 5 } },
-    hAxis: { slantedText:true, slantedTextAngle:45,format: 'long' }
-};
-
-var chart = new google.visualization.ColumnChart(document.getElementById('produksipengeluaran'));
-
-chart.draw(data, options);
-}
-</script>
-
-<!-- chart-column -->
-<script>
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart() {
-
-var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Jumlah');
-    data.addColumn('number', 'Kapasitas Muat Buruh');
-    data.addColumn('number', 'Realisasi Muat');
-    data.addRows([
-    
-    ['2020-02-02',  600, 400 ],
-    ['2020-02-03',  530, 350],
-    ['2020-02-04',  500, 370 ],
-    ['2020-02-05',  800, 1000 ],
-    ['2020-02-06',  720 , 650],
-    ['2020-02-07',  490 , 670],
-    ['2020-02-07',  390 , 570],
-    
-   
-]);
-
-
-var options = {
-    colors: ['#FD7F0C','#1ACA98'],
-    legend:{position: 'bottom'},
-    vAxis: { gridlines: { count: 5 } },
-    hAxis: { slantedText:true, slantedTextAngle:45 }
-};
-
-var chart = new google.visualization.ColumnChart(document.getElementById('muatan'));
-
-chart.draw(data, options);
-}
-</script>
-
-<script>
-// Initialize and add the map
-// function initMap() {
-//   // The location of Uluru
-//   var uluru = {lat: -25.344, lng: 131.036};
-//   // The map, centered at Uluru
-//   var map = new google.maps.Map(
-//       document.getElementById('map'), {zoom: 4, center: uluru});
-//   // The marker, positioned at Uluru
-//   var marker = new google.maps.Marker({position: uluru, map: map});
-// }
-
-//////
-
-function initMap() {
-        var myLatlng = {lat: -25.363, lng: 131.044};
-
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          center: myLatlng
-        });
-
-        var marker = new google.maps.Marker({
-          position: myLatlng,
-          map: map,
-          title: 'Click to zoom',
-          url:'/map-clicked'
-        });
-
-        map.addListener('center_changed', function() {
-          // 3 seconds after the center of the map has changed, pan back to the
-          // marker.
-          window.setTimeout(function() {
-            map.panTo(marker.getPosition());
-          }, 3000);
-        });
-
-        marker.addListener('click', function() {
-            window.location.href = marker.url;
-        });
-      }
-    </script>
-    <!--Load the API from the specified URL
-    * The async attribute allows the browser to render the page while the API loads
-    * The key parameter will contain your own API key (which is not needed for this tutorial)
-    * The callback parameter executes the initMap() function
-    -->
-    <!-- <script src="//maps.google.com/maps/api/js?key=AIzaSyBTGnKT7dt597vo9QgeQ7BFhvSRP4eiMSM" type="text/javascript"></script> -->
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMHi0AIoQz1JmkicVxHhJJ7mf5cNeXucQ&callback=initMap">
-</script>
-   <!-- chart-column -->
-<script>
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart() {
-
-var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Periode');
-    data.addColumn('number', 'Gudang ZA');
-    data.addColumn('number', 'Gudang Urea 1A');
-    data.addColumn('number', 'Gudang PF 1');
-    data.addColumn('number', 'Gudang Phonska');
-    data.addColumn('number', 'Gudang Urea 1B');
-    data.addColumn('number', 'Gudang Multiguna');
-    data.addRows([
-    
-    [ '2020-02-02',  10,  10 ,  170 , 310,  480 , 630],
-    [ '2020-02-03',  170, 350,  500 , 300,  290 , 540],
-    [ '2020-02-04',  170,170 ,  300 , 400,  550 , 470],
-    [ '2020-02-05',  460, 10 ,  300 , 250,  620 , 290],
-    [ '2020-02-06',  720 , 650,  480 , 340,  590 , 310],
-    [ '2020-02-07',  290 , 670,  480 , 450,  390 , 450],
-    
-   
-]);
-
-
-var options = {
-    colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
-    legend:{position: 'bottom', maxTextLines:4},
-    vAxis: { gridlines: { count: 5 } },
-    hAxis: { slantedText:true, slantedTextAngle:45 },
-    
-    
-};
-
-var chart = new google.visualization.ColumnChart(document.getElementById('realisasialatberat'));
-
-chart.draw(data, options);
-}
-</script>
-
-<!-- chart-pie -->
-<script>
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart() {
-
-var data = google.visualization.arrayToDataTable([
-    ['Laporan', 'Jumlah'],
-    ['Ban bocor',     5],
-    ['Kedisiplinan Operator',      7],
-    ['Kantong produk rusak',  8],
-    ['Staple roboh',     5],
-    ['Terplas rusak',     13],
-    ['Rem rusak',      5],
-    ['Oli bocor',  7],
-    ['Merusak Pilar Gudang',  8],
-   
-]);
-
-var yearPattern = "0";
-  var formatNumber = new google.visualization.NumberFormat({
-    pattern: 'decimal', 
-    prefix: 'Rp.'
-  });
-  formatNumber.format(data, 1);
-
-var options = {
-    colors: ['#0FA3BA','#FFC201','#5767DE','#FD367B','#FD7F0C','#007CFF','#00AF4C','#28DAC6'],
-    legend:{position: 'bottom', maxTextLines:4},
-};
-
-var chart = new google.visualization.PieChart(document.getElementById('keluhanmuatan'));
-
-chart.draw(data, options);
-}
-</script>
-
-<script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawVisualization);
-
-      function drawVisualization() {
-        // Some raw data (not necessarily accurate)
-        var data = google.visualization.arrayToDataTable([
-          ['Gudang', 'Pakai & Dasaran', 'Kosong ', 'Rusak', 'Total Stok'],
-          ['Gudang ZA',  165,      938,         522,             998],
-          ['Gudang Urea IA',  135,      1120,        599,             1268],
-          ['Gudang PF I',  157,      1167,        587,             1207],
-          ['Gudang Phonska',  139,      1010,        615,             1068],
-          ['Gudang Urea IB',  136,      691,         629,             1026],
-          ['Gudang Multiguna',  135,      1120,        599,             1268],
-        ]);
-
-        var options = {
-          
-          colors: ['#FFC201','#28DAC6','#FD7F0C','#00AF4C'],
-          seriesType: 'bars',
-          series: {3: {type: 'line'}}  ,
-          legend:{position: 'bottom'}      
-        };
-
-        var chart = new google.visualization.ComboChart(document.getElementById('stokpaletbulan'));
-        chart.draw(data, options);
-      }
-    </script>
-
-    <script>
-    // Class definition
-var KTSelect2 = function() {
-    // Private functions
-    var demos = function() {
-        // basic
-        $('#pilih_shift').select2({
-            placeholder: "Pilih Shift"
-        });
-        $('#pilih_gudang').select2({
-            placeholder: "Pilih Gudang"
-        });       
-    }
-
-    
-
-    // Public functions
-    return {
-        init: function() {
-            demos();
-            
-        }
-    };
-}();
-
-// Initialization
-jQuery(document).ready(function() {
-    KTSelect2.init();
-});
-
-
-// Class definition
-
-var KTBootstrapDaterangepicker = function () {
-    
-    // Private functions
-    var demos = function () {
-        // minimum setup
-        // $('#kt_daterangepicker_1').daterangepicker({
-        //     buttonClasses: ' btn',
-        //     applyClass: 'btn-primary',
-        //     cancelClass: 'btn-secondary'
-        // });
-        $('#kt_daterangepicker_2').daterangepicker({
-            buttonClasses: ' btn',
-            applyClass: 'btn-primary',
-            cancelClass: 'btn-secondary'
-        }, function(start, end, label) {
-            $('#kt_daterangepicker_2 .form-control').val( start.format('YYYY-MM-DD') + ' / ' + end.format('YYYY-MM-DD'));
-        });
-
-    }
-    return {
-        // public functions
-        init: function() {
-            demos(); 
-            
-        }
-    };
-}();
-
-jQuery(document).ready(function() {
-    KTBootstrapDaterangepicker.init();
-});
-</script>

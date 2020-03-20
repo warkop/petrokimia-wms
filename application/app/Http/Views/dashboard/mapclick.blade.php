@@ -28,6 +28,16 @@
     margin: 10px 55px 10px 25px;
     padding-left: 4px;
 }
+
+.gudang-info td{
+    padding:2px;
+}
+
+.gudang-info{
+    margin-left:auto; 
+    margin-right:auto;
+    font-size:14px;
+}
 </style>
 
 <div class="row row-no-padding row-col-separator-xl" style="background:#fff">
@@ -192,8 +202,39 @@
                             <div >
                                 <div style="text-align: center; margin-top:50%">
                                     <img src="{{aset_extends('img/logo/map-1.png')}}"/><br/>
-                                    <h5>Data Tidak Tersedia</h5>
-                                    Isi Area nya terlebih dahulu
+                                    <h2>Gudang Phonska</h2>
+                                    <table class="gudang-info" style="border:none;">
+                                    <tr>
+                                        <td>Kapasitas Indoor</td>
+                                        <td>:</td>
+                                        <td>15.000 Ton</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Stok Indoor</td>
+                                        <td>:</td>
+                                        <td>7.000 Ton</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sisa Kapasitas Indoor</td>
+                                        <td>:</td>
+                                        <td>8.000 Ton</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kapasitas Outdoor</td>
+                                        <td>:</td>
+                                        <td>30.000 Ton</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Stok Outdoor</td>
+                                        <td>:</td>
+                                        <td>28.000 Ton</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sisa Kapasitas Outdoor</td>
+                                        <td>:</td>
+                                        <td>2.000 Ton</td>
+                                    </tr>
+                                    </table>
                                 </div >
                                     
                             </div>
@@ -948,46 +989,19 @@ chart.draw(data, options);
 </script>
 
 <script>
+
+//Initialize and add the map
 // Initialize and add the map
-// function initMap() {
-//   // The location of Uluru
-//   var uluru = {lat: -25.344, lng: 131.036};
-//   // The map, centered at Uluru
-//   var map = new google.maps.Map(
-//       document.getElementById('map'), {zoom: 4, center: uluru});
-//   // The marker, positioned at Uluru
-//   var marker = new google.maps.Marker({position: uluru, map: map});
-// }
-
-//////
-
 function initMap() {
-        var myLatlng = {lat: -25.363, lng: 131.044};
+  // The location of Uluru
+  var uluru = {lat: -25.344, lng: 131.036};
+  // The map, centered at Uluru
+  var map = new google.maps.Map(
+      document.getElementById('map'), {zoom: 4, center: uluru});
+  // The marker, positioned at Uluru
+  var marker = new google.maps.Marker({position: uluru, map: map});
+}
 
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          center: myLatlng
-        });
-
-        var marker = new google.maps.Marker({
-          position: myLatlng,
-          map: map,
-          title: 'Click to zoom',
-          url:'/map-clicked'
-        });
-
-        map.addListener('center_changed', function() {
-          // 3 seconds after the center of the map has changed, pan back to the
-          // marker.
-          window.setTimeout(function() {
-            map.panTo(marker.getPosition());
-          }, 3000);
-        });
-
-        marker.addListener('click', function() {
-            window.location.href = marker.url;
-        });
-      }
     </script>
     <!--Load the API from the specified URL
     * The async attribute allows the browser to render the page while the API loads
@@ -998,7 +1012,9 @@ function initMap() {
 <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMHi0AIoQz1JmkicVxHhJJ7mf5cNeXucQ&callback=initMap">
 </script>
-   <!-- chart-column -->
+
+
+<!-- chart-column -->
 <script>
 google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(drawChart);
