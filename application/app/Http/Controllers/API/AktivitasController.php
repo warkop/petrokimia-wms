@@ -727,8 +727,8 @@ class AktivitasController extends Controller
         }
 
         return (new AktivitasResource($aktivitasHarian))->additional([
-            'produk' => $list_produk,
-            'pallet' => $list_pallet,
+            'produk' => $list_produk??null,
+            'pallet' => $list_pallet??null,
             'status' => [
                 'message'   => '',
                 'code'      => Response::HTTP_CREATED,
@@ -1545,10 +1545,10 @@ class AktivitasController extends Controller
         ];
 
         if ($produk != null) {
-            $this->responseData['produk']    = $produk;
+            $this->responseData['produk']    = $produk??null;
         }
         if ($pallet != null) {
-            $this->responseData['pallet']    = $pallet;
+            $this->responseData['pallet']    = $pallet??null;
         }
         $this->responseMessage = 'Data berhasil disimpan!';
         $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
