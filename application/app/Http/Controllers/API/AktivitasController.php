@@ -1840,8 +1840,7 @@ class AktivitasController extends Controller
         $tiketnumber = $req->input('tiketnumber');
         $sistro = Sistro::where('tiketno', $tiketnumber)->orWhere('bookingno', $tiketnumber)->firstOrFail();
         $gudangTujuan = Gudang::where('id_plant', $sistro->tujuan)->first();
-        $res = Material::with('sistro')
-        ->where('id_material_sap', $sistro->idproduk)->firstOrFail();
+        $res = Material::where('id_material_sap', $sistro->idproduk)->firstOrFail();
 
         if ($res->kategori == 1) {
             $text_kategori = 'Produk';
