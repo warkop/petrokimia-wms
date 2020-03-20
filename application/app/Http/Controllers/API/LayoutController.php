@@ -74,10 +74,10 @@ class LayoutController extends Controller
             })
             ->orderBy('area.created_at', 'asc')           
             ->where(function($query){
-                $query->where('area.end_date', null)->orWhere('area.end_date', '>=', now());
+                $query->where('area.end_date', null)->orWhere('area.end_date', '>', now());
             })
             ->where(function ($query) {
-                $query->where('g.end_date', null)->orWhere('g.end_date', '>=', now());
+                $query->where('g.end_date', null)->orWhere('g.end_date', '>', now());
             })
             ->withoutGlobalScopes()
             ->orderBy('area.nama', 'asc')
