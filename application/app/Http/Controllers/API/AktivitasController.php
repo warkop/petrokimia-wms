@@ -1077,10 +1077,32 @@ class AktivitasController extends Controller
                     $jums_list_pallet = count($list_pallet);
     
                     for ($i = 0; $i < $jums_list_pallet; $i++) {
-                        $pallet = $list_pallet[$i]['pallet'];
-                        $jumlah = $list_pallet[$i]['jumlah'];
-                        $status_pallet = $list_pallet[$i]['status_pallet'];
-                        $tipe = $list_pallet[$i]['tipe'];
+                        $pallet         = $list_pallet[$i]['pallet'];
+                        $jumlah         = $list_pallet[$i]['jumlah'];
+                        $status_pallet  = $list_pallet[$i]['status_pallet'];
+                        $tipe           = $list_pallet[$i]['tipe'];
+    
+                        $gudangStok = GudangStok::where('id_gudang', $gudang->id)
+                        ->where('status', $status_pallet)
+                        ->where('id_material', $pallet)
+                        ->first();
+    
+                        if (empty($gudangStok)) {
+                            $gudangStok = new GudangStok;
+                            $gudangStok->jumlah = $jumlah;
+                        } else {
+                            if ($tipe == 1) {
+                                $gudangStok->jumlah = $gudangStok->jumlah - $jumlah;
+                            } else {
+                                $gudangStok->jumlah = $gudangStok->jumlah + $jumlah;
+                            }
+                        }
+    
+                        $gudangStok->id_gudang     = $gudang->id;
+                        $gudangStok->id_material   = $pallet;
+                        $gudangStok->status        = $status_pallet;
+                        $gudangStok->save();
+                        
                         $arr = [
                             'id_aktivitas_harian'       => $wannaSave->id,
                             'tanggal'                   => date('Y-m-d H:i:s'),
@@ -1090,21 +1112,7 @@ class AktivitasController extends Controller
                             'status_pallet'             => $status_pallet,
                         ];
     
-                        $materialTrans = new MaterialTrans;
-    
-                        $materialTrans->create($arr);
-    
-                        $gudangStok = GudangStok::where('id_gudang', $gudang->id)->where('id_material', $pallet)->first();
-    
-                        if (empty($gudangStok)) {
-                            $gudangStok = new GudangStok;
-                        }
-    
-                        $gudangStok->id_gudang     = $gudang->id;
-                        $gudangStok->id_material   = $pallet;
-                        $gudangStok->jumlah        = $jumlah;
-                        $gudangStok->status        = $status_pallet;
-                        $gudangStok->save();
+                        $gudangStok->materialTrans()->create($arr);
                     }
                 }
     
