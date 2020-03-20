@@ -34,13 +34,13 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         Gate::define('main-menu', function ($user) {
-            return $user->role_id === 1 || $user->role_id === 2 || $user->role_id === 7 || $user->role_id === 6;
+            return $user->role_id === 1 || $user->role_id === 2 || $user->role_id === 6;
         });
         Gate::define('dashboard', function ($user) {
             return $user->role_id === 1 || $user->role_id === 2;
         });
         Gate::define('layout', function ($user) {
-            return $user->role_id === 1 || $user->role_id === 7;
+            return $user->role_id === 1;
         });
         Gate::define('gudang', function ($user) {
             return $user->role_id === 1;

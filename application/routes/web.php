@@ -120,6 +120,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::delete('/{id}', 'UsersController@destroy')->where('id', '[0-9]+');
     });
 
+    Route::patch('/master-user/change-password-general/{id}', 'UsersController@changePassword')->where('id', '[0-9]+');
+
     Route::group(['prefix' => 'gudang'], function () {
         Route::get('/', 'GudangController@index');
         Route::get('/get-aktivitas/{id_gudang}', 'GudangController@getAktivitas');
