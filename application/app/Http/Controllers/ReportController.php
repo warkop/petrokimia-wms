@@ -925,7 +925,11 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->area->gudang->nama);
 
             //stok awal
-            $materialTransMengurang = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            $materialTransMengurang = MaterialTrans::
+            leftJoin('aktivitas_harian', function ($join){
+                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0);
+            })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
                 ->where(function ($query) use ($value) {
                     $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
@@ -939,7 +943,11 @@ class ReportController extends Controller
                 ->where('tipe', 1)
                 ->sum('jumlah')
                 ;
-            $materialTransMenambah = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            $materialTransMenambah = MaterialTrans::
+            leftJoin('aktivitas_harian', function ($join){
+                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0);
+            })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
                 ->where(function ($query) use ($value) {
                     $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
@@ -3947,6 +3955,7 @@ class ReportController extends Controller
         ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
         ->where('id_gudang', $gudang)
         ->where('id_material', $pilih_produk)
+        ->whereNull('area.end_date')
         ->orderBy('id_area')
         ->get()
         ->groupBy('id_area')
@@ -4176,10 +4185,6 @@ class ReportController extends Controller
                                         $query->orWhere('material_trans.shift_id', '=', 3);
                                     });
                             });
-                            // $query->orWhere(function ($query) use ($tanggal) {
-                            //     $query->where('material_adjustment.tanggal', '<=', $tanggal);
-                            //     $query->orWhere('material_adjustment.shift', '=', 1);
-                            // });
                         })
                         ->get();
                 } else if ($resShift->id == 3) {
@@ -4194,7 +4199,15 @@ class ReportController extends Controller
                         })
                         ->where(function ($query) use ($tanggal) {
                             $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<=', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00 -1 day')));
+                            // $query->orWhere('material_adjustment.tanggal', '<=', date('Y-m-d', strtotime($tanggal . '-1 day')));
                             $query->orWhere('material_adjustment.tanggal', '<=', date('Y-m-d', strtotime($tanggal . '-1 day')));
+                            $query->orWhere(function ($query) use ($tanggal) {
+                                    $query->where('material_adjustment.tanggal', '=', date('Y-m-d', strtotime($tanggal . '-1 day')));
+                                    $query->where(function($query){
+                                        $query->where('material_trans.shift_id', 2);
+                                        $query->orWhere('material_trans.shift_id', 1);
+                                    });
+                            });
                         })
                         ->get();
                 }
