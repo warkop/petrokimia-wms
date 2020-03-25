@@ -3839,7 +3839,8 @@ class ReportController extends Controller
                 ->where('ah.id_gudang', $item->id)
                 ->where('tipe', 2)
                 ->where(function($query) use($tgl_awal, $tgl_akhir){
-                    $query->whereBetween('ah.updated_at', [$tgl_awal, $tgl_akhir]);
+                    // $query->whereBetween('ah.updated_at', [$tgl_awal, $tgl_akhir]);
+                    $query->whereBetween(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                     $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
                 })
                 ->where('id_material', $value->id_material)
@@ -3856,7 +3857,8 @@ class ReportController extends Controller
                 ->where('ah.id_gudang', $item->id)
                 ->where('tipe', 1)
                 ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
-                    $query->whereBetween('ah.updated_at', [$tgl_awal, $tgl_akhir]);
+                    // $query->whereBetween('ah.updated_at', [$tgl_awal, $tgl_akhir]);
+                    $query->whereBetween(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                     $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
                 })
                 ->where('id_material', $value->id_material)
