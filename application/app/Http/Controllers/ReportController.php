@@ -4220,8 +4220,8 @@ class ReportController extends Controller
                         ->leftJoin('aktivitas_harian', function ($join) use ($tanggal) {
                             $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                                 ->where('draft', 0)
-                                ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 07:00:00')))
-                                ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00 -1 day')));
+                                ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00 -1 day')))
+                                ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 07:00:00')));
                         })
                         ->leftJoin('material_adjustment', function ($join) use ($tanggal, $resShift) {
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -4264,7 +4264,7 @@ class ReportController extends Controller
                             }
                         )
                         ->get();
-                } else {
+                } else if ($resShift->id == 2) {
                     $stokTanggalIni = DB::table('material_trans')
                         ->where('material_trans.id_area_stok', $value->id)
                         ->leftJoin('aktivitas_harian', function ($join) use ($tanggal) {
@@ -4273,9 +4273,10 @@ class ReportController extends Controller
                                 ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 15:00:00')))
                                 ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00')));
                         })
-                        ->leftJoin('material_adjustment', function ($join) use ($tanggal) {
+                        ->leftJoin('material_adjustment', function ($join) use ($tanggal, $resShift) {
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                                ->where('material_adjustment.tanggal', $tanggal);
+                                ->where('material_adjustment.tanggal', $tanggal)
+                                ->where('material_adjustment.shift', '=', $resShift->id);
                         })
                         ->where(
                             function ($query) use ($resShift) {
