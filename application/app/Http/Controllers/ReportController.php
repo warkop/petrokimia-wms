@@ -4248,12 +4248,12 @@ class ReportController extends Controller
                         })
                         ->leftJoin('material_adjustment', function ($join) use ($tanggal, $resShift) {
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                                // ->where('material_adjustment.tanggal', $tanggal);
-                                ->where('material_adjustment.shift', '=', $resShift->id)
-                                ->where(function($query) use ($tanggal){
-                                    $query->where('material_adjustment.tanggal', '<', $tanggal);
-                                    $query->orWhere('material_adjustment.tanggal', '=', $tanggal);
-                                });
+                                ->where('material_adjustment.tanggal', $tanggal)
+                                ->where('material_adjustment.shift', '=', $resShift->id);
+                                // ->where(function($query) use ($tanggal){
+                                //     $query->where('material_adjustment.tanggal', '<', $tanggal);
+                                //     $query->orWhere('material_adjustment.tanggal', '=', $tanggal);
+                                // });
                         })
                         ->where(
                             function ($query) use ($resShift) {
