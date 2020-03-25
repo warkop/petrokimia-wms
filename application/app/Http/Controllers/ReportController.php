@@ -3797,7 +3797,8 @@ class ReportController extends Controller
                 leftJoin('aktivitas_harian', function ($join) use ($tgl_awal) {
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
-                        ->where('aktivitas_harian.updated_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                        // ->where('aktivitas_harian.updated_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                        ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -3805,7 +3806,8 @@ class ReportController extends Controller
                 })
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal) {
-                    $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
+                    // $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
+                    $query->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
                     $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
                 ->where('tipe', 1)
@@ -3815,7 +3817,8 @@ class ReportController extends Controller
                 leftJoin('aktivitas_harian', function ($join) use ($tgl_awal) {
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
-                        ->where('aktivitas_harian.updated_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                        // ->where('aktivitas_harian.updated_at', '<', date('Y-m-d', strtotime($tgl_awal)));
+                        ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -3823,7 +3826,8 @@ class ReportController extends Controller
                 })
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal) {
-                    $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
+                    // $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
+                    $query->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
                     $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
                 ->where('tipe', 2)
