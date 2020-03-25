@@ -4270,7 +4270,8 @@ class ReportController extends Controller
                         ->leftJoin('aktivitas_harian', function ($join) use ($tanggal) {
                             $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                                 ->where('draft', 0)
-                                ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $tanggal);
+                                ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 15:00:00')))
+                                ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00')));
                         })
                         ->leftJoin('material_adjustment', function ($join) use ($tanggal) {
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
