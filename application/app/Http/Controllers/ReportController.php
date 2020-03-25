@@ -978,7 +978,8 @@ class ReportController extends Controller
                 ->where('tipe', 2)
                 ->where('id_material', $value->id_material)
                 ->where(function($query) use($tgl_awal, $tgl_akhir) {
-                    $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
+                    // $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
+                    $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                     $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
                 })
                 ->sum('jumlah');
@@ -998,7 +999,8 @@ class ReportController extends Controller
                 ->where('tipe', 1)
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
-                    $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
+                    // $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
+                    $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                     $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
                 })
                 ->sum('jumlah');
