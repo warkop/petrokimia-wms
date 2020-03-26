@@ -3578,7 +3578,9 @@ class ReportController extends Controller
         ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
         ->where('draft', 0)
         ->where(function($query) use($tgl_awal, $tgl_akhir) {
-            $query->whereBetween('ah.updated_at', [$tgl_awal, $tgl_akhir]);
+            // $query->whereBetween('ah.updated_at', [$tgl_awal, $tgl_akhir]);
+            // ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')))
+            $query->whereBetween(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day'))]);
             $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
         })
         ;
