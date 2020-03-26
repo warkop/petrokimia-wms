@@ -50,7 +50,7 @@ class AktivitasHarian extends Model
     
     public function checker()
     {
-        return $this->belongsTo(TenagaKerjaNonOrganik::class, 'created_by');
+        return $this->belongsTo(Users::class, 'updated_by');
     }
 
     public function aktivitasFoto()

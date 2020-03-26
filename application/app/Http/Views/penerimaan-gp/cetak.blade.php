@@ -231,7 +231,7 @@
         <div class="header">
             <section class="v-middle-flex-center ml1">
                 <img alt="Logo" src="{{aset_extends()}}/img/logo/logo_wms1.png" width="20%"/>
-                <h2 class="ml1">Report Warehouse Mangement System</h2>
+                <h2 class="ml1">Serah Terima Pemuatan Pupuk</h2>
             </section>
         </div>
         <div class="isi" style="padding: .5cm 1.5cm !important;">
@@ -310,6 +310,14 @@
                         {{$aktivitasHarian->posto??'-'}}
                     </p>
                 </div>
+                <div class="col-md-6 mb1">
+                    <label>
+                        Nama Checker
+                    </label>
+                    <p class="boldd-500">
+                        {{$aktivitasHarian->checker->name??'-'}}
+                    </p>
+                </div>
                 <section class="row col-md-12 mt2" style="margin:0">
                     <div class="col-md-6 mb-setengah">
                         <label class="boldd-500">
@@ -358,6 +366,14 @@
                             @endforeach
                         </table>
                     </div>
+                    <div class="col-md-12 mb1">
+                        <strong>
+                            <h5>Dengan ini menyatakan bahwa : </h5>
+                            <h5>1. Produk yang diterima supir adalah dalam kondisi Original / Siap Jual</h5>
+                            <h5>2. Jumlah produk yang diterima sesuai kuantum tertulis</h5>
+                            <h5>3. Penataan produk dalam truk sudah sesuai standar (tertata dengan rapi) serta sesuai dengan foto yang terlampir</h5>
+                        </strong>
+                    </div>
                 </section>
             </div>
         </div>
@@ -371,6 +387,7 @@
                 @else
                     <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
                 @endif
+                <p>({{$aktivitasHarian->driver??'-'}})</p>
             </div>
         </div>
     </div>
