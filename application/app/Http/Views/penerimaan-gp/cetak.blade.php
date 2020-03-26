@@ -387,7 +387,7 @@
                 @else
                     <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
                 @endif
-                <p>({{$aktivitasHarian->driver??'-'}})</p>
+                <p>({{$aktivitasHarian->driver??'...........................'}})</p>
             </div>
         </div>
     </div>
