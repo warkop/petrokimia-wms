@@ -4266,6 +4266,7 @@ class ReportController extends Controller
                                 ->orWhere(function($query) use($tanggal) {
                                     $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 15:00:00')));
                                     $query->where('id_shift', 1);
+                                    $query->where('draft', 0);
                                 })
                                 ;
                         })
