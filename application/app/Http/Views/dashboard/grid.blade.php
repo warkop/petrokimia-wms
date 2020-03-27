@@ -28,6 +28,9 @@
     margin: 10px 55px 10px 25px;
     padding-left: 4px;
 }
+.bgimage{
+    background-image:url('assets/extends/img/forklift-1.png');
+}
 </style>
 
 <div class="row row-no-padding row-col-separator-xl" style="background:#fff">
@@ -150,75 +153,113 @@
                             <button type="button" class="btn btn-danger btn-icon"><i class="la la-refresh"></i></button>&nbsp;
                             </div>
                         </div>
-
-                        <div class="row">
-                            <!-- <p> 
-                                <span class="mr1"> <i class="fa fa-square gd-a-color-1"></i> Gudang Ponska</span>
-                                <span class="mr1"> <i class="fa fa-square gd-a-color-2"></i> Gudang Amurea</span>
-                                <span class="mr1"> <i class="fa fa-square gd-a-color-3"></i> Gudang Petrocas</span>
-                            </p> -->
-                            <div class="col-md-4">
-                            <h5>Realisasi Handling Per Jenis Produk Gudang Gresik</h5>
-                            <div id="jenisproduk" style="width:100%; height:350px;"></div>
+                        <!--begin::Accordion-->
+                        <div class="accordion  accordion-toggle-arrow" id="accordionExample4">
+                            <div class="card">
+                                <div class="card-header" id="headingOne4">
+                                    <div class="card-title" onclick="showAcc1()" style="background-color:#FFC201; color:black">
+                                        <h4>Manajemen Kinerja Gudang</h4>
+                                    </div>
+                                </div>
+                                <div class="Acc1" onclick="hideAcc1()">
+                                    <div class="card-body">
+                                        <div class="row mt-4">
+                                            <div class="col-md-6">
+                                            <h5>Realisasi Handling Per Jenis Produk Gudang Gresik</h5>
+                                            <div id="jenisproduk" style="width:100%; height:500px;"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                            <h5>Realisasi Handling Per Gudang</h5>
+                                            <div id="gudang" style="width:100%; height:500px;"></div>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="row mt-4">
+                                            <div class="col-md-6">
+                                                <h5>Realisasi Tonase Produk Rusak</h5>
+                                                <div id="produkrusak" style="width:100%; height:500px;"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h5>Diagram Realisasi Penggunaan Alat Berat Gudang Gresik</h5>
+                                                <div id="realisasipenggunaan" style="width:100%; height:500px;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4">
+                                            <h5 class="mt4">Stok Palet dan Terplas Per Tanggal 1 Febuary 2020</h5>
+                                            <div id="stokpaletbulan" style="height: 500px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                            <h5>Realisasi Handling Per Gudang</h5><br/>
-                            <div id="gudang" style="width:100%; height:350px;"></div>
+                            <div class="card">
+                                <div class="card-header" id="headingTwo4">
+                                    <div class="card-title collapsed" onclick="showAcc2()" style="background-color:#FFC201; color:black;">
+                                        <h4>Manajemen Kualitas Pemuatan Produk</h4>
+                                    </div>
+                                </div>
+                                <div class="Acc2" onclick="hideAcc2()">
+                                    <div class="card-body">
+                                    <div class="mt-4">
+                                        <h5>Diagram Perbandingan Kapasitas Muat Buruh VS Realisasi Muat</h5>
+                                        <div id="muatan" style="height: 500px;"></div>
+                                    </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                            <h5>Realisasi Tanase Produk Rusak</h5><br/>
-                            <div id="produkrusak" style="width:100%; height:350px;"></div>
-                            </div>
-                        </div>
-                        <div class="row mt4">
                             
-                            <div class="col-md-6">
-                            <h5>Produksi VS Pengeluaran</h5>
-                            <div id="produksipengeluaran" style="height: 500px;"></div>
+                            <div class="card">
+                                <div class="card-header" id="headingThree4">
+                                    <div class="card-title collapsed" onclick="showAcc3()" style="background-color:#FFC201; color:black">
+                                    <h4>Manajemen Alat Berat</h4>
+                                    </div>
+                                </div>
+                                <div class="Acc3" onclick="hideAcc3()">
+                                    <div class="card-body">
+                                    <div >
+                                       
+                                        <div class="row">
+                                        
+                                        <div class="col-md-4 pr-0 bgimage" style="height:500px">
+                                            <div >
+                                                <div style="text-align: left; margin-top:20%; padding: 0 20% 0; color:black">
+                                                    
+                                                    <h2>Laporan Keluhan Alat Berat</h2>
+                                                    
+                                                </div >
+                                                    
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8 pl-0"  >
+                                            
+                                            <div id="keluhanmuatan" style="width: 100%;height:480px;"></div>
+                                        </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                            <h5>Kapasitas Muat Buruh VS Realisasi Muat</h5>
-                            <div id="muatan" style="height: 500px;"></div>
+                            <div class="card">
+                                <div class="card-header" id="headingFour4">
+                                    <div class="card-title collapsed" onclick="showAcc4()" style="background-color:#FFC201; color:black">
+                                    <h4>Manajemen Persediaan Produk</h4>
+                                    </div>
+                                </div>
+                                <div class="Acc4" onclick="hideAcc4()">
+                                    <div class="card-body">
+                                    <div class="mt-4">
+                                        <h5 >Perbandingan Produksi VS Pengeluaran</h5>
+                                        <div id="produksipengeluaran" style="height: 500px;"></div>
+                                    </div>
+                                    </div>
+                                </div>
                             </div>
-                           
                         </div>
-                        <div class="mt4">
-                        <h5>Managemen Layout Produk</h5>
-                        <div class="row mt2">
-                        <div class="col-md-8 pr-0">
-                        <div id="map" style="width:100%; height:500px;"></div>
-                        </div>
-                        <div class="col-md-4 pl-0" style="background-color:#FFC201">
-                            <div >
-                                <div style="text-align: center; margin-top:50%">
-                                    <img src="{{aset_extends('img/logo/map-1.png')}}"/><br/>
-                                    <h5>Data Tidak Tersedia</h5>
-                                    Isi Area nya terlebih dahulu
-                                </div >
-                                    
-                            </div>
+
+                        <!--end::Accordion-->
                         
-
-                       
-                        </div>
-                        </div>
-                        </div>
-                        <div class="row mt3 ">
-                            
-                            <div class="col-md-8">
-                            <h5>Diagram Realisasi Penggunaan Alat Berat Gudang Gresik</h5>
-                            <div id="realisasialatberat" style="height: 400px;"></div>
-                            </div>
-                            <div class="col-md-4">
-                            <h5>Laporan Keluhan Alat Berat</h5>
-                            <div id="keluhanmuatan" style="height: 400px;"></div>
-                            </div>
-                           
-                        </div>
-                        <div>
-                        <h5 class="mt4">Stok Palet dan Terplas Per Tanggal 1 Febuary 2020</h5>
-                        <div id="stokpaletbulan" style="height: 500px;"></div>
-                        </div>
+                        
+                        
+                        
                         <!-- <div class="row">
                             <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 mb2">
                                 <canvas id="line-chart" width="800" height="300"></canvas>
@@ -463,260 +504,260 @@ $(function() {
     }
 
     // line-Chart lengkung
-    new Chart(document.getElementById("line-chart"), {
-        type: 'line',
-        data: {
-            labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"],
-            datasets: [{
-                data: [86, 100, 106, 20, 107, 24, 133, 100, 90, 100, 120, 200, 180, 90, 250],
-                label: "Gudang 1, Alat Berat: Rp 1.000.000, SDM: Rp 800.000",
-                // label: "Shift 6",
-                borderColor: "#00AE4D",
-                fill: false
-            }, {
-                data: [55, 77, 66, 88, 99, 118, 177, 144, 44, 22, 333, 11, 10, 12, 100],
-                label: "Gudang 2, Alat Berat: Rp 700.000, SDM: Rp 300.000",
-                borderColor: "#B51C64",
-                fill: false
-            }, {
-                data: [96, 90, 196, 290, 307, 234, 233, 300, 190, 200, 320, 500, 780, 290, 250],
-                label: "Gudang 3, Alat Berat: Rp 3.000.000, SDM: Rp 1.800.000",
-                borderColor: "#8653B5",
-                fill: false
-            }, {
-                data: [86, 100, 106, 20, 107, 24, 133, 100, 90, 100, 120, 200, 180, 90, 250],
-                label: "Gudang 4, Alat Berat: Rp 700.000, SDM: Rp 300.000",
-                borderColor: "#FAAE32",
-                fill: false
-            }, {
-                data: [6, 140, 106, 200, 100, 3, 554, 87, 32, 223, 322, 123, 555, 13, 12],
-                label: "Gudang 5, Alat Berat: Rp 700.000, SDM: Rp 300.000",
-                borderColor: "#B56D1C",
-                fill: false
-            }, {
-                data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 19, 11, 12, 13, 14, 15],
-                label: "Gudang 6, Alat Berat: Rp 700.000, SDM: Rp 300.000",
-                borderColor: "#79DB22",
-                fill: false
-            }, {
-                data: [2, 10, 20, 30, 40, 50, 60, 70, 80, 90, 120, 100, 110, 130, 150],
-                label: "Gudang 7, Alat Berat: Rp 700.000, SDM: Rp 300.000",
-                borderColor: "#3873B5",
-                fill: false
-            }, {
-                data: [4, 33, 66, 88, 99, 10, 133, 177, 200, 21, 33, 66, 145, 120, 100],
-                label: "Gudang 8, Alat Berat: Rp 700.000, SDM: Rp 300.000",
-                borderColor: "#27A5D7",
-                fill: false
-            }, {
-                data: [66, 77, 88, 99, 100, 111, 122, 133, 333, 122, 155, 177, 222, 111, 10],
-                label: "Gudang 9, Alat Berat: Rp 700.000, SDM: Rp 300.000",
-                borderColor: "#DE232F",
-                fill: false
-            }, {
-                data: [56, 10, 06, 50, 17, 24, 33, 10, 9, 10, 12, 20, 18, 9, 250],
-                label: "Gudang 10, Alat Berat: Rp 700.000, SDM: Rp 300.000",
-                borderColor: "#FAAE32",
-                fill: false
-            },
-        ]
-        },
-        options: {
-            legend: {
-                display: false
-            },
-            title: {
-                display: true,
-                text: 'Ton per Shift'
-            }
-        }
-    });
+    // new Chart(document.getElementById("line-chart"), {
+    //     type: 'line',
+    //     data: {
+    //         labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"],
+    //         datasets: [{
+    //             data: [86, 100, 106, 20, 107, 24, 133, 100, 90, 100, 120, 200, 180, 90, 250],
+    //             label: "Gudang 1, Alat Berat: Rp 1.000.000, SDM: Rp 800.000",
+    //             // label: "Shift 6",
+    //             borderColor: "#00AE4D",
+    //             fill: false
+    //         }, {
+    //             data: [55, 77, 66, 88, 99, 118, 177, 144, 44, 22, 333, 11, 10, 12, 100],
+    //             label: "Gudang 2, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+    //             borderColor: "#B51C64",
+    //             fill: false
+    //         }, {
+    //             data: [96, 90, 196, 290, 307, 234, 233, 300, 190, 200, 320, 500, 780, 290, 250],
+    //             label: "Gudang 3, Alat Berat: Rp 3.000.000, SDM: Rp 1.800.000",
+    //             borderColor: "#8653B5",
+    //             fill: false
+    //         }, {
+    //             data: [86, 100, 106, 20, 107, 24, 133, 100, 90, 100, 120, 200, 180, 90, 250],
+    //             label: "Gudang 4, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+    //             borderColor: "#FAAE32",
+    //             fill: false
+    //         }, {
+    //             data: [6, 140, 106, 200, 100, 3, 554, 87, 32, 223, 322, 123, 555, 13, 12],
+    //             label: "Gudang 5, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+    //             borderColor: "#B56D1C",
+    //             fill: false
+    //         }, {
+    //             data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 19, 11, 12, 13, 14, 15],
+    //             label: "Gudang 6, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+    //             borderColor: "#79DB22",
+    //             fill: false
+    //         }, {
+    //             data: [2, 10, 20, 30, 40, 50, 60, 70, 80, 90, 120, 100, 110, 130, 150],
+    //             label: "Gudang 7, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+    //             borderColor: "#3873B5",
+    //             fill: false
+    //         }, {
+    //             data: [4, 33, 66, 88, 99, 10, 133, 177, 200, 21, 33, 66, 145, 120, 100],
+    //             label: "Gudang 8, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+    //             borderColor: "#27A5D7",
+    //             fill: false
+    //         }, {
+    //             data: [66, 77, 88, 99, 100, 111, 122, 133, 333, 122, 155, 177, 222, 111, 10],
+    //             label: "Gudang 9, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+    //             borderColor: "#DE232F",
+    //             fill: false
+    //         }, {
+    //             data: [56, 10, 06, 50, 17, 24, 33, 10, 9, 10, 12, 20, 18, 9, 250],
+    //             label: "Gudang 10, Alat Berat: Rp 700.000, SDM: Rp 300.000",
+    //             borderColor: "#FAAE32",
+    //             fill: false
+    //         },
+    //     ]
+    //     },
+    //     options: {
+    //         legend: {
+    //             display: false
+    //         },
+    //         title: {
+    //             display: true,
+    //             text: 'Ton per Shift'
+    //         }
+    //     }
+    // });
 
-    //Bar Chart 
-    var barChartData = {
-  labels: [
-    "Gd. Ponska",
-    "Gd. Amurea",
-    "Gd. Petrocas"
-  ],
-  datasets: [
-    {
-      label: "Kapasitas Gudang",
-      backgroundColor: "#E23D6C",
-      borderColor: "#E23D6C",
-      borderWidth: 1,
-      data: [90,70,60]
-    },
-    {
-      label: "Stok Pupuk saat ini",
-      backgroundColor: "#2171A0",
-      borderColor: "#2171A0",
-      borderWidth: 1,
-      data: [100,70,70]
-    }
-    ]
-    };
+//     //Bar Chart 
+//     var barChartData = {
+//   labels: [
+//     "Gd. Ponska",
+//     "Gd. Amurea",
+//     "Gd. Petrocas"
+//   ],
+//   datasets: [
+//     {
+//       label: "Kapasitas Gudang",
+//       backgroundColor: "#E23D6C",
+//       borderColor: "#E23D6C",
+//       borderWidth: 1,
+//       data: [90,70,60]
+//     },
+//     {
+//       label: "Stok Pupuk saat ini",
+//       backgroundColor: "#2171A0",
+//       borderColor: "#2171A0",
+//       borderWidth: 1,
+//       data: [100,70,70]
+//     }
+//     ]
+//     };
 
-    var chartOptions = {
-    responsive: true,
-    legend: {
-        position: "top"
-    },
-    title: {
-        display: true,
-        // text: "Chart.js Bar Chart"
-    },
-    scales: {
-        yAxes: [{
-        ticks: {
-            beginAtZero: true
-        }
-        }]
-    }
-    }
+//     var chartOptions = {
+//     responsive: true,
+//     legend: {
+//         position: "top"
+//     },
+//     title: {
+//         display: true,
+//         // text: "Chart.js Bar Chart"
+//     },
+//     scales: {
+//         yAxes: [{
+//         ticks: {
+//             beginAtZero: true
+//         }
+//         }]
+//     }
+//     }
 
-    window.onload = function() {
-    var ctx = document.getElementById("bar-chart-perbadingan").getContext("2d");
-    window.myBar = new Chart(ctx, {
-        type: "bar",
-        data: barChartData,
-        options: chartOptions
-    });
-    };
+//     window.onload = function() {
+//     var ctx = document.getElementById("bar-chart-perbadingan").getContext("2d");
+//     window.myBar = new Chart(ctx, {
+//         type: "bar",
+//         data: barChartData,
+//         options: chartOptions
+//     });
+//     };
 
-    //END Bar Chart 
+//     //END Bar Chart 
 
-    //Dttb Kondisi Palet
-
-
-	function dataTableKondisiPalet() {
-		var table = $('#dttb-kondisi-palet');
-
-        var dataJSONArray = JSON.parse(
-        '[["Gd. Ponska", "200", "7 hari"], ["Gd. Amurea", "100", "10 hari"], ["Gd. Petrocas", "500", "19 hari"]]');
-
-		table.DataTable({
-			responsive: true,
-            data: dataJSONArray,
-			pagingType: 'full_numbers',
-			columnDefs: [
-			],
-		});
-	};
+//     //Dttb Kondisi Palet
 
 
+// 	function dataTableKondisiPalet() {
+// 		var table = $('#dttb-kondisi-palet');
 
-    let dataShift1 = [];
-    @if (!empty($shift1))
-        @foreach ($shift1 as $item)
-            dataShift1.push({{$item->shift}});
-        @endforeach
-    @endif
+//         var dataJSONArray = JSON.parse(
+//         '[["Gd. Ponska", "200", "7 hari"], ["Gd. Amurea", "100", "10 hari"], ["Gd. Petrocas", "500", "19 hari"]]');
 
-    let dataShift2 = [];
+// 		table.DataTable({
+// 			responsive: true,
+//             data: dataJSONArray,
+// 			pagingType: 'full_numbers',
+// 			columnDefs: [
+// 			],
+// 		});
+// 	};
+
+
+
+//     let dataShift1 = [];
+//     @if (!empty($shift1))
+//         @foreach ($shift1 as $item)
+//             dataShift1.push({{$item->shift}});
+//         @endforeach
+//     @endif
+
+//     let dataShift2 = [];
     
-    @if (!empty($shift2))
-        @foreach ($shift2 as $item)
-            dataShift2.push({{$item->shift}});
-        @endforeach
-    @endif
+//     @if (!empty($shift2))
+//         @foreach ($shift2 as $item)
+//             dataShift2.push({{$item->shift}});
+//         @endforeach
+//     @endif
     
-    let dataShift3 = [];
-    @if (!empty($shift3))
-        @foreach ($shift3 as $item)
-            dataShift3.push({{$item->shift}});
-        @endforeach    
-    @endif
-    // chart bar 
-    new Chart(document.getElementById("bar-chart"), {
-        type: 'bar',
-        data: {
-            labels: ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
-            datasets: [{
-                data: dataShift1,
-                backgroundColor: "#00AE4D",
-                label: "Shift 1",
-                fill: false
-            }, {
-                data: dataShift2,
-                backgroundColor: "#FAAE32",
-                label: "Shift 2",
-                fill: false
-            }, {
-                data: dataShift3,
-                backgroundColor: "#E14A3A",
-                label: "Shift 3",
-                fill: false
-            }]
-        },
-        options: {
-            legend: {
-                display: false
-            },
-            title: {
-                display: true,
-                text: 'Keluhan Alat berat pershift'
-            }
-        }
-    });
+//     let dataShift3 = [];
+//     @if (!empty($shift3))
+//         @foreach ($shift3 as $item)
+//             dataShift3.push({{$item->shift}});
+//         @endforeach    
+//     @endif
+//     // chart bar 
+//     new Chart(document.getElementById("bar-chart"), {
+//         type: 'bar',
+//         data: {
+//             labels: ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
+//             datasets: [{
+//                 data: dataShift1,
+//                 backgroundColor: "#00AE4D",
+//                 label: "Shift 1",
+//                 fill: false
+//             }, {
+//                 data: dataShift2,
+//                 backgroundColor: "#FAAE32",
+//                 label: "Shift 2",
+//                 fill: false
+//             }, {
+//                 data: dataShift3,
+//                 backgroundColor: "#E14A3A",
+//                 label: "Shift 3",
+//                 fill: false
+//             }]
+//         },
+//         options: {
+//             legend: {
+//                 display: false
+//             },
+//             title: {
+//                 display: true,
+//                 text: 'Keluhan Alat berat pershift'
+//             }
+//         }
+//     });
 
-    let keluhanGpShift1 = [];
-    @if (!empty($komplain_gp_shift1))
-        @foreach ($komplain_gp_shift1 as $item)
-            keluhanGpShift1.push({{$item->shift}});
-        @endforeach
-    @endif
+//     let keluhanGpShift1 = [];
+//     @if (!empty($komplain_gp_shift1))
+//         @foreach ($komplain_gp_shift1 as $item)
+//             keluhanGpShift1.push({{$item->shift}});
+//         @endforeach
+//     @endif
 
-    let keluhanGpShift2 = [];
-    @if (!empty($komplain_gp_shift2))
-        @foreach ($komplain_gp_shift2 as $item)
-            keluhanGpShift2.push({{$item->shift}});
-        @endforeach
-    @endif
+//     let keluhanGpShift2 = [];
+//     @if (!empty($komplain_gp_shift2))
+//         @foreach ($komplain_gp_shift2 as $item)
+//             keluhanGpShift2.push({{$item->shift}});
+//         @endforeach
+//     @endif
 
-    let keluhanGpShift3 = [];
-    @if (!empty($komplain_gp_shift3))
-        @foreach ($komplain_gp_shift3 as $item)
-            keluhanGpShift3.push({{$item->shift}});
-        @endforeach
-    @endif
+//     let keluhanGpShift3 = [];
+//     @if (!empty($komplain_gp_shift3))
+//         @foreach ($komplain_gp_shift3 as $item)
+//             keluhanGpShift3.push({{$item->shift}});
+//         @endforeach
+//     @endif
 
-    // line chart lancip
-    new Chart(document.getElementById("line-chart-lancip"), {
-        type: 'line',
-        data: {
-            labels: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"],
-            datasets: [{
-                data: keluhanGpShift1,
-                borderColor: "#00AE4D",
-                label: "Shift 1",
-                fill: false,
-                lineTension: 0,
-            }, {
-                data: keluhanGpShift2,
-                borderColor: "#FAAE32",
-                label: "Shift 2",
-                fill: false,
-                lineTension: 0,
-            }, {
-                data: keluhanGpShift3,
-                borderColor: "#E14A3A",
-                label: "Shift 3",
-                fill: false,
-                lineTension: 0,
-            }]
-        },
-        options: {
-            lineTension: 1,
-            legend: {
-                display: false
-            },
-            title: {
-                display: true,
-                text: 'Komplain GP'
-            }
-        }
-    });
+//     // line chart lancip
+//     new Chart(document.getElementById("line-chart-lancip"), {
+//         type: 'line',
+//         data: {
+//             labels: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"],
+//             datasets: [{
+//                 data: keluhanGpShift1,
+//                 borderColor: "#00AE4D",
+//                 label: "Shift 1",
+//                 fill: false,
+//                 lineTension: 0,
+//             }, {
+//                 data: keluhanGpShift2,
+//                 borderColor: "#FAAE32",
+//                 label: "Shift 2",
+//                 fill: false,
+//                 lineTension: 0,
+//             }, {
+//                 data: keluhanGpShift3,
+//                 borderColor: "#E14A3A",
+//                 label: "Shift 3",
+//                 fill: false,
+//                 lineTension: 0,
+//             }]
+//         },
+//         options: {
+//             lineTension: 1,
+//             legend: {
+//                 display: false
+//             },
+//             title: {
+//                 display: true,
+//                 text: 'Komplain GP'
+//             }
+//         }
+//     });
 </script>
 
 
@@ -773,9 +814,14 @@ var data = new google.visualization.DataTable();
 var options = {
     colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
     legend:{position: 'bottom', maxTextLines:4},
-    vAxis: { gridlines: { count: 5 } },
-    hAxis: { slantedText:true, slantedTextAngle:45 },
+    vAxis: { gridlines: { count: 5 }, title:"TONASE PUPUK" ,titleTextStyle:{bold:true, italic:false} },
+    hAxis: { slantedText:true, slantedTextAngle:45, title:"PERIODE", titleTextStyle:{bold:true, italic:false}  },
     pointSize: 3,
+    
+    chartArea: {
+        bottom: 150
+        
+      },
     
 };
 
@@ -816,10 +862,12 @@ data.addColumn('string', 'Periode');
 var options = {
     colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
     legend:{position: 'bottom', maxTextLines:4},
-    vAxis: { gridlines: { count: 5 } },
-    hAxis: { slantedText:true, slantedTextAngle:45 },
+    vAxis: { gridlines: { count: 5 } , title:"TONASE HANDLING", titleTextStyle:{bold:true, italic:false}},
+    hAxis: { slantedText:true, slantedTextAngle:45 , title:"PERIODE", titleTextStyle:{bold:true, italic:false}},
     pointSize: 3,
-    
+    chartArea: {
+        bottom: 150
+      },
 };
 
 var chart = new google.visualization.LineChart(document.getElementById('gudang'));
@@ -859,13 +907,60 @@ var data = new google.visualization.DataTable();
 var options = {
     colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
     legend:{position: 'bottom', maxTextLines:4},
-    vAxis: { gridlines: { count: 5 } },
-    hAxis: { slantedText:true, slantedTextAngle:45 },
-    
+    vAxis: { gridlines: { count: 5 }, title:"PERIODE", titleTextStyle:{bold:true, italic:false} },
+    hAxis: {  title:"TONASE", titleTextStyle:{bold:true, italic:false} },
+    chartArea: {
+        bottom: 150
+      },
     
 };
 
 var chart = new google.visualization.BarChart(document.getElementById('produkrusak'));
+
+chart.draw(data, options);
+}
+</script>
+
+<!-- chart-column -->
+<script>
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+
+var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Periode');
+    data.addColumn('number', 'Gudang ZA');
+    data.addColumn('number', 'Gudang Urea 1A');
+    data.addColumn('number', 'Gudang PF 1');
+    data.addColumn('number', 'Gudang Phonska');
+    data.addColumn('number', 'Gudang Urea 1B');
+    data.addColumn('number', 'Gudang Multiguna');
+    data.addRows([
+    
+        [ '2020-02-02',  80,  90 ,  170 , 310,  480 , 630],
+    [ '2020-02-03',  170, 350,  500 , 300,  290 , 540],
+    [ '2020-02-04',  170,170 ,  300 , 400,  550 , 470],
+    [ '2020-02-05',  460, 90 ,  300 , 250,  620 , 290],
+    [ '2020-02-06',  720 , 650,  480 , 340,  590 , 310],
+    [ '2020-02-07',  290 , 670,  480 , 450,  390 , 450],
+    
+    
+   
+]);
+
+
+var options = {
+    colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
+    legend:{position: 'bottom'},
+    vAxis: { gridlines: { count: 5 } , title:"TONASE ALAT BERAT", titleTextStyle:{bold:true, italic:false}},
+    hAxis: { slantedText:true, slantedTextAngle:45,format: 'long' , title:"GUDANG", titleTextStyle:{bold:true, italic:false}},
+    chartArea: {
+        bottom: 150
+      },
+};
+
+var chart = new google.visualization.ColumnChart(document.getElementById('realisasipenggunaan'));
 
 chart.draw(data, options);
 }
@@ -899,8 +994,11 @@ var data = new google.visualization.DataTable();
 var options = {
     colors: ['#FFC201','#28DAC6'],
     legend:{position: 'bottom'},
-    vAxis: { gridlines: { count: 5 } },
-    hAxis: { slantedText:true, slantedTextAngle:45,format: 'long' }
+    vAxis: { gridlines: { count: 5 } , title:"TONASE", titleTextStyle:{bold:true, italic:false}},
+    hAxis: { slantedText:true, slantedTextAngle:45,format: 'long' },
+    chartArea: {
+        bottom: 150
+      },
 };
 
 var chart = new google.visualization.ColumnChart(document.getElementById('produksipengeluaran'));
@@ -937,8 +1035,11 @@ var data = new google.visualization.DataTable();
 var options = {
     colors: ['#FD7F0C','#1ACA98'],
     legend:{position: 'bottom'},
-    vAxis: { gridlines: { count: 5 } },
-    hAxis: { slantedText:true, slantedTextAngle:45 }
+    vAxis: { gridlines: { count: 5 }, title:"TONASE", titleTextStyle:{bold:true, italic:false} },
+    hAxis: { slantedText:true, slantedTextAngle:45 },
+    chartArea: {
+        bottom: 150
+      },
 };
 
 var chart = new google.visualization.ColumnChart(document.getElementById('muatan'));
@@ -947,57 +1048,6 @@ chart.draw(data, options);
 }
 </script>
 
-<script>
-// Initialize and add the map
-// function initMap() {
-//   // The location of Uluru
-//   var uluru = {lat: -25.344, lng: 131.036};
-//   // The map, centered at Uluru
-//   var map = new google.maps.Map(
-//       document.getElementById('map'), {zoom: 4, center: uluru});
-//   // The marker, positioned at Uluru
-//   var marker = new google.maps.Marker({position: uluru, map: map});
-// }
-
-//////
-
-function initMap() {
-        var myLatlng = {lat: -25.363, lng: 131.044};
-
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          center: myLatlng
-        });
-
-        var marker = new google.maps.Marker({
-          position: myLatlng,
-          map: map,
-          title: 'Click to zoom',
-          url:'/map-clicked'
-        });
-
-        map.addListener('center_changed', function() {
-          // 3 seconds after the center of the map has changed, pan back to the
-          // marker.
-          window.setTimeout(function() {
-            map.panTo(marker.getPosition());
-          }, 3000);
-        });
-
-        marker.addListener('click', function() {
-            window.location.href = marker.url;
-        });
-      }
-    </script>
-    <!--Load the API from the specified URL
-    * The async attribute allows the browser to render the page while the API loads
-    * The key parameter will contain your own API key (which is not needed for this tutorial)
-    * The callback parameter executes the initMap() function
-    -->
-    <!-- <script src="//maps.google.com/maps/api/js?key=AIzaSyBTGnKT7dt597vo9QgeQ7BFhvSRP4eiMSM" type="text/javascript"></script> -->
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMHi0AIoQz1JmkicVxHhJJ7mf5cNeXucQ&callback=initMap">
-</script>
    <!-- chart-column -->
 <script>
 google.charts.load('current', {'packages':['corechart']});
@@ -1061,6 +1111,8 @@ var data = google.visualization.arrayToDataTable([
    
 ]);
 
+var total = getTotal(data);
+
 var yearPattern = "0";
   var formatNumber = new google.visualization.NumberFormat({
     pattern: 'decimal', 
@@ -1070,10 +1122,12 @@ var yearPattern = "0";
 
 var options = {
     colors: ['#0FA3BA','#FFC201','#5767DE','#FD367B','#FD7F0C','#007CFF','#00AF4C','#28DAC6'],
-    legend:{position: 'bottom', maxTextLines:4},
+    legend:{position: 'right'},
+    height:500,
+    pieSliceText: 'none'
 };
 
-var chart = new google.visualization.PieChart(document.getElementById('keluhanmuatan'));
+var chart = new google.visualization.PieChart(document.getElementById('keluhanmuatand'));
 
 chart.draw(data, options);
 }
@@ -1100,7 +1154,13 @@ chart.draw(data, options);
           colors: ['#FFC201','#28DAC6','#FD7F0C','#00AF4C'],
           seriesType: 'bars',
           series: {3: {type: 'line'}}  ,
-          legend:{position: 'bottom'}      
+          legend:{position: 'bottom'} ,
+          vAxis: { title:"JUMLAH PALET", titleTextStyle:{bold:true, italic:false}} ,    
+          hAxis: { title:"GUDANG", titleTextStyle:{bold:true, italic:false}},
+          chartArea: {
+                bottom: 150
+            },
+          
         };
 
         var chart = new google.visualization.ComboChart(document.getElementById('stokpaletbulan'));
@@ -1172,4 +1232,94 @@ var KTBootstrapDaterangepicker = function () {
 jQuery(document).ready(function() {
     KTBootstrapDaterangepicker.init();
 });
+</script>
+
+<script>
+function showAcc1(){
+   $('.Acc1').toggle();
+}
+
+
+function showAcc2(){
+   $('.Acc2').toggle();
+}
+
+
+function showAcc3(){
+   $('.Acc3').toggle();
+}
+
+
+function showAcc4(){
+   $('.Acc4').toggle();
+}
+
+
+</script>
+
+
+<script>
+function drawChart() {
+
+var dataArray = [
+    
+    ['Ban bocor',     5],
+    ['Kedisiplinan Operator',      7],
+    ['Kantong produk rusak',  8],
+    ['Staple roboh',     5],
+    ['Terplas rusak',     13],
+    ['Rem rusak',      5],
+    ['Oli bocor',  7],
+    ['Merusak Pilar Gudang',  8],
+];
+
+  var total = getTotal(dataArray);
+
+    // Adding tooltip column  
+  for (var i = 0; i < dataArray.length; i++) {
+  dataArray[i].push(customTooltip(dataArray[i][0], dataArray[i][1], total));
+}
+
+// Changing legend  
+for (var i = 0; i < dataArray.length; i++) {
+      dataArray[i][0] =  dataArray[i][0]  +'  '+((dataArray[i][1] / total) * 100).toFixed(1) + '% (' + 
+          		dataArray[i][1] + ') '  ; 
+    }
+
+// Column names
+dataArray.unshift(['Goal Name', 'No. of times Requested', 'Tooltip']);
+
+var data = google.visualization.arrayToDataTable(dataArray);
+
+// Setting role tooltip
+data.setColumnProperty(2, 'role', 'tooltip');
+data.setColumnProperty(2, 'html', true);
+
+var options = {
+    //title: 'Most Requested Sponsors',
+    
+    height: 500,
+    tooltip: { isHtml: true },
+    colors: ['#0FA3BA','#FFC201','#5767DE','#FD367B','#FD7F0C','#007CFF','#00AF4C','#28DAC6'],
+    pieSliceText: 'none'
+};
+    
+var chart = new google.visualization.PieChart(document.getElementById('keluhanmuatan'));
+chart.draw(data, options);
+}
+
+function customTooltip(name, value, total) {
+return name + '<br/><b>' + value + ' (' + ((value/total) * 100).toFixed(1) + '%)</b>';
+}
+
+function getTotal(dataArray) {
+var total = 0;
+   for (var i = 0; i < dataArray.length; i++) {
+  total += dataArray[i][1];
+}
+return total;
+}
+
+
+google.load('visualization', '1', {packages:['corechart'], callback: drawChart});
 </script>
