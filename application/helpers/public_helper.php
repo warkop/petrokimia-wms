@@ -205,7 +205,7 @@ function helpDate($var, $mode = 'se')
 			$month = date('n', strtotime($var));
 			$year = date('Y', strtotime($var));
 
-			$hari = helpIndoDay($dow-1);
+			$hari = helpIndoDay($dow);
 			$month = helpIndoMonth($month - 1);
 			return $hari .', '. $day.' '.$month.' '.$year;
 		break;
