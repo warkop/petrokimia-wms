@@ -3,7 +3,57 @@
 @section('title', 'Detail Log Aktivitas')
 
 @section('content')
+<style>
+    .br {
+    border-radius: 8px;  
+    }
+    .w80 {
+    width: 80%;
+    }
+    .card {
+    border: 2px solid #fff;
+    box-shadow:0px 0px 10px 0 #a9a9a9;
+    padding: 30px 40px;
+    width: 80%;
+    margin: 50px auto;
+    }
+    .wrapper {
+    width: 0px;
+    animation: fullView 0.5s forwards cubic-bezier(0.250, 0.460, 0.450, 0.940);
+    }
+    .profilePic {
+    height: 65px;
+    width: 65px;
+    border-radius: 50%;
+    }
+    .comment {
+    height: 10px;
+    background: #777;
+    margin-top: 20px;
+    }
 
+    @keyframes fullView {
+    100% {
+        width: 100%;
+    }
+    }
+
+
+    .animate {
+    animation : shimmer 2s infinite linear;
+    background: linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%);
+        background-size: 1000px 100%;
+    }
+
+    @keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+    }
+</style>
 <!-- begin:: Content -->
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
@@ -178,7 +228,7 @@
         </div>
     </div>
 
-    @if ($aktivitasHarian->so != null || $aktivitasHarian->pengiriman != null)
+    @if ($aktivitasHarian->aktivitas->so != null || $aktivitasHarian->aktivitas->pengiriman != null)
     <div class="kt-portlet__foot">
         <div class="kt-form__actions">
             <div class="row">
@@ -210,85 +260,6 @@
                     <label class="boldd">List Area</label>
                     <!--begin::Accordion-->
                     <div class="accordion accordion-light  accordion-toggle-arrow" id="tempat_card">
-                        {{-- <div class="card">
-                            <div class="card-header" id="headingOne5">
-                                <div class="card-title" data-toggle="collapse" data-target="#collapseOne5"
-                                    aria-expanded="true" aria-controls="collapseOne5">
-                                    <i class="flaticon2-shelter"></i> Area A
-                                </div>
-                            </div>
-                            <div id="collapseOne5" class="collapse" aria-labelledby="headingOne5"
-                                data-parent="#accordionExample5">
-                                <div class="card-body">
-                                    <div class="kt-widget4__item border-bottom-dash mt1">
-                                        <div class="kt-widget4__info">
-                                            <h6 class="kt-widget4__username">
-                                                20 Agustus 2019
-                                            </h6>
-                                            <p class="kt-widget4__text boldd">
-                                                20 Ton
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="kt-widget4__item border-bottom-dash mt1">
-                                        <div class="kt-widget4__info">
-                                            <h6 class="kt-widget4__username">
-                                                20 Agustus 2019
-                                            </h6>
-                                            <p class="kt-widget4__text boldd">
-                                                10 Ton
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header" id="headingTwo5">
-                                <div class="card-title collapsed" data-toggle="collapse" data-target="#collapseTwo5"
-                                    aria-expanded="false" aria-controls="collapseTwo5">
-                                    <i class="flaticon2-shelter"></i> Area B
-                                </div>
-                            </div>
-                            <div id="collapseTwo5" class="collapse" aria-labelledby="headingTwo5"
-                                data-parent="#accordionExample5">
-                                <div class="card-body">
-                                    <div class="kt-widget4__item border-bottom-dash mt1">
-                                        <div class="kt-widget4__info">
-                                            <h6 class="kt-widget4__username">
-                                                20 Agustus 2019
-                                            </h6>
-                                            <p class="kt-widget4__text boldd">
-                                                30 Ton
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header" id="headingThree5">
-                                <div class="card-title collapsed" data-toggle="collapse" data-target="#collapseThree5"
-                                    aria-expanded="false" aria-controls="collapseThree5">
-                                    <i class="flaticon2-shelter"></i> Area C
-                                </div>
-                            </div>
-                            <div id="collapseThree5" class="collapse" aria-labelledby="headingThree5"
-                                data-parent="#accordionExample5">
-                                <div class="card-body">
-                                    <div class="kt-widget4__item border-bottom-dash mt1">
-                                        <div class="kt-widget4__info">
-                                            <h6 class="kt-widget4__username">
-                                                20 Agustus 2019
-                                            </h6>
-                                            <p class="kt-widget4__text boldd">
-                                                10 Ton
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
                     </div>
 
                     <!--end::Accordion-->
@@ -437,6 +408,18 @@
     function loadArea(id_material) {
         $.ajax({
             url:ajaxSource+'/get-area/'+id_gudang+"/"+id_material+"/"+id_aktivitas_harian,
+            beforeSend:()=>{
+                $("#tempat_card").html(`
+                <div class="card br">
+                    <div class="wrapper">
+                        <div class="profilePic animate din"></div>
+                        <div class="comment br animate w80"></div>
+                        <div class="comment br animate"></div>
+                        <div class="comment br animate"></div>
+                    </div>
+                <div>
+                `);
+            },
             success:(response) => {
                 let tampung_nama = "";
                 let temp_nama = "";
