@@ -9,223 +9,7 @@
         align-items: center;
     }
 </style>
-
-{{-- <style>
-    .br {
-    border-radius: 8px;  
-    }
-    .w80 {
-    width: 80%;
-    }
-    .card {
-    border: 2px solid #fff;
-    box-shadow:0px 0px 10px 0 #a9a9a9;
-    padding: 30px 40px;
-    width: 80%;
-    margin: 50px auto;
-    }
-    .wrapper {
-    width: 0px;
-    animation: fullView 0.5s forwards cubic-bezier(0.250, 0.460, 0.450, 0.940);
-    }
-    .profilePic {
-    height: 65px;
-    width: 65px;
-    border-radius: 50%;
-    }
-    .comment {
-    height: 10px;
-    background: #777;
-    margin-top: 20px;
-    }
-
-    @keyframes fullView {
-    100% {
-        width: 100%;
-    }
-    }
-
-
-    .animate {
-    animation : shimmer 2s infinite linear;
-    background: linear-gradient(to right, #eff1f3 4%, #e2e2e2 25%, #eff1f3 36%);
-        background-size: 1000px 100%;
-    }
-
-    @keyframes shimmer {
-    0% {
-        background-position: -1000px 0;
-    }
-    100% {
-        background-position: 1000px 0;
-    }
-    }
-</style> --}}
-
-<!-- begin:: Content -->
-{{-- <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
-    <div class="kt-portlet">
-        <div class="kt-portlet__head">
-            <div class="kt-portlet__head-title">
-                <h4 class="kt-portlet__head-text title_sub pt-4">
-                    Detail Aktivitas
-                </h4>
-                <p class="sub">
-                    Berikut ini adalah detail aktivitas <span class="text-ungu kt-font-bolder">Aplikasi WMS
-                        Petrokimia.</span>
-                </p>
-            </div>
-            <div class="kt-portlet__head-toolbar">
-                <a href="{{url('penerimaan-gp')}}" class="pointer"><span class="pull-right color-dodolo"><i
-                            class="la la-arrow-left"></i>kembali</span></a>
-            </div>
-        </div>
-        <div class="kt-portlet__body">
-            <div class="row">
-                <div class="col-6">
-                    <div class="row mb1">
-                        <div class="col-12">
-                            <label>Jenis Aktivitas</label>
-                            <h5 class="boldd"> </h5>
-                        </div>
-                    </div>
-                    <div class="row mb1">
-                        <div class="col-12">
-                            <label>Shift Kerja</label>
-                            <h5 class="boldd"> </h5>
-                        </div>
-                    </div>
-                    <div class="row mb1">
-                        <div class="col-12">
-                            <label>Gudang Tujuan</label>
-                            <h5 class="boldd"> </h5>
-                        </div>
-                    </div>
-                    <div class="row mb1">
-                        <div class="col-12">
-                            <label>Paket Alat Berat</label>
-                            
-                            <h5 class="boldd"> 
-                                
-                            </h5>
-                        </div>
-                    </div>
-                    <div class="row mb1">
-                        <div class="col-12">
-                            <label>Sistro</label>
-                            <h5 class="boldd"> </h5>
-                        </div>
-                    </div>
-                    <div class="row mb1">
-                        <div class="col-12">
-                            <label>Nopol</label>
-                            <h5 class="boldd"></h5>
-                        </div>
-                    </div>
-                    <div class="row mb1">
-                        <div class="col-12">
-                            <label>Driver</label>
-                            <h5 class="boldd"> </h5>
-                        </div>
-                    </div>
-                    <div class="row mb1">
-                        <div class="col-12">
-                            <label>No. SO</label>
-                            <h5 class="boldd"> </h5>
-                        </div>
-                    </div>
-                    <div class="row mb1">
-                        <div class="col-12">
-                            <label>Foto Truk</label><br>
-                            <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_2"> Lihat Foto</a>
-                        </div>
-                    </div>
-                    <div class="row mb1">
-                        <div class="col-12">
-                            <label>Foto Kelayakan</label><br>
-                            <a href="#" class="boldd color-green" data-toggle="modal" data-target="#kt_modal_kelayakan"> Lihat Foto</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="row listproduk">
-                        <label class="boldd mb1">List Produk</label>
-                        <div class="kt-widget4 col-12 kel">
-                            
-                            <div class="kt-widget4__item border-bottom-dash">
-                                <div class="kt-widget4__info">
-                                    <p class="kt-widget4__username">
-                                         - <span class="boldd"> Ton</span>
-                                    </p>
-                                     
-                                        <p class="kt-widget4__text color-oren boldd">
-                                            Mengurangi    
-                                        </p>
-                                    
-                                        <p class="kt-widget4__text color-green boldd">
-                                            Menambah
-                                        </p>
-                                    
-                                </div>
-                                <a href="#" class="btn btn-sm btn-brand btn-bold" data-toggle="modal"
-                                data-target="#kt_modal" >Area</a>
-                            </div>
-                            
-                            <div class="border-pembatas mb1"></div>
-                        </div>
-                    </div>
-                    <div class="row listterplas mt2">
-                        <label class="boldd mb1">List Pallet</label>
-                        <div class="kt-widget4 col-12 kel">
-                            
-                                <div class="kt-widget4__item border-bottom-dash">
-                                    <div class="kt-widget4__info">
-                                        <p class="kt-widget4__username">
-                                            
-                                        </span>
-                                        </p>
-                                        
-                                            <p class="kt-widget4__text color-oren boldd">
-                                                Mengurangi    
-                                            </p>
-                                        
-                                            <p class="kt-widget4__text color-green boldd">
-                                                Menambah
-                                            </p>
-                                        
-                                    </div>
-                                </div>    
-                            
-                            <div class="border-pembatas mb1"></div>
-                        </div>
-                        <div class="row mb1">
-                        <div class="col-12">
-                            <label>Tanda Tangan</label><br>
-                            
-                                <a class="fancybox" rel="ligthbox">
-                                    
-                                </a>
-                           
-                                <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
-                            
-                        </div>
-                    </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="kt-portlet__foot">
-            <div class="kt-form__actions">
-                <div class="row">
-                    <div class="col-10">
-                        <a href="javascript:;" type="button" class="btn btn-success btn-lg" onclick="printPrev()" > <i class="fa fa-print"></i> Print Preview</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> --}}
-
+<title>Cetak Aktivitas</title>
 <div class="book">
     <div class="page">
         <div class="header">
@@ -235,12 +19,6 @@
             </section>
         </div>
         <div class="isi" style="padding: .5cm 1.5cm !important;">
-            {{-- <div class="row">
-                <div class="col-md-12 text-center">
-                    <h3 class="uppercase underline" style="font-size: 16pt">Surat - keterangan</h3>
-                    <p style="margin-top: -1rem">Nomor : 0020/NK.01.01/04/KR/2018</p>
-                </div>
-            </div> --}}
             <div class="row">
                 <div class="col-md-6 mb1">
                     <label>
@@ -310,6 +88,14 @@
                         {{$aktivitasHarian->posto??'-'}}
                     </p>
                 </div>
+                <div class="col-md-6 mb1">
+                    <label>
+                        Nama Checker
+                    </label>
+                    <p class="boldd-500">
+                        {{$aktivitasHarian->checker->name??'-'}}
+                    </p>
+                </div>
                 <section class="row col-md-12 mt2" style="margin:0">
                     <div class="col-md-6 mb-setengah">
                         <label class="boldd-500">
@@ -323,6 +109,7 @@
                     </div>
 
                     <div class="col-md-6 mb1">
+                        @if (count($produk) > 0)
                         <table>
                             <tr>
                               <th>Area</th>
@@ -337,9 +124,13 @@
                                 </tr>
                             @endforeach
                         </table>
+                        @else
+                            <p><strong>Tidak ada produk dalam transaksi</strong></p>
+                        @endif
                     </div>
 
                     <div class="col-md-5 mb1 ml1">
+                        @if (count($pallet) > 0)
                         <table>
                             @foreach ($pallet as $key)
                                 @if ($key->status_pallet == 1)
@@ -357,6 +148,17 @@
                                 </tr>
                             @endforeach
                         </table>
+                        @else
+                            <p><strong>Tidak ada pallet dalam transaksi</strong></p>
+                        @endif
+                    </div>
+                    <div class="col-md-12 mb1">
+                        <strong>
+                            <h5>Dengan ini menyatakan bahwa : </h5>
+                            <h5>1. Produk yang diterima supir adalah dalam kondisi Original / Siap Jual</h5>
+                            <h5>2. Jumlah produk yang diterima sesuai kuantum tertulis</h5>
+                            <h5>3. Penataan produk dalam truk sudah sesuai standar (tertata dengan rapi) serta sesuai dengan foto yang terlampir</h5>
+                        </strong>
                     </div>
                 </section>
             </div>
@@ -371,6 +173,7 @@
                 @else
                     <span class="kt-link kt-link--brand kt-font-bolder _404fileImg"><strong>File Tidak ada di server</strong></span>
                 @endif
+                <p>({{$aktivitasHarian->driver??'...........................'}})</p>
             </div>
         </div>
     </div>

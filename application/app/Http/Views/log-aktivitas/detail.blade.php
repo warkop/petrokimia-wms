@@ -177,15 +177,18 @@
             </div>
         </div>
     </div>
+
+    @if ($aktivitasHarian->so != null || $aktivitasHarian->pengiriman != null)
     <div class="kt-portlet__foot">
-            <div class="kt-form__actions">
-                <div class="row">
-                    <div class="col-10">
-                        <a href="{{url('log-aktivitas/cetak-aktivitas/'.$aktivitasHarian->id)}}" type="button" class="btn btn-success btn-lg" target="_blank" > <i class="fa fa-print"></i> Cetak</a>
-                    </div>
+        <div class="kt-form__actions">
+            <div class="row">
+                <div class="col-10">
+                    <a href="{{url('log-aktivitas/cetak-aktivitas/'.$aktivitasHarian->id)}}" type="button" class="btn btn-success btn-lg" target="_blank" > <i class="fa fa-print"></i> Cetak</a>
                 </div>
             </div>
         </div>
+    </div>
+    @endif
 </div>
 <!--End::Dashboard 6-->
 </div>

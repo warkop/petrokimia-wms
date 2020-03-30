@@ -110,14 +110,9 @@ class LogAktivitasController extends Controller
     public function print($id)
     {
         $aktivitasHarian = AktivitasHarian::where('id', $id)
-            ->with(['aktivitas' => function ($query) {
-                $query->whereNotNull('pengiriman');
-                $query->whereNotNull('pengaruh_tgl_produksi');
-                $query->withoutGlobalScopes();
-            }])
             ->whereHas('aktivitas', function ($query) {
                 $query->whereNotNull('pengiriman');
-                $query->whereNotNull('pengaruh_tgl_produksi');
+                $query->orWhereNotNull('so');
                 $query->withoutGlobalScopes();
             })->firstOrFail();
         $data['title'] = 'Cetak Aktivitas';
