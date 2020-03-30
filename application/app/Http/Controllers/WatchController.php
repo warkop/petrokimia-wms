@@ -8,6 +8,7 @@ use App\Http\Models\AktivitasHarian;
 use Illuminate\Http\Request;
 use App\Http\Models\LaporanKerusakan;
 use App\Http\Models\MaterialAdjustment;
+use App\Http\Models\MaterialTrans;
 use App\Http\Models\Realisasi;
 use App\Http\Models\RealisasiHousekeeper;
 
@@ -71,6 +72,12 @@ class WatchController extends Controller
             }
         } else if ($category == 'ba') {
             $cek_id = AktivitasHarian::find($id_file);
+
+            if (!empty($source) && !empty($category) && !empty($cek_id)) {
+                $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
+            }
+        } else if ($category == 'pallet') {
+            $cek_id = MaterialTrans::find($id_file);
 
             if (!empty($source) && !empty($category) && !empty($cek_id)) {
                 $file = storage_path('app/public/' . $category . '/' . $id_file . '/' . $source);
