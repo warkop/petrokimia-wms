@@ -145,13 +145,59 @@ class PalletController extends Controller
             'shift_id'          => $req->input('shift_id'),
         ];
 
-        (new MaterialTrans)->create($arr);
+        $data = (new MaterialTrans)->create($arr);
 
         $this->responseCode = 200;
+        $this->responseData = $data;
         $this->responseMessage = 'Data berhasil disimpan';
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
+    }
+
+    public function uploadFile($id_gudang, Request $req)
+    {
+        $id = $req->get('id');
+        $file = $req->file('file');
+
+        $cek_penggunaan = MaterialTrans::find($id);
+
+        if (!empty($cek_penggunaan)) {
+            $ext = $file->getClientOriginalExtension();
+            $filename = $file->getClientOriginalName();
+
+            $filter = [
+                'jpg',
+                'png',
+                'jpeg',
+                'gif',
+            ];
+
+            if (in_array($ext, $filter)) {
+                $path = storage_path('app/public') . '/pallet/' . $id;
+                $req->file('file')->move($path, $filename);
+                $resource = MaterialTrans::find($id);
+
+                $resource->upload_file = $filename;
+                $resource->save(); 
+
+                return response()->json([
+                    'code' => http_response_code(),
+                    'msg' => 'success',
+                    'data' => $filename
+                ], http_response_code());
+            } else {
+                return response()->json([
+                    'code' => http_response_code(),
+                    'msg' => 'fail',
+                ], http_response_code());
+            }
+        } else {
+            return response()->json([
+                'code' => http_response_code(),
+                'msg' => 'fail',
+            ], http_response_code());
+        }
     }
 
     public function show($id_gudang, $id, GudangStok $models, Request $request)

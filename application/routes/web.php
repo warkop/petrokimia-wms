@@ -167,6 +167,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/pallets/{id_gudang}/{status}', 'PalletController@listPallet');
         Route::post('/{id_gudang}', 'PalletController@json');
         Route::put('/{id_gudang}', 'PalletController@store');
+        Route::post('/upload/{id_gudang}', 'PalletController@uploadFile')->where('id_gudang', '[0-9]+');
     });
 
     Route::group(['prefix' => 'rencana-harian'], function () {

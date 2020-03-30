@@ -5,6 +5,35 @@ let datatable,
     ajaxSource = ajaxUrl,
     laddaButton;
 
+Dropzone.autoDiscover = false;
+const dropzoneOptions = {
+    url: baseUrl + "/list-pallet/upload/" + id_gudang,
+    type: "POST",
+    params: {
+    _token: $('meta[name="csrf-token"]').attr("content")
+    },
+    parallelUploads: 1000,
+    maxFiles: 1,
+    addRemoveLinks: true,
+    dictDefaultMessage: "Seret File atau klik disini untuk mengunggah",
+    acceptedFiles: ".jpg,.png,.jpeg,.gif",
+    autoProcessQueue: false,
+    init: function() {
+    this.on("addedfile", function(file) {
+        if (!file.type.match("image.*")) {
+        // alert("Upload Image Only!");
+        // return false;
+        }
+    });
+    this.on("success", function(file) {
+        datatable.api().ajax.reload();
+        if (completeFiles === totalFiles) {
+        /* window["myDropzone"+i+"_"+val+"_1"].removeAllFiles(); */
+        }
+    });
+    }
+};
+
 $(document).ready(function () {
     load_table();
 
@@ -95,10 +124,10 @@ const load_table = function () {
             },
             {
                 "mData": "alasan"
+            },
+            {
+                "mData": null
             }
-            // {
-            //     "mData": "id"
-            // }
         ],
         "aaSorting": [
             [1, 'asc']
@@ -170,7 +199,39 @@ const load_table = function () {
 
                      return label;
                 }
-            }
+            },
+            {
+                "aTargets": -1,
+                "orderable": false,
+                "mRender": function(data, type, full, meta) {
+                  let link = "";
+                  let image = "Tidak ada gambar";
+                  if (full.upload_file != null) {
+                    link =
+                      baseUrl +
+                      /watch/ +
+                      full.upload_file +
+                      "?" +
+                      "un=" +
+                      full.id +
+                      "&ctg=pallet&src=" +
+                      full.upload_file;
+                      
+                    image =
+                      '<a target="_blank" class="fancybox fancybox-effects-a" data-fancybox="file-' +
+                      full.id +
+                      '" data-caption="' +
+                      full.upload_file +
+                      '" rel="ligthbox" href="' +
+                      link +
+                      '"><img class="img-responsive" width="100px" src="' +
+                      link +
+                      '" alt=""></a>';
+                    }
+        
+                  return image;
+                }
+              }
             // {
             //     "aTargets": -1,
             //     "mData": "id",
@@ -462,98 +523,116 @@ function detail(id) {
 
 function simpan() {
     // var file = new FormData($("#form1")[0]);
-    const data = $("#form1").serializeArray();
-    $.ajax({
-        type: "PUT",
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: ajaxUrl,
-        data: data,
-        beforeSend: function () {
-            preventLeaving();
-            $('.btn_close_modal').addClass('hide');
-            $('.se-pre-con').show();
-        },
-        success: function (response) {
-            laddaButton.stop();
-            window.onbeforeunload = false;
-            $('.btn_close_modal').removeClass('hide');
-            $('.se-pre-con').hide();
+    if (myDropzone.getQueuedFiles().length == 1) { 
+        const data = $("#form1").serializeArray();
+        $.ajax({
+            type: "PUT",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: ajaxUrl,
+            data: data,
+            beforeSend: function () {
+                preventLeaving();
+                $('.btn_close_modal').addClass('hide');
+                $('.se-pre-con').show();
+            },
+            success: function (response) {
+                laddaButton.stop();
+                window.onbeforeunload = false;
+                $('.btn_close_modal').removeClass('hide');
+                $('.se-pre-con').hide();
 
-            const obj = response;
+                const obj = response;
 
-            if (obj.status == "OK") {
-                // datatable.api().ajax.reload();
-                swal.fire('Ok', obj.message, 'success').then(()=>{
-                    location.reload();
+                if (obj.status == "OK") {
+                    // datatable.api().ajax.reload();
+                    swal.fire('Ok', obj.message, 'success').then(()=>{
+                        location.reload();
+                    });
+                    // $('#modal_form').modal('hide');
+                } else {
+                    swal.fire('Pemberitahuan', obj.message, 'warning');
+                }
+                
+                myDropzone.on("sending", function(file, xhr, formData) {
+                    formData.append("id", obj.data.id);
                 });
-                // $('#modal_form').modal('hide');
-            } else {
-                swal.fire('Pemberitahuan', obj.message, 'warning');
-            }
+            
+                myDropzone.processQueue();
+            },
+            error: function (response) {
+                $("#btn_save").prop("disabled", false);
+                let head = 'Maaf',
+                    message = 'Terjadi kesalahan koneksi',
+                    type = 'error';
+                laddaButton.stop();
+                window.onbeforeunload = false;
+                $('.btn_close_modal').removeClass('hide');
+                $('.se-pre-con').hide();
 
-        },
-        error: function (response) {
-            $("#btn_save").prop("disabled", false);
-            let head = 'Maaf',
-                message = 'Terjadi kesalahan koneksi',
-                type = 'error';
-            laddaButton.stop();
-            window.onbeforeunload = false;
-            $('.btn_close_modal').removeClass('hide');
-            $('.se-pre-con').hide();
+                if (response['status'] == 401 || response['status'] == 419) {
+                    location.reload();
+                } else {
+                    if (response['status'] != 404 && response['status'] != 500) {
+                        let obj = JSON.parse(response['responseText']);
 
-            if (response['status'] == 401 || response['status'] == 419) {
-                location.reload();
-            } else {
-                if (response['status'] != 404 && response['status'] != 500) {
-                    let obj = JSON.parse(response['responseText']);
-
-                    if (!$.isEmptyObject(obj.message)) {
-                        if (obj.code > 450) {
-                            head = 'Maaf';
-                            message = obj.message;
-                            type = 'error';
-                        } else {
-                            head = 'Pemberitahuan';
-                            type = 'warning';
-                            obj = response.responseJSON.errors;
-                            message = '';
-                            if (obj == null) {
-                                message = response.responseJSON.message;
+                        if (!$.isEmptyObject(obj.message)) {
+                            if (obj.code > 450) {
+                                head = 'Maaf';
+                                message = obj.message;
+                                type = 'error';
                             } else {
-                                const temp = Object.values(obj);
-                                
-                                temp.forEach(element => {
-                                    element.forEach(row => {
-                                        message += row + "<br>"
+                                head = 'Pemberitahuan';
+                                type = 'warning';
+                                obj = response.responseJSON.errors;
+                                message = '';
+                                if (obj == null) {
+                                    message = response.responseJSON.message;
+                                } else {
+                                    const temp = Object.values(obj);
+                                    
+                                    temp.forEach(element => {
+                                        element.forEach(row => {
+                                            message += row + "<br>"
+                                        });
                                     });
-                                });
+                                }
+
+                                laddaButton.stop();
+                                window.onbeforeunload = false;
+                                $('.btn_close_modal').removeClass('hide');
+                                $('.se-pre-con').hide();
+                                
+
+                                
                             }
-
-                            laddaButton.stop();
-                            window.onbeforeunload = false;
-                            $('.btn_close_modal').removeClass('hide');
-                            $('.se-pre-con').hide();
-                            
-
-                            
                         }
                     }
-                }
 
-                swal.fire(head, message, type);
+                    swal.fire(head, message, type);
+                }
             }
-        }
-    });
+        });
+    } else {
+        swal.fire("Pemberitahuan", "Wajib upload file!", "warning").then(()=>{
+            laddaButton.stop();
+        }).catch(()=>{
+            laddaButton.stop();
+        });
+    }
+
+    
 }
+
+const myDropzone = new Dropzone("#m-dropzone-one", dropzoneOptions);
 
 function reset_form(method = '') {
     $('#id').val('');
     $('#material').select2("val", "");
     $('#jumlah').val('');
     $('#alasan').val('');
+    myDropzone.removeAllFiles();
     // $('input[name=tipe]').val(1);
     // $('input[name=jenis]').val(1);
 }

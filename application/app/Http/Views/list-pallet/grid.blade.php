@@ -91,7 +91,7 @@
                                 <th>Tipe</th>
                                 <th>Jenis</th>
                                 <th width="30%;">Alasan</th>
-                                {{-- <th>Actions</th> --}}
+                                <th>Foto</th>
                             </tr>
                         </thead>
                     </table>					
@@ -131,6 +131,19 @@
                                 <select class="form-control input-enter m-select2" readonly placeholder="Pilih tanggal" name="material" id="material" style="width: 100%"/>
 
                                 </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Foto</label>
+                                <div class="kt-dropzone dropzone" id="m-dropzone-one" >
+                                    <div class="kt-dropzone__msg dz-message needsclick">
+                                        <h3 class="kt-dropzone__msg-title">Seret berkas atau klik untuk mengunggah</h3>
+                                        <span class="kt-dropzone__msg-desc">Hanya berkas dengan format <strong>jpg, png, jpeg, gif</strong> yang diizinkan untuk diunggah</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

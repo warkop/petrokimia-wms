@@ -56,7 +56,8 @@ class GudangStok extends Model
                 'alasan',
                 'material_trans.jumlah',
                 'material_trans.tipe',
-                'status_pallet'
+                'status_pallet',
+                'upload_file'
             )
             ->Join('material', 'gudang_stok.id_material', '=', 'material.id')
             ->Join('material_trans', 'gudang_stok.id', '=', 'material_trans.id_gudang_stok')

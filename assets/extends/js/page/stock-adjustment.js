@@ -130,7 +130,6 @@ const load_table = function() {
         render: function(data, type, full, meta) {
           let link = "";
           let image = "Tidak ada gambar";
-          console.log(full.foto);
           if (full.foto != null) {
             link =
               baseUrl +
@@ -153,7 +152,6 @@ const load_table = function() {
               link +
               '" alt=""></a>';
             }
-          console.log(image);
 
           return image;
         }
@@ -653,92 +651,99 @@ function detail(id) {
 }
 
 function simpan() {
-  let data = $("#form1").serializeArray();
+  if (myDropzone.getQueuedFiles().length == 1) { 
+    let data = $("#form1").serializeArray();
 
-  $.ajax({
-    type: "PUT",
-    headers: {
-      "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-    },
-    url: ajaxUrl + "/stock-adjustment/" + id_gudang,
-    data: data,
-    beforeSend: function() {
-      preventLeaving();
-      $(".btn_close_modal").addClass("hide");
-      $(".se-pre-con").show();
-    },
-    success: function(response) {
-      laddaButton.stop();
-      window.onbeforeunload = false;
-      $(".btn_close_modal").removeClass("hide");
-      $(".se-pre-con").hide();
-      let obj = response;
-      myDropzone.on("sending", function(file, xhr, formData) {
-        formData.append("id", obj.data.id);
-      });
-
-      myDropzone.processQueue();
-
-      if (obj.status == "OK") {
-        swal.fire("Ok", "Data berhasil disimpan", "success").then(()=>{
-          datatable.api().ajax.reload();
-          $("#modal_form").modal("hide");
-        }).catch(()=>{
-
+    $.ajax({
+      type: "PUT",
+      headers: {
+        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+      },
+      url: ajaxUrl + "/stock-adjustment/" + id_gudang,
+      data: data,
+      beforeSend: function() {
+        preventLeaving();
+        $(".btn_close_modal").addClass("hide");
+        $(".se-pre-con").show();
+      },
+      success: function(response) {
+        laddaButton.stop();
+        window.onbeforeunload = false;
+        $(".btn_close_modal").removeClass("hide");
+        $(".se-pre-con").hide();
+        let obj = response;
+        myDropzone.on("sending", function(file, xhr, formData) {
+          formData.append("id", obj.data.id);
         });
-      } else {
-        swal.fire("Pemberitahuan", obj.message, "warning");
-      }
-    },
-    error: function(response) {
-      $("#btn_save").prop("disabled", false);
-      let head = "Maaf",
-        message = "Terjadi kesalahan koneksi",
-        type = "error";
-      laddaButton.stop();
-      window.onbeforeunload = false;
-      $(".btn_close_modal").removeClass("hide");
-      $(".se-pre-con").hide();
-      if (response["status"] == 401 || response["status"] == 419) {
-        location.reload();
-      } else {
-        if (response["status"] != 404 && response["status"] != 500) {
-          let obj = JSON.parse(response["responseText"]);
-          console.log(obj)
 
-          if (!$.isEmptyObject(obj.message)) {
-            if (obj.code > 450) {
-              head = "Maaf";
-              message = obj.message;
-              type = "error";
-            } else {
-              head = "Pemberitahuan";
-              type = "warning";
-              if (!$.isEmptyObject(response.responseJSON.errors)) {
-                obj = response.responseJSON.errors;
-                laddaButton.stop();
-                window.onbeforeunload = false;
-                $(".btn_close_modal").removeClass("hide");
-                $(".se-pre-con").hide();
-  
-                const temp = Object.values(obj);
-                message = "";
-                temp.forEach(element => {
-                  element.forEach(row => {
-                    message += row + "<br>";
-                  });
-                });
+        myDropzone.processQueue();
+
+        if (obj.status == "OK") {
+          swal.fire("Ok", "Data berhasil disimpan", "success").then(()=>{
+            datatable.api().ajax.reload();
+            $("#modal_form").modal("hide");
+          }).catch(()=>{
+
+          });
+        } else {
+          swal.fire("Pemberitahuan", obj.message, "warning");
+        }
+      },
+      error: function(response) {
+        $("#btn_save").prop("disabled", false);
+        let head = "Maaf",
+          message = "Terjadi kesalahan koneksi",
+          type = "error";
+        laddaButton.stop();
+        window.onbeforeunload = false;
+        $(".btn_close_modal").removeClass("hide");
+        $(".se-pre-con").hide();
+        if (response["status"] == 401 || response["status"] == 419) {
+          location.reload();
+        } else {
+          if (response["status"] != 404 && response["status"] != 500) {
+            let obj = JSON.parse(response["responseText"]);
+
+            if (!$.isEmptyObject(obj.message)) {
+              if (obj.code > 450) {
+                head = "Maaf";
+                message = obj.message;
+                type = "error";
               } else {
-                message = obj.message
+                head = "Pemberitahuan";
+                type = "warning";
+                if (!$.isEmptyObject(response.responseJSON.errors)) {
+                  obj = response.responseJSON.errors;
+                  laddaButton.stop();
+                  window.onbeforeunload = false;
+                  $(".btn_close_modal").removeClass("hide");
+                  $(".se-pre-con").hide();
+    
+                  const temp = Object.values(obj);
+                  message = "";
+                  temp.forEach(element => {
+                    element.forEach(row => {
+                      message += row + "<br>";
+                    });
+                  });
+                } else {
+                  message = obj.message
+                }
               }
             }
           }
-        }
 
-        swal.fire(head, message, type);
+          swal.fire(head, message, type);
+        }
       }
-    }
-  });
+    });
+  } else {
+    swal.fire("Pemberitahuan", "Wajib upload file!", "warning").then(()=>{
+        laddaButton.stop();
+    }).catch(()=>{
+        laddaButton.stop();
+    });
+  }
 }
 
 function tambah() {
@@ -750,6 +755,7 @@ function tambah() {
   $("#modal_form .modal-info").html(
     "Isilah form dibawah ini untuk menambahkan data terkait stock adjustment."
   );
+  $('#triggerTambahFoto').html('Tambah Foto');
   $("#modal_form").modal(
     {
       backdrop: "static",
@@ -767,6 +773,17 @@ function reset_form(method = "") {
     $("#table_pallet tbody").html("");
     $("#list").html("");
     myDropzone.removeAllFiles();
+}
+
+function openModalTambah(){
+  $('#modal').modal();
+  $("#titleModal").html("Tambah Pegawai");
+  $('#triggerTambahFoto').html('Tambah Foto')
+}
+function openModalEdit(){
+  $('#modal').modal();
+  $("#titleModal").html("Edit Pegawai");
+  $('#triggerTambahFoto').html('Ubah Foto')
 }
 
 var KTDatatablesDataSourceHtml = (function() {

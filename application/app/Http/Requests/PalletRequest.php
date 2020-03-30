@@ -33,6 +33,7 @@ class PalletRequest extends FormRequest
             'material'          => 'required',
             'shift_id'          => 'required',
             'jumlah'            => 'numeric',
+            'alasan'            => 'required',
             'tipe'              => 'between:1,2',
             'jenis'             => 'between:1,4',
         ];
@@ -50,6 +51,7 @@ class PalletRequest extends FormRequest
             'jumlah'          => 'Jumlah',
             'tipe'            => 'Tipe',
             'jenis'           => 'Jenis',
+            'alasan'          => 'Alasan',
         ];
     }
 

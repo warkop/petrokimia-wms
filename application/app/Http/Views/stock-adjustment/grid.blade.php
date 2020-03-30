@@ -115,6 +115,22 @@ lines {
                                 </div>
                             </div>
                         </div>
+                        {{-- <div class="col-12 mt-5">
+                            <div class="form-group">
+                                <label id="paraf" class="form-control-label">Unggah Foto</label>
+                                <div class="row col-12 v-middle-flex-center">
+                                    <div class="col-6 img-edit" style="padding:0">
+                                        <img id="img_modal" src="" alt="" style="width:100%;height:160px;object-fit: cover;border-radius:.5rem">
+                                    </div>
+                                    <div class="col-6 mt1">
+                                        <div class="row">
+                                            <input id="fileInput" name="paraf" type="file" style="display:none;" accept="image/x-png,image/jpg,image/jpeg, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf" onchange="document.getElementById('img_modal').src = window.URL.createObjectURL(this.files[0])" />
+                                            <button type="button" class="btn btn-clean btn-bold btn-upper ml-5" onclick="document.getElementById('fileInput').click();" id="triggerTambahFoto"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> --}}
                     </div>
                     <div class="row">
                         <div class="col-md-12">
