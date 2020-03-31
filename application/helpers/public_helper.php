@@ -134,7 +134,7 @@ function helpRoman($var)
  */
 function helpIndoDay($var)
 {
-	$dayArray = array("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu");
+	$dayArray = array("Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu");
 	if(array_key_exists($var, $dayArray )){
 		return $dayArray[$var];
 	}else{
