@@ -85,7 +85,10 @@ class UsersController extends Controller
             $models->password       = bcrypt($password);
         }
 
-        if ($role == 5) {
+        if ($role == 1) {
+            $models->id_tkbm    = null;
+            $models->id_karu    = null;    
+        } else if ($role == 5) {
             $models->id_karu    = $pilih;    
             $models->id_tkbm    = null;    
         } else {
