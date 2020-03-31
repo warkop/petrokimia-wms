@@ -1716,8 +1716,7 @@ class ReportController extends Controller
                 foreach ($pilih_pallet as $key => $value) {
                     $query = $query->orWhere('id_material', $value);
                 }
-            })
-            ->where('kategori', 2);
+            });
         } else {
             $res = $res->whereHas('material', function ($query) {
                 $query = $query->where('kategori', 2);
