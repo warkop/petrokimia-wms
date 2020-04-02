@@ -4221,7 +4221,7 @@ class ReportController extends Controller
                                 $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00')));
                                 $query->where('id_shift', 1);
                             });
-                            $query->orWhere('material_adjustment.tanggal', '<=', $tanggal);
+                            $query->orWhere('material_adjustment.tanggal', '<', $tanggal);
                             $query->orWhere(function ($query) use ($tanggal) {
                                     $query->where('material_adjustment.tanggal', '=', $tanggal);
                                     $query->where(function($query){
