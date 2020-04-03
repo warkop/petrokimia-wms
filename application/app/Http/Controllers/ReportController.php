@@ -1795,6 +1795,17 @@ class ReportController extends Controller
                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
             )
         );
+        $style_center = array(
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                )
+            ),
+            'alignment' => array(
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            )
+        );
         $style_kolom = array(
             'borders' => array(
                 'allBorders' => array(
@@ -2197,6 +2208,14 @@ class ReportController extends Controller
             }
 
             $row = $row - count($kondisi);
+
+            $tempPeralihanTambah[0] = 0; 
+            $tempPeralihanTambah[1] = 0; 
+            $tempPeralihanTambah[2] = 0; 
+
+            $tempPeralihanKurang[0] = 0; 
+            $tempPeralihanKurang[1] = 0; 
+            $tempPeralihanKurang[2] = 0; 
             
             for ($i = 0; $i < count($kondisi); $i++) {
                 $abjadDalam = $abjad;
@@ -2227,7 +2246,6 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $dikembalikan);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
 
-                // dd($value->toArray());
                 $peralihanTambah = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($value){
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
@@ -2247,6 +2265,8 @@ class ReportController extends Controller
                     ->where('status_pallet', ($i + 2))
                     ->where('id_material', $value->id_material)
                     ->sum('jumlah');
+                
+                $tempPeralihanTambah[$i] = $peralihanTambah;
                 $stokAkhir[$i] += $peralihanTambah;
                 $col++;
                 $abjadDalam++;
@@ -2272,6 +2292,8 @@ class ReportController extends Controller
                     ->where('status_pallet', ($i + 2))
                     ->where('id_material', $value->id_material)
                     ->sum('jumlah');
+                
+                $tempPeralihanKurang[$i] = $peralihanKurang;
                 $stokAkhir[$i] -= $peralihanKurang;
                 $col++;
                 $abjadDalam++;
@@ -2287,8 +2309,8 @@ class ReportController extends Controller
                 $col++;
                 $abjadDalam++;
                 // $objSpreadsheet->getActiveSheet()->setCellValue($abjad.$row, '=IF('.$abjadDipinjam.$row.'='. $abjadDikembalikan.$row. ',"BALANCE","CEKLAGI")');
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $status);
-                $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
+                // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $status);
+                // $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
 
                 $col++;
                 $abjadDalam++;
@@ -2297,6 +2319,21 @@ class ReportController extends Controller
                 $row++;
                 $col -= 6;
             }
+
+            $abjadDalam = chr(ord($abjadDalam) - 1);;
+
+            // dd($abjadDalam);
+            $objSpreadsheet->getActiveSheet()->mergeCells($abjadDalam . ($row-3) . ':'.$abjadDalam . ($row-1));
+            $status = 'CEK LAGI';
+
+            if (($tempPeralihanTambah[0]+$tempPeralihanTambah[1]+$tempPeralihanTambah[2]) == ($tempPeralihanKurang[0]+$tempPeralihanKurang[1]+$tempPeralihanKurang[2])) {
+                $status = 'BALANCE';
+            }
+
+            // dd(($row-3));
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(($col+5), ($row-3), $status);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . ($row-3) . ":" . $abjadDalam . ($row-1))->applyFromArray($style_center);
+
             $row--;
             $abjad = 'A';
         }
