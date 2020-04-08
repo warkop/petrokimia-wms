@@ -173,6 +173,24 @@ function helpIndoMonth($num)
    - li (long Indonesia)	: (l, d F Y) Senin, 31 Januari 2015
  * @return (string) {'Undefined'}
  */
+
+function columnLetter($c){
+
+    $c = intval($c);
+    if ($c <= 0) return '';
+
+    $letter = '';
+             
+    while($c != 0){
+       $p = ($c - 1) % 26;
+       $c = intval(($c - $p) / 26);
+       $letter = chr(65 + $p) . $letter;
+    }
+    
+    return $letter;
+        
+}
+
 function helpDate($var, $mode = 'se')
 {
 	switch($mode){

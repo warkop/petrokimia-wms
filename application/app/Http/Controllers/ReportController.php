@@ -1975,7 +1975,10 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row + 1));
         $abjad = 'A';
 
-        $abjadPemasukanSpes = chr(ord($abjadPemasukan) + 1);
+        $abjadPemasukanSpes = $abjadPemasukan;
+        $abjadPemasukanSpes++;
+        $abjadPemasukan++;
+        // dd($abjadPemasukanSpes);
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukanSpes)->setAutoSize(true);
         
         $row = 5;
