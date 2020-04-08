@@ -15,7 +15,7 @@
         <div class="header">
             <section class="v-middle-flex-center ml1">
                 <img alt="Logo" src="{{aset_extends()}}/img/logo/logo_wms1.png" width="20%"/>
-                <h2 class="ml1">Report Warehouse Mangement System</h2>
+                <h2 class="ml1">Serah Terima Pemuatan Pupuk</h2>
             </section>
         </div>
         <div class="isi" style="padding: .5cm 1.5cm !important;">
