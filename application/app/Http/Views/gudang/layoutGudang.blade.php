@@ -164,7 +164,7 @@ function overlayClickListener(overlay) {
         // for (var i = 0; i < event.overlay.getPath().getLength(); i++) {
         //     document.getElementById('koordinat').value += polygon.getPath().getAt(i).toUrlValue(6) + "<br>";
         // }
-        $('#koordinat').val(overlay.getPath().getArray());
+        $('#koordinat').val(JSON.stringify(overlay.getPath().getArray()));
 
        
     });
