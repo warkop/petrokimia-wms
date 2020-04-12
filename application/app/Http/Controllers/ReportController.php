@@ -199,18 +199,22 @@ class ReportController extends Controller
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
             )
         );
+        $style_no['alignment'] = array(
+            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+        );
+
         // start : title
-        $col = 3;
+        $col = 1;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':H' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Aktivitas Harian');
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
         $row++;
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':H' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TANGGAL '.date('d/m/Y', strtotime($tgl_awal)).' - '.date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
 
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
         $col = 1;
         $row++;
@@ -366,11 +370,7 @@ class ReportController extends Controller
 
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($kuantum, 3));
-
-            $style_no['alignment'] = array(
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-            );
-            $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_no);
+            $objSpreadsheet->getActiveSheet()->getStyle("H" . $row)->applyFromArray($style_no);
 
             $style_isi_kolom = array(
 
@@ -424,14 +424,14 @@ class ReportController extends Controller
             )
         );
         // start : title
-        $col = 3;
+        $col = 1;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':H' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Kerusakan Alat Berat');
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
         $col = 1;
         $row++;
@@ -744,17 +744,31 @@ class ReportController extends Controller
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
             )
         );
+
+        $style_no['alignment'] = array(
+            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+        );
         // start : title
-        $col = 3;
+        $col = 1;
         $row = 1;
+
+        $abjadTitle = 'D';
+        foreach ($gudang as $key) {
+            $abjadTitle++;
+        }
+
+        $abjadTitle++;
+        $abjadTitle++;
+        $abjadTitle++;
+
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Produk');
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
         $row++;
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TANGGAL ' . strtoupper(helpDate($tgl_awal, 'li')) . ' - ' . strtoupper(helpDate(date('Y-m-d', strtotime($tgl_akhir.'-1 day')), 'li')));
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
         $col = 1;
         $row++;
@@ -968,6 +982,9 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAwal, 3));
 
             $stokAkhir = $stokAwal;
+
+            $abjadPemasukan = 'E';
+
             //pemasukan
             foreach ($gudang as $item) {
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
@@ -987,9 +1004,12 @@ class ReportController extends Controller
                 $stokAkhir += $materialTrans;
                 $col++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 3));
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadPemasukan . $row)->applyFromArray($style_no);
+                $abjadPemasukan++;
             }
 
             //pengeluaran
+            $abjadPengeluaran = $abjadPemasukan;
             foreach ($gudang as $item) {
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -1008,9 +1028,14 @@ class ReportController extends Controller
                 $stokAkhir -= $materialTrans;
                 $col++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 3));
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadPengeluaran. $row)->applyFromArray($style_no);
+                $abjadPengeluaran++;
             }
+
+            $abjadNormal = $abjadPengeluaran;
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAkhir, 3));
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadNormal. $row)->applyFromArray($style_no);
 
             $rusak = 0;
             $rusakSaldoAwal = 0;
@@ -1084,17 +1109,16 @@ class ReportController extends Controller
             //total produk rusak
             $rusak = $rusakSaldoAwal + $rusakTambah - $rusakKurang;
             $col++;
+            $abjadNormal++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($rusak, 3));
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadNormal. $row)->applyFromArray($style_no);
 
             $siapJual = $stokAkhir-$rusak;
             
             $col++;
+            $abjadNormal++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($siapJual, 3));
-
-            $style_no['alignment'] = array(
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-            );
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadNormal . $row)->applyFromArray($style_no);
 
         }
 
@@ -1255,11 +1279,11 @@ class ReportController extends Controller
         $col = 3;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':F' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Material');
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
         $row++;
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':F' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TANGGAL ' . strtoupper(helpDate($tgl_awal, 'li')) . ' - ' . strtoupper(helpDate(date('Y-m-d', strtotime($tgl_akhir . '-1 day')), 'li')));
         $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
 
@@ -1282,6 +1306,9 @@ class ReportController extends Controller
             'font' => array(
                 'bold' => true
             )
+        );
+        $style_no['alignment'] = array(
+            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
         );
 
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
@@ -1383,117 +1410,6 @@ class ReportController extends Controller
         // start : isi kolom
         $no = 0;
 
-        // foreach ($res as $value) {
-        //     $no++;
-        //     $col = 1;
-        //     $row++;
-        //     $value = $value[0];
-
-        //     $style_ontop = array(
-        //         'alignment' => array(
-        //             'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
-        //         )
-        //     );
-
-        //     $style_kolom = array(
-
-        //         'borders' => array(
-        //             'allBorders' => array(
-        //                 'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-        //             )
-        //         ),
-
-        //     );
-
-        //     $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadPengeluaran . $row)->applyFromArray($style_kolom);
-
-        //     $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':' . $abjadPengeluaran . $row)->applyFromArray($style_ontop);
-
-        //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
-
-        //     $col++;
-        //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->area->gudang->nama);
-
-        //     //stok awal
-        //     $materialTransMengurang = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-        //         ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-        //         ->where(function ($query) use ($value) {
-        //             $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
-        //             $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
-        //         })
-        //         ->where('id_material', $value->id_material)
-        //         ->where(function ($query) use ($tgl_awal) {
-        //             $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-        //             $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
-        //         })
-        //         ->where('status_produk', 1)
-        //         ->where('tipe', 1)
-        //         ->sum('jumlah');
-        //     $materialTransMenambah = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-        //         ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-        //         ->where(function ($query) use ($value) {
-        //             $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
-        //             $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
-        //         })
-        //         ->where('id_material', $value->id_material)
-        //         ->where(function ($query) use ($tgl_awal) {
-        //             $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-        //             $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
-        //         })
-        //         ->where('status_produk', 1)
-        //         ->where('tipe', 2)
-        //         ->sum('jumlah');
-        //     $stokAwal = $materialTransMenambah - $materialTransMengurang;
-
-        //     $col++;
-        //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->material->nama);
-        //     $col++;
-        //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAwal, 3));
-
-        //     $stokAkhir = $stokAwal;
-        //     //pemasukan
-        //     foreach ($gudang as $item) {
-        //         $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-        //             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-        //             ->whereHas('areaStok.area', function ($query) use ($item) {
-        //                 $query->where('aktivitas_harian.id_gudang_tujuan', $item->id);
-        //             })
-        //             ->where('tipe', 1)
-        //             ->where('id_material', $value->id_material)
-        //             ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
-        //                 $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
-        //                 $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
-        //             })
-        //             ->sum('jumlah');
-
-        //         $stokAkhir += $materialTrans;
-        //         $col++;
-        //         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 3));
-        //     }
-
-        //     //pengeluaran
-        //     foreach ($gudang as $item) {
-        //         $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-        //             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-        //             ->whereHas('areaStok.area', function ($query) use ($item) {
-        //                 $query->where('aktivitas_harian.id_gudang_tujuan', $item->id);
-        //             })
-        //             ->where('tipe', 2)
-        //             ->where('id_material', $value->id_material)
-        //             ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
-        //                 $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
-        //                 $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
-        //             })
-        //             ->sum('jumlah');
-
-        //         $stokAkhir -= $materialTrans;
-        //         $col++;
-        //         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 3));
-        //     }
-        //     $col++;
-        //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAkhir, 3));
-        // }
-
         foreach ($resPallet as $value) {
             $no++;
             $col = 1;
@@ -1565,8 +1481,10 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->material->nama);
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAwal, 3));
+            $objSpreadsheet->getActiveSheet()->getStyle("D" . $row)->applyFromArray($style_no);
 
             $stokAkhir = $stokAwal;
+            $abjadPemasukan = 'E';
             //pemasukan
             foreach ($gudang as $item) {
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
@@ -1589,9 +1507,14 @@ class ReportController extends Controller
 
                 $stokAkhir += $materialTrans;
                 $col++;
+                
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 3));
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadPemasukan . $row)->applyFromArray($style_no);
+                $abjadPemasukan++;
             }
 
+            $abjadPengeluaran = $abjadPemasukan;
+            // $abjadPengeluaran++;
             //pengeluaran
             foreach ($gudang as $item) {
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
@@ -1614,9 +1537,13 @@ class ReportController extends Controller
                 $stokAkhir -= $materialTrans;
                 $col++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 3));
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadPengeluaran . $row)->applyFromArray($style_no);
+                $abjadPengeluaran++;
             }
             $col++;
+            // $abjadPengeluaran++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAkhir, 3));
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadPengeluaran . $row)->applyFromArray($style_no);
         }
 
         //Sheet Title
@@ -1828,18 +1755,36 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
 
+        $abjadTitle = 'E';
+        foreach ($gudang as $key) {
+            $abjadTitle++;
+        }
 
-        $col = 3;
+        foreach ($gudang as $key) {
+            $abjadTitle++;
+        }
+
+        $abjadTitle++;
+        $abjadTitle++;
+        $abjadTitle++;
+        $abjadTitle++;
+        $abjadTitle++;
+        $abjadTitle++;
+        $abjadTitle++;
+        $abjadTitle++;
+        $abjadTitle++;
+
+        $col = 1;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Mutasi Pallet');
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
         
         $row++;
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Periode '.date('d/m/Y', strtotime($tgl_awal)).' - '. date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
         $col = 1;
         $row++;
@@ -2083,6 +2028,7 @@ class ReportController extends Controller
                 
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $saldoAwal); //jumlah stok pallet per kondisi
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
                 $stokAwal[$i] = $saldoAwal;
                 $stokAkhir[$i] = $saldoAwal;
                 $row++;
@@ -2114,6 +2060,7 @@ class ReportController extends Controller
                     $tempPenambahan[$i] = $tempPenambahan[$i]+$materialTrans;
                     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $materialTrans); //jumlah pallet bertambah per gudang per kondisi
                     $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
                     $row++;
                 }
                 $col++;
@@ -2124,6 +2071,7 @@ class ReportController extends Controller
             for ($i = 0; $i < count($kondisi); $i++) {
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tempPenambahan[$i]); //total pallet bertambah per kondisi
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
                 $row++;
             }
             
@@ -2152,6 +2100,7 @@ class ReportController extends Controller
                     $tempPengeluaran[$i] += $materialTrans;
                     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $materialTrans); //jumlah pallet berkurang per gudang per kondisi
                     $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
                     $row++;
                 }
                 $col++;
@@ -2162,6 +2111,7 @@ class ReportController extends Controller
             for ($i = 0; $i < count($kondisi); $i++) {
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tempPengeluaran[$i]); //total pengeluaran per kondisi
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
                 $row++;
             }
 
@@ -2188,6 +2138,7 @@ class ReportController extends Controller
                     $tempPenyusutan[$i] += $materialTrans;
                     $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
                     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $materialTrans); //jumlah penyusutan per gudang per kondisi
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
                     $row++;
                 }
                 $col++;
@@ -2198,6 +2149,7 @@ class ReportController extends Controller
             for ($i = 0; $i < count($kondisi); $i++) {
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tempPenyusutan[$i]); //total yayasan
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
                 $row++;
             }
             $rusak = 0;
@@ -2235,6 +2187,7 @@ class ReportController extends Controller
                 $abjadDalam++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $dipinjam);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row)->applyFromArray($style_no);
                
                 $dikembalikan = MaterialTrans::with('aktivitasHarian.aktivitas')->whereHas('aktivitasHarian.aktivitas', function ($query) use ($item) {
                     $query->whereNotNull('peminjaman');
@@ -2248,6 +2201,7 @@ class ReportController extends Controller
                 $abjadDalam++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $dikembalikan);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row)->applyFromArray($style_no);
 
                 $peralihanTambah = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($value){
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
@@ -2275,6 +2229,7 @@ class ReportController extends Controller
                 $abjadDalam++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanTambah);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row)->applyFromArray($style_no);
 
                 $peralihanKurang = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($value){
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
@@ -2302,6 +2257,7 @@ class ReportController extends Controller
                 $abjadDalam++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanKurang);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row)->applyFromArray($style_no);
 
                 
                 if ($dipinjam == $dikembalikan) {
@@ -2319,6 +2275,7 @@ class ReportController extends Controller
                 $abjadDalam++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $stokAkhir[$i]);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row)->applyFromArray($style_no);
                 $row++;
                 $col -= 6;
             }
@@ -2473,6 +2430,9 @@ class ReportController extends Controller
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
             )
         );
+        $style_no['alignment'] = array(
+            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+        );
         // start : title
         $col = 1;
         $row = 1;
@@ -2623,11 +2583,7 @@ class ReportController extends Controller
 
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->jumlah);
-
-            $style_no['alignment'] = array(
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-            );
-            $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_no);
+            $objSpreadsheet->getActiveSheet()->getStyle("G" . $row)->applyFromArray($style_no);
 
             $style_isi_kolom = array(
 
@@ -3288,6 +3244,7 @@ class ReportController extends Controller
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalStok, 3));
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_judul_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle("B" . $row)->applyFromArray($style_no);
 
         $row++;
         $col = 1;
@@ -3295,6 +3252,7 @@ class ReportController extends Controller
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalRusak, 3));
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_judul_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle("B" . $row)->applyFromArray($style_no);
 
         $row++;
         $col = 1;
@@ -3302,6 +3260,7 @@ class ReportController extends Controller
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalNormal, 3));
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_judul_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle("B" . $row)->applyFromArray($style_no);
 
         $abjad2 = chr(ord($abjad) + 1);
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . ($row - 2) . ":" . $abjad2 . $row)->applyFromArray($style_kolom);
@@ -3449,10 +3408,25 @@ class ReportController extends Controller
         $objSpreadsheet->createSheet($sheetIndex);
         $objSpreadsheet->setActiveSheetIndex($sheetIndex);
         // start : title
-        $col = 3;
+        // $jumlahProduk = count($produk);
+        $col = 1;
         $row = 1;
+        $abjadTitle = 'C';
+
+        foreach ($produk as $key) {
+            $abjadTitle++;
+        }
+        $abjadTitle++;
+        
+        $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'POSISI STOK GUDANG GRESIK');
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($style_title);
 
         $row++;
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Tanggal: '.date('d/m/Y', strtotime($tgl_awal)));
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($style_title);
 
         $col = 1;
         $row++;
@@ -3525,6 +3499,7 @@ class ReportController extends Controller
         $total_kapasitas = 0;
         $total_per_produk = [];
         foreach($area as $dArea){
+            $abjadProduk = 'D';
             if($dArea->id_gudang != $id_gudang){
                 $no++;
                 $row++;
@@ -3542,8 +3517,17 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $no); //nomor
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $dArea->nama_gudang); //nama gudang
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $kapasitas); //nama area
+
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($listProduk[$dArea->id_material], $row, round($dArea->total, 3)); //nama area
+
+            $abjadProduk++;
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
+
+            $abjadProduk++;
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($total_per_gudang, 3)); //nama area
+            
             $total_keseluruhan = $total_keseluruhan + $dArea->total;
             $total_kapasitas = $total_kapasitas + $dArea->kapasitas;
         }
@@ -3554,6 +3538,7 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(2, $row, 'Jumlah');
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(3, $row, round($total_kapasitas, 3)); //kapasitas
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($total_keseluruhan, 3)); //jumlah produk
+        
         foreach ($produk as $key) {
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($listProduk[$key->id_material], $row, round($total_per_produk[$key->id_material], 3)); //jumlah produk
         }
@@ -3744,22 +3729,35 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
-        $col = 3;
+        $col = 1;
         $row = 1;
+        $gudang = Gudang::internal()->get();
+        $abjadTitle = 'C';
+
+        foreach ($gudang as $key) {
+            $abjadTitle++;
+        }
+
+        foreach ($gudang as $key) {
+            $abjadTitle++;
+        }
+
+        $abjadTitle++;
+
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':E' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Harian Mutasi Stock Gudang Gresik I & II');
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
         $row++;
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':E' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Departemen Distribusi Wilayah I');
         $objSpreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(30);
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
         $row++;
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':E' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Tanggal ' . date('d/m/Y', strtotime($tgl_awal)) . ' - ' . date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
         $objSpreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(30);
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
         $col = 1;
         $row++;
@@ -3789,7 +3787,7 @@ class ReportController extends Controller
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Pemasukan');
 
-        $gudang = Gudang::internal()->get();
+        
         $abjadPemasukan = $abjadOri;
         $i = 0;
         $row = 6;
@@ -3820,6 +3818,7 @@ class ReportController extends Controller
 
         $row = 5;
         $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPemasukan . $row . ':' . $abjadPengeluaran . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Stok Akhir');
         
@@ -3838,26 +3837,24 @@ class ReportController extends Controller
 
         // start : isi kolom
         $no = 0;
-        // dd($res);
         foreach ($res as $value) {
+            $abjad = 'A';
             $no++;
             $col = 1;
             $row++;
 
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":". $abjadPengeluaran . $row)->applyFromArray($style_kolom);
-
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':'. $abjadPengeluaran . $row)->applyFromArray($style_ontop);
 
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no); //nomor
 
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama); //nama
 
             $materialTransMengurang = MaterialTrans::
                 leftJoin('aktivitas_harian', function ($join) use ($tgl_awal) {
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
-                        // ->where('aktivitas_harian.updated_at', '<', date('Y-m-d', strtotime($tgl_awal)));
                         ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
@@ -3866,7 +3863,6 @@ class ReportController extends Controller
                 })
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal) {
-                    // $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
                     $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
                     $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
@@ -3877,7 +3873,6 @@ class ReportController extends Controller
                 leftJoin('aktivitas_harian', function ($join) use ($tgl_awal) {
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
-                        // ->where('aktivitas_harian.updated_at', '<', date('Y-m-d', strtotime($tgl_awal)));
                         ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
@@ -3886,7 +3881,6 @@ class ReportController extends Controller
                 })
                 ->where('id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal) {
-                    // $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
                     $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
                     $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
@@ -3895,7 +3889,8 @@ class ReportController extends Controller
 
             $stokAwal = $materialTransMenambah - $materialTransMengurang;
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAwal, 3));
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAwal, 3)); //stok awal
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':'. $abjadPengeluaran . $row)->applyFromArray($style_no);
             $stokAkhir = $stokAwal;
             foreach ($gudang as $item) {
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
@@ -3903,7 +3898,6 @@ class ReportController extends Controller
                 ->where('ah.id_gudang', $item->id)
                 ->where('tipe', 2)
                 ->where(function($query) use($tgl_awal, $tgl_akhir){
-                    // $query->whereBetween('ah.updated_at', [$tgl_awal, $tgl_akhir]);
                     $query->whereBetween(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                     $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
                 })
@@ -3913,7 +3907,8 @@ class ReportController extends Controller
                 
                 $stokAkhir += $materialTrans;
                 $col++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 3));
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 3)); //pemasukan per gudang per item
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':'. $abjadPengeluaran . $row)->applyFromArray($style_no);
             }
             foreach ($gudang as $item) {
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
@@ -3921,7 +3916,6 @@ class ReportController extends Controller
                 ->where('ah.id_gudang', $item->id)
                 ->where('tipe', 1)
                 ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
-                    // $query->whereBetween('ah.updated_at', [$tgl_awal, $tgl_akhir]);
                     $query->whereBetween(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                     $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
                 })
@@ -3931,12 +3925,12 @@ class ReportController extends Controller
 
                 $stokAkhir -= $materialTrans;
                 $col++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 3));
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 3)); //pengeluaran per gudang per item
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':'. $abjadPengeluaran . $row)->applyFromArray($style_no);
             }
 
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAkhir, 3));
-
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAkhir, 3)); //stok akhir
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
             
         }
@@ -4099,7 +4093,10 @@ class ReportController extends Controller
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
                 )
             ),
-
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'  => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            )
         );
         $style_no['alignment'] = array(
             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
@@ -4117,6 +4114,10 @@ class ReportController extends Controller
                 'allBorders' => array(
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
                 )
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'  => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
             )
         );
         $style_note = array(
@@ -4434,21 +4435,25 @@ class ReportController extends Controller
                 $abjad++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($jumlahStokAwal, 3));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
                 $col++;
                 $abjad++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalMasuk, 3));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
                 $col++;
                 $abjad++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalKeluar, 3));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
                 $col++;
                 $abjad++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($jumlah, 3));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
                 $totalStokAwal += $jumlahStokAwal;
                 $totalMasukKeseluruhan += $totalMasuk;
@@ -4716,22 +4721,24 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
 
         // start : title
-        $col = 2;
+        $col = 4;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REPORT REALISASI ALAT BERAT');
-        $objSpreadsheet->getActiveSheet()->getStyle("B" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("D" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('D' . $row . ':E' . $row);
 
         $row++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PERIODE : ' . date('d/m/Y', strtotime($tgl_awal)).' - '.date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
         $objSpreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(30);
-        $objSpreadsheet->getActiveSheet()->getStyle("B" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("D" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('D' . $row . ':E' . $row);
 
         $col = 1;
         $row++;
 
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_acara);
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
+        $objSpreadsheet->getActiveSheet()->getStyle("D" . $row)->applyFromArray($style_acara);
+        $objSpreadsheet->getActiveSheet()->getStyle("D" . $row)->applyFromArray($style_note);
 
         // end : title
         // start : judul kolom
@@ -4809,16 +4816,19 @@ class ReportController extends Controller
 
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, helpCurrency(round($jumlahTonase, 3)));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
             $col++;
             $abjad++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. '. helpCurrency($value->anggaran));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
             
             $col++;
             $abjad++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. '. helpCurrency($jumlahTonase*$value->anggaran));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
             $biaya = $jumlahTonase * $value->anggaran;
             $totalBiaya += $biaya;
 
@@ -4835,21 +4845,25 @@ class ReportController extends Controller
         $abjad = 'A';
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total Biaya');
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_ontop);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
         $col = 5;
         $abjad = 'E';
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalRealisasi, 3));
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
         $col++;
         $abjad++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '-');
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
         $col++;
         $abjad++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($totalBiaya));
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle('Laporan Biaya Alat Berat');
         // end : isi kolom
@@ -5068,21 +5082,23 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
 
         // start : title
-        $col = 2;
+        $col = 3;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REPORT REALISASI TKBM');
-        $objSpreadsheet->getActiveSheet()->getStyle("B" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
 
         $row++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PERIODE : ' . date('d/m/Y', strtotime($tgl_awal)) . ' - ' . date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
-        $objSpreadsheet->getActiveSheet()->getStyle("B" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
 
         $col = 1;
         $row++;
 
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_acara);
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
+        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_acara);
+        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_note);
 
         // end : title
         // start : judul kolom
@@ -5149,16 +5165,19 @@ class ReportController extends Controller
             }
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, helpCurrency($jumlahTonase));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
             $col++;
             $abjad++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp . ' . helpCurrency($value->anggaran_tkbm));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
             $col++;
             $abjad++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($jumlahTonase * $value->anggaran_tkbm));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
             $biaya = $jumlahTonase * $value->anggaran_tkbm;
             $totalBiaya += $biaya;
             $totalRealisasi += $jumlahTonase;
@@ -5174,21 +5193,25 @@ class ReportController extends Controller
         $abjad = 'A';
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total Biaya');
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_ontop);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
         $col = 4;
         $abjad = 'D';
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalRealisasi, 3));
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
         $col++;
         $abjad++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '-');
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
         
         $col++;
         $abjad++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($totalBiaya));
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle('Laporan Biaya TKBM');
@@ -5409,21 +5432,23 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
 
         // start : title
-        $col = 2;
+        $col = 3;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REPORT BIAYA PALLET');
-        $objSpreadsheet->getActiveSheet()->getStyle("B" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
 
         $row++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PERIODE : ' . date('d/m/Y', strtotime($tgl_awal)) . ' - ' . date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
-        $objSpreadsheet->getActiveSheet()->getStyle("B" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
 
         $col = 1;
         $row++;
 
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_acara);
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
+        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_acara);
+        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_note);
 
         // end : title
         // start : judul kolom
@@ -5490,16 +5515,19 @@ class ReportController extends Controller
             }
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, helpCurrency($jumlahTonase));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
             $col++;
             $abjad++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp . ' . helpCurrency($value->anggaran_pallet));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
             $col++;
             $abjad++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($jumlahTonase * $value->anggaran_pallet));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
             $biaya = $jumlahTonase * $value->anggaran_pallet;
             $totalBiaya += $biaya;
             $totalRealisasi += $jumlahTonase;
@@ -5516,21 +5544,25 @@ class ReportController extends Controller
         $abjad = 'A';
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total Biaya');
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_ontop);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
         $col = 4;
         $abjad = 'D';
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalRealisasi, 3));
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
         $col++;
         $abjad++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '-');
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
         $col++;
         $abjad++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($totalBiaya));
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle('Laporan Biaya Pallet');
