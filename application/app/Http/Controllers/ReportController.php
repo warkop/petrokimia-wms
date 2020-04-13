@@ -1111,6 +1111,7 @@ class ReportController extends Controller
             $col++;
             $abjadNormal++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($rusak, 3));
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadNormal. $row)->applyFromArray($style_kolom);
             $objSpreadsheet->getActiveSheet()->getStyle($abjadNormal. $row)->applyFromArray($style_no);
 
             $siapJual = $stokAkhir-$rusak;
@@ -1118,6 +1119,7 @@ class ReportController extends Controller
             $col++;
             $abjadNormal++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($siapJual, 3));
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadNormal . $row)->applyFromArray($style_kolom);
             $objSpreadsheet->getActiveSheet()->getStyle($abjadNormal . $row)->applyFromArray($style_no);
 
         }
@@ -2765,17 +2767,17 @@ class ReportController extends Controller
         $objSpreadsheet->createSheet($sheetIndex);
         $objSpreadsheet->setActiveSheetIndex($sheetIndex);
         // start : title
-        $col = 3;
+        $col = 1;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':F' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Keluhan GP');
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
         $row++;
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':F' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Periode Aktivitas '.date('d/m/Y', strtotime($tgl_awal)).' - '. date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
         $col = 1;
         $row++;
@@ -3202,6 +3204,7 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($value->aktivitasHarian->aktivitas != null)?$value->aktivitasHarian->aktivitas->nama:'-');
 
             $col++;
+            $objSpreadsheet->getActiveSheet()->getStyle('D' . $row)->applyFromArray($style_no);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->tipe == 1 ? '-'. round($value->jumlah, 3) : round($value->jumlah, 3));
 
             $col++;
@@ -4721,24 +4724,24 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
 
         // start : title
-        $col = 4;
+        $col = 1;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REPORT REALISASI ALAT BERAT');
-        $objSpreadsheet->getActiveSheet()->getStyle("D" . $row)->applyFromArray($style_title);
-        $objSpreadsheet->getActiveSheet()->mergeCells('D' . $row . ':E' . $row);
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':G' . $row);
 
         $row++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PERIODE : ' . date('d/m/Y', strtotime($tgl_awal)).' - '.date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
         $objSpreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(30);
-        $objSpreadsheet->getActiveSheet()->getStyle("D" . $row)->applyFromArray($style_title);
-        $objSpreadsheet->getActiveSheet()->mergeCells('D' . $row . ':E' . $row);
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':G' . $row);
 
         $col = 1;
         $row++;
 
-        $objSpreadsheet->getActiveSheet()->getStyle("D" . $row)->applyFromArray($style_acara);
-        $objSpreadsheet->getActiveSheet()->getStyle("D" . $row)->applyFromArray($style_note);
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($style_acara);
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($style_note);
 
         // end : title
         // start : judul kolom
@@ -5082,23 +5085,23 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
 
         // start : title
-        $col = 3;
+        $col = 1;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REPORT REALISASI TKBM');
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':F' . $row);
 
         $row++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PERIODE : ' . date('d/m/Y', strtotime($tgl_awal)) . ' - ' . date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':F' . $row);
 
         $col = 1;
         $row++;
 
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_acara);
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_note);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_acara);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
         // end : title
         // start : judul kolom
@@ -5432,23 +5435,23 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
 
         // start : title
-        $col = 3;
+        $col = 1;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REPORT BIAYA PALLET');
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':F' . $row);
 
         $row++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PERIODE : ' . date('d/m/Y', strtotime($tgl_awal)) . ' - ' . date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':F' . $row);
 
         $col = 1;
         $row++;
 
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_acara);
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_note);
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($style_acara);
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($style_note);
 
         // end : title
         // start : judul kolom
