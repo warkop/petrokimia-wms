@@ -160,6 +160,9 @@
                             <h5>3. Penataan produk dalam truk sudah sesuai standar (tertata dengan rapi) serta sesuai dengan foto yang terlampir</h5>
                         </strong>
                     </div>
+                    <div class="col-md-12 mb1">
+                        <h5>Dengan mengetahui kondisi dalam 3 poin diatas, dengan ini saya menyatakan secara sadar bahwa produk diterima dengan baik dan sesuai persyaratan, sehingga apabila ditemukan kondisi tampilan, penataan dan jumlah produk atas pengiriman ini yang tidak sesuai dengan ketentuan adalah bukan dari tanggung jawab PT Petrokimia Gresik (Dep. Distribusi Wilayah I, Bagian Gudang Gresik)</h5>
+                    </div>
                 </section>
             </div>
         </div>
