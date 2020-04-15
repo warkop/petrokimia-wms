@@ -28,6 +28,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/get-keluhan-alat-berat', 'DashboardController@getKeluhanAlatBerat');
         Route::get('/get-jumlah-pallet', 'DashboardController@getJumlahPallet');
         Route::get('/get-produksi-pengeluaran', 'DashboardController@getProduksiPengeluaran');
+        Route::get('/get-pemuatan-produk', 'DashboardController@getPemuatanProduk');
     });
 
     Route::get('/map-clicked', 'DashboardController@map');
