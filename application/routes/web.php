@@ -23,6 +23,13 @@ Route::group(['middleware' => ['auth']], function () {
         return view('layout.main');
     });
     Route::get('/dashboard', 'DashboardController@index');
+
+    Route::group(['prefix' => 'dashboard'], function () {
+        Route::get('/get-keluhan-alat-berat', 'DashboardController@getKeluhanAlatBerat');
+        Route::get('/get-jumlah-pallet', 'DashboardController@getJumlahPallet');
+        Route::get('/get-produksi-pengeluaran', 'DashboardController@getProduksiPengeluaran');
+    });
+
     Route::get('/map-clicked', 'DashboardController@map');
     
     Route::group(['prefix' => 'master-aktivitas', 'middleware' => 'can:data-master'], function () {
