@@ -480,8 +480,6 @@ function getProduksiPengeluaran() {
         },
         success:(res)=>{
             
-            console.log(data);
-
             var data = new google.visualization.DataTable();
                 data.addColumn('string', 'Jumlah');
                 data.addColumn('number', 'Produksi');
@@ -501,8 +499,6 @@ function getProduksiPengeluaran() {
             var chart = new google.visualization.ColumnChart(document.getElementById('produksipengeluaran'));
 
             chart.draw(data, options);
-
-            // google.charts.setOnLoadCallback(data);
         },
         error:()=>{
 
@@ -514,41 +510,79 @@ function getProduksiPengeluaran() {
 <!-- chart-column -->
 <script>
 google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
+google.charts.setOnLoadCallback(getPemuatanProduk);
 
-function drawChart() {
+function getPemuatanProduk() {
 
-var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Jumlah');
-    data.addColumn('number', 'Kapasitas Muat Buruh');
-    data.addColumn('number', 'Realisasi Muat');
-    data.addRows([
+    // var data = new google.visualization.DataTable();
+    //     data.addColumn('string', 'Jumlah');
+    //     data.addColumn('number', 'Kapasitas Muat Buruh');
+    //     data.addColumn('number', 'Realisasi Muat');
+    //     data.addRows([
+        
+    //     ['2020-02-02',  600, 400 ],
+    //     ['2020-02-03',  530, 350],
+    //     ['2020-02-04',  500, 370 ],
+    //     ['2020-02-05',  800, 1000 ],
+    //     ['2020-02-06',  720 , 650],
+    //     ['2020-02-07',  490 , 670],
+    //     ['2020-02-07',  390 , 570],
+        
     
-    ['2020-02-02',  600, 400 ],
-    ['2020-02-03',  530, 350],
-    ['2020-02-04',  500, 370 ],
-    ['2020-02-05',  800, 1000 ],
-    ['2020-02-06',  720 , 650],
-    ['2020-02-07',  490 , 670],
-    ['2020-02-07',  390 , 570],
+    // ]);
+
+
+    // var options = {
+    //     colors: ['#FD7F0C','#1ACA98'],
+    //     legend:{position: 'bottom'},
+    //     vAxis: { gridlines: { count: 5 }, title:"TONASE", titleTextStyle:{bold:true, italic:false} },
+    //     hAxis: { slantedText:true, slantedTextAngle:45 },
+    //     chartArea: {
+    //         bottom: 150
+    //     },
+    // };
+
+    // var chart = new google.visualization.ColumnChart(document.getElementById('muatan'));
+
+    // chart.draw(data, options);
+    const shift = $("#pilih_shift").val();
+    const gudang = $("#pilih_gudang").val();
+    const tanggal = $("#kt_daterangepicker_2").val();
     
-   
-]);
+    $.ajax({
+        url:baseUrl+"dashboard/get-pemuatan-produk",
+        method:"GET",
+        data:{
+            shift: shift,
+            gudang: gudang,
+            tanggal: tanggal
+        },
+        success:(res)=>{
+            var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Jumlah');
+                data.addColumn('number', 'Kapasitas Muat Buruh');
+                data.addColumn('number', 'Realisasi Muat');
+                data.addRows(res.data);
 
 
-var options = {
-    colors: ['#FD7F0C','#1ACA98'],
-    legend:{position: 'bottom'},
-    vAxis: { gridlines: { count: 5 }, title:"TONASE", titleTextStyle:{bold:true, italic:false} },
-    hAxis: { slantedText:true, slantedTextAngle:45 },
-    chartArea: {
-        bottom: 150
-      },
-};
+            var options = {
+                colors: ['#FD7F0C','#1ACA98'],
+                legend:{position: 'bottom'},
+                vAxis: { gridlines: { count: 5 }, title:"TONASE", titleTextStyle:{bold:true, italic:false} },
+                hAxis: { slantedText:true, slantedTextAngle:45 },
+                chartArea: {
+                    bottom: 150
+                },
+            };
 
-var chart = new google.visualization.ColumnChart(document.getElementById('muatan'));
+            var chart = new google.visualization.ColumnChart(document.getElementById('muatan'));
 
-chart.draw(data, options);
+            chart.draw(data, options);
+        },
+        error:()=>{
+
+        }
+    })
 }
 </script>
 
@@ -559,39 +593,37 @@ google.charts.setOnLoadCallback(drawChart);
 
 function drawChart() {
 
-var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Periode');
-    data.addColumn('number', 'Gudang ZA');
-    data.addColumn('number', 'Gudang Urea 1A');
-    data.addColumn('number', 'Gudang PF 1');
-    data.addColumn('number', 'Gudang Phonska');
-    data.addColumn('number', 'Gudang Urea 1B');
-    data.addColumn('number', 'Gudang Multiguna');
-    data.addRows([
+    var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Periode');
+        data.addColumn('number', 'Gudang ZA');
+        data.addColumn('number', 'Gudang Urea 1A');
+        data.addColumn('number', 'Gudang PF 1');
+        data.addColumn('number', 'Gudang Phonska');
+        data.addColumn('number', 'Gudang Urea 1B');
+        data.addColumn('number', 'Gudang Multiguna');
+        data.addRows([
+        
+        [ '2020-02-02',  10,  10 ,  170 , 310,  480 , 630],
+        [ '2020-02-03',  170, 350,  500 , 300,  290 , 540],
+        [ '2020-02-04',  170,170 ,  300 , 400,  550 , 470],
+        [ '2020-02-05',  460, 10 ,  300 , 250,  620 , 290],
+        [ '2020-02-06',  720 , 650,  480 , 340,  590 , 310],
+        [ '2020-02-07',  290 , 670,  480 , 450,  390 , 450]
+        
     
-    [ '2020-02-02',  10,  10 ,  170 , 310,  480 , 630],
-    [ '2020-02-03',  170, 350,  500 , 300,  290 , 540],
-    [ '2020-02-04',  170,170 ,  300 , 400,  550 , 470],
-    [ '2020-02-05',  460, 10 ,  300 , 250,  620 , 290],
-    [ '2020-02-06',  720 , 650,  480 , 340,  590 , 310],
-    [ '2020-02-07',  290 , 670,  480 , 450,  390 , 450],
-    
-   
-]);
+    ]);
 
 
-var options = {
-    colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
-    legend:{position: 'bottom', maxTextLines:4},
-    vAxis: { gridlines: { count: 5 } },
-    hAxis: { slantedText:true, slantedTextAngle:45 },
-    
-    
-};
+    var options = {
+        colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
+        legend:{position: 'bottom', maxTextLines:4},
+        vAxis: { gridlines: { count: 5 } },
+        hAxis: { slantedText:true, slantedTextAngle:45 }
+    };
 
-var chart = new google.visualization.ColumnChart(document.getElementById('realisasialatberat'));
+    var chart = new google.visualization.ColumnChart(document.getElementById('realisasialatberat'));
 
-chart.draw(data, options);
+    chart.draw(data, options);
 }
 </script>
 
@@ -722,10 +754,18 @@ google.charts.load('current', {'packages':['corechart']});
                 tanggal: tanggal
             },
             success:(res)=>{
-                var data = google.visualization.arrayToDataTable(res.data);
+                // var dataArray = [
+                //     ['Gudang', 'Pakai & Dasaran', 'Kosong ', 'Rusak', 'Total Stok']
+                // ];
+
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Jumlah');
+                data.addColumn('number', 'Produksi');
+                data.addColumn('number', 'Pengeluaran');
+                data.addRows(res.data);
 
                 // data.unshift(['Gudang', 'Pakai & Dasaran', 'Kosong ', 'Rusak', 'Total Stok']);
-                console.log(data);
+                // console.log(data);
                 var options = {
                 
                 colors: ['#FFC201','#28DAC6','#FD7F0C','#00AF4C'],
@@ -832,52 +872,50 @@ function showAcc4(){
    $('.Acc4').toggle();
 }
 
-function getProduksiPengeluaran() {
-    const shift = $("#pilih_shift").val();
-    const gudang = $("#pilih_gudang").val();
-    const tanggal = $("#kt_daterangepicker_2").val();
+// function getProduksiPengeluaran() {
+//     const shift = $("#pilih_shift").val();
+//     const gudang = $("#pilih_gudang").val();
+//     const tanggal = $("#kt_daterangepicker_2").val();
 
     
 
-    $.ajax({
-        url:baseUrl+"dashboard/get-produksi-pengeluaran",
-        method:"GET",
-        data:{
-            shift: shift,
-            gudang: gudang,
-            tanggal: tanggal
-        },
-        success:(res)=>{
+//     $.ajax({
+//         url:baseUrl+"dashboard/get-produksi-pengeluaran",
+//         method:"GET",
+//         data:{
+//             shift: shift,
+//             gudang: gudang,
+//             tanggal: tanggal
+//         },
+//         success:(res)=>{
             
-            console.log(data);
+//             var data = new google.visualization.DataTable();
+//                 data.addColumn('string', 'Jumlah');
+//                 data.addColumn('number', 'Produksi');
+//                 data.addColumn('number', 'Pengeluaran');
+//                 data.addRows(res.data);
 
-            var data = new google.visualization.DataTable();
-                data.addColumn('string', 'Jumlah');
-                data.addColumn('number', 'Produksi');
-                data.addColumn('number', 'Pengeluaran');
-                data.addRows(res.data);
+//             var options = {
+//                 colors: ['#FFC201','#28DAC6'],
+//                 legend:{position: 'bottom'},
+//                 vAxis: { gridlines: { count: 5 } , title:"TONASE", titleTextStyle:{bold:true, italic:false}},
+//                 hAxis: { slantedText:true, slantedTextAngle:45,format: 'long' },
+//                 chartArea: {
+//                     bottom: 150
+//                 },
+//             };
 
-            var options = {
-                colors: ['#FFC201','#28DAC6'],
-                legend:{position: 'bottom'},
-                vAxis: { gridlines: { count: 5 } , title:"TONASE", titleTextStyle:{bold:true, italic:false}},
-                hAxis: { slantedText:true, slantedTextAngle:45,format: 'long' },
-                chartArea: {
-                    bottom: 150
-                },
-            };
+//             var chart = new google.visualization.ColumnChart(document.getElementById('produksipengeluaran'));
 
-            var chart = new google.visualization.ColumnChart(document.getElementById('produksipengeluaran'));
+//             chart.draw(data, options);
 
-            chart.draw(data, options);
+//             // google.charts.setOnLoadCallback(data);
+//         },
+//         error:()=>{
 
-            // google.charts.setOnLoadCallback(data);
-        },
-        error:()=>{
-
-        }
-    })
-}
+//         }
+//     })
+// }
 
 var dataArray = [
     ['Ban bocor',     5],
@@ -937,10 +975,7 @@ function getKeluhanAlatBerat() {
             tanggal: tanggal
         },
         success:(res)=>{
-            console.log("goblok")
-            console.log(dataArray)
             var dataArray = res.data;
-            console.log(res.data)
             var total = getTotal(dataArray);
 
             // Adding tooltip column  
@@ -998,5 +1033,6 @@ function filter() {
     getKeluhanAlatBerat();
     getJumlahPallet();
     getProduksiPengeluaran()
+    getPemuatanProduk()
 }
 </script>

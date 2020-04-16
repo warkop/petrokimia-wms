@@ -1861,7 +1861,7 @@ class ReportController extends Controller
         }
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total'); //total pemasukan
         $row = 5;
-        $abjadPemasukan = chr(ord($abjadPemasukan) - 1);
+        $abjadPemasukan--;
         $col++;
         $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadPemasukan . $row);
@@ -1881,7 +1881,7 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total'); //total pengeluaran
         $col++;
         $abjadPengeluaran++;
-        $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
+        $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPemasukan . ($row - 1) . ':' . $abjadPengeluaran . ($row - 1));
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, ($row - 1), 'Penyusutan');
 
@@ -1899,10 +1899,10 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total'); //total pengeluaran
         $col++;
         $abjadPengeluaran++;
-        $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
+        $abjadPemasukan++;
 
         $row = 5;
-        $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
+        $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Dipinjam');
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, ($row+1), 'Peminjam');
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
@@ -1910,7 +1910,7 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . $row);
 
         $col++;
-        $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
+        $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Dikembalikan');
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, ($row + 1), 'Peminjam');
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
@@ -1918,28 +1918,28 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . $row);
 
         $col++;
-        $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
+        $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Peralihan Kondisi Bertambah');
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         $abjadPengeluaran++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row + 1));
 
         $col++;
-        $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
+        $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Peralihan Kondisi Berkurang');
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         $abjadPengeluaran++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row + 1));
         
         $col++;
-        $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
+        $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Status');
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         $abjadPengeluaran++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row+1));
         
         $col++;
-        $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
+        $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Stok Akhir');
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         $abjadPengeluaran++;
@@ -2309,7 +2309,7 @@ class ReportController extends Controller
                 $col -= 6;
             }
 
-            $abjadDalam = chr(ord($abjadDalam) - 1);;
+            $abjadDalam--;
 
             // dd($abjadDalam);
             $objSpreadsheet->getActiveSheet()->mergeCells($abjadDalam . ($row-3) . ':'.$abjadDalam . ($row-1));
