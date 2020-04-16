@@ -1052,7 +1052,7 @@ function getKeluhanAlatBerat() {
     const shift = $("#pilih_shift").val();
     const gudang = $("#pilih_gudang").val();
     const tanggal = $("#kt_daterangepicker_2").val();
-
+        console.log("keluhan")
     $.ajax({
         url:baseUrl+"dashboard/get-keluhan-alat-berat",
         method:"GET",
@@ -1114,7 +1114,7 @@ function getTotal(dataArray) {
     return total;
 }
 
-google.load('visualization', '1', {packages:['corechart'], callback: drawChart});
+google.load('visualization', '1', {packages:['corechart'], callback: getKeluhanAlatBerat});
 
 function filter() {
     getKeluhanAlatBerat();
