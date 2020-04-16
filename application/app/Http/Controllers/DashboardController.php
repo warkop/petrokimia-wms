@@ -149,7 +149,7 @@ class DashboardController extends Controller
         ->select('id_gudang')
         ->with('gudang')
         ->whereHas('gudang', function($query) use($gudang) {
-            $query->where('tipe_gudang', $gudang);
+            $query->where('id', $gudang);
         })
         ->whereHas('material', function ($query) {
             $query->where('kategori', 2);
@@ -549,48 +549,66 @@ class DashboardController extends Controller
 
         $data = [];
         do {
-
             if ($shift == 3) {
-                $kapasitas = DB::table('rencana_harian')
-                ->leftJoin('rencana_tkbm', 'rencana_harian.id', '=', 'rencana_tkbm.id_rencana')
+                $kapasitas = DB::table('realisasi')
+                ->leftJoin('rencana_harian', 'rencana_harian.id', '=', 'realisasi.id_rencana')
                 ->where('id_gudang', $gudang)
                 ->where('id_shift', $shift)
-                ->where('tanggal', date('Y-m-d', strtotime($temp_tgl.'-1 day')))
-                ->count()
+                ->where('rencana_harian.tanggal', date('Y-m-d', strtotime($temp_tgl.'-1 day')))
+                ->first()
+                ;
+
+                $angkut = MaterialTrans::leftJoin('aktivitas_harian', function($join){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0);
+                })
+                ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
+                ->whereNotNull('status_produk')
+                ->where(function($query) use ($gudang){
+                    $query->where('aktivitas_harian.id_gudang', $gudang);
+                    $query->orWhere('material_adjustment.id_gudang', $gudang);
+                })
+                ->where(function($query) use($temp_tgl){
+                    $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($temp_tgl.'-1 day')));
+                    $query->orWhere('material_adjustment.tanggal', $temp_tgl);
+                })
+                ->whereNotNull('butuh_tkbm')
+                ->where('id_shift', $shift)
+                ->sum('material_trans.jumlah')
                 ;
             } else {
-                $kapasitas = DB::table('rencana_harian')
-                ->leftJoin('rencana_tkbm', 'rencana_harian.id', '=', 'rencana_tkbm.id_rencana')
+                $kapasitas = DB::table('realisasi')
+                ->leftJoin('rencana_harian', 'rencana_harian.id', '=', 'realisasi.id_rencana')
                 ->where('id_gudang', $gudang)
                 ->where('id_shift', $shift)
-                ->where('tanggal', $temp_tgl)
-                ->count()
+                ->where('rencana_harian.tanggal', $temp_tgl)
+                ->first()
+                ;
+
+                $angkut = MaterialTrans::leftJoin('aktivitas_harian', function($join){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0);
+                })
+                ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
+                ->whereNotNull('status_produk')
+                ->where(function($query) use ($gudang){
+                    $query->where('aktivitas_harian.id_gudang', $gudang);
+                    $query->orWhere('material_adjustment.id_gudang', $gudang);
+                })
+                ->where(function($query) use($temp_tgl){
+                    $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $temp_tgl);
+                    $query->orWhere('material_adjustment.tanggal', $temp_tgl);
+                })
+                ->whereNotNull('butuh_tkbm')
+                ->where('id_shift', $shift)
+                ->sum('material_trans.jumlah')
                 ;
             }
 
-            $angkut = MaterialTrans::leftJoin('aktivitas_harian', function($join){
-                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                ->where('draft', 0);
-            })
-            ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
-            ->whereNotNull('status_produk')
-            ->where(function($query) use ($gudang){
-                $query->where('aktivitas_harian.id_gudang', $gudang);
-                $query->orWhere('material_adjustment.id_gudang', $gudang);
-            })
-            ->where(function($query) use($temp_tgl){
-                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $temp_tgl);
-                $query->orWhere('material_adjustment.tanggal', $temp_tgl);
-            })
-            ->whereNotNull('butuh_tkbm')
-            ->where('id_shift', $shift)
-            ->sum('material_trans.jumlah')
-            ;
-
-
             $temp[0] = date('d-m-Y', strtotime($temp_tgl));
-            $temp[1] = (double)$kapasitas*60;
+            $temp[1] = ($kapasitas->jumlah_buruh??0)*60;
             $temp[2] = (double)$angkut;
 
             array_push($data, $temp);
@@ -606,11 +624,11 @@ class DashboardController extends Controller
         return response()->json($response, $this->responseCode);
     }
 
-    public function tonaseProdukRusak()
+    public function getTonaseProdukRusak()
     {
         $tanggal    = request()->input('tanggal');
         $shift      = request()->input('shift');
-        // $gudang     = request()->input('gudang');
+        $pilih_gudang     = request()->input('gudang');
 
         $date = explode('-', $tanggal);
         $tgl_awal = date('Y-m-d', strtotime($date[0]));
@@ -618,33 +636,246 @@ class DashboardController extends Controller
 
         $temp_tgl = $tgl_awal;
 
-        $gudang = Gudang::internal()->get();
-        $data = [];
-        foreach ($gudang as $value) {
-            $res = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($value){
-                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                    ->where('draft', 0)
-                    ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-                    ;
-                })
-                ->leftJoin('material_adjustment', function($join) use($value) {
-                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                    ->where('material_adjustment.id_gudang', $value->id_gudang)
-                    ;
-                })
-                ->where(function($query) use($tgl_awal, $tgl_akhir){
-                    $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
-                    $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
-                })
-                ->where('tipe', 1)
-                ->where('id_shift', $shift)
-                ->where('status_produk', 2)
-                ->sum('jumlah');
+        if ($pilih_gudang) {
+            $gudang = Gudang::where('id', $pilih_gudang)->get();
+        } else {
+            $gudang = Gudang::internal()->get();
         }
+        $data = [];
+        do {
+            $temp[0] = date('d-m-Y', strtotime($temp_tgl));
+            $i = 1;
+            if ($pilih_gudang) {
+                if ($shift == 3) {
+                    $res = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($pilih_gudang){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0)
+                        ->where('aktivitas_harian.id_gudang', $pilih_gudang)
+                        ;
+                    })
+                    ->leftJoin('material_adjustment', function($join) use($pilih_gudang) {
+                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                        ->where('material_adjustment.id_gudang', $pilih_gudang)
+                        ;
+                    })
+                    ->where(function($query) use($temp_tgl){
+                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($temp_tgl)));
+                        $query->orWhere('material_adjustment.tanggal', $temp_tgl);
+                    })
+                    ->where('tipe', 2)
+                    ->where('id_shift', $shift)
+                    ->where('status_produk', 2)
+                    ->sum('jumlah');
+                } else {
+                    $res = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($pilih_gudang){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0)
+                        ->where('aktivitas_harian.id_gudang', $pilih_gudang)
+                        ;
+                    })
+                    ->leftJoin('material_adjustment', function($join) use($pilih_gudang) {
+                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                        ->where('material_adjustment.id_gudang', $pilih_gudang)
+                        ;
+                    })
+                    ->where(function($query) use($temp_tgl){
+                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($temp_tgl)));
+                        $query->orWhere('material_adjustment.tanggal', $temp_tgl);
+                    })
+                    ->where('tipe', 2)
+                    ->where('id_shift', $shift)
+                    ->where('status_produk', 2)
+                    ->sum('jumlah');
+                }
+
+                $temp[$i] = (double)$res;
+            } else {
+                foreach ($gudang as $value) {
+                    if ($shift == 3) {
+                        $res = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($value){
+                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                                ->where('draft', 0)
+                                ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+                                ;
+                            })
+                            ->leftJoin('material_adjustment', function($join) use($value) {
+                                $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                                ->where('material_adjustment.id_gudang', $value->id_gudang)
+                                ;
+                            })
+                            ->where(function($query) use($temp_tgl){
+                                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($temp_tgl.'-1 day')));
+                                $query->orWhere('material_adjustment.tanggal', $temp_tgl);
+                            })
+                            ->where('tipe', 2)
+                            ->where('id_shift', $shift)
+                            ->where('status_produk', 2)
+                            ->sum('jumlah');
+                    } else {
+                        $res = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($value){
+                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                                ->where('draft', 0)
+                                ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+                                ;
+                            })
+                            ->leftJoin('material_adjustment', function($join) use($value) {
+                                $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                                ->where('material_adjustment.id_gudang', $value->id_gudang)
+                                ;
+                            })
+                            ->where(function($query) use($temp_tgl){
+                                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($temp_tgl.'-1 day')));
+                                $query->orWhere('material_adjustment.tanggal', $temp_tgl);
+                            })
+                            ->where('tipe', 2)
+                            ->where('id_shift', $shift)
+                            ->where('status_produk', 2)
+                            ->sum('jumlah');
+                    }
+
+                    $temp[$i] = (double)$res;
+                    $i++;
+                }
+            }
+            
+            array_push($data, $temp);
+
+            $temp_tgl = date('Y-m-d', strtotime($temp_tgl.'+1 day'));
+        } while ($temp_tgl != $tgl_akhir);
+        
 
         $this->responseCode = 200;
         $this->responseMessage = 'Data tersedia.';
-        $this->responseData = $data;
+        $this->responseData = [$data, $gudang];
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+
+    public function getTonaseAlatBerat()
+    {
+        $tanggal    = request()->input('tanggal');
+        $shift      = request()->input('shift');
+        $pilih_gudang     = request()->input('gudang');
+
+        $date = explode('-', $tanggal);
+
+        $tgl_awal   = date('Y-m-d', strtotime($date[0]));
+        $tgl_akhir  = date('Y-m-d', strtotime($date[1].'+1 day'));
+
+        $temp_tgl = $tgl_awal;
+
+        if ($pilih_gudang) {
+            $gudang = Gudang::where('id', $pilih_gudang)->get();
+        } else {
+            $gudang = Gudang::internal()->get();
+        }
+
+        $data = [];
+        do {
+            $temp[0] = date('d-m-Y', strtotime($temp_tgl));
+            $i = 1;
+            if ($pilih_gudang) {
+                if ($shift == 3) {
+                    $angkut = MaterialTrans::leftJoin('aktivitas_harian', function($join){
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0);
+                    })
+                    ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                    ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
+                    ->whereNotNull('status_produk')
+                    ->where(function($query) use ($pilih_gudang){
+                        $query->where('aktivitas_harian.id_gudang', $pilih_gudang);
+                        $query->orWhere('material_adjustment.id_gudang', $pilih_gudang);
+                    })
+                    ->where(function($query) use($temp_tgl){
+                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($temp_tgl.'-1 day')));
+                        $query->orWhere('material_adjustment.tanggal', $temp_tgl);
+                    })
+                    ->whereNotNull('butuh_alat_berat')
+                    ->where('id_shift', $shift)
+                    ->sum('material_trans.jumlah')
+                    ;
+                } else {
+                    $angkut = MaterialTrans::leftJoin('aktivitas_harian', function($join){
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0);
+                    })
+                    ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                    ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
+                    ->whereNotNull('status_produk')
+                    ->where(function($query) use ($pilih_gudang){
+                        $query->where('aktivitas_harian.id_gudang', $pilih_gudang);
+                        $query->orWhere('material_adjustment.id_gudang', $pilih_gudang);
+                    })
+                    ->where(function($query) use($temp_tgl){
+                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $temp_tgl);
+                        $query->orWhere('material_adjustment.tanggal', $temp_tgl);
+                    })
+                    ->whereNotNull('butuh_alat_berat')
+                    ->where('id_shift', $shift)
+                    ->sum('material_trans.jumlah')
+                    ;
+                }
+
+                $temp[$i] = (double)$angkut;
+            } else {
+                foreach ($gudang as $key) {
+                    if ($shift == 3) {
+                        $angkut = MaterialTrans::leftJoin('aktivitas_harian', function($join){
+                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                            ->where('draft', 0);
+                        })
+                        ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                        ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
+                        ->whereNotNull('status_produk')
+                        ->where(function($query) use ($key){
+                            $query->where('aktivitas_harian.id_gudang', $key->id);
+                            $query->orWhere('material_adjustment.id_gudang', $key->id);
+                        })
+                        ->where(function($query) use($temp_tgl){
+                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($temp_tgl.'-1 day')));
+                            $query->orWhere('material_adjustment.tanggal', $temp_tgl);
+                        })
+                        ->whereNotNull('butuh_alat_berat')
+                        ->where('id_shift', $shift)
+                        ->sum('material_trans.jumlah')
+                        ;
+                    } else {
+                        $angkut = MaterialTrans::leftJoin('aktivitas_harian', function($join){
+                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                            ->where('draft', 0);
+                        })
+                        ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                        ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
+                        ->whereNotNull('status_produk')
+                        ->where(function($query) use ($key){
+                            $query->where('aktivitas_harian.id_gudang', $key->id);
+                            $query->orWhere('material_adjustment.id_gudang', $key->id);
+                        })
+                        ->where(function($query) use($temp_tgl){
+                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $temp_tgl);
+                            $query->orWhere('material_adjustment.tanggal', $temp_tgl);
+                        })
+                        ->whereNotNull('butuh_alat_berat')
+                        ->where('id_shift', $shift)
+                        ->sum('material_trans.jumlah')
+                        ;
+                    }
+    
+                    $temp[$i] = (double)$angkut;
+                    $i++;
+                }
+            }
+
+            array_push($data, $temp);
+
+            $temp_tgl = date('Y-m-d', strtotime($temp_tgl.'+1 day'));
+        } while ($temp_tgl != $tgl_akhir);
+
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = [$data, $gudang];
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
