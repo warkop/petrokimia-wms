@@ -948,16 +948,45 @@ class DashboardController extends Controller
         return view('dashboard.mapclick', $data);
     }
     public function handlingPerJenisProduk(){
-        // $jenisProduk = HandlingPerJenisProduk::select('id_material')->groupBy('id_material')->orderBy('id_material','asc')->get();
         $jenisProduk = DB::table(
-                        DB::raw('
-                            (select id_material from v_handling_per_jenis_produk group by id_material) a'
+                        DB::raw('(select id_material from (
+                                SELECT trans.id_material, date(akt.created_at) as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
+                                FROM public.material_trans trans
+                                join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
+                                join material mat on mat.id = trans.id_material
+                                where (id_shift = 1 or id_shift = 2) and mat.kategori = 1
+                                union all
+                                SELECT trans.id_material, date(akt.created_at) - 1 as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
+                                FROM public.material_trans trans
+                                join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
+                                join material mat on mat.id = trans.id_material
+                                where id_shift = 3 and mat.kategori = 1
+                            ) a group by id_material) a'
                        ))
                        ->select('id_material', 'nama')
                        ->orderBy('id_material','asc')
                        ->join('material as mat','mat.id','=','a.id_material')
                        ->get();
-        $handling = HandlingPerJenisProduk::orderBy('tgl_akt','asc')->orderBy('id_material','asc')->get();
+        $handling = DB::table(
+                        DB::raw('(
+                                SELECT trans.id_material, date(akt.created_at) as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
+                                FROM public.material_trans trans
+                                join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
+                                join material mat on mat.id = trans.id_material
+                                where (id_shift = 1 or id_shift = 2) and mat.kategori = 1
+                                union all
+                                SELECT trans.id_material, date(akt.created_at) - 1 as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
+                                FROM public.material_trans trans
+                                join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
+                                join material mat on mat.id = trans.id_material
+                                where id_shift = 3 and mat.kategori = 1
+                            ) a'
+                        )
+                    )->selectRaw('tgl_akt, id_material, sum(jumlah) as jumlah')
+                    ->groupBy(['tgl_akt', 'id_material'])
+                    ->orderBy('tgl_akt','asc')
+                    ->orderBy('id_material','asc')
+                    ->get();
         $jp = [];
         $i=1;
         $cData = [];
@@ -975,27 +1004,121 @@ class DashboardController extends Controller
             if($tanggal !== $row->tgl_akt){
                 if($no > 0)
                     $i++;
+                
+                
+                $rData[$i][0] = date('d-m-Y',strtotime($row->tgl_akt));
+
                 $idx = 1;
                 foreach($jp as $val){
                     $rData[$i][$idx] = 0;
                     $idx++;
                 }
+
                 $id_mat = array_search($row->id_material,$jp);
-                
-                $rData[$i][0] = $row->tgl_akt;
-                $rData[$i][$id_mat] = $row->jumlah;
+                $rData[$i][$id_mat] = (float)$row->jumlah;
 
                 $tanggal = $row->tgl_akt;
             } else {
                 $id_mat = array_search($row->id_material,$jp);
 
-                $rData[$i][$id_mat] = $row->jumlah;
+                $rData[$i][$id_mat] = (float)$row->jumlah;
             }
             $no++;
         }
         $data["cData"] = $cData;
-        $data["rData"] = $rData;
-        return $data;
-        // return $jenisProduk;
+        $data["rData"] = array_values($rData);
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $data;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
+    }
+    public function handlingPerJenisGudang(){
+        $jenisProduk = DB::table(
+                        DB::raw('(select id_gudang from (
+                                SELECT trans.id_material, akt.id_gudang, date(akt.created_at) as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
+                                FROM public.material_trans trans
+                                join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
+                                join material mat on mat.id = trans.id_material
+                                where (id_shift = 1 or id_shift = 2) and mat.kategori = 1
+                                union all
+                                SELECT trans.id_material, akt.id_gudang, date(akt.created_at) - 1 as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
+                                FROM public.material_trans trans
+                                join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
+                                join material mat on mat.id = trans.id_material
+                                where id_shift = 3 and mat.kategori = 1
+                            ) a group by id_gudang) a'
+                       ))
+                       ->select('id_gudang', 'nama')
+                       ->orderBy('id_gudang','asc')
+                       ->join('gudang as gdg','gdg.id','=','a.id_gudang')
+                       ->get();
+        $handling = DB::table(
+                        DB::raw('(
+                                SELECT trans.id_material, akt.id_gudang, date(akt.created_at) as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
+                                FROM public.material_trans trans
+                                join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
+                                join material mat on mat.id = trans.id_material
+                                where (id_shift = 1 or id_shift = 2) and mat.kategori = 1
+                                union all
+                                SELECT trans.id_material, akt.id_gudang, date(akt.created_at) - 1 as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
+                                FROM public.material_trans trans
+                                join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
+                                join material mat on mat.id = trans.id_material
+                                where id_shift = 3 and mat.kategori = 1
+                            ) a'
+                        )
+                    )->selectRaw('tgl_akt, id_gudang, sum(jumlah) as jumlah')
+                    ->groupBy(['tgl_akt', 'id_gudang'])
+                    ->orderBy('tgl_akt','asc')
+                    ->orderBy('id_gudang','asc')
+                    ->get();
+        $jp = [];
+        $i=1;
+        $cData = [];
+        $cData[0] = "Periode";
+        foreach($jenisProduk as $row){
+            $jp[$i] = $row->id_gudang;
+            $cData[$i] = $row->nama;
+            $i++;
+        }
+        $tanggal = "";
+        $i = 0;
+        $no = 0;
+        $rData = [];
+        foreach($handling as $row){
+            if($tanggal !== $row->tgl_akt){
+                if($no > 0)
+                    $i++;
+                
+                
+                $rData[$i][0] = date('d-m-Y',strtotime($row->tgl_akt));
+
+                $idx = 1;
+                foreach($jp as $val){
+                    $rData[$i][$idx] = 0;
+                    $idx++;
+                }
+
+                $id_mat = array_search($row->id_gudang,$jp);
+                $rData[$i][$id_mat] = (float)$row->jumlah;
+
+                $tanggal = $row->tgl_akt;
+            } else {
+                $id_mat = array_search($row->id_gudang,$jp);
+
+                $rData[$i][$id_mat] = (float)$row->jumlah;
+            }
+            $no++;
+        }
+        $data["cData"] = $cData;
+        $data["rData"] = array_values($rData);
+        $this->responseCode = 200;
+        $this->responseMessage = 'Data tersedia.';
+        $this->responseData = $data;
+
+        $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
+        return response()->json($response, $this->responseCode);
     }
 }
