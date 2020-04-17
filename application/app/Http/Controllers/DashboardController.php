@@ -513,7 +513,7 @@ class DashboardController extends Controller
 
         $this->responseCode = 200;
         $this->responseMessage = 'Data tersedia.';
-        $this->responseData = [$data, date('d-m-Y', strtotime($tgl_awal)), date('d-m-Y', strtotime($tgl_akhir.'-1 day'))];
+        $this->responseData = [$data, date('d/m/Y', strtotime($tgl_awal)), date('d/m/Y', strtotime($tgl_akhir.'-1 day'))];
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
