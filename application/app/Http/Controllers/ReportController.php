@@ -2259,7 +2259,7 @@ class ReportController extends Controller
                     })
                     ->where('tipe', 2)
                     ->where('status_pallet', ($i + 2))
-                    ->where('id_material', $value->id_material)
+                    ->where('material_trans.id_material', $value->id_material)
                     ->sum('material_trans.jumlah');
                 
                 $tempPeralihanTambah[$i] = $peralihanTambah;
@@ -2297,7 +2297,7 @@ class ReportController extends Controller
                     })
                     ->where('tipe', 1)
                     ->where('status_pallet', ($i + 2))
-                    ->where('id_material', $value->id_material)
+                    ->where('material_trans.id_material', $value->id_material)
                     ->sum('material_trans.jumlah');
                 
                 $tempPeralihanKurang[$i] = $peralihanKurang;
