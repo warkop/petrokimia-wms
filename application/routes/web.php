@@ -31,6 +31,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/get-pemuatan-produk', 'DashboardController@getPemuatanProduk');
         Route::get('/get-tonase-alat-berat', 'DashboardController@getTonaseAlatBerat');
         Route::get('/get-tonase-produk-rusak', 'DashboardController@getTonaseProdukRusak');
+        Route::post('/get-handling-per-jenis-produk', 'DashboardController@handlingPerJenisProduk');
+        Route::post('/get-handling-per-gudang', 'DashboardController@handlingPerJenisGudang');
     });
 
     Route::get('/map-clicked', 'DashboardController@map');
