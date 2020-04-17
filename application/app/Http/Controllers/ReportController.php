@@ -2243,14 +2243,24 @@ class ReportController extends Controller
                         ->where('material_adjustment.id_gudang', $value->id_gudang)
                         ;
                     })
+                    ->leftJoin('gudang_stok', function($join) use($value) {
+                        $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok')
+                        ->where('gudang_stok.id_gudang', $value->id_gudang)
+                        ;
+                    })
                     ->where(function($query) use($tgl_awal, $tgl_akhir){
                         $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                         $query->orWhereBetween('material_adjustment.created_at', [$tgl_awal, $tgl_akhir]);
+                        $query->orWhere(function ($query) use ($tgl_awal, $tgl_akhir) {
+                            $query->whereBetween('material_trans.tanggal', [$tgl_awal, $tgl_akhir]);
+                            $query->whereNull('material_trans.id_aktivitas_harian');
+                            $query->whereNull('material_trans.id_adjustment');
+                        });
                     })
                     ->where('tipe', 2)
                     ->where('status_pallet', ($i + 2))
                     ->where('id_material', $value->id_material)
-                    ->sum('jumlah');
+                    ->sum('material_trans.jumlah');
                 
                 $tempPeralihanTambah[$i] = $peralihanTambah;
                 $stokAkhir[$i] += $peralihanTambah;
@@ -2271,14 +2281,24 @@ class ReportController extends Controller
                         ->where('material_adjustment.id_gudang', $value->id_gudang)
                         ;
                     })
+                    ->leftJoin('gudang_stok', function($join) use($value) {
+                        $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok')
+                        ->where('gudang_stok.id_gudang', $value->id_gudang)
+                        ;
+                    })
                     ->where(function($query) use($tgl_awal, $tgl_akhir){
                         $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                         $query->orWhereBetween('material_adjustment.created_at', [$tgl_awal, $tgl_akhir]);
+                        $query->orWhere(function ($query) use ($tgl_awal, $tgl_akhir) {
+                            $query->whereBetween('material_trans.tanggal', [$tgl_awal, $tgl_akhir]);
+                            $query->whereNull('material_trans.id_aktivitas_harian');
+                            $query->whereNull('material_trans.id_adjustment');
+                        });
                     })
                     ->where('tipe', 1)
                     ->where('status_pallet', ($i + 2))
                     ->where('id_material', $value->id_material)
-                    ->sum('jumlah');
+                    ->sum('material_trans.jumlah');
                 
                 $tempPeralihanKurang[$i] = $peralihanKurang;
                 $stokAkhir[$i] -= $peralihanKurang;
