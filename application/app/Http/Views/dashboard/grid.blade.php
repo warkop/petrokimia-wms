@@ -156,7 +156,7 @@ photo {
                             </div>
                             <div class="form-group col-md-1">
                                 
-                            <button type="button" class="btn btn-danger btn-icon"><i class="la la-refresh"></i></button>&nbsp;
+                            <button type="button" class="btn btn-danger btn-icon" id="reset" onclick="reset()"><i class="la la-refresh"></i></button>&nbsp;
                             </div>
                         </div>
                         <!--begin::Accordion-->
@@ -1142,5 +1142,18 @@ function filter() {
     getPemuatanProduk()
     drawChartHandlingPerJenisProduk();
     drawChartHandlingPerGudang();
+}
+
+function reset(){
+    console.log("moden")
+    $("#pilih_gudang").val(1);
+    $("#pilih_shift").val(1);
+    $('#kt_daterangepicker_2').daterangepicker({
+        buttonClasses: ' btn',
+        applyClass: 'btn-primary',
+        cancelClass: 'btn-secondary'
+    }, function(start, end, label) {
+        $('#kt_daterangepicker_2 .form-control').val( start.format('YYYY-MM-DD') + ' / ' + end.format('YYYY-MM-DD'));
+    });
 }
 </script>
