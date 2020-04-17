@@ -28,8 +28,61 @@
 .bgimage{
     background-image:url('assets/extends/img/forklift-1.png');
 }
-</style>
 
+.shine {
+  background: #f6f7f8;
+  background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+  background-repeat: no-repeat;
+  background-size: 900px 400px; 
+  display: inline-block;
+  position: relative; 
+  
+  -webkit-animation-duration: 1s;
+  -webkit-animation-fill-mode: forwards; 
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-name: placeholderShimmer;
+  -webkit-animation-timing-function: linear;
+  }
+
+box {
+  height: 104px;
+  width: 100px;
+}
+
+/* div {
+  display: inline-flex;
+  flex-direction: column; 
+  margin-left: 25px;
+  margin-top: 15px;
+  vertical-align: top; 
+} */
+
+lines {
+  height: 10px;
+  margin-top: 10px;
+  width: 200px; 
+}
+
+photo {
+  display: block!important;
+  width: 825px; 
+  height: 400px; 
+  margin-top: 15px;
+}
+
+@-webkit-keyframes placeholderShimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  
+  100% {
+    background-position: 468px 0; 
+  }
+}
+
+
+</style>
+<photo id="loading" class="shine" style="display:none"></photo>
 <div class="row row-no-padding row-col-separator-xl" style="background:#fff">
     <div class="col-md-6 col-lg-6 col-xl-6 col-sm-6 col-xs-6 pointer nav---gation" onclick="location.href='{{url('/')}}';">
         <div class="kt-widget24">
@@ -138,7 +191,9 @@
                                             </div>
                                         </div>
                                         <div class="mt-4">
-                                            <h5 class="mt4">Stok Palet dan Terplas Per Tanggal 1 Febuary 2020</h5>
+                                            <h5 class="mt4">Stok Palet dan Terplas Per Tanggal 
+                                                <span id="pallet_tgl_awal"></span> - <span id="pallet_tgl_akhir"></span>
+                                            </h5>
                                             <div id="stokpaletbulan" style="height: 500px;"></div>
                                         </div>
                                     </div>
@@ -394,6 +449,9 @@ function getTonaseProdukRusak() {
             gudang: gudang,
             tanggal: tanggal
         },
+        beforeSend:()=>{
+            $("#produkrusak").html('<photo class="shine"></photo>');
+        },
         success:(res)=>{
             var data = new google.visualization.DataTable();
             const gudang = res.data[1];
@@ -474,6 +532,9 @@ function getTonaseAlatBerat() {
             shift: shift,
             gudang: gudang,
             tanggal: tanggal
+        },
+        beforeSend:()=>{
+            $("#realisasipenggunaan").html('<photo class="shine"></photo>');
         },
         success:(res)=>{
             var data = new google.visualization.DataTable();
@@ -563,6 +624,9 @@ function getProduksiPengeluaran() {
             gudang: gudang,
             tanggal: tanggal
         },
+        beforeSend:()=>{
+            $("#produksipengeluaran").html('<photo class="shine"></photo>');
+        },
         success:(res)=>{
             
             var data = new google.visualization.DataTable();
@@ -641,6 +705,9 @@ function getPemuatanProduk() {
             shift: shift,
             gudang: gudang,
             tanggal: tanggal
+        },
+        beforeSend:()=>{
+            $("#muatan").html('<photo class="shine"></photo>');
         },
         success:(res)=>{
             var data = new google.visualization.DataTable();
@@ -829,7 +896,6 @@ google.charts.load('current', {'packages':['corechart']});
         const gudang = $("#pilih_gudang").val();
         const tanggal = $("#kt_daterangepicker_2").val();
 
-
         $.ajax({
             url:baseUrl+"dashboard/get-jumlah-pallet",
             method:"GET",
@@ -838,10 +904,16 @@ google.charts.load('current', {'packages':['corechart']});
                 gudang: gudang,
                 tanggal: tanggal
             },
+            beforeSend:()=>{
+                $("#stokpaletbulan").html('<photo class="shine"></photo>');
+            },
             success:(res)=>{
                 // var dataArray = [
                 //     ['Gudang', 'Pakai & Dasaran', 'Kosong ', 'Rusak', 'Total Stok']
                 // ];
+
+                $("#pallet_tgl_awal").html(res.data[1])
+                $("#pallet_tgl_akhir").html(res.data[2])
 
                 var data = new google.visualization.DataTable();
                 data.addColumn('string', 'Gudang');
@@ -849,7 +921,7 @@ google.charts.load('current', {'packages':['corechart']});
                 data.addColumn('number', 'Kosong');
                 data.addColumn('number', 'Rusak');
                 data.addColumn('number', 'Total Stok');
-                data.addRows(res.data);
+                data.addRows(res.data[0]);
 
                 // data.unshift(['Gudang', 'Pakai & Dasaran', 'Kosong ', 'Rusak', 'Total Stok']);
                 // console.log(data);
@@ -1052,7 +1124,6 @@ function getKeluhanAlatBerat() {
     const shift = $("#pilih_shift").val();
     const gudang = $("#pilih_gudang").val();
     const tanggal = $("#kt_daterangepicker_2").val();
-        console.log("keluhan")
     $.ajax({
         url:baseUrl+"dashboard/get-keluhan-alat-berat",
         method:"GET",
@@ -1060,6 +1131,9 @@ function getKeluhanAlatBerat() {
             shift: shift,
             gudang: gudang,
             tanggal: tanggal
+        },
+        beforeSend:()=>{
+            $("#keluhanmuatan").html('<photo class="shine"></photo>');
         },
         success:(res)=>{
             var dataArray = res.data;
