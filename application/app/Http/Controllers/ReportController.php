@@ -1863,7 +1863,7 @@ class ReportController extends Controller
         $row = 5;
         $abjadPemasukan--;
         $col++;
-        $abjadPemasukan++;
+        // $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadPemasukan . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Pengeluaran');
 
@@ -2340,7 +2340,9 @@ class ReportController extends Controller
             }
 
             // dd(($row-3));
+            $objSpreadsheet->getActiveSheet()->mergeCellsByColumnAndRow(($col+5),($row-3),($col+5),($row-1));
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(($col+5), ($row-3), $status);
+            $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow(($col+5),($row-3),($col+5),($row-1))->applyFromArray($style_center);
             $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . ($row-3) . ":" . $abjadDalam . ($row-1))->applyFromArray($style_center);
 
             $row--;
