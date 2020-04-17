@@ -10,6 +10,7 @@ use App\Http\Models\GudangStok;
 use App\Http\Models\LaporanKerusakan;
 use App\Http\Models\MaterialTrans;
 use App\Http\Models\ShiftKerja;
+use App\Http\Models\HandlingPerJenisProduk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -885,5 +886,56 @@ class DashboardController extends Controller
     {
         $data['title'] = 'Map Click';
         return view('dashboard.mapclick', $data);
+    }
+    public function handlingPerJenisProduk(){
+        // $jenisProduk = HandlingPerJenisProduk::select('id_material')->groupBy('id_material')->orderBy('id_material','asc')->get();
+        $jenisProduk = DB::table(
+                        DB::raw('
+                            (select id_material from v_handling_per_jenis_produk group by id_material) a'
+                       ))
+                       ->select('id_material', 'nama')
+                       ->orderBy('id_material','asc')
+                       ->join('material as mat','mat.id','=','a.id_material')
+                       ->get();
+        $handling = HandlingPerJenisProduk::orderBy('tgl_akt','asc')->orderBy('id_material','asc')->get();
+        $jp = [];
+        $i=1;
+        $cData = [];
+        $cData[0] = "Periode";
+        foreach($jenisProduk as $row){
+            $jp[$i] = $row->id_material;
+            $cData[$i] = $row->nama;
+            $i++;
+        }
+        $tanggal = "";
+        $i = 0;
+        $no = 0;
+        $rData = [];
+        foreach($handling as $row){
+            if($tanggal !== $row->tgl_akt){
+                if($no > 0)
+                    $i++;
+                $idx = 1;
+                foreach($jp as $val){
+                    $rData[$i][$idx] = 0;
+                    $idx++;
+                }
+                $id_mat = array_search($row->id_material,$jp);
+                
+                $rData[$i][0] = $row->tgl_akt;
+                $rData[$i][$id_mat] = $row->jumlah;
+
+                $tanggal = $row->tgl_akt;
+            } else {
+                $id_mat = array_search($row->id_material,$jp);
+
+                $rData[$i][$id_mat] = $row->jumlah;
+            }
+            $no++;
+        }
+        $data["cData"] = $cData;
+        $data["rData"] = $rData;
+        return $data;
+        // return $jenisProduk;
     }
 }

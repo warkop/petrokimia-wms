@@ -257,45 +257,48 @@ google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(drawChart);
 
 function drawChart() {
+    $.ajax({
+        url:baseUrl + 'dashboard/get-handling-per-jenis-produk',
+        method:'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        success:function(res){
+            var res = JSON.parse(res);
+            var data = new google.visualization.DataTable();
+            for(var i=0;i<res.cData.length;i++){
+                if(i == 0){
+                    data.addColumn('string', res.cData[i]);
+                } else {
+                    data.addColumn('number', res.cData[i]);
+                }
+            }
+            data.addRows(res.rData);
 
-var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Periode');
-    data.addColumn('number', 'Produk ZA');
-    data.addColumn('number', 'Produk Urea');
-    data.addColumn('number', 'Produk SP-36');
-    data.addColumn('number', 'Produk Phonska');
-    data.addColumn('number', 'Produk Phonska Plus');
-    data.addColumn('number', 'Gudang NPX Kebomas');
-    data.addRows([
-    
-    [ '2020-02-02',  10,  10 ,  170 , 310,  480 , 630],
-    [ '2020-02-03',  170, 350,  500 , 300,  290 , 540],
-    [ '2020-02-04',  170,170 ,  300 , 400,  550 , 470],
-    [ '2020-02-05',  460, 10 ,  300 , 250,  620 , 290],
-    [ '2020-02-06',  720 , 650,  480 , 340,  590 , 310],
-    [ '2020-02-07',  290 , 670,  480 , 450,  390 , 450],
-    
-   
-]);
+            console.log(res.rData);
 
+            var options = {
+                // colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
+                legend:{position: 'bottom', maxTextLines:4},
+                vAxis: { gridlines: { count: 5 }, title:"TONASE PUPUK" ,titleTextStyle:{bold:true, italic:false} },
+                hAxis: { slantedText:true, slantedTextAngle:45, title:"PERIODE", titleTextStyle:{bold:true, italic:false}  },
+                pointSize: 3,
+                
+                chartArea: {
+                    bottom: 150
+                    
+                  },
+                
+            };
 
-var options = {
-    colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
-    legend:{position: 'bottom', maxTextLines:4},
-    vAxis: { gridlines: { count: 5 }, title:"TONASE PUPUK" ,titleTextStyle:{bold:true, italic:false} },
-    hAxis: { slantedText:true, slantedTextAngle:45, title:"PERIODE", titleTextStyle:{bold:true, italic:false}  },
-    pointSize: 3,
-    
-    chartArea: {
-        bottom: 150
-        
-      },
-    
-};
+            var chart = new google.visualization.LineChart(document.getElementById('jenisproduk'));
 
-var chart = new google.visualization.LineChart(document.getElementById('jenisproduk'));
+            chart.draw(data, options);
+        },
+        error:function(res){
 
-chart.draw(data, options);
+        }
+    });
 }
 </script>
 
@@ -305,39 +308,37 @@ google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(drawChart);
 
 function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Periode');
+        data.addColumn('number', 'Gudang ZA');
+        data.addColumn('number', 'Gudang Urea 1A');
+        data.addColumn('number', 'Gudang PF 1');
+        data.addColumn('number', 'Gudang Phonska');
+        data.addColumn('number', 'Gudang Urea 1B');
+        data.addColumn('number', 'Gudang Multiguna');
+        data.addRows([
+        [ '2020-02-02',  10,  10 ,  170 , 310,  480 , 630],
+        [ '2020-02-03',  170, 350,  500 , 300,  290 , 540],
+        [ '2020-02-04',  170,170 ,  300 , 400,  550 , 470],
+        [ '2020-02-05',  460, 10 ,  300 , 250,  620 , 290],
+        [ '2020-02-06',  720 , 650,  480 , 340,  590 , 310],
+        [ '2020-02-07',  290 , 670,  480 , 450,  390 , 450],
+    ]);
 
-var data = new google.visualization.DataTable();
-data.addColumn('string', 'Periode');
-    data.addColumn('number', 'Gudang ZA');
-    data.addColumn('number', 'Gudang Urea 1A');
-    data.addColumn('number', 'Gudang PF 1');
-    data.addColumn('number', 'Gudang Phonska');
-    data.addColumn('number', 'Gudang Urea 1B');
-    data.addColumn('number', 'Gudang Multiguna');
-    data.addRows([
-    [ '2020-02-02',  10,  10 ,  170 , 310,  480 , 630],
-    [ '2020-02-03',  170, 350,  500 , 300,  290 , 540],
-    [ '2020-02-04',  170,170 ,  300 , 400,  550 , 470],
-    [ '2020-02-05',  460, 10 ,  300 , 250,  620 , 290],
-    [ '2020-02-06',  720 , 650,  480 , 340,  590 , 310],
-    [ '2020-02-07',  290 , 670,  480 , 450,  390 , 450],
-]);
+    var options = {
+        colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
+        legend:{position: 'bottom', maxTextLines:4},
+        vAxis: { gridlines: { count: 5 } , title:"TONASE HANDLING", titleTextStyle:{bold:true, italic:false}},
+        hAxis: { slantedText:true, slantedTextAngle:45 , title:"PERIODE", titleTextStyle:{bold:true, italic:false}},
+        pointSize: 3,
+        chartArea: {
+            bottom: 150
+          },
+    };
 
+    var chart = new google.visualization.LineChart(document.getElementById('gudang'));
 
-var options = {
-    colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
-    legend:{position: 'bottom', maxTextLines:4},
-    vAxis: { gridlines: { count: 5 } , title:"TONASE HANDLING", titleTextStyle:{bold:true, italic:false}},
-    hAxis: { slantedText:true, slantedTextAngle:45 , title:"PERIODE", titleTextStyle:{bold:true, italic:false}},
-    pointSize: 3,
-    chartArea: {
-        bottom: 150
-      },
-};
-
-var chart = new google.visualization.LineChart(document.getElementById('gudang'));
-
-chart.draw(data, options);
+    chart.draw(data, options);
 }
 </script>
 
