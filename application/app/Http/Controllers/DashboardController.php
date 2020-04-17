@@ -947,40 +947,61 @@ class DashboardController extends Controller
         $data['title'] = 'Map Click';
         return view('dashboard.mapclick', $data);
     }
-    public function handlingPerJenisProduk(){
-        $jenisProduk = DB::table(
-                        DB::raw('(select id_material from (
-                                SELECT trans.id_material, date(akt.created_at) as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
+    public function handlingPerJenisProduk(Request $req){
+        $shift = $req->get("shift");
+        $gudang = $req->get("gudang");
+        $tanggal = $req->get("tanggal");
+        $where1_2 = "where (id_shift = 1 or id_shift = 2) and mat.kategori = 1";
+        if($shift != ""){
+            $where3 = "where id_shift = {$shift} and mat.kategori = 1";
+        } else {
+            $where3 = "where id_shift = 3 and mat.kategori = 1";
+        }
+        if($tanggal != ""){
+            $tgl = explode("-", $tanggal);
+            $tanggal_awal = date('Y-m-d',strtotime($tgl[0]));
+            $tanggal_akhir = date('Y-m-d',strtotime($tgl[1]));
+            $where1_2 .= " and date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
+            $where3 .= " and date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
+        }
+        if($gudang != ""){
+            $where1_2 .= " and id_gudang = {$gudang}";
+            $where3 .= " and id_gudang = {$gudang}";
+        }
+
+        if($shift == ""){
+            $v_handling_per_jenis_produk = "SELECT trans.id_material, date(akt.created_at) as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
                                 FROM public.material_trans trans
                                 join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
                                 join material mat on mat.id = trans.id_material
-                                where (id_shift = 1 or id_shift = 2) and mat.kategori = 1
+                                {$where1_2}
                                 union all
                                 SELECT trans.id_material, date(akt.created_at) - 1 as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
                                 FROM public.material_trans trans
                                 join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
                                 join material mat on mat.id = trans.id_material
-                                where id_shift = 3 and mat.kategori = 1
-                            ) a group by id_material) a'
+                                {$where3}
+                                ";
+        } else {
+            $v_handling_per_jenis_produk = "SELECT trans.id_material, date(akt.created_at) - 1 as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
+                                FROM public.material_trans trans
+                                join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
+                                join material mat on mat.id = trans.id_material
+                                {$where3}";
+        }
+        $jenisProduk = DB::table(
+                        DB::raw("(select id_material from (
+                                {$v_handling_per_jenis_produk}
+                            ) a group by id_material) a"
                        ))
                        ->select('id_material', 'nama')
                        ->orderBy('id_material','asc')
                        ->join('material as mat','mat.id','=','a.id_material')
                        ->get();
         $handling = DB::table(
-                        DB::raw('(
-                                SELECT trans.id_material, date(akt.created_at) as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
-                                FROM public.material_trans trans
-                                join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
-                                join material mat on mat.id = trans.id_material
-                                where (id_shift = 1 or id_shift = 2) and mat.kategori = 1
-                                union all
-                                SELECT trans.id_material, date(akt.created_at) - 1 as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
-                                FROM public.material_trans trans
-                                join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
-                                join material mat on mat.id = trans.id_material
-                                where id_shift = 3 and mat.kategori = 1
-                            ) a'
+                        DB::raw("(
+                                {$v_handling_per_jenis_produk}
+                            ) a"
                         )
                     )->selectRaw('tgl_akt, id_material, sum(jumlah) as jumlah')
                     ->groupBy(['tgl_akt', 'id_material'])
@@ -1034,40 +1055,63 @@ class DashboardController extends Controller
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
     }
-    public function handlingPerJenisGudang(){
-        $jenisProduk = DB::table(
-                        DB::raw('(select id_gudang from (
-                                SELECT trans.id_material, akt.id_gudang, date(akt.created_at) as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
+    public function handlingPerJenisGudang(Request $req){
+        $shift = $req->get("shift");
+        $gudang = $req->get("gudang");
+        $tanggal = $req->get("tanggal");
+        $where1_2 = "where (id_shift = 1 or id_shift = 2) and mat.kategori = 1";
+        if($shift != ""){
+            $where3 = "where id_shift = {$shift} and mat.kategori = 1";
+        } else {
+            $where3 = "where id_shift = 3 and mat.kategori = 1";
+        }
+        if($tanggal != ""){
+            $tgl = explode("-", $tanggal);
+            $tanggal_awal = date('Y-m-d',strtotime($tgl[0]));
+            $tanggal_akhir = date('Y-m-d',strtotime($tgl[1]));
+            $where1_2 .= " and date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
+            $where3 .= " and date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
+        }
+        if($gudang != ""){
+            $where1_2 .= " and id_gudang = {$gudang}";
+            $where3 .= " and id_gudang = {$gudang}";
+        }
+
+        if($shift == ""){
+            $v_handling_per_gudang = "SELECT trans.id_material, akt.id_gudang, date(akt.created_at) as tgl_akt, 
+                                akt.id_shift, trans.jumlah, akt.id_shift
                                 FROM public.material_trans trans
                                 join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
                                 join material mat on mat.id = trans.id_material
-                                where (id_shift = 1 or id_shift = 2) and mat.kategori = 1
+                                {$where1_2}
                                 union all
                                 SELECT trans.id_material, akt.id_gudang, date(akt.created_at) - 1 as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
                                 FROM public.material_trans trans
                                 join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
                                 join material mat on mat.id = trans.id_material
-                                where id_shift = 3 and mat.kategori = 1
-                            ) a group by id_gudang) a'
+                                {$where3}
+                                ";
+        } else {
+            $v_handling_per_gudang = "SELECT trans.id_material, akt.id_gudang, date(akt.created_at) - 1 as tgl_akt, 
+                                akt.id_shift, trans.jumlah, akt.id_shift
+                                FROM public.material_trans trans
+                                join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
+                                join material mat on mat.id = trans.id_material
+                                {$where3}";
+        }
+        $jenisProduk = DB::table(
+                        DB::raw("(select id_gudang from (
+                                {$v_handling_per_gudang}
+                            ) a group by id_gudang) a"
                        ))
                        ->select('id_gudang', 'nama')
                        ->orderBy('id_gudang','asc')
                        ->join('gudang as gdg','gdg.id','=','a.id_gudang')
                        ->get();
         $handling = DB::table(
-                        DB::raw('(
-                                SELECT trans.id_material, akt.id_gudang, date(akt.created_at) as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
-                                FROM public.material_trans trans
-                                join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
-                                join material mat on mat.id = trans.id_material
-                                where (id_shift = 1 or id_shift = 2) and mat.kategori = 1
-                                union all
-                                SELECT trans.id_material, akt.id_gudang, date(akt.created_at) - 1 as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
-                                FROM public.material_trans trans
-                                join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
-                                join material mat on mat.id = trans.id_material
-                                where id_shift = 3 and mat.kategori = 1
-                            ) a'
+                        DB::raw("(
+                                {$v_handling_per_gudang}
+                            ) a"
                         )
                     )->selectRaw('tgl_akt, id_gudang, sum(jumlah) as jumlah')
                     ->groupBy(['tgl_akt', 'id_gudang'])

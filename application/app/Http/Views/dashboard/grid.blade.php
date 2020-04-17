@@ -326,6 +326,9 @@ function drawChartHandlingPerJenisProduk() {
             gudang: gudang,
             tanggal: tanggal
         },
+        beforeSend:()=>{
+            $("#jenisproduk").html('<photo class="shine"></photo>');
+        },
         success:function(res){
             var res = res.data;
             var data = new google.visualization.DataTable();
@@ -386,7 +389,7 @@ function drawChartHandlingPerGudang() {
             tanggal: tanggal
         },
         beforeSend:()=>{
-            $("#produkrusak").html('<photo class="shine"></photo>');
+            $("#gudang").html('<photo class="shine"></photo>');
         },
         success:(res)=>{
             var res = res.data;
