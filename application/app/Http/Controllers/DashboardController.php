@@ -78,8 +78,8 @@ class DashboardController extends Controller
 
     public function getKeluhanAlatBerat()
     {
-        $tanggal    = request()->input('tanggal');
-        $shift      = request()->input('shift');
+        $tanggal    = request()->input('tanggal')??date('d/m/Y').'-'.date('d/m/Y');
+        $shift      = request()->input('shift')??1;
         $gudang     = request()->input('gudang');
         $data = [];
 
@@ -135,8 +135,8 @@ class DashboardController extends Controller
 
     public function getJumlahPallet()
     {
-        $tanggal    = request()->input('tanggal');
-        $shift      = request()->input('shift');
+        $tanggal    = request()->input('tanggal')??date('d/m/Y').'-'.date('d/m/Y');
+        $shift      = request()->input('shift')??1;
         $gudang     = request()->input('gudang');
 
         $date = explode('-', $tanggal);
@@ -519,8 +519,8 @@ class DashboardController extends Controller
 
     public function getProduksiPengeluaran()
     {
-        $tanggal    = request()->input('tanggal');
-        $shift      = request()->input('shift');
+        $tanggal    = request()->input('tanggal')??date('d/m/Y').'-'.date('d/m/Y');
+        $shift      = request()->input('shift')??1;
         $gudang     = request()->input('gudang');
 
         $date = explode('-', $tanggal);
@@ -531,11 +531,15 @@ class DashboardController extends Controller
         $data = [];
         $temp_tgl = $tgl_awal;
         do {
-            $resKeluar = MaterialTrans::leftJoin('aktivitas_harian', function($join){
+            $transaksiKeluar = MaterialTrans::leftJoin('aktivitas_harian', function($join){
                 $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                     ->where('draft', 0);
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
+            ->leftJoin('aktivitas', function($join) {
+                $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->where('aktivitas.status_aktivitas', 1);
+            })
             ->whereNotNull('status_produk')
             ->where('tipe', 1)
             ->where(function($query) use ($gudang){
@@ -553,11 +557,15 @@ class DashboardController extends Controller
             ->sum('material_trans.jumlah')
             ;
     
-            $resMasuk = MaterialTrans::leftJoin('aktivitas_harian', function($join){
+            $transaksiMasuk = MaterialTrans::leftJoin('aktivitas_harian', function($join){
                 $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                 ->where('draft', 0);
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
+            ->leftJoin('aktivitas', function($join) {
+                $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->where('aktivitas.status_aktivitas', 2);
+            })
             ->whereNotNull('status_produk')
             ->where('tipe', 2)
             ->where(function($query) use ($gudang){
@@ -576,8 +584,8 @@ class DashboardController extends Controller
             ;
 
             $temp[0] = date('d-m-Y', strtotime($temp_tgl));
-            $temp[1] = (double)$resMasuk;
-            $temp[2] = (double)$resKeluar;
+            $temp[1] = (double)$transaksiMasuk;
+            $temp[2] = (double)$transaksiKeluar;
 
             array_push($data, $temp);
 
@@ -594,8 +602,8 @@ class DashboardController extends Controller
 
     public function getPemuatanProduk()
     {
-        $tanggal    = request()->input('tanggal');
-        $shift      = request()->input('shift');
+        $tanggal    = request()->input('tanggal')??date('d/m/Y').'-'.date('d/m/Y');
+        $shift      = request()->input('shift')??1;
         $gudang     = request()->input('gudang');
 
         $date = explode('-', $tanggal);
@@ -684,8 +692,8 @@ class DashboardController extends Controller
 
     public function getTonaseProdukRusak()
     {
-        $tanggal    = request()->input('tanggal');
-        $shift      = request()->input('shift');
+        $tanggal    = request()->input('tanggal')??date('d/m/Y').'-'.date('d/m/Y');
+        $shift      = request()->input('shift')??1;
         $pilih_gudang     = request()->input('gudang');
 
         $date = explode('-', $tanggal);
@@ -812,8 +820,8 @@ class DashboardController extends Controller
 
     public function getTonaseAlatBerat()
     {
-        $tanggal    = request()->input('tanggal');
-        $shift      = request()->input('shift');
+        $tanggal    = request()->input('tanggal')??date('d/m/Y').'-'.date('d/m/Y');
+        $shift      = request()->input('shift')??1;
         $pilih_gudang     = request()->input('gudang');
 
         $date = explode('-', $tanggal);
@@ -945,9 +953,9 @@ class DashboardController extends Controller
         return view('dashboard.mapclick', $data);
     }
     public function handlingPerJenisProduk(Request $req){
-        $shift = $req->get("shift");
+        $shift = $req->get("shift")??1;
         $gudang = $req->get("gudang");
-        $tanggal = $req->get("tanggal");
+        $tanggal = $req->get("tanggal")??date('d/m/Y').'-'.date('d/m/Y');
         $where1_2 = "where (id_shift = 1 or id_shift = 2) and mat.kategori = 1";
         if($shift != ""){
             $where3 = "where id_shift = {$shift} and mat.kategori = 1";
@@ -1053,9 +1061,9 @@ class DashboardController extends Controller
         return response()->json($response, $this->responseCode);
     }
     public function handlingPerJenisGudang(Request $req){
-        $shift = $req->get("shift");
+        $shift = $req->get("shift")??1;
         $gudang = $req->get("gudang");
-        $tanggal = $req->get("tanggal");
+        $tanggal = $req->get("tanggal")??date('d/m/Y').'-'.date('d/m/Y');
         $where1_2 = "where (id_shift = 1 or id_shift = 2) and mat.kategori = 1";
         if($shift != ""){
             $where3 = "where id_shift = {$shift} and mat.kategori = 1";
