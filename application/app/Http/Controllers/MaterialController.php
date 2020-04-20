@@ -63,7 +63,6 @@ class MaterialController extends Controller
         }
 
         $material->id_material_sap    = $req->input('id_material_sap');
-        // $material->id_plant           = $req->input('id_plant');
         $material->nama               = $req->input('nama');
         $material->kategori           = $req->input('kategori');
         $material->berat              = $req->input('berat');
