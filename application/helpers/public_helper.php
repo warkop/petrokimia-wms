@@ -303,7 +303,16 @@ function helpTerbilang($num)
 
 	$is_neg = $num < 0; $num = "$num";
 
-	$int = ""; if (preg_match("/^[+-]?(\d+)/", $num, $m)) $int = $m[1];
+	$int = ""; 
+	
+	if (preg_match("/^[+-]?(\d+)/", $num, $m)) {
+		if (preg_last_error() == PREG_BACKTRACK_LIMIT_ERROR) {
+			return 'Backtrack limit was exhausted!';
+		}
+
+		$int = $m[1];
+	}
+
 	$mult = 0; $wint = "";
 
 	while (preg_match('/(\d{1,3})$/', $int, $m)) {
@@ -445,7 +454,7 @@ function rand_str($length = 10)
     $charactersLength = strlen($characters);
     $randomString = '';
     for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
+        $randomString .= $characters[random_int(0, $charactersLength - 1)];
     }
     return $randomString;
 }
