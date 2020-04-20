@@ -4,24 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\AktivitasKeluhanGp;
 use App\Http\Models\AlatBeratKerusakan;
-use App\Http\Models\AreaStok;
 use App\Http\Models\Gudang;
 use App\Http\Models\GudangStok;
 use App\Http\Models\LaporanKerusakan;
 use App\Http\Models\MaterialTrans;
 use App\Http\Models\ShiftKerja;
-use App\Http\Models\HandlingPerJenisProduk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class DashboardController extends Controller
 {
+    private $AKTIVITAS_UPDATED_AT_FULLDATE = "TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')";
+    private $FORMAT_FULLDATE = 'Y-m-d H:i:s';
+    private $FORMAT_DATE = 'Y-m-d';
+    private $START_SHIFT3 = ' 23:00:00 -1 day';
+    private $START_SHIFT1 = ' 07:00:00';
+    private $START_SHIFT2 = ' 15:00:00';
+    private $INCREMENT_DAY = "+1 day";
+    private $DECREMENT_DAY = "-1 day";
+
     public function index()
     {
-        // $this->authorize('dashboard');
         $data['title'] = 'Dashboard';
-        $laporan_kerusakan = [];
 
         $shift = ShiftKerja::get()->count();
         $shift1 = [];
@@ -38,8 +42,9 @@ class DashboardController extends Controller
                 ->distinct()
                 ->first();
                 
-                if ($temp)
+                if ($temp) {
                     array_push(${'shift'.$i}, $temp);
+                }
             }
         }
         $data['shift1'] = $shift1;
@@ -57,16 +62,15 @@ class DashboardController extends Controller
                     ->distinct()
                     ->first();
 
-                if ($temp)
+                if ($temp) {
                     array_push(${'komplain_gp_shift' . $i}, $temp);
+                }
             }
         }
 
         $data['komplain_gp_shift1'] = $komplain_gp_shift1;
         $data['komplain_gp_shift2'] = $komplain_gp_shift2;
         $data['komplain_gp_shift3'] = $komplain_gp_shift3;
-
-        
 
         $data['gudang'] = Gudang::internal()->get();
         return view('dashboard.grid', $data);
@@ -80,9 +84,6 @@ class DashboardController extends Controller
         $data = [];
 
         $date = explode('-', $tanggal);
-        
-
-        // dd(date('Y-m-d', strtotime($date[1])));
 
         $queryShift = '';
         if ( $shift != null ) {
@@ -96,11 +97,8 @@ class DashboardController extends Controller
         
         $queryTanggal = '';
         if ( $tanggal != null ) {
-            $queryTanggal = " and to_char(jam_rusak, 'YYYY-MM-DD') BETWEEN ".date('Y-m-d', strtotime($date[0]))." and ".date('Y-m-d', strtotime($date[1])).' ';
+            $queryTanggal = " and TO_CHAR(jam_rusak, 'yyyy-mm-dd') BETWEEN '".date($this->FORMAT_DATE, strtotime($date[0]))."' and '".date($this->FORMAT_DATE, strtotime($date[1]))."' ";
         }
-
-        // $alatBeratKerusakan = AlatBeratKerusakan::get();
-        // $panjang = count($alatBeratKerusakan);
 
         $alatBeratKerusakan = AlatBeratKerusakan::select(
             'nama',
@@ -113,7 +111,7 @@ class DashboardController extends Controller
                 id_kerusakan = alat_berat_kerusakan.id
             $queryShift
             $queryGudang
-            and to_char(jam_rusak, 'YYYY-MM-DD') BETWEEN '2020-02-21' and '2020-02-28') as jumlah")
+            $queryTanggal) as jumlah")
         )
         ->get();
 
@@ -143,8 +141,8 @@ class DashboardController extends Controller
 
         $date = explode('-', $tanggal);
 
-        $tgl_awal = date('Y-m-d', strtotime($date[0]));
-        $tgl_akhir = date('Y-m-d', strtotime($date[1].'+1 day'));
+        $tgl_awal = date($this->FORMAT_DATE, strtotime($date[0]));
+        $tgl_akhir = date($this->FORMAT_DATE, strtotime($date[1].$this->INCREMENT_DAY));
 
         $res = GudangStok::distinct()
         ->select('id_gudang')
@@ -177,22 +175,22 @@ class DashboardController extends Controller
                         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                             ->where('draft', 0)
                             ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-                            ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
+                            ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
                     })
                     ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $value){
                         $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                             ->where('material_adjustment.id_gudang', $value->id_gudang)
-                            ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
+                            ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_awal)));
                     })
                     ->leftJoin('gudang_stok', function ($join){
                         $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
                     })
                     ->where(function ($query) use ($tgl_awal) {
                         $query->where(function($query) use($tgl_awal){
-                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 07:00:00')));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT1)));
                             $query->orWhere(function($query) use($tgl_awal){
-                                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 07:00:00')));
-                                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 15:00:00')));
+                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT1)));
+                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT2)));
                                 $query->where('id_shift', 3);
                             });
                         });
@@ -220,22 +218,22 @@ class DashboardController extends Controller
                         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                             ->where('draft', 0)
                             ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-                            ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
+                            ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
                     })
                     ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $value){
                         $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                             ->where('material_adjustment.id_gudang', $value->id_gudang)
-                            ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
+                            ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_awal)));
                     })
                     ->leftJoin('gudang_stok', function ($join){
                         $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
                     })
                     ->where(function ($query) use ($tgl_awal) {
                         $query->where(function($query) use($tgl_awal){
-                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 07:00:00')));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT1)));
                             $query->orWhere(function($query) use($tgl_awal){
-                                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 07:00:00')));
-                                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 15:00:00')));
+                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT1)));
+                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT2)));
                                 $query->where('id_shift', 3);
                             });
                         });
@@ -265,21 +263,21 @@ class DashboardController extends Controller
                         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                             ->where('draft', 0)
                             ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-                            ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
+                            ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
                     })
                     ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $value){
                         $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                             ->where('material_adjustment.id_gudang', $value->id_gudang)
-                            ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
+                            ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_awal)));
                     })
                     ->leftJoin('gudang_stok', function ($join){
                         $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
                     })
                     ->where(function ($query) use ($tgl_awal) {
-                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 15:00:00')));
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT2)));
                         $query->orWhere(function($query) use($tgl_awal){
-                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 15:00:00')));
-                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00')));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT2)));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . ' 23:00:00')));
                             $query->where('id_shift', 1);
                         });
                         $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
@@ -306,21 +304,21 @@ class DashboardController extends Controller
                         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                             ->where('draft', 0)
                             ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-                            ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
+                            ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
                     })
                     ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $value){
                         $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                             ->where('material_adjustment.id_gudang', $value->id_gudang)
-                            ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
+                            ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_awal)));
                     })
                     ->leftJoin('gudang_stok', function ($join){
                         $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
                     })
                     ->where(function ($query) use ($tgl_awal) {
-                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 15:00:00')));
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT2)));
                         $query->orWhere(function($query) use($tgl_awal){
-                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 15:00:00')));
-                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00')));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT2)));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . ' 23:00:00')));
                             $query->where('id_shift', 1);
                         });
                         $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
@@ -349,27 +347,26 @@ class DashboardController extends Controller
                         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                             ->where('draft', 0)
                             ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-                            ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
+                            ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
                     })
                     ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $value){
                         $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                             ->where('material_adjustment.id_gudang', $value->id_gudang)
-                            ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
+                            ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_awal)));
                     })
                     ->leftJoin('gudang_stok', function ($join){
                         $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
                     })
                     ->where(function ($query) use ($tgl_awal) {
-                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
                         $query->orWhere(function($query) use($tgl_awal){
-                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
-                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 00:30:00')));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . ' 00:30:00')));
                             $query->where('id_shift', 2);
                         });
-                        // $query->orWhere('material_adjustment.tanggal', '<=', date('Y-m-d', strtotime($tgl_awal . '-1 day')));
-                        $query->orWhere('material_adjustment.tanggal', '<=', date('Y-m-d', strtotime($tgl_awal . '-1 day')));
+                        $query->orWhere('material_adjustment.tanggal', '<=', date($this->FORMAT_DATE, strtotime($tgl_awal . $this->DECREMENT_DAY)));
                         $query->orWhere(function ($query) use ($tgl_awal) {
-                                $query->where('material_adjustment.tanggal', '=', date('Y-m-d', strtotime($tgl_awal . '-1 day')));
+                                $query->where('material_adjustment.tanggal', '=', date($this->FORMAT_DATE, strtotime($tgl_awal . $this->DECREMENT_DAY)));
                                 $query->where(function($query){
                                     $query->where('material_trans.shift_id', 2);
                                     $query->orWhere('material_trans.shift_id', 1);
@@ -391,26 +388,26 @@ class DashboardController extends Controller
                         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                             ->where('draft', 0)
                             ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-                            ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
+                            ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
                     })
                     ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $value){
                         $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                             ->where('material_adjustment.id_gudang', $value->id_gudang)
-                            ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
+                            ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_awal)));
                     })
                     ->leftJoin('gudang_stok', function ($join){
                         $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
                     })
                     ->where(function ($query) use ($tgl_awal) {
-                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
                         $query->orWhere(function($query) use($tgl_awal){
-                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
-                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 00:30:00')));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . ' 00:30:00')));
                             $query->where('id_shift', 2);
                         });
-                        $query->orWhere('material_adjustment.tanggal', '<=', date('Y-m-d', strtotime($tgl_awal . '-1 day')));
+                        $query->orWhere('material_adjustment.tanggal', '<=', date($this->FORMAT_DATE, strtotime($tgl_awal . $this->DECREMENT_DAY)));
                         $query->orWhere(function ($query) use ($tgl_awal) {
-                                $query->where('material_adjustment.tanggal', '=', date('Y-m-d', strtotime($tgl_awal . '-1 day')));
+                                $query->where('material_adjustment.tanggal', '=', date($this->FORMAT_DATE, strtotime($tgl_awal . $this->DECREMENT_DAY)));
                                 $query->where(function($query){
                                     $query->where('material_trans.shift_id', 2);
                                     $query->orWhere('material_trans.shift_id', 1);
@@ -447,7 +444,7 @@ class DashboardController extends Controller
                         ;
                     })
                     ->where(function($query) use($tgl_awal, $tgl_akhir, $shift){
-                        $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
+                        $query->whereBetween(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), [date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)), date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT3))]);
                         $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
                         $query->orWhere(function ($query) use ($tgl_awal, $tgl_akhir, $shift) {
                             $query->whereBetween('material_trans.tanggal', [$tgl_awal, $tgl_akhir]);
@@ -481,7 +478,7 @@ class DashboardController extends Controller
                         ;
                     })
                     ->where(function($query) use($tgl_awal, $tgl_akhir, $shift){
-                        $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
+                        $query->whereBetween(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), [date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)), date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT3))]);
                         $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
                         $query->orWhere(function ($query) use ($tgl_awal, $tgl_akhir, $shift) {
                             $query->whereBetween('material_trans.tanggal', [$tgl_awal, $tgl_akhir]);
@@ -514,7 +511,7 @@ class DashboardController extends Controller
 
         $this->responseCode = 200;
         $this->responseMessage = 'Data tersedia.';
-        $this->responseData = [$data, date('d/m/Y', strtotime($tgl_awal)), date('d/m/Y', strtotime($tgl_akhir.'-1 day'))];
+        $this->responseData = [$data, date('d/m/Y', strtotime($tgl_awal)), date('d/m/Y', strtotime($tgl_akhir.$this->DECREMENT_DAY))];
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
@@ -528,8 +525,8 @@ class DashboardController extends Controller
 
         $date = explode('-', $tanggal);
 
-        $tgl_awal = date('Y-m-d', strtotime($date[0]));
-        $tgl_akhir = date('Y-m-d', strtotime($date[1].'+1 day'));
+        $tgl_awal = date($this->FORMAT_DATE, strtotime($date[0]));
+        $tgl_akhir = date($this->FORMAT_DATE, strtotime($date[1].$this->INCREMENT_DAY));
 
         $data = [];
         $temp_tgl = $tgl_awal;
@@ -584,7 +581,7 @@ class DashboardController extends Controller
 
             array_push($data, $temp);
 
-            $temp_tgl = date('Y-m-d', strtotime($temp_tgl.'+1 day'));
+            $temp_tgl = date($this->FORMAT_DATE, strtotime($temp_tgl.$this->INCREMENT_DAY));
         } while ($temp_tgl != $tgl_akhir);
         
         $this->responseCode = 200;
@@ -603,8 +600,8 @@ class DashboardController extends Controller
 
         $date = explode('-', $tanggal);
 
-        $tgl_awal = date('Y-m-d', strtotime($date[0]));
-        $tgl_akhir = date('Y-m-d', strtotime($date[1].'+1 day'));
+        $tgl_awal = date($this->FORMAT_DATE, strtotime($date[0]));
+        $tgl_akhir = date($this->FORMAT_DATE, strtotime($date[1].$this->INCREMENT_DAY));
 
         $temp_tgl = $tgl_awal;
 
@@ -615,7 +612,7 @@ class DashboardController extends Controller
                 ->leftJoin('rencana_harian', 'rencana_harian.id', '=', 'realisasi.id_rencana')
                 ->where('id_gudang', $gudang)
                 ->where('id_shift', $shift)
-                ->where('rencana_harian.tanggal', date('Y-m-d', strtotime($temp_tgl.'-1 day')))
+                ->where('rencana_harian.tanggal', date($this->FORMAT_DATE, strtotime($temp_tgl.$this->DECREMENT_DAY)))
                 ->first()
                 ;
 
@@ -631,7 +628,7 @@ class DashboardController extends Controller
                     $query->orWhere('material_adjustment.id_gudang', $gudang);
                 })
                 ->where(function($query) use($temp_tgl){
-                    $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($temp_tgl.'-1 day')));
+                    $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date($this->FORMAT_DATE, strtotime($temp_tgl.$this->DECREMENT_DAY)));
                     $query->orWhere('material_adjustment.tanggal', $temp_tgl);
                 })
                 ->whereNotNull('butuh_tkbm')
@@ -674,7 +671,7 @@ class DashboardController extends Controller
 
             array_push($data, $temp);
 
-            $temp_tgl = date('Y-m-d', strtotime($temp_tgl.'+1 day'));
+            $temp_tgl = date($this->FORMAT_DATE, strtotime($temp_tgl.$this->INCREMENT_DAY));
         } while ($temp_tgl != $tgl_akhir);
 
         $this->responseCode = 200;
@@ -692,8 +689,8 @@ class DashboardController extends Controller
         $pilih_gudang     = request()->input('gudang');
 
         $date = explode('-', $tanggal);
-        $tgl_awal = date('Y-m-d', strtotime($date[0]));
-        $tgl_akhir = date('Y-m-d', strtotime($date[1].'+1 day'));
+        $tgl_awal = date($this->FORMAT_DATE, strtotime($date[0]));
+        $tgl_akhir = date($this->FORMAT_DATE, strtotime($date[1].$this->INCREMENT_DAY));
 
         $temp_tgl = $tgl_awal;
 
@@ -720,14 +717,14 @@ class DashboardController extends Controller
                         ;
                     })
                     ->where(function($query) use($temp_tgl){
-                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($temp_tgl)));
+                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date($this->FORMAT_DATE, strtotime($temp_tgl.$this->DECREMENT_DAY)));
                         $query->orWhere('material_adjustment.tanggal', $temp_tgl);
                     })
                     ->where('tipe', 2)
                     ->where('id_shift', $shift)
                     ->where('status_produk', 2)
                     ->sum('jumlah');
-                } else {
+                } else if ($shift == 2 || $shift == 1) {
                     $res = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($pilih_gudang){
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
@@ -740,7 +737,7 @@ class DashboardController extends Controller
                         ;
                     })
                     ->where(function($query) use($temp_tgl){
-                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($temp_tgl)));
+                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date($this->FORMAT_DATE, strtotime($temp_tgl)));
                         $query->orWhere('material_adjustment.tanggal', $temp_tgl);
                     })
                     ->where('tipe', 2)
@@ -765,14 +762,14 @@ class DashboardController extends Controller
                                 ;
                             })
                             ->where(function($query) use($temp_tgl){
-                                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($temp_tgl.'-1 day')));
+                                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date($this->FORMAT_DATE, strtotime($temp_tgl.$this->DECREMENT_DAY)));
                                 $query->orWhere('material_adjustment.tanggal', $temp_tgl);
                             })
                             ->where('tipe', 2)
                             ->where('id_shift', $shift)
                             ->where('status_produk', 2)
                             ->sum('jumlah');
-                    } else {
+                    } else if ($shift == 2 || $shift == 1) {
                         $res = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($value){
                             $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                                 ->where('draft', 0)
@@ -785,7 +782,7 @@ class DashboardController extends Controller
                                 ;
                             })
                             ->where(function($query) use($temp_tgl){
-                                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($temp_tgl.'-1 day')));
+                                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date($this->FORMAT_DATE, strtotime($temp_tgl)));
                                 $query->orWhere('material_adjustment.tanggal', $temp_tgl);
                             })
                             ->where('tipe', 2)
@@ -801,7 +798,7 @@ class DashboardController extends Controller
             
             array_push($data, $temp);
 
-            $temp_tgl = date('Y-m-d', strtotime($temp_tgl.'+1 day'));
+            $temp_tgl = date($this->FORMAT_DATE, strtotime($temp_tgl.$this->INCREMENT_DAY));
         } while ($temp_tgl != $tgl_akhir);
         
 
@@ -821,8 +818,8 @@ class DashboardController extends Controller
 
         $date = explode('-', $tanggal);
 
-        $tgl_awal   = date('Y-m-d', strtotime($date[0]));
-        $tgl_akhir  = date('Y-m-d', strtotime($date[1].'+1 day'));
+        $tgl_awal   = date($this->FORMAT_DATE, strtotime($date[0]));
+        $tgl_akhir  = date($this->FORMAT_DATE, strtotime($date[1].$this->INCREMENT_DAY));
 
         $temp_tgl = $tgl_awal;
 
@@ -850,14 +847,14 @@ class DashboardController extends Controller
                         $query->orWhere('material_adjustment.id_gudang', $pilih_gudang);
                     })
                     ->where(function($query) use($temp_tgl){
-                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($temp_tgl.'-1 day')));
+                        $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date($this->FORMAT_DATE, strtotime($temp_tgl.$this->DECREMENT_DAY)));
                         $query->orWhere('material_adjustment.tanggal', $temp_tgl);
                     })
                     ->whereNotNull('butuh_alat_berat')
                     ->where('id_shift', $shift)
                     ->sum('material_trans.jumlah')
                     ;
-                } else {
+                } else if ( $shift == 2 || $shift == 1) {
                     $angkut = MaterialTrans::leftJoin('aktivitas_harian', function($join){
                         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0);
@@ -895,14 +892,14 @@ class DashboardController extends Controller
                             $query->orWhere('material_adjustment.id_gudang', $key->id);
                         })
                         ->where(function($query) use($temp_tgl){
-                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($temp_tgl.'-1 day')));
+                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date($this->FORMAT_DATE, strtotime($temp_tgl.$this->DECREMENT_DAY)));
                             $query->orWhere('material_adjustment.tanggal', $temp_tgl);
                         })
                         ->whereNotNull('butuh_alat_berat')
                         ->where('id_shift', $shift)
                         ->sum('material_trans.jumlah')
                         ;
-                    } else {
+                    } else if ( $shift == 2 || $shift == 1) {
                         $angkut = MaterialTrans::leftJoin('aktivitas_harian', function($join){
                             $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                             ->where('draft', 0);
@@ -931,7 +928,7 @@ class DashboardController extends Controller
 
             array_push($data, $temp);
 
-            $temp_tgl = date('Y-m-d', strtotime($temp_tgl.'+1 day'));
+            $temp_tgl = date($this->FORMAT_DATE, strtotime($temp_tgl.$this->INCREMENT_DAY));
         } while ($temp_tgl != $tgl_akhir);
 
         $this->responseCode = 200;
@@ -959,8 +956,8 @@ class DashboardController extends Controller
         }
         if($tanggal != ""){
             $tgl = explode("-", $tanggal);
-            $tanggal_awal = date('Y-m-d',strtotime($tgl[0]));
-            $tanggal_akhir = date('Y-m-d',strtotime($tgl[1]));
+            $tanggal_awal = date($this->FORMAT_DATE,strtotime($tgl[0]));
+            $tanggal_akhir = date($this->FORMAT_DATE,strtotime($tgl[1]));
             $where1_2 .= " and date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
             $where3 .= " and date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
         }
@@ -1067,8 +1064,8 @@ class DashboardController extends Controller
         }
         if($tanggal != ""){
             $tgl = explode("-", $tanggal);
-            $tanggal_awal = date('Y-m-d',strtotime($tgl[0]));
-            $tanggal_akhir = date('Y-m-d',strtotime($tgl[1]));
+            $tanggal_awal = date($this->FORMAT_DATE,strtotime($tgl[0]));
+            $tanggal_akhir = date($this->FORMAT_DATE,strtotime($tgl[1]));
             $where1_2 .= " and date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
             $where3 .= " and date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
         }
