@@ -34,40 +34,17 @@
   background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
   background-repeat: no-repeat;
   background-size: 900px 400px; 
-  display: inline-block;
   position: relative; 
+  display: block!important;
+  width: 825px; 
+  height: 400px; 
+  margin-top: 15px;
   
   -webkit-animation-duration: 1s;
   -webkit-animation-fill-mode: forwards; 
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-name: placeholderShimmer;
   -webkit-animation-timing-function: linear;
-  }
-
-box {
-  height: 104px;
-  width: 100px;
-}
-
-/* div {
-  display: inline-flex;
-  flex-direction: column; 
-  margin-left: 25px;
-  margin-top: 15px;
-  vertical-align: top; 
-} */
-
-lines {
-  height: 10px;
-  margin-top: 10px;
-  width: 200px; 
-}
-
-photo {
-  display: block!important;
-  width: 825px; 
-  height: 400px; 
-  margin-top: 15px;
 }
 
 @-webkit-keyframes placeholderShimmer {
@@ -82,14 +59,13 @@ photo {
 
 
 </style>
-<photo id="loading" class="shine" style="display:none"></photo>
 <div class="row row-no-padding row-col-separator-xl" style="background:#fff">
     <div class="col-md-6 col-lg-6 col-xl-6 col-sm-6 col-xs-6 pointer nav---gation" onclick="location.href='{{url('/')}}';">
         <div class="kt-widget24">
             <div class="text-center">
                 <div class="text-center">
                     <a href="{{url('/')}}">
-                        <h4> <span><i class=""></i></span> Halaman Depan</h4>
+                        <h4> <span><em class=""></em></span> Halaman Depan</h4>
                     </a>
                 </div>
             </div>
@@ -100,7 +76,7 @@ photo {
             <div class="text-center">
                 <div class="text-center">
                     <a href="{{url('layout')}}">
-                        <h4><span><i class=""></i></span>Menu Utama</h4>
+                        <h4><span><em class=""></em></span>Menu Utama</h4>
                     </a>
                 </div>
 
@@ -156,7 +132,7 @@ photo {
                             </div>
                             <div class="form-group col-md-1">
                                 
-                            <button type="button" class="btn btn-danger btn-icon" id="reset" onclick="reset()"><i class="la la-refresh"></i></button>&nbsp;
+                            <button type="button" class="btn btn-danger btn-icon" id="reset" onclick="reset()"><em class="la la-refresh"></em></button>&nbsp;
                             </div>
                         </div>
                         <!--begin::Accordion-->
@@ -205,7 +181,7 @@ photo {
                                         <h4>Manajemen Kualitas Pemuatan Produk</h4>
                                     </div>
                                 </div>
-                                <div class="Acc2" onclick="hideAcc2()">
+                                <div class="Acc2">
                                     <div class="card-body">
                                     <div class="mt-4">
                                         <h5>Diagram Perbandingan Kapasitas Muat Buruh VS Realisasi Muat</h5>
@@ -327,7 +303,7 @@ function drawChartHandlingPerJenisProduk() {
             tanggal: tanggal
         },
         beforeSend:()=>{
-            $("#jenisproduk").html('<photo class="shine"></photo>');
+            $("#jenisproduk").html('<div class="shine"></div>');
         },
         success:function(res){
             var res = res.data;
@@ -340,8 +316,6 @@ function drawChartHandlingPerJenisProduk() {
                 }
             }
             data.addRows(res.rData);
-
-            console.log(res.cData);
 
             var options = {
                 // colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
@@ -389,7 +363,7 @@ function drawChartHandlingPerGudang() {
             tanggal: tanggal
         },
         beforeSend:()=>{
-            $("#gudang").html('<photo class="shine"></photo>');
+            $("#gudang").html('<div class="shine"></div>');
         },
         success:(res)=>{
             var res = res.data;
@@ -402,8 +376,6 @@ function drawChartHandlingPerGudang() {
                 }
             }
             data.addRows(res.rData);
-
-            console.log(res.cData);
 
             var options = {
                 // colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
@@ -448,7 +420,7 @@ function getTonaseProdukRusak() {
             tanggal: tanggal
         },
         beforeSend:()=>{
-            $("#produkrusak").html('<photo class="shine"></photo>');
+            $("#produkrusak").html('<div class="shine"></div>');
         },
         success:(res)=>{
             var data = new google.visualization.DataTable();
@@ -499,7 +471,7 @@ function getTonaseAlatBerat() {
             tanggal: tanggal
         },
         beforeSend:()=>{
-            $("#realisasipenggunaan").html('<photo class="shine"></photo>');
+            $("#realisasipenggunaan").html('<div class="shine"></div>');
         },
         success:(res)=>{
             var data = new google.visualization.DataTable();
@@ -579,7 +551,7 @@ function getProduksiPengeluaran() {
             tanggal: tanggal
         },
         beforeSend:()=>{
-            $("#produksipengeluaran").html('<photo class="shine"></photo>');
+            $("#produksipengeluaran").html('<div class="shine"></div>');
         },
         success:(res)=>{
             
@@ -661,7 +633,7 @@ function getPemuatanProduk() {
             tanggal: tanggal
         },
         beforeSend:()=>{
-            $("#muatan").html('<photo class="shine"></photo>');
+            $("#muatan").html('<div class="shine"></div>');
         },
         success:(res)=>{
             var data = new google.visualization.DataTable();
@@ -689,47 +661,6 @@ function getPemuatanProduk() {
 
         }
     })
-}
-</script>
-
-   <!-- chart-column -->
-<script>
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart() {
-
-    var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Periode');
-        data.addColumn('number', 'Gudang ZA');
-        data.addColumn('number', 'Gudang Urea 1A');
-        data.addColumn('number', 'Gudang PF 1');
-        data.addColumn('number', 'Gudang Phonska');
-        data.addColumn('number', 'Gudang Urea 1B');
-        data.addColumn('number', 'Gudang Multiguna');
-        data.addRows([
-        
-        [ '2020-02-02',  10,  10 ,  170 , 310,  480 , 630],
-        [ '2020-02-03',  170, 350,  500 , 300,  290 , 540],
-        [ '2020-02-04',  170,170 ,  300 , 400,  550 , 470],
-        [ '2020-02-05',  460, 10 ,  300 , 250,  620 , 290],
-        [ '2020-02-06',  720 , 650,  480 , 340,  590 , 310],
-        [ '2020-02-07',  290 , 670,  480 , 450,  390 , 450]
-        
-    
-    ]);
-
-
-    var options = {
-        colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
-        legend:{position: 'bottom', maxTextLines:4},
-        vAxis: { gridlines: { count: 5 } },
-        hAxis: { slantedText:true, slantedTextAngle:45 }
-    };
-
-    var chart = new google.visualization.ColumnChart(document.getElementById('realisasialatberat'));
-
-    chart.draw(data, options);
 }
 </script>
 
@@ -859,7 +790,7 @@ google.charts.load('current', {'packages':['corechart']});
                 tanggal: tanggal
             },
             beforeSend:()=>{
-                $("#stokpaletbulan").html('<photo class="shine"></photo>');
+                $("#stokpaletbulan").html('<div class="shine"></div>');
             },
             success:(res)=>{
                 // var dataArray = [
@@ -878,7 +809,6 @@ google.charts.load('current', {'packages':['corechart']});
                 data.addRows(res.data[0]);
 
                 // data.unshift(['Gudang', 'Pakai & Dasaran', 'Kosong ', 'Rusak', 'Total Stok']);
-                // console.log(data);
                 var options = {
                 
                 colors: ['#FFC201','#28DAC6','#FD7F0C','#00AF4C'],
@@ -1088,7 +1018,7 @@ function getKeluhanAlatBerat() {
             tanggal: tanggal
         },
         beforeSend:()=>{
-            $("#keluhanmuatan").html('<photo class="shine"></photo>');
+            $("#keluhanmuatan").html('<div class="shine"></div>');
         },
         success:(res)=>{
             var dataArray = res.data;
@@ -1143,7 +1073,7 @@ function getTotal(dataArray) {
     return total;
 }
 
-google.load('visualization', '1', {packages:['corechart'], callback: drawChart});
+google.load('visualization', '1', {packages:['corechart'], callback: getKeluhanAlatBerat});
 
 function filter() {
     getKeluhanAlatBerat();
@@ -1158,8 +1088,8 @@ function filter() {
 
 function reset(){
     console.log("moden")
-    $("#pilih_gudang").val(1);
-    $("#pilih_shift").val(1);
+    $("#pilih_gudang").prop('selectedIndex',1);
+    $("#pilih_shift").prop('selectedIndex',1);
     $('#kt_daterangepicker_2').daterangepicker({
         buttonClasses: ' btn',
         applyClass: 'btn-primary',
