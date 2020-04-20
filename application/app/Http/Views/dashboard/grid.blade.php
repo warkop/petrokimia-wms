@@ -57,6 +57,11 @@
   }
 }
 
+.center-horizontal-vertical {
+    margin-right: 60%;
+    left: 35%;
+    top: 40%;
+}
 
 </style>
 <div class="row row-no-padding row-col-separator-xl" style="background:#fff">
@@ -315,28 +320,43 @@ function drawChartHandlingPerJenisProduk() {
                     data.addColumn('number', res.cData[i]);
                 }
             }
-            data.addRows(res.rData);
+            console.log(res.rData)
+            if (res.rData.length < 1) {
+                $("#jenisproduk").html(`
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="alert alert-danger center-horizontal-vertical" role="alert" >
+                            <div class="alert-text"><strong>Data masih kosong!</strong></div>
+                        </div>`)
+            } else {
+                data.addRows(res.rData);
 
-            var options = {
-                // colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
-                legend:{position: 'bottom', maxTextLines:4},
-                vAxis: { gridlines: { count: 5 }, title:"TONASE PUPUK" ,titleTextStyle:{bold:true, italic:false} },
-                hAxis: { slantedText:true, slantedTextAngle:45, title:"PERIODE", titleTextStyle:{bold:true, italic:false}  },
-                pointSize: 3,
-                
-                chartArea: {
-                    bottom: 150
+                var options = {
+                    // colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
+                    legend:{position: 'bottom', maxTextLines:4},
+                    vAxis: { gridlines: { count: 5 }, title:"TONASE PUPUK" ,titleTextStyle:{bold:true, italic:false} },
+                    hAxis: { slantedText:true, slantedTextAngle:45, title:"PERIODE", titleTextStyle:{bold:true, italic:false}  },
+                    pointSize: 3,
                     
-                  },
-                
-            };
+                    chartArea: {
+                        bottom: 150
+                        
+                    },
+                    
+                };
 
-            var chart = new google.visualization.LineChart(document.getElementById('jenisproduk'));
+                var chart = new google.visualization.LineChart(document.getElementById('jenisproduk'));
 
-            chart.draw(data, options);
+                chart.draw(data, options);
+            }
+
+            
         },
         error:function(res){
-
+            $("#jenisproduk").html(`
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="alert alert-danger center-horizontal-vertical" role="alert" >
+                            <div class="alert-text"><strong>Tidak dapat memuat data!</strong></div>
+                        </div>`)
         }
     });
 }
@@ -375,28 +395,43 @@ function drawChartHandlingPerGudang() {
                     data.addColumn('number', res.cData[i]);
                 }
             }
-            data.addRows(res.rData);
 
-            var options = {
-                // colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
-                legend:{position: 'bottom', maxTextLines:4},
-                vAxis: { gridlines: { count: 5 }, title:"TONASE PUPUK" ,titleTextStyle:{bold:true, italic:false} },
-                hAxis: { slantedText:true, slantedTextAngle:45, title:"PERIODE", titleTextStyle:{bold:true, italic:false}  },
-                pointSize: 3,
-                
-                chartArea: {
-                    bottom: 150
+            if (res.rData.length < 1) {
+                $("#gudang").html(`
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="alert alert-danger center-horizontal-vertical" role="alert" >
+                            <div class="alert-text"><strong>Data masih kosong!</strong></div>
+                        </div>`)
+            } else {
+                data.addRows(res.rData);
+
+                var options = {
+                    // colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
+                    legend:{position: 'bottom', maxTextLines:4},
+                    vAxis: { gridlines: { count: 5 }, title:"TONASE PUPUK" ,titleTextStyle:{bold:true, italic:false} },
+                    hAxis: { slantedText:true, slantedTextAngle:45, title:"PERIODE", titleTextStyle:{bold:true, italic:false}  },
+                    pointSize: 3,
                     
-                  },
-                
-            };
+                    chartArea: {
+                        bottom: 150
+                        
+                    },
+                    
+                };
 
-            var chart = new google.visualization.LineChart(document.getElementById('gudang'));
+                var chart = new google.visualization.LineChart(document.getElementById('gudang'));
 
-            chart.draw(data, options);
+                chart.draw(data, options);
+            }
+
+            
         },
         error:function(res){
-
+            $("#gudang").html(`
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="alert alert-danger center-horizontal-vertical" role="alert" >
+                            <div class="alert-text"><strong>Tidak dapat memuat data!</strong></div>
+                        </div>`)
         }
     });
 }
@@ -447,7 +482,11 @@ function getTonaseProdukRusak() {
             chart.draw(data, options);
         },
         error:()=>{
-
+            $("#produkrusak").html(`
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="alert alert-danger center-horizontal-vertical" role="alert" >
+                            <div class="alert-text"><strong>Tidak dapat memuat data!</strong></div>
+                        </div>`)
         }
     })
 }
@@ -497,7 +536,11 @@ function getTonaseAlatBerat() {
             chart.draw(data, options);
         },
         error:()=>{
-
+            $("#realisasipenggunaan").html(`
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="alert alert-danger center-horizontal-vertical" role="alert" >
+                            <div class="alert-text"><strong>Tidak dapat memuat data!</strong></div>
+                        </div>`)
         }
     })
 }
@@ -576,7 +619,11 @@ function getProduksiPengeluaran() {
             chart.draw(data, options);
         },
         error:()=>{
-
+            $("#produksipengeluaran").html(`
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="alert alert-danger center-horizontal-vertical" role="alert" >
+                            <div class="alert-text"><strong>Tidak dapat memuat data!</strong></div>
+                        </div>`)
         }
     })
 }
@@ -658,7 +705,11 @@ function getPemuatanProduk() {
             chart.draw(data, options);
         },
         error:()=>{
-
+            $("#muatan").html(`
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="alert alert-danger center-horizontal-vertical" role="alert" >
+                            <div class="alert-text"><strong>Tidak dapat memuat data!</strong></div>
+                        </div>`)
         }
     })
 }
@@ -828,7 +879,11 @@ google.charts.load('current', {'packages':['corechart']});
                 chart.draw(data, options);
             },
             error:()=>{
-
+                $("#stokpaletbulan").html(`
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="alert alert-danger center-horizontal-vertical" role="alert" >
+                            <div class="alert-text"><strong>Tidak dapat memuat data!</strong></div>
+                        </div>`)
             }
         })
     }
@@ -1024,42 +1079,55 @@ function getKeluhanAlatBerat() {
             $("#keluhanmuatan").html('<div class="shine"></div>');
         },
         success:(res)=>{
-            var dataArray = res.data;
-            var total = getTotal(dataArray);
+            let dataArray = res.data;
 
-            // Adding tooltip column  
-            for (var i = 0; i < dataArray.length; i++) {
-                dataArray[i].push(customTooltip(dataArray[i][0], dataArray[i][1], total));
-            }
+            let total = getTotal(dataArray);
 
-            // Changing legend  
-            for (var i = 0; i < dataArray.length; i++) {
-                dataArray[i][0] =  dataArray[i][0]  +'  '+((dataArray[i][1] / total) * 100).toFixed(1) + '% (' +  dataArray[i][1] + ') '  ; 
-            }
+            if (total < 1) {
+                $("#keluhanmuatan").html(`
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="alert alert-danger center-horizontal-vertical" role="alert" >
+                            <div class="alert-text"><strong>Data masih kosong!</strong></div>
+                        </div>`)
+            } else {
+                // Adding tooltip column  
+                for (let i = 0; i < dataArray.length; i++) {
+                    dataArray[i].push(customTooltip(dataArray[i][0], dataArray[i][1], total));
+                }
 
-            // Column names
-            dataArray.unshift(['Goal Name', 'No. of times Requested', 'Tooltip']);
+                // Changing legend  
+                for (let i = 0; i < dataArray.length; i++) {
+                    dataArray[i][0] =  dataArray[i][0]  +'  '+((dataArray[i][1] / total) * 100).toFixed(1) + '% (' +  dataArray[i][1] + ') '  ; 
+                }
 
-            var data = google.visualization.arrayToDataTable(dataArray);
+                // Column names
+                dataArray.unshift(['Goal Name', 'No. of times Requested', 'Tooltip']);
 
-            // Setting role tooltip
-            data.setColumnProperty(2, 'role', 'tooltip');
-            data.setColumnProperty(2, 'html', true);
+                let data = google.visualization.arrayToDataTable(dataArray);
 
-            var options = {
-                //title: 'Most Requested Sponsors',
+                // Setting role tooltip
+                data.setColumnProperty(2, 'role', 'tooltip');
+                data.setColumnProperty(2, 'html', true);
+
+                let options = {
+                    //title: 'Most Requested Sponsors',
+                    
+                    height: 500,
+                    tooltip: { isHtml: true },
+                    colors: ['#0FA3BA','#FFC201','#5767DE','#FD367B','#FD7F0C','#007CFF','#00AF4C','#28DAC6'],
+                    pieSliceText: 'none'
+                };
                 
-                height: 500,
-                tooltip: { isHtml: true },
-                colors: ['#0FA3BA','#FFC201','#5767DE','#FD367B','#FD7F0C','#007CFF','#00AF4C','#28DAC6'],
-                pieSliceText: 'none'
-            };
-            
-            var chart = new google.visualization.PieChart(document.getElementById('keluhanmuatan'));
-            chart.draw(data, options);
+                let chart = new google.visualization.PieChart(document.getElementById('keluhanmuatan'));
+                chart.draw(data, options);
+            }
         },
         error:()=>{
-
+            $("#keluhanmuatan").html(`
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="alert alert-danger center-horizontal-vertical" role="alert" >
+                            <div class="alert-text"><strong>Tidak dapat memuat data!</strong></div>
+                        </div>`)
         }
     })
 }
