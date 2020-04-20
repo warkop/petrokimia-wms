@@ -111,7 +111,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 
-                            <select class="form-control input-enter m-select2" id="pilih_shift" name="param" >
+                            <select class="form-control input-enter" id="pilih_shift" name="param" >
                                 <option selected value="1">Shift 1</option>
                                 <option value="2">Shift 2</option>
                                 <option value="3">Shift 3</option>
@@ -120,7 +120,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 
-                            <select class="form-control input-enter m-select2" id="pilih_gudang" name="param" >
+                            <select class="form-control input-enter" id="pilih_gudang" name="param" >
                                 @foreach ($gudang as $key)
                                     <option value="{{$key->id}}">{{$key->nama}}</option>
                                 @endforeach
@@ -877,7 +877,10 @@ var KTBootstrapDaterangepicker = function () {
         $('#kt_daterangepicker_2').daterangepicker({
             buttonClasses: ' btn',
             applyClass: 'btn-primary',
-            cancelClass: 'btn-secondary'
+            cancelClass: 'btn-secondary',
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
         }, function(start, end, label) {
             $('#kt_daterangepicker_2 .form-control').val( start.format('YYYY-MM-DD') + ' / ' + end.format('YYYY-MM-DD'));
         });
@@ -1087,15 +1090,9 @@ function filter() {
 }
 
 function reset(){
-    console.log("moden")
-    $("#pilih_gudang").prop('selectedIndex',1);
-    $("#pilih_shift").prop('selectedIndex',1);
-    $('#kt_daterangepicker_2').daterangepicker({
-        buttonClasses: ' btn',
-        applyClass: 'btn-primary',
-        cancelClass: 'btn-secondary'
-    }, function(start, end, label) {
-        $('#kt_daterangepicker_2 .form-control').val( start.format('YYYY-MM-DD') + ' / ' + end.format('YYYY-MM-DD'));
-    });
+    const date = "{{date('d/m/Y')}} - {{date('d/m/Y')}}"
+    $("#pilih_gudang").val(1).trigger('change');
+    $("#pilih_shift").val(1).trigger('change');
+    $('#kt_daterangepicker_2').val(date);
 }
 </script>
