@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xml:lang="en">
 
 <head>
     <meta charset="utf-8" />
@@ -60,7 +60,6 @@
                                     <img src="{{ aset_extends('img/logo/logo_wms1.png')}}" alt="Warehouse Management System">
                                     <img src="{{ aset_extends('img/logo/logo_petro1.png')}}" alt="PT Petrokimia Gresik">
                             </span>
-                            <!-- <span> <p>Dinas Kebudayaan dan Pariwisata Kota Surabaya </p></span> -->
                         </div>
                         <div class="form-login">
                             <p class="title">
@@ -94,10 +93,10 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-12 col-sm-12">
-                                    <center>
+                                    <p style="text-align: center;">
                                         <p>©2019 &middot;<a href="#"> PT Petrokimia Gresik</a> &middot; All rights
                                             reserved</p>
-                                    </center>
+                                    </p>
                                 </div>
                             </div>
                         </div>

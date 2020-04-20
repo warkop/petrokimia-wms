@@ -343,7 +343,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					<!-- begin:: Footer -->
 					<div class="kt-footer kt-grid__item kt-grid kt-grid--desktop kt-grid--ver-desktop">
 						<div class="kt-footer__copyright">
-							2019&nbsp;&copy;&nbsp;<a href="https://petrokimia-gresik.com/" target="_blank" class="kt-link">Petrokimia Gresik</a>
+							2019&nbsp;&copy;&nbsp;<a href="https://petrokimia-gresik.com/" target="_blank" class="kt-link" rel="noopener noreferrer">Petrokimia Gresik</a>
 						</div>
 						<div class="kt-footer__menu">
 							<p class="font-navy">Aplikasi Warehouse Management System</p>

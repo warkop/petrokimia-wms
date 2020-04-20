@@ -20,12 +20,6 @@
     -webkit-animation-timing-function: linear;
 }
 
-lines {
-  height: 10px;
-  margin-top: 10px;
-  width: 200px; 
-}
-
 @-webkit-keyframes placeholderShimmer {
     0% {
         background-position: -468px 0;
