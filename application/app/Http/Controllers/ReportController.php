@@ -1538,7 +1538,8 @@ class ReportController extends Controller
                 $stokAkhir += $materialTrans;
                 $col++;
                 
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, helpCurrency(round($materialTrans, 3)));
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 3));
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadPemasukan . $row)->applyFromArray($style_no);
                 $abjadPemasukan++;
             }
@@ -3606,7 +3607,7 @@ class ReportController extends Controller
 
             $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($listProduk[$dArea->id_material], $row, round($dArea->total, 3)); //nama area
-            $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+            $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($listProduk[$dArea->id_material], $row)->getNumberFormat()->setFormatCode('#,##0.00');
 
             $abjadProduk++;
             $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
@@ -3631,7 +3632,7 @@ class ReportController extends Controller
         
         foreach ($produk as $key) {
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($listProduk[$key->id_material], $row, round($total_per_produk[$key->id_material], 3)); //jumlah produk
-            $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+            $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($listProduk[$key->id_material], $row)->getNumberFormat()->setFormatCode('#,##0.00');
         }
         $objSpreadsheet->getActiveSheet()->getStyle("B{$row}:{$abjadPemasukan}{$row}")->applyFromArray($style_title);
         
