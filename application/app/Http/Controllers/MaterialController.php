@@ -149,7 +149,5 @@ class MaterialController extends Controller
             $response = helpResponse($responseCode, $responseData, $responseMessage, $responseStatus);
             return response()->json($response, $responseCode);
         }
-
-        return response()->json($res, 200);
     }
 }
