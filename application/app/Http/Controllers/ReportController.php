@@ -356,15 +356,15 @@ class ReportController extends Controller
 
                     if ($kuantum == '') {
                         if ($key->tipe == 1) {
-                            $kuantum = '-' . $key->jumlah;
+                            $kuantum = '-' . round($key->jumlah, 3);
                         } else {
-                            $kuantum = $key->jumlah;
+                            $kuantum = round($key->jumlah, 3);
                         }
                     } else {
                         if ($key->tipe == 1) {
-                            $kuantum = $kuantum . ', ' . '-' . $key->jumlah;
+                            $kuantum = $kuantum . ', ' . '-' . round($key->jumlah, 3);
                         } else {
-                            $kuantum = $kuantum . ', ' . $key->jumlah;
+                            $kuantum = $kuantum . ', ' . round($key->jumlah, 3);
                         }
                     }
                 }
@@ -372,7 +372,7 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $temp);
 
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($kuantum, 3));
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $kuantum);
             $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
             $objSpreadsheet->getActiveSheet()->getStyle("H" . $row)->applyFromArray($style_no);
 
