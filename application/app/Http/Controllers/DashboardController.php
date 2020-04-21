@@ -78,12 +78,12 @@ class DashboardController extends Controller
 
     public function getKeluhanAlatBerat()
     {
-        $tanggal    = request()->input('tanggal')??date('d/m/Y').' - '.date('d/m/Y');
+        $tanggal    = request()->input('tanggal')??date('d-m-Y').'/'.date('d-m-Y');
         $shift      = request()->input('shift')??1;
         $gudang     = request()->input('gudang');
         $data = [];
 
-        $date = explode('-', $tanggal);
+        $date = explode('/', $tanggal);
 
         $queryShift = '';
         if ( $shift != null ) {
@@ -135,11 +135,11 @@ class DashboardController extends Controller
 
     public function getJumlahPallet()
     {
-        $tanggal    = request()->input('tanggal')??date('d/m/Y').' - '.date('d/m/Y');
+        $tanggal    = request()->input('tanggal')??date('d-m-Y').'/'.date('d-m-Y');
         $shift      = request()->input('shift')??1;
         $gudang     = request()->input('gudang');
 
-        $date = explode('-', $tanggal);
+        $date = explode('/', $tanggal);
 
         $tgl_awal = date($this->FORMAT_DATE, strtotime($date[0]));
         $tgl_akhir = date($this->FORMAT_DATE, strtotime($date[1].$this->INCREMENT_DAY));
@@ -519,12 +519,12 @@ class DashboardController extends Controller
 
     public function getProduksiPengeluaran()
     {
-        $tanggal    = request()->input('tanggal')??date('d/m/Y').' - '.date('d/m/Y');
+        $tanggal    = request()->input('tanggal')??date('d-m-Y').'/'.date('d-m-Y');
         $shift      = request()->input('shift')??1;
         $gudang     = request()->input('gudang');
 
-        $date = explode('-', $tanggal);
-
+        $date = explode('/', $tanggal);
+        
         $tgl_awal = date($this->FORMAT_DATE, strtotime($date[0]));
         $tgl_akhir = date($this->FORMAT_DATE, strtotime($date[1].$this->INCREMENT_DAY));
 
@@ -602,11 +602,11 @@ class DashboardController extends Controller
 
     public function getPemuatanProduk()
     {
-        $tanggal    = request()->input('tanggal')??date('d/m/Y').' - '.date('d/m/Y');
+        $tanggal    = request()->input('tanggal')??date('d-m-Y').'/'.date('d-m-Y');
         $shift      = request()->input('shift')??1;
         $gudang     = request()->input('gudang');
 
-        $date = explode('-', $tanggal);
+        $date = explode('/', $tanggal);
 
         $tgl_awal = date($this->FORMAT_DATE, strtotime($date[0]));
         $tgl_akhir = date($this->FORMAT_DATE, strtotime($date[1].$this->INCREMENT_DAY));
@@ -692,11 +692,11 @@ class DashboardController extends Controller
 
     public function getTonaseProdukRusak()
     {
-        $tanggal    = request()->input('tanggal')??date('d/m/Y').' - '.date('d/m/Y');
+        $tanggal    = request()->input('tanggal')??date('d-m-Y').'/'.date('d-m-Y');
         $shift      = request()->input('shift')??1;
         $pilih_gudang     = request()->input('gudang');
 
-        $date = explode('-', $tanggal);
+        $date = explode('/', $tanggal);
         $tgl_awal = date($this->FORMAT_DATE, strtotime($date[0]));
         $tgl_akhir = date($this->FORMAT_DATE, strtotime($date[1].$this->INCREMENT_DAY));
 
@@ -820,11 +820,11 @@ class DashboardController extends Controller
 
     public function getTonaseAlatBerat()
     {
-        $tanggal    = request()->input('tanggal')??date('d/m/Y').' - '.date('d/m/Y');
+        $tanggal    = request()->input('tanggal')??date('d-m-Y').'/'.date('d-m-Y');
         $shift      = request()->input('shift')??1;
         $pilih_gudang     = request()->input('gudang');
 
-        $date = explode('-', $tanggal);
+        $date = explode('/', $tanggal);
 
         $tgl_awal   = date($this->FORMAT_DATE, strtotime($date[0]));
         $tgl_akhir  = date($this->FORMAT_DATE, strtotime($date[1].$this->INCREMENT_DAY));
@@ -955,7 +955,7 @@ class DashboardController extends Controller
     public function handlingPerJenisProduk(Request $req){
         $shift = $req->get("shift")??1;
         $gudang = $req->get("gudang");
-        $tanggal = $req->get("tanggal")??date('d/m/Y').' - '.date('d/m/Y');
+        $tanggal = $req->get("tanggal")??date('d-m-Y').'/'.date('d-m-Y');
         $where1_2 = "where (id_shift = 1 or id_shift = 2) and mat.kategori = 1";
         if($shift != ""){
             $where3 = "where id_shift = {$shift} and mat.kategori = 1";
@@ -963,7 +963,7 @@ class DashboardController extends Controller
             $where3 = "where id_shift = 3 and mat.kategori = 1";
         }
         if($tanggal != ""){
-            $tgl = explode("-", $tanggal);
+            $tgl = explode("/", $tanggal);
             $tanggal_awal = date($this->FORMAT_DATE,strtotime($tgl[0]));
             $tanggal_akhir = date($this->FORMAT_DATE,strtotime($tgl[1]));
             $where1_2 .= " and date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
@@ -1063,7 +1063,7 @@ class DashboardController extends Controller
     public function handlingPerJenisGudang(Request $req){
         $shift = $req->get("shift")??1;
         $gudang = $req->get("gudang");
-        $tanggal = $req->get("tanggal")??date('d/m/Y').' - '.date('d/m/Y');
+        $tanggal = $req->get("tanggal")??date('d-m-Y').'/'.date('d-m-Y');
         $where1_2 = "where (id_shift = 1 or id_shift = 2) and mat.kategori = 1";
         if($shift != ""){
             $where3 = "where id_shift = {$shift} and mat.kategori = 1";
@@ -1071,7 +1071,7 @@ class DashboardController extends Controller
             $where3 = "where id_shift = 3 and mat.kategori = 1";
         }
         if($tanggal != ""){
-            $tgl = explode("-", $tanggal);
+            $tgl = explode("/", $tanggal);
             $tanggal_awal = date($this->FORMAT_DATE,strtotime($tgl[0]));
             $tanggal_akhir = date($this->FORMAT_DATE,strtotime($tgl[1]));
             $where1_2 .= " and date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
