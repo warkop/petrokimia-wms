@@ -538,7 +538,7 @@ class DashboardController extends Controller
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
             ->leftJoin('aktivitas', function($join) {
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                ->where('aktivitas.status_aktivitas', 1);
+                ;
             })
             ->whereNotNull('status_produk')
             ->where('tipe', 1)
@@ -554,6 +554,7 @@ class DashboardController extends Controller
                 $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $temp_tgl);
                 $query->orWhere('material_adjustment.tanggal', $temp_tgl);
             })
+            ->where('aktivitas.status_aktivitas', 1)
             ->sum('material_trans.jumlah')
             ;
     
@@ -564,7 +565,7 @@ class DashboardController extends Controller
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
             ->leftJoin('aktivitas', function($join) {
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                ->where('aktivitas.status_aktivitas', 2);
+                ;
             })
             ->whereNotNull('status_produk')
             ->where('tipe', 2)
@@ -576,6 +577,7 @@ class DashboardController extends Controller
                 $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $temp_tgl);
                 $query->orWhere('material_adjustment.tanggal', $temp_tgl);
             })
+            ->where('aktivitas.status_aktivitas', 2)
             ->where(function($query) use($shift) {
                 $query->where('aktivitas_harian.id_shift', $shift);
                 $query->orWhere('material_adjustment.shift', $shift);
