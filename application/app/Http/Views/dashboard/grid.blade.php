@@ -320,7 +320,7 @@ function drawChartHandlingPerJenisProduk() {
                     data.addColumn('number', res.cData[i]);
                 }
             }
-            console.log(res.rData)
+
             if (res.rData.length < 1) {
                 $("#jenisproduk").html(`
                         &nbsp;&nbsp;&nbsp;
