@@ -934,7 +934,8 @@ var KTBootstrapDaterangepicker = function () {
             applyClass: 'btn-primary',
             cancelClass: 'btn-secondary',
             locale: {
-                format: 'DD/MM/YYYY'
+                separator: " / ",
+                format: 'DD-MM-YYYY'
             }
         }, function(start, end, label) {
             $('#kt_daterangepicker_2 .form-control').val( start.format('YYYY-MM-DD') + ' / ' + end.format('YYYY-MM-DD'));
