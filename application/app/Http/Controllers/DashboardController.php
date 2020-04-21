@@ -548,7 +548,7 @@ class DashboardController extends Controller
             ->sum('material_trans.jumlah')
             ;
     
-            $transaksiMasuk = MaterialTrans::leftJoin('aktivitas_harians', function($join){
+            $transaksiMasuk = MaterialTrans::leftJoin('aktivitas_harian', function($join){
                 $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                 ;
             })
