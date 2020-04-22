@@ -125,7 +125,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 
-                            <select class="form-control input-enter" id="pilih_gudang" name="param" >
+                            <select class="form-control input-enter" id="pilih_gudang" name="gudang[]" multiple>
                                 @foreach ($gudang as $key)
                                     <option value="{{$key->id}}">{{$key->nama}}</option>
                                 @endforeach
@@ -896,7 +896,7 @@ var KTSelect2 = function() {
             placeholder: "Pilih Shift"
         });
         $('#pilih_gudang').select2({
-            placeholder: "Pilih Gudang"
+            placeholder: "Semua Gudang"
         });       
     }
 
