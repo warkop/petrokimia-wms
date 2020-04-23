@@ -118,17 +118,17 @@
 
 <script>
     $('#gudang').select2({
-        placeholder: "Pilih gudang penyangga"
+        placeholder: "Semua gudang penyangga"
     });
     $('#produk').select2({
         placeholder: "Pilih produk",
         allowClear: true
     });
     $('#keluhan').select2({
-        placeholder: "Pilih keluhan"
+        placeholder: "Semua keluhan"
     });
     $('#kegiatan').select2({
-        placeholder: "Pilih kegiatan"
+        placeholder: "Semua kegiatan"
     });
     $('#start_date, #end_date').datepicker({
         rtl: KTUtil.isRTL(),

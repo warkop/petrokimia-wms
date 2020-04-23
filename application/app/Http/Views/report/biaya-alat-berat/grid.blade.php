@@ -99,13 +99,13 @@
 
 <script>
     $('#gudang').select2({
-        placeholder: "Pilih gudang"
+        placeholder: "Semua gudang"
     });
     $('#aktivitas').select2({
-        placeholder: "Pilih aktivitas"
+        placeholder: "Semua aktivitas"
     });
     $('#jenis_alat_berat').select2({
-        placeholder: "Pilih jenis alat berat"
+        placeholder: "Semua jenis alat berat"
     });
     $('#start_date, #end_date').datepicker({
         rtl: KTUtil.isRTL(),

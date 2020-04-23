@@ -75,6 +75,9 @@
                     </div>
                 </div>
             </div>
+            @foreach ($errors->all() as $error)
+                <div class="alert alert-danger">{{ $error }}</div>
+            @endforeach
         </div>
         <div class="kt-portlet__foot">
             <div class="kt-form__actions">

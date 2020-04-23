@@ -89,10 +89,10 @@
 
 <script>
     $('#gudang').select2({
-        placeholder: "Pilih gudang"
+        placeholder: "Semua gudang"
     });
     $('#aktivitas').select2({
-        placeholder: "Pilih aktivitas",
+        placeholder: "Semua aktivitas",
     });
     $('#start_date, #end_date').datepicker({
         rtl: KTUtil.isRTL(),

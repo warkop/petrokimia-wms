@@ -101,6 +101,9 @@
                     </div>
                 </div>
             </div>
+            @foreach ($errors->all() as $error)
+                <div class="alert alert-danger">{{ $error }}</div>
+            @endforeach
         </div>
         <div class="kt-portlet__foot">
             <div class="kt-form__actions">
@@ -118,17 +121,17 @@
 
 <script>
     $('#gudang').select2({
-        placeholder: "Pilih gudang"
+        placeholder: "Semua gudang"
     });
     $('#produk').select2({
         placeholder: "Pilih produk",
         allowClear: true
     });
     $('#shift').select2({
-        placeholder: "Pilih shift"
+        placeholder: "Semua shift"
     });
     $('#kegiatan').select2({
-        placeholder: "Pilih kegiatan"
+        placeholder: "Semua kegiatan"
     });
     $('#start_date, #end_date').datepicker({
         rtl: KTUtil.isRTL(),

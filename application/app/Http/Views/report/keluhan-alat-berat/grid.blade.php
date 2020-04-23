@@ -69,7 +69,7 @@
 
 <script>
     $('#alatberat').select2({
-        placeholder: "Pilih alat berat"
+        placeholder: "Semua Alat Berat"
     });
     $('#start_date, #end_date').datepicker({
         rtl: KTUtil.isRTL(),
