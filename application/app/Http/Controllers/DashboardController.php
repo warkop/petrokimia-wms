@@ -14,14 +14,14 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    private string $AKTIVITAS_UPDATED_AT_FULLDATE = "TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')";
-    private string $FORMAT_FULLDATE = 'Y-m-d H:i:s';
-    private string $FORMAT_DATE = 'Y-m-d';
-    private string $START_SHIFT3 = ' 23:00:00 -1 day';
-    private string $START_SHIFT1 = ' 07:00:00';
-    private string $START_SHIFT2 = ' 15:00:00';
-    private string $INCREMENT_DAY = "+1 day";
-    private string $DECREMENT_DAY = "-1 day";
+    private $AKTIVITAS_UPDATED_AT_FULLDATE = "TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')";
+    private $FORMAT_FULLDATE = 'Y-m-d H:i:s';
+    private $FORMAT_DATE = 'Y-m-d';
+    private $START_SHIFT3 = ' 23:00:00 -1 day';
+    private $START_SHIFT1 = ' 07:00:00';
+    private $START_SHIFT2 = ' 15:00:00';
+    private $INCREMENT_DAY = "+1 day";
+    private $DECREMENT_DAY = "-1 day";
 
     public function index()
     {
@@ -930,25 +930,59 @@ class DashboardController extends Controller
         $shift = $req->get("shift")??[1,2,3];
         $gudang = $req->get("gudang");
         $tanggal = $req->get("tanggal")??date('d-m-Y').'/'.date('d-m-Y');
-        $where1_2 = "where (id_shift = 1 or id_shift = 2) and mat.kategori = 1";
+        $tgl = explode("/", $tanggal);
+        $tanggal_awal = date($this->FORMAT_DATE,strtotime($tgl[0]));
+        $tanggal_akhir = date($this->FORMAT_DATE,strtotime($tgl[1]));
+        $where1_2 = "where date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
+        $where3 = "where date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
+
         if($shift != ""){
-            $where3 = "where id_shift = {$shift} and mat.kategori = 1";
+            $where_shift1_2 = "";
+            for($i=0;$i < count($shift); $i++){
+                if($shift[$i] == 1 or $shift[$i] == 2){
+                    if($i == 0)
+                        $where_shift1_2 .= "id_shift = {$shift[$i]}";
+                    else
+                        $where_shift1_2 .= " or id_shift = {$shift[$i]}";
+                }
+            }
+            if($where_shift1_2 != ""){
+                $where1_2 .= " and ({$where_shift1_2})";
+            }
+            $where_shift3 = "";
+            for($i=0;$i < count($shift); $i++){
+                if($shift[$i] == 3){
+                    $where_shift3 .= "id_shift = {$shift[$i]}";
+                }
+            }
+            if($where_shift3 != ""){
+                $where3 .= " and ({$where_shift3})";
+            }
         } else {
-            $where3 = "where id_shift = 3 and mat.kategori = 1";
-        }
-        if($tanggal != ""){
-            $tgl = explode("/", $tanggal);
-            $tanggal_awal = date($this->FORMAT_DATE,strtotime($tgl[0]));
-            $tanggal_akhir = date($this->FORMAT_DATE,strtotime($tgl[1]));
-            $where1_2 .= " and date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
-            $where3 .= " and date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
+            $where1_2 .= " and (id_shift = 1 or id_shift = 2) and mat.kategori = 1";
+            $where3 .= " and id_shift = 3 and mat.kategori = 1";
         }
         if($gudang != ""){
-            $where1_2 .= " and id_gudang = {$gudang}";
-            $where3 .= " and id_gudang = {$gudang}";
+            $where1_2 .= " and (";
+            for($i=0;$i < count($gudang); $i++){
+                if($i == 0)
+                    $where1_2 .= "id_gudang = {$gudang[$i]}";
+                else
+                    $where1_2 .= " or id_gudang = {$gudang[$i]}";
+            }
+            $where1_2 .= ")";
+
+            $where3 .= " and (";
+            for($i=0;$i < count($gudang); $i++){
+                if($i == 0)
+                    $where3 .= "id_gudang = {$gudang[$i]}";
+                else
+                    $where3 .= "or id_gudang = {$gudang[$i]}";
+            }
+            $where3 .= ")";
         }
 
-        if($shift == ""){
+        if($where_shift1_2 != "" and $where_shift3 != ""){
             $v_handling_per_jenis_produk = "SELECT trans.id_material, date(akt.created_at) as tgl_akt, akt.id_shift, trans.jumlah, akt.id_shift
                                 FROM public.material_trans trans
                                 join aktivitas_harian akt on akt.id = trans.id_aktivitas_harian 
@@ -1038,25 +1072,59 @@ class DashboardController extends Controller
         $shift = $req->get("shift")??[1,2,3];
         $gudang = $req->get("gudang");
         $tanggal = $req->get("tanggal")??date('d-m-Y').'/'.date('d-m-Y');
-        $where1_2 = "where (id_shift = 1 or id_shift = 2) and mat.kategori = 1";
+        $tgl = explode("/", $tanggal);
+        $tanggal_awal = date($this->FORMAT_DATE,strtotime($tgl[0]));
+        $tanggal_akhir = date($this->FORMAT_DATE,strtotime($tgl[1]));
+        $where1_2 = "where date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
+        $where3 = "where date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
+
         if($shift != ""){
-            $where3 = "where id_shift = {$shift} and mat.kategori = 1";
+            $where_shift1_2 = "";
+            for($i=0;$i < count($shift); $i++){
+                if($shift[$i] == 1 or $shift[$i] == 2){
+                    if($i == 0)
+                        $where_shift1_2 .= "id_shift = {$shift[$i]}";
+                    else
+                        $where_shift1_2 .= " or id_shift = {$shift[$i]}";
+                }
+            }
+            if($where_shift1_2 != ""){
+                $where1_2 .= " and ({$where_shift1_2})";
+            }
+            $where_shift3 = "";
+            for($i=0;$i < count($shift); $i++){
+                if($shift[$i] == 3){
+                    $where_shift3 .= "id_shift = {$shift[$i]}";
+                }
+            }
+            if($where_shift3 != ""){
+                $where3 .= " and ({$where_shift3})";
+            }
         } else {
-            $where3 = "where id_shift = 3 and mat.kategori = 1";
-        }
-        if($tanggal != ""){
-            $tgl = explode("/", $tanggal);
-            $tanggal_awal = date($this->FORMAT_DATE,strtotime($tgl[0]));
-            $tanggal_akhir = date($this->FORMAT_DATE,strtotime($tgl[1]));
-            $where1_2 .= " and date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
-            $where3 .= " and date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
+            $where1_2 .= " and (id_shift = 1 or id_shift = 2) and mat.kategori = 1";
+            $where3 .= " and id_shift = 3 and mat.kategori = 1";
         }
         if($gudang != ""){
-            $where1_2 .= " and id_gudang = {$gudang}";
-            $where3 .= " and id_gudang = {$gudang}";
+            $where1_2 .= " and (";
+            for($i=0;$i < count($gudang); $i++){
+                if($i == 0)
+                    $where1_2 .= "id_gudang = {$gudang[$i]}";
+                else
+                    $where1_2 .= " or id_gudang = {$gudang[$i]}";
+            }
+            $where1_2 .= ")";
+
+            $where3 .= " and (";
+            for($i=0;$i < count($gudang); $i++){
+                if($i == 0)
+                    $where3 .= "id_gudang = {$gudang[$i]}";
+                else
+                    $where3 .= "or id_gudang = {$gudang[$i]}";
+            }
+            $where3 .= ")";
         }
 
-        if($shift == ""){
+        if($where_shift1_2 != "" and $where_shift3 != ""){
             $v_handling_per_gudang = "SELECT trans.id_material, akt.id_gudang, date(akt.created_at) as tgl_akt, 
                                 akt.id_shift, trans.jumlah, akt.id_shift
                                 FROM public.material_trans trans

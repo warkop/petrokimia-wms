@@ -110,34 +110,38 @@
                     </div>
                     <div class="kt-portlet__body">
                         <div class=" row" style="margin-bottom:3rem">
-                            <div class="form-group col-md-3">
-                            <input type="text" class="form-control" id="kt_daterangepicker_2" readonly placeholder="Pilih Periode" type="text" />
-                            
-                            </div>
-                            <div class="form-group col-md-3">
-                                
-                            <select class="form-control input-enter" id="pilih_shift" name="shift[]" multiple>
-                                <option selected value="1">Shift 1</option>
-                                <option value="2">Shift 2</option>
-                                <option value="3">Shift 3</option>
-
-                            </select>
-                            </div>
-                            <div class="form-group col-md-3">
-                                
-                            <select class="form-control input-enter" id="pilih_gudang" name="gudang[]" multiple>
-                                @foreach ($gudang as $key)
-                                    <option value="{{$key->id}}">{{$key->nama}}</option>
-                                @endforeach
-                            </select>
+                            <div class="form-group col-md-2">
+                                <label>Tanggal Awal</label>
+                                <input type="text" class="form-control" id="kt_datepicker_1" readonly placeholder="Pilih Periode" type="text" />
                             </div>
                             <div class="form-group col-md-2">
-                                
-                            <button type="button" class="btn btn-primary" style="width:100%" onclick="filter()">Filter</button>
+                                <label>Tanggal Akhir</label>
+                                <input type="text" class="form-control" id="kt_datepicker_2" readonly placeholder="Pilih Periode" type="text" />
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label>Shift</label>
+                                <select class="form-control input-enter" id="pilih_shift" name="shift[]" multiple>
+                                    <option selected value="1">Shift 1</option>
+                                    <option value="2">Shift 2</option>
+                                    <option value="3">Shift 3</option>
+
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Gudang</label>
+                                <select class="form-control input-enter" id="pilih_gudang" name="gudang[]" multiple>
+                                    @foreach ($gudang as $key)
+                                        <option value="{{$key->id}}">{{$key->nama}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group col-md-1">
-                                
-                            <button type="button" class="btn btn-danger btn-icon" id="reset" onclick="reset()"><em class="la la-refresh"></em></button>&nbsp;
+                                <label>&nbsp;</label>
+                                <button type="button" class="btn btn-primary" style="width:100%" onclick="filter()"><em class="la la-filter"> Filter</em></button>
+                            </div>
+                            <div class="form-group col-md-1">
+                                <label>&nbsp;</label>
+                                <button type="button" class="btn btn-danger" style="width:100%" onclick="reset()"><em class="la la-refresh"></em> Reset</button>
                             </div>
                         </div>
                         <!--begin::Accordion-->
@@ -253,6 +257,23 @@
 <script src="{{('assets/extends/js/page/dashboard.js')}}" defer></script>
 
 <script>
+// Initialization
+jQuery(document).ready(function() {
+    KTSelect2.init();
+    reset();
+});
+
+
+
+jQuery(document).ready(function() {
+    $('#kt_datepicker_1').datepicker({
+        format: 'dd-mm-yyyy'
+    });
+    $('#kt_datepicker_2').datepicker({
+        format: 'dd-mm-yyyy'
+    });
+});
+
 $(function() {
     // dataTableKondisiPalet();
     toggle();
@@ -295,7 +316,7 @@ google.charts.setOnLoadCallback(drawChartHandlingPerJenisProduk);
 function drawChartHandlingPerJenisProduk() {
     const shift = $("#pilih_shift").val();
     const gudang = $("#pilih_gudang").val();
-    const tanggal = $("#kt_daterangepicker_2").val();
+    const tanggal = $("#kt_datepicker_1").val() + " / " + $("#kt_datepicker_2").val();
     $.ajax({
         url:baseUrl + 'dashboard/get-handling-per-jenis-produk',
         method:'POST',
@@ -370,7 +391,7 @@ google.charts.setOnLoadCallback(drawChartHandlingPerGudang);
 function drawChartHandlingPerGudang() {
     const shift = $("#pilih_shift").val();
     const gudang = $("#pilih_gudang").val();
-    const tanggal = $("#kt_daterangepicker_2").val();
+    const tanggal = $("#kt_datepicker_1").val() + " / " + $("#kt_datepicker_2").val();
     $.ajax({
         url:baseUrl + 'dashboard/get-handling-per-gudang',
         method:'POST',
@@ -445,7 +466,7 @@ google.charts.setOnLoadCallback(getTonaseProdukRusak);
 function getTonaseProdukRusak() {
     const shift = $("#pilih_shift").val();
     const gudang = $("#pilih_gudang").val();
-    const tanggal = $("#kt_daterangepicker_2").val();
+    const tanggal = $("#kt_datepicker_1").val() + " / " + $("#kt_datepicker_2").val();
     $.ajax({
         url:baseUrl+"dashboard/get-tonase-produk-rusak",
         method:"GET",
@@ -500,7 +521,7 @@ google.charts.setOnLoadCallback(getTonaseAlatBerat);
 function getTonaseAlatBerat() {
     const shift = $("#pilih_shift").val();
     const gudang = $("#pilih_gudang").val();
-    const tanggal = $("#kt_daterangepicker_2").val();
+    const tanggal = $("#kt_datepicker_1").val() + " / " + $("#kt_datepicker_2").val();
     $.ajax({
         url:baseUrl+"dashboard/get-tonase-alat-berat",
         method:"GET",
@@ -583,7 +604,7 @@ function getProduksiPengeluaran() {
 
     const shift = $("#pilih_shift").val();
     const gudang = $("#pilih_gudang").val();
-    const tanggal = $("#kt_daterangepicker_2").val();
+    const tanggal = $("#kt_datepicker_1").val() + " / " + $("#kt_datepicker_2").val();
 
     $.ajax({
         url:baseUrl+"dashboard/get-produksi-pengeluaran",
@@ -669,7 +690,7 @@ function getPemuatanProduk() {
     // chart.draw(data, options);
     const shift = $("#pilih_shift").val();
     const gudang = $("#pilih_gudang").val();
-    const tanggal = $("#kt_daterangepicker_2").val();
+    const tanggal = $("#kt_datepicker_1").val() + " / " + $("#kt_datepicker_2").val();
     
     $.ajax({
         url:baseUrl+"dashboard/get-pemuatan-produk",
@@ -757,7 +778,7 @@ google.charts.load('current', {'packages':['corechart']});
 
 //     const shift = $("#pilih_shift").val();
 //     const gudang = $("#pilih_gudang").val();
-//     const tanggal = $("#kt_daterangepicker_2").val();
+//     const tanggal = $("#kt_datepicker_1").val() + " / " + $("#kt_datepicker_2").val();
 
 //     $.ajax({
 //         url:baseUrl+"dashboard/get-keluhan-alat-berat",
@@ -830,7 +851,7 @@ google.charts.load('current', {'packages':['corechart']});
 
         const shift = $("#pilih_shift").val();
         const gudang = $("#pilih_gudang").val();
-        const tanggal = $("#kt_daterangepicker_2").val();
+        const tanggal = $("#kt_datepicker_1").val() + " / " + $("#kt_datepicker_2").val();
 
         $.ajax({
             url:baseUrl+"dashboard/get-jumlah-pallet",
@@ -911,49 +932,7 @@ var KTSelect2 = function() {
     };
 }();
 
-// Initialization
-jQuery(document).ready(function() {
-    KTSelect2.init();
-});
 
-
-// Class definition
-
-var KTBootstrapDaterangepicker = function () {
-    
-    // Private functions
-    var demos = function () {
-        // minimum setup
-        // $('#kt_daterangepicker_1').daterangepicker({
-        //     buttonClasses: ' btn',
-        //     applyClass: 'btn-primary',
-        //     cancelClass: 'btn-secondary'
-        // });
-        $('#kt_daterangepicker_2').daterangepicker({
-            buttonClasses: ' btn',
-            applyClass: 'btn-primary',
-            cancelClass: 'btn-secondary',
-            locale: {
-                separator: " / ",
-                format: 'DD-MM-YYYY'
-            }
-        }, function(start, end, label) {
-            $('#kt_daterangepicker_2 .form-control').val( start.format('YYYY-MM-DD') + ' / ' + end.format('YYYY-MM-DD'));
-        });
-
-    }
-    return {
-        // public functions
-        init: function() {
-            demos(); 
-            
-        }
-    };
-}();
-
-jQuery(document).ready(function() {
-    KTBootstrapDaterangepicker.init();
-});
 
 function showAcc1(){
    $('.Acc1').toggle();
@@ -977,7 +956,7 @@ function showAcc4(){
 // function getProduksiPengeluaran() {
 //     const shift = $("#pilih_shift").val();
 //     const gudang = $("#pilih_gudang").val();
-//     const tanggal = $("#kt_daterangepicker_2").val();
+//     const tanggal = $("#kt_datepicker_1").val() + " / " + $("#kt_datepicker_2").val();
 
     
 
@@ -1066,7 +1045,7 @@ function getKeluhanAlatBerat() {
 
     const shift = $("#pilih_shift").val();
     const gudang = $("#pilih_gudang").val();
-    const tanggal = $("#kt_daterangepicker_2").val();
+    const tanggal = $("#kt_datepicker_1").val() + " / " + $("#kt_datepicker_2").val();
 
     $.ajax({
         url:baseUrl+"dashboard/get-keluhan-alat-berat",
@@ -1159,9 +1138,10 @@ function filter() {
 }
 
 function reset(){
-    const date = "{{date('d/m/Y')}} - {{date('d/m/Y')}}"
-    $("#pilih_gudang").val(1).trigger('change');
-    $("#pilih_shift").val(1).trigger('change');
-    $('#kt_daterangepicker_2').val(date);
+    const date = "{{date('d-m-Y')}}"
+    $("#pilih_gudang").val("").trigger('change');
+    $("#pilih_shift").val("").trigger('change');
+    $('#kt_datepicker_1').val(date);
+    $('#kt_datepicker_2').val(date);
 }
 </script>
