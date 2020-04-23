@@ -31,8 +31,9 @@ use PhpOffice\PhpSpreadsheet\Worksheet\IOFactory;
 
 class ReportController extends Controller
 {
+    //untuk memperoleh informasi checker ini sekarang berada di gudang mana
     private function getCheckerGudang($id_role)
-    { //untuk memperoleh informasi checker ini sekarang berada di gudang mana
+    { 
         if ($id_role == 3) {
             $rencana_tkbm = RencanaTkbm::leftJoin('rencana_harian', 'id_rencana', '=', 'rencana_harian.id')
                 ->where('id_tkbm', auth()->user()->id_tkbm)
@@ -75,6 +76,25 @@ class ReportController extends Controller
 
     public function aktivitasHarian()
     {
+        $validator = Validator::make(
+            request()->all(),[
+            'tgl_awal' => 'required|before_or_equal:tgl_akhir',
+            'tgl_akhir' => 'required|after_or_equal:tgl_awal',
+        ],[
+            'required' => ':attribute wajib diisi!',
+            'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
+            'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
+        ],[
+            'tgl_awal' => 'Tanggal Awal',
+            'tgl_akhir' => 'Tanggal Akhir',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('report/laporan-aktivitas')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $aktivitas  = request()->aktivitas;
         $shift      = request()->shift;
         $gudang     = request()->gudang;
@@ -557,14 +577,15 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y H:i:s', strtotime($value->created_at)));
-            // $col++;
-            // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '');
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->alatBerat->kategori->nama);
+            $objSpreadsheet->getActiveSheet()->getStyle('C'.$row)->applyFromArray($style_no);
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, (!empty($value->gudang))?$value->gudang->nama:'-');
+            $objSpreadsheet->getActiveSheet()->getStyle('D'.$row)->applyFromArray($style_no);
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->kerusakan->nama);
+            $objSpreadsheet->getActiveSheet()->getStyle('E'.$row)->applyFromArray($style_no);
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->alatBerat->nomor_lambung);
             $objSpreadsheet->getActiveSheet()->getStyle('F'.$row)->applyFromArray($style_no);
@@ -771,6 +792,10 @@ class ReportController extends Controller
         $row = 1;
 
         $abjadTitle = 'D';
+        foreach ($gudang as $key) {
+            $abjadTitle++;
+        }
+
         foreach ($gudang as $key) {
             $abjadTitle++;
         }
@@ -1623,7 +1648,6 @@ class ReportController extends Controller
     {
         $validator = Validator::make(
             request()->all(),[
-            'gudang' => 'required',
             'tgl_awal' => 'required|before_or_equal:tgl_akhir',
             'tgl_akhir' => 'required|after_or_equal:tgl_awal',
         ],[
@@ -2415,6 +2439,25 @@ class ReportController extends Controller
 
     public function realisasi()
     {
+        $validator = Validator::make(
+            request()->all(),[
+            'tgl_awal' => 'required|before_or_equal:tgl_akhir',
+            'tgl_akhir' => 'required|after_or_equal:tgl_awal',
+        ],[
+            'required' => ':attribute wajib diisi!',
+            'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
+            'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
+        ],[
+            'tgl_awal' => 'Tanggal Awal',
+            'tgl_akhir' => 'Tanggal Akhir',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('report/laporan-realisasi')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $gudang             = request()->input('gudang'); //multi
         $produk             = request()->input('produk');
         $pilih_produk       = request()->input('pilih_produk'); //multi
@@ -2987,7 +3030,6 @@ class ReportController extends Controller
     {
         $validator = Validator::make(
             request()->all(),[
-            'gudang' => 'required',
             'tgl_awal' => 'required|before_or_equal:tgl_akhir',
             'tgl_akhir' => 'required|after_or_equal:tgl_awal',
         ],[
@@ -3153,17 +3195,17 @@ class ReportController extends Controller
         $objSpreadsheet->createSheet($sheetIndex);
         $objSpreadsheet->setActiveSheetIndex($sheetIndex);
         // start : title
-        $col = 3;
+        $col = 1;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':F' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Transaksi Material');
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
         $row++;
-        $objSpreadsheet->getActiveSheet()->mergeCells('C' . $row . ':D' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':F' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Peridode: '.date('d/m/Y', strtotime($tgl_awal)).' - ' . date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
-        $objSpreadsheet->getActiveSheet()->getStyle("C" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
         $col = 1;
         $row++;
