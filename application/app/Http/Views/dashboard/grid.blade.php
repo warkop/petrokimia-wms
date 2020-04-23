@@ -111,33 +111,37 @@
                     <div class="kt-portlet__body">
                         <div class=" row" style="margin-bottom:3rem">
                             <div class="form-group col-md-2">
+                                <label>Tanggal Awal</label>
                                 <input type="text" class="form-control" id="kt_datepicker_1" readonly placeholder="Pilih Periode" type="text" />
                             </div>
                             <div class="form-group col-md-2">
+                                <label>Tanggal Akhir</label>
                                 <input type="text" class="form-control" id="kt_datepicker_2" readonly placeholder="Pilih Periode" type="text" />
                             </div>
                             <div class="form-group col-md-2">
-                                
-                            <select class="form-control input-enter" id="pilih_shift" name="shift[]" multiple>
-                                <option selected value="1">Shift 1</option>
-                                <option value="2">Shift 2</option>
-                                <option value="3">Shift 3</option>
+                                <label>Shift</label>
+                                <select class="form-control input-enter" id="pilih_shift" name="shift[]" multiple>
+                                    <option selected value="1">Shift 1</option>
+                                    <option value="2">Shift 2</option>
+                                    <option value="3">Shift 3</option>
 
-                            </select>
+                                </select>
                             </div>
                             <div class="form-group col-md-4">
-                                
-                            <select class="form-control input-enter" id="pilih_gudang" name="gudang[]" multiple>
-                                @foreach ($gudang as $key)
-                                    <option value="{{$key->id}}">{{$key->nama}}</option>
-                                @endforeach
-                            </select>
+                                <label>Gudang</label>
+                                <select class="form-control input-enter" id="pilih_gudang" name="gudang[]" multiple>
+                                    @foreach ($gudang as $key)
+                                        <option value="{{$key->id}}">{{$key->nama}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group col-md-1">
-                                <button type="button" class="btn btn-primary" style="width:100%" onclick="filter()">Filter</button>
+                                <label>&nbsp;</label>
+                                <button type="button" class="btn btn-primary" style="width:100%" onclick="filter()"><em class="la la-filter"> Filter</em></button>
                             </div>
                             <div class="form-group col-md-1">
-                                <button type="button" class="btn btn-danger btn-icon" id="reset" onclick="reset()"><em class="la la-refresh"></em></button>&nbsp;
+                                <label>&nbsp;</label>
+                                <button type="button" class="btn btn-danger" style="width:100%" onclick="reset()"><em class="la la-refresh"></em> Reset</button>
                             </div>
                         </div>
                         <!--begin::Accordion-->
