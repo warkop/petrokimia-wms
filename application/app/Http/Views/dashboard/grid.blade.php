@@ -116,7 +116,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 
-                            <select class="form-control input-enter" id="pilih_shift" name="param" >
+                            <select class="form-control input-enter" id="pilih_shift" name="shift[]" multiple>
                                 <option selected value="1">Shift 1</option>
                                 <option value="2">Shift 2</option>
                                 <option value="3">Shift 3</option>
@@ -467,7 +467,7 @@ function getTonaseProdukRusak() {
             data.addRows(res.data[0]);
 
             var options = {
-                colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
+                // colors: ['#FD7F0C','#FFC201','#38DCCA','#007CFF','#00AF4C','#5767DE'],
                 legend:{position: 'bottom', maxTextLines:4},
                 vAxis: { gridlines: { count: 5 }, title:"PERIODE", titleTextStyle:{bold:true, italic:false} },
                 hAxis: {  title:"TONASE", titleTextStyle:{bold:true, italic:false} },
@@ -893,7 +893,7 @@ var KTSelect2 = function() {
     var demos = function() {
         // basic
         $('#pilih_shift').select2({
-            placeholder: "Pilih Shift"
+            placeholder: "Semua Shift"
         });
         $('#pilih_gudang').select2({
             placeholder: "Semua Gudang"
