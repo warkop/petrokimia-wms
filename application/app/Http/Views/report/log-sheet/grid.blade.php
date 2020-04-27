@@ -5,7 +5,7 @@
 @section('content')
 
 <script>
-    document.getElementById('report-laporan-stok-nav').classList.add('kt-menu__item--active');
+    document.getElementById('report-log-sheet-nav').classList.add('kt-menu__item--active');
 </script>
 
 
