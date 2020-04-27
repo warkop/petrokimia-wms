@@ -271,6 +271,7 @@ class DashboardController extends Controller
                                 $query->whereNull('material_trans.id_adjustment');
                             });
                         })
+                        ->where('gudang_stok.id_gudang', $gudang->id_gudang)
                         ->where('tipe', 1)
                         ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
                         ->sum('material_trans.jumlah');
