@@ -1817,6 +1817,8 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
 
         $abjadTitle = 'E';
+        
+        //start : incremental alphabet for adjustment horizontal center
         foreach ($gudang as $key) {
             $abjadTitle++;
         }
@@ -1834,6 +1836,13 @@ class ReportController extends Controller
         $abjadTitle++;
         $abjadTitle++;
         $abjadTitle++;
+        $abjadTitle++;
+        $abjadTitle++;
+        $abjadTitle++;
+        $abjadTitle++;
+        $abjadTitle++;
+        $abjadTitle++;
+        //end : incremental alphabet for adjustment horizontal center
 
         $col = 1;
         $row = 1;
@@ -1887,6 +1896,7 @@ class ReportController extends Controller
         $abjadPemasukan = $abjadOri;
         $i = 0;
         $row = 6;
+        //start : set nama gudang untuk pemasukan
         foreach ($gudang as $key) {
             $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $key->nama);
@@ -1894,11 +1904,11 @@ class ReportController extends Controller
             $col++;
             $abjadPemasukan++;
         }
+        //end : set nama gudang untuk pemasukan
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total'); //total pemasukan
         $row = 5;
         $abjadPemasukan--;
         $col++;
-        // $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadPemasukan . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Pengeluaran');
 
@@ -1906,6 +1916,7 @@ class ReportController extends Controller
         $i = 0;
         $row = 6;
         $abjadPengeluaran = $abjadPemasukan;
+        //start : nama gudang untuk pengeluaran
         foreach ($gudang as $key) {
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $key->nama);
             $i++;
@@ -1913,6 +1924,7 @@ class ReportController extends Controller
             $abjadPengeluaran++;
             $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
         }
+         //end : nama gudang untuk pengeluaran
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total'); //total pengeluaran
         $col++;
         $abjadPengeluaran++;
@@ -1924,6 +1936,7 @@ class ReportController extends Controller
         $row = 6;
         $abjadPemasukan = $abjadPengeluaran;
         $yayasan = Yayasan::all();
+        //start : daftar nama yayasan
         foreach ($yayasan as $key) {
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $key->nama);
             $i++;
@@ -1931,6 +1944,7 @@ class ReportController extends Controller
             $abjadPengeluaran++;
             $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
         }
+        //end : daftar nama yayasan
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Total'); //total pengeluaran
         $col++;
         $abjadPengeluaran++;
@@ -1984,7 +1998,6 @@ class ReportController extends Controller
         $abjadPemasukanSpes = $abjadPemasukan;
         $abjadPemasukanSpes++;
         $abjadPemasukan++;
-        // dd($abjadPemasukanSpes);
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukanSpes)->setAutoSize(true);
         
         $row = 5;
@@ -2005,7 +2018,7 @@ class ReportController extends Controller
                 'Rusak',
             ];
 
-            $jumlahMerge = count($kondisi)-1;
+            $jumlahMerge = count($kondisi)-1; //jumlah berapa baris yang akan digunakan untuk merge pada kolom gudang dan jenis pallet
 
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadPengeluaran . $row)->applyFromArray($style_kolom);
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjad . $row)->applyFromArray($style_kolom);
@@ -2276,6 +2289,7 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row)->applyFromArray($style_no);
 
+                //start : transaksi masuk
                 $peralihanTambah = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($value){
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
@@ -2308,6 +2322,8 @@ class ReportController extends Controller
                 
                 $tempPeralihanTambah[$i] = $peralihanTambah;
                 $stokAkhir[$i] += $peralihanTambah;
+                //end : transaksi masuk
+
                 $col++;
                 $abjadDalam++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanTambah);
@@ -2315,6 +2331,7 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row)->applyFromArray($style_no);
 
+                //start : transaksi keluar
                 $peralihanKurang = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($value){
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
@@ -2347,6 +2364,8 @@ class ReportController extends Controller
                 
                 $tempPeralihanKurang[$i] = $peralihanKurang;
                 $stokAkhir[$i] -= $peralihanKurang;
+                //end : transaksi keluar
+
                 $col++;
                 $abjadDalam++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanKurang);
@@ -2354,39 +2373,30 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row)->applyFromArray($style_no);
 
-                
-                if ($dipinjam == $dikembalikan) {
-                    $status = 'BALANCE';
-                } else {
-                    $status = 'CEKLAGI';
-                }
                 $col++;
                 $abjadDalam++;
-                // $objSpreadsheet->getActiveSheet()->setCellValue($abjad.$row, '=IF('.$abjadDipinjam.$row.'='. $abjadDikembalikan.$row. ',"BALANCE","CEKLAGI")');
-                // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $status);
-                // $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
 
                 $col++;
                 $abjadDalam++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $stokAkhir[$i]);
-                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
-                $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
-                $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row)->applyFromArray($style_no);
+                // $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
+                // $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row . ":" . $abjadDalam . $row)->applyFromArray($style_kolom);
+                // $objSpreadsheet->getActiveSheet()->getStyle($abjadDalam . $row)->applyFromArray($style_no);
                 $row++;
                 $col -= 6;
             }
 
             $abjadDalam--;
 
-            // dd($abjadDalam);
-            $objSpreadsheet->getActiveSheet()->mergeCells($abjadDalam . ($row-3) . ':'.$abjadDalam . ($row-1));
+            // $objSpreadsheet->getActiveSheet()->mergeCells($abjadDalam . ($row-3) . ':'.$abjadDalam . ($row-1)); //merge untuk kolom stok akhir
             $status = 'CEK LAGI';
 
-            if (($tempPeralihanTambah[0]+$tempPeralihanTambah[1]+$tempPeralihanTambah[2]) == ($tempPeralihanKurang[0]+$tempPeralihanKurang[1]+$tempPeralihanKurang[2])) {
+            $totalPeralihanBertambah = ($tempPeralihanTambah[0]+$tempPeralihanTambah[1]+$tempPeralihanTambah[2]);
+            $totalPeralihanBerkurang = ($tempPeralihanKurang[0]+$tempPeralihanKurang[1]+$tempPeralihanKurang[2]);
+            if ($totalPeralihanBertambah == $totalPeralihanBerkurang) {
                 $status = 'BALANCE';
             }
 
-            // dd(($row-3));
             $objSpreadsheet->getActiveSheet()->mergeCellsByColumnAndRow(($col+5),($row-3),($col+5),($row-1));
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(($col+5), ($row-3), $status);
             $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow(($col+5),($row-3),($col+5),($row-1))->applyFromArray($style_center);
@@ -4698,8 +4708,8 @@ class ReportController extends Controller
         $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
 
         $res = DB::table('aktivitas_harian_alat_berat')
+            ->distinct()
             ->select(
-            'aktivitas_harian_alat_berat.*',
             'aktivitas_harian.*',
             'alat_berat.id_kategori',
             'aktivitas.nama as nama_aktivitas',
@@ -4712,7 +4722,7 @@ class ReportController extends Controller
             ->leftJoin('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
             ->leftJoin('alat_berat', 'alat_berat.id', '=', 'aktivitas_harian_alat_berat.id_alat_berat')
             ->leftJoin('alat_berat_kat', 'alat_berat_kat.id', '=', 'alat_berat.id_kategori')
-            ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
+            ->whereBetween(DB::raw("TO_CHAR( aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS' )"), [date('Y-m-d H:i:s', strtotime($tgl_awal.' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir.' 23:00:00 -1 day'))])
             ->whereNotNull('butuh_alat_berat')
             ->latest('aktivitas_harian.updated_at')
             ;
@@ -4955,7 +4965,7 @@ class ReportController extends Controller
 
             $col++;
             $abjad++;
-            $tonase = MaterialTrans::select('jumlah')->where('id_aktivitas_harian', $value->id)->get();
+            $tonase = MaterialTrans::select('jumlah')->where('id_aktivitas_harian', $value->id)->whereNotNull('status_produk')->get();
             $jumlahTonase = 0;
             foreach ($tonase as $key) {
                 $jumlahTonase += $key->jumlah;
