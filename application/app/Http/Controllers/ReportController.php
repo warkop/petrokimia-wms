@@ -2316,6 +2316,7 @@ class ReportController extends Controller
                         });
                     })
                     ->where('tipe', 2)
+                    ->where('gudang_stok.id_gudang', $value->id_gudang)
                     ->where('status_pallet', ($i + 2))
                     ->where('material_trans.id_material', $value->id_material)
                     ->sum('material_trans.jumlah');
@@ -2358,6 +2359,7 @@ class ReportController extends Controller
                         });
                     })
                     ->where('tipe', 1)
+                    ->where('gudang_stok.id_gudang', $value->id_gudang)
                     ->where('status_pallet', ($i + 2))
                     ->where('material_trans.id_material', $value->id_material)
                     ->sum('material_trans.jumlah');
