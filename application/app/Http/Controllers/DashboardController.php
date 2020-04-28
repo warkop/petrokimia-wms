@@ -188,265 +188,265 @@ class DashboardController extends Controller
             for ($i=0; $i<3; $i++) {
                 $saldoAwal = 0;
                 $tempJumlahPallet[$i] = 0;
-                for ($index_shift=0; $index_shift < count($shift); $index_shift++) {
-                    if ($shift[$index_shift] == 1) {
-                        $pre_masuk     = MaterialTrans::
-                        leftJoin('aktivitas_harian', function($join) use($tgl_awal, $gudang){
-                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                                ->where('draft', 0)
-                                ->where('aktivitas_harian.id_gudang', $gudang->id_gudang)
-                                ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
-                        })
-                        ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $gudang){
-                            $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                                ->where('material_adjustment.id_gudang', $gudang->id_gudang)
-                                ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_awal)));
-                        })
-                        ->leftJoin('gudang_stok', function ($join){
-                            $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
-                        })
-                        ->where(function ($query) use ($tgl_awal) {
-                            $query->where(function($query) use($tgl_awal){
-                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT1)));
-                                $query->orWhere(function($query) use($tgl_awal){
-                                    $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT1)));
-                                    $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT2)));
-                                    $query->where('id_shift', 3);
+                if (in_array(2, $shift)) {
+                    $pre_masuk     = MaterialTrans::
+                    leftJoin('aktivitas_harian', function($join) use($tgl_akhir, $gudang){
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                            ->where('draft', 0)
+                            ->where('aktivitas_harian.id_gudang', $gudang->id_gudang)
+                            ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT3)));
+                    })
+                    ->leftJoin('material_adjustment', function ($join) use ($tgl_akhir, $gudang){
+                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                            ->where('material_adjustment.id_gudang', $gudang->id_gudang)
+                            ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_akhir)));
+                    })
+                    ->leftJoin('gudang_stok', function ($join){
+                        $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+                    })
+                    ->where(function ($query) use ($tgl_akhir) {
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT2)));
+                        $query->orWhere(function($query) use($tgl_akhir){
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT2)));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . ' 23:00:00')));
+                            $query->where('id_shift', 1);
+                        });
+                        $query->orWhere('material_adjustment.tanggal', '<', $tgl_akhir);
+                        $query->orWhere(function ($query) use ($tgl_akhir) {
+                                $query->where('material_adjustment.tanggal', '=', $tgl_akhir);
+                                $query->where(function($query){
+                                    $query->where('material_trans.shift_id', 1);
+                                    $query->orWhere('material_trans.shift_id', 3);
                                 });
-                            });
-    
-                            $query->orWhere(function ($query) use ($tgl_awal) {
-                                $query->where('material_adjustment.tanggal', '<', $tgl_awal);
-                                $query->orWhere(function($query) use ($tgl_awal){
-                                    $query->where('material_adjustment.tanggal', '=', $tgl_awal);
-                                    $query->where('material_adjustment.shift', '=', 3);
-                                });
-                            });
-                            $query->orWhere(function ($query) use ($tgl_awal) {
-                                $query->where('material_trans.tanggal', '<', $tgl_awal);
-                                $query->whereNull('material_trans.id_aktivitas_harian');
-                                $query->whereNull('material_trans.id_adjustment');
-                            });
-                        })
-                        ->where('gudang_stok.id_gudang', $gudang->id_gudang)
-                        ->where('tipe', 2)
-                        ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
-                        ->sum('material_trans.jumlah');
-    
-                        $pre_keluar     = MaterialTrans::
-                        leftJoin('aktivitas_harian', function($join) use($tgl_awal, $gudang){
-                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                                ->where('draft', 0)
-                                ->where('aktivitas_harian.id_gudang', $gudang->id_gudang)
-                                ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
-                        })
-                        ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $gudang){
-                            $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                                ->where('material_adjustment.id_gudang', $gudang->id_gudang)
-                                ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_awal)));
-                        })
-                        ->leftJoin('gudang_stok', function ($join){
-                            $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
-                        })
-                        ->where(function ($query) use ($tgl_awal) {
-                            $query->where(function($query) use($tgl_awal){
-                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT1)));
-                                $query->orWhere(function($query) use($tgl_awal){
-                                    $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT1)));
-                                    $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT2)));
-                                    $query->where('id_shift', 3);
-                                });
-                            });
-    
-                            $query->orWhere(function ($query) use ($tgl_awal) {
-                                $query->where('material_adjustment.tanggal', '<', $tgl_awal);
-                                $query->orWhere(function($query) use ($tgl_awal){
-                                    $query->where('material_adjustment.tanggal', '=', $tgl_awal);
-                                    $query->where('material_adjustment.shift', '=', 3);
-                                });
-                            });
-                            $query->orWhere(function ($query) use ($tgl_awal) {
-                                $query->where('material_trans.tanggal', '<', $tgl_awal);
-                                $query->whereNull('material_trans.id_aktivitas_harian');
-                                $query->whereNull('material_trans.id_adjustment');
-                            });
-                        })
-                        ->where('gudang_stok.id_gudang', $gudang->id_gudang)
-                        ->where('tipe', 1)
-                        ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
-                        ->sum('material_trans.jumlah');
-    
-                        $saldoAwal = $pre_masuk - $pre_keluar;
-                    } else if ($shift[$index_shift] == 2) {
-                        $pre_masuk     = MaterialTrans::
-                        leftJoin('aktivitas_harian', function($join) use($tgl_awal, $gudang){
-                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                                ->where('draft', 0)
-                                ->where('aktivitas_harian.id_gudang', $gudang->id_gudang)
-                                ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
-                        })
-                        ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $gudang){
-                            $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                                ->where('material_adjustment.id_gudang', $gudang->id_gudang)
-                                ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_awal)));
-                        })
-                        ->leftJoin('gudang_stok', function ($join){
-                            $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
-                        })
-                        ->where(function ($query) use ($tgl_awal) {
-                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT2)));
-                            $query->orWhere(function($query) use($tgl_awal){
-                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT2)));
-                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . ' 23:00:00')));
-                                $query->where('id_shift', 1);
-                            });
-                            $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
-                            $query->orWhere(function ($query) use ($tgl_awal) {
-                                    $query->where('material_adjustment.tanggal', '=', $tgl_awal);
-                                    $query->where(function($query){
-                                        $query->where('material_trans.shift_id', 1);
-                                        $query->orWhere('material_trans.shift_id', 3);
-                                    });
-                            });
-                            $query->orWhere(function ($query) use ($tgl_awal) {
-                                $query->where('material_trans.tanggal', '<', $tgl_awal);
-                                $query->whereNull('material_trans.id_aktivitas_harian');
-                                $query->whereNull('material_trans.id_adjustment');
-                            });
-                        })
-                        ->where('tipe', 2)
-                        ->where('gudang_stok.id_gudang', $gudang->id_gudang)
-                        ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
-                        ->sum('material_trans.jumlah');
-    
-                        $pre_keluar     = MaterialTrans::
-                        leftJoin('aktivitas_harian', function($join) use($tgl_awal, $gudang){
-                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                                ->where('draft', 0)
-                                ->where('aktivitas_harian.id_gudang', $gudang->id_gudang)
-                                ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
-                        })
-                        ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $gudang){
-                            $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                                ->where('material_adjustment.id_gudang', $gudang->id_gudang)
-                                ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_awal)));
-                        })
-                        ->leftJoin('gudang_stok', function ($join){
-                            $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
-                        })
-                        ->where(function ($query) use ($tgl_awal) {
-                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT2)));
-                            $query->orWhere(function($query) use($tgl_awal){
-                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT2)));
-                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . ' 23:00:00')));
-                                $query->where('id_shift', 1);
-                            });
-                            $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
-                            $query->orWhere(function ($query) use ($tgl_awal) {
-                                    $query->where('material_adjustment.tanggal', '=', $tgl_awal);
-                                    $query->where(function($query){
-                                        $query->where('material_trans.shift_id', 1);
-                                        $query->orWhere('material_trans.shift_id', 3);
-                                    });
-                            });
-                            $query->orWhere(function ($query) use ($tgl_awal) {
-                                $query->where('material_trans.tanggal', '<', $tgl_awal);
-                                $query->whereNull('material_trans.id_aktivitas_harian');
-                                $query->whereNull('material_trans.id_adjustment');
-                            });
-                        })
-                        ->where('tipe', 1)
-                        ->where('gudang_stok.id_gudang', $gudang->id_gudang)
-                        ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
-                        ->sum('material_trans.jumlah');
-    
-                        $saldoAwal = $pre_masuk - $pre_keluar;
-                    } else if ($shift[$index_shift] == 3) {
-                        $pre_masuk = MaterialTrans::
-                        leftJoin('aktivitas_harian', function($join) use($tgl_awal, $gudang){
-                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                                ->where('draft', 0)
-                                ->where('aktivitas_harian.id_gudang', $gudang->id_gudang)
-                                ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
-                        })
-                        ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $gudang){
-                            $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                                ->where('material_adjustment.id_gudang', $gudang->id_gudang)
-                                ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_awal)));
-                        })
-                        ->leftJoin('gudang_stok', function ($join){
-                            $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
-                        })
-                        ->where(function ($query) use ($tgl_awal) {
-                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
-                            $query->orWhere(function($query) use($tgl_awal){
-                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
-                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . ' 00:30:00')));
-                                $query->where('id_shift', 2);
-                            });
-                            $query->orWhere('material_adjustment.tanggal', '<=', date($this->FORMAT_DATE, strtotime($tgl_awal . $this->DECREMENT_DAY)));
-                            $query->orWhere(function ($query) use ($tgl_awal) {
-                                    $query->where('material_adjustment.tanggal', '=', date($this->FORMAT_DATE, strtotime($tgl_awal . $this->DECREMENT_DAY)));
-                                    $query->where(function($query){
-                                        $query->where('material_trans.shift_id', 2);
-                                        $query->orWhere('material_trans.shift_id', 1);
-                                    });
-                            });
-                            $query->orWhere(function ($query) use ($tgl_awal) {
-                                $query->where('material_trans.tanggal', '<', $tgl_awal);
-                                $query->whereNull('material_trans.id_aktivitas_harian');
-                                $query->whereNull('material_trans.id_adjustment');
-                            });
-                        })
-                        ->where('tipe', 2)
-                        ->where('gudang_stok.id_gudang', $gudang->id_gudang)
-                        ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
-                        ->sum('material_trans.jumlah');
-    
-                        $pre_keluar = MaterialTrans::
-                        leftJoin('aktivitas_harian', function($join) use($tgl_awal, $gudang){
-                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                                ->where('draft', 0)
-                                ->where('aktivitas_harian.id_gudang', $gudang->id_gudang)
-                                ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
-                        })
-                        ->leftJoin('material_adjustment', function ($join) use ($tgl_awal, $gudang){
-                            $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                                ->where('material_adjustment.id_gudang', $gudang->id_gudang)
-                                ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_awal)));
-                        })
-                        ->leftJoin('gudang_stok', function ($join){
-                            $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
-                        })
-                        ->where(function ($query) use ($tgl_awal) {
-                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
-                            $query->orWhere(function($query) use($tgl_awal){
-                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . $this->START_SHIFT3)));
-                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_awal . ' 00:30:00')));
-                                $query->where('id_shift', 2);
-                            });
-                            $query->orWhere('material_adjustment.tanggal', '<=', date($this->FORMAT_DATE, strtotime($tgl_awal . $this->DECREMENT_DAY)));
-                            $query->orWhere(function ($query) use ($tgl_awal) {
-                                    $query->where('material_adjustment.tanggal', '=', date($this->FORMAT_DATE, strtotime($tgl_awal . $this->DECREMENT_DAY)));
-                                    $query->where(function($query){
-                                        $query->where('material_trans.shift_id', 2);
-                                        $query->orWhere('material_trans.shift_id', 1);
-                                    });
-                            });
-                            $query->orWhere(function ($query) use ($tgl_awal) {
-                                $query->where('material_trans.tanggal', '<', $tgl_awal);
-                                $query->whereNull('material_trans.id_aktivitas_harian');
-                                $query->whereNull('material_trans.id_adjustment');
-                            });
-                        })
-                        ->where('tipe', 1)
-                        ->where('gudang_stok.id_gudang', $gudang->id_gudang)
-                        ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
-                        ->sum('material_trans.jumlah');
-    
-                        $saldoAwal = $pre_masuk - $pre_keluar;
-                    }
+                        });
+                        $query->orWhere(function ($query) use ($tgl_akhir) {
+                            $query->where('material_trans.tanggal', '<', $tgl_akhir);
+                            $query->whereNull('material_trans.id_aktivitas_harian');
+                            $query->whereNull('material_trans.id_adjustment');
+                        });
+                    })
+                    ->where('tipe', 2)
+                    ->where('gudang_stok.id_gudang', $gudang->id_gudang)
+                    ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
+                    ->sum('material_trans.jumlah');
 
+                    $pre_keluar     = MaterialTrans::
+                    leftJoin('aktivitas_harian', function($join) use($tgl_akhir, $gudang){
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                            ->where('draft', 0)
+                            ->where('aktivitas_harian.id_gudang', $gudang->id_gudang)
+                            ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT3)));
+                    })
+                    ->leftJoin('material_adjustment', function ($join) use ($tgl_akhir, $gudang){
+                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                            ->where('material_adjustment.id_gudang', $gudang->id_gudang)
+                            ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_akhir)));
+                    })
+                    ->leftJoin('gudang_stok', function ($join){
+                        $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+                    })
+                    ->where(function ($query) use ($tgl_akhir) {
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT2)));
+                        $query->orWhere(function($query) use($tgl_akhir){
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT2)));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . ' 23:00:00')));
+                            $query->where('id_shift', 1);
+                        });
+                        $query->orWhere('material_adjustment.tanggal', '<', $tgl_akhir);
+                        $query->orWhere(function ($query) use ($tgl_akhir) {
+                                $query->where('material_adjustment.tanggal', '=', $tgl_akhir);
+                                $query->where(function($query){
+                                    $query->where('material_trans.shift_id', 1);
+                                    $query->orWhere('material_trans.shift_id', 3);
+                                });
+                        });
+                        $query->orWhere(function ($query) use ($tgl_akhir) {
+                            $query->where('material_trans.tanggal', '<', $tgl_akhir);
+                            $query->whereNull('material_trans.id_aktivitas_harian');
+                            $query->whereNull('material_trans.id_adjustment');
+                        });
+                    })
+                    ->where('tipe', 1)
+                    ->where('gudang_stok.id_gudang', $gudang->id_gudang)
+                    ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
+                    ->sum('material_trans.jumlah');
+
+                    $saldoAwal = $pre_masuk - $pre_keluar;
+                } else if (in_array(1, $shift)) {
+                    $pre_masuk     = MaterialTrans::
+                    leftJoin('aktivitas_harian', function($join) use($tgl_akhir, $gudang){
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                            ->where('draft', 0)
+                            ->where('aktivitas_harian.id_gudang', $gudang->id_gudang)
+                            ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT3)));
+                    })
+                    ->leftJoin('material_adjustment', function ($join) use ($tgl_akhir, $gudang){
+                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                            ->where('material_adjustment.id_gudang', $gudang->id_gudang)
+                            ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_akhir)));
+                    })
+                    ->leftJoin('gudang_stok', function ($join){
+                        $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+                    })
+                    ->where(function ($query) use ($tgl_akhir) {
+                        $query->where(function($query) use($tgl_akhir){
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT1)));
+                            $query->orWhere(function($query) use($tgl_akhir){
+                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT1)));
+                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT2)));
+                                $query->where('id_shift', 3);
+                            });
+                        });
+
+                        $query->orWhere(function ($query) use ($tgl_akhir) {
+                            $query->where('material_adjustment.tanggal', '<', $tgl_akhir);
+                            $query->orWhere(function($query) use ($tgl_akhir){
+                                $query->where('material_adjustment.tanggal', '=', $tgl_akhir);
+                                $query->where('material_adjustment.shift', '=', 3);
+                            });
+                        });
+                        $query->orWhere(function ($query) use ($tgl_akhir) {
+                            $query->where('material_trans.tanggal', '<', $tgl_akhir);
+                            $query->whereNull('material_trans.id_aktivitas_harian');
+                            $query->whereNull('material_trans.id_adjustment');
+                        });
+                    })
+                    ->where('gudang_stok.id_gudang', $gudang->id_gudang)
+                    ->where('tipe', 2)
+                    ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
+                    ->sum('material_trans.jumlah');
+
+                    $pre_keluar     = MaterialTrans::
+                    leftJoin('aktivitas_harian', function($join) use($tgl_akhir, $gudang){
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                            ->where('draft', 0)
+                            ->where('aktivitas_harian.id_gudang', $gudang->id_gudang)
+                            ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT3)));
+                    })
+                    ->leftJoin('material_adjustment', function ($join) use ($tgl_akhir, $gudang){
+                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                            ->where('material_adjustment.id_gudang', $gudang->id_gudang)
+                            ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_akhir)));
+                    })
+                    ->leftJoin('gudang_stok', function ($join){
+                        $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+                    })
+                    ->where(function ($query) use ($tgl_akhir) {
+                        $query->where(function($query) use($tgl_akhir){
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT1)));
+                            $query->orWhere(function($query) use($tgl_akhir){
+                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT1)));
+                                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT2)));
+                                $query->where('id_shift', 3);
+                            });
+                        });
+
+                        $query->orWhere(function ($query) use ($tgl_akhir) {
+                            $query->where('material_adjustment.tanggal', '<', $tgl_akhir);
+                            $query->orWhere(function($query) use ($tgl_akhir){
+                                $query->where('material_adjustment.tanggal', '=', $tgl_akhir);
+                                $query->where('material_adjustment.shift', '=', 3);
+                            });
+                        });
+                        $query->orWhere(function ($query) use ($tgl_akhir) {
+                            $query->where('material_trans.tanggal', '<', $tgl_akhir);
+                            $query->whereNull('material_trans.id_aktivitas_harian');
+                            $query->whereNull('material_trans.id_adjustment');
+                        });
+                    })
+                    ->where('gudang_stok.id_gudang', $gudang->id_gudang)
+                    ->where('tipe', 1)
+                    ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
+                    ->sum('material_trans.jumlah');
+
+                    $saldoAwal = $pre_masuk - $pre_keluar;
+                } else if (in_array(3, $shift)) {
+                    $pre_masuk = MaterialTrans::
+                    leftJoin('aktivitas_harian', function($join) use($tgl_akhir, $gudang){
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                            ->where('draft', 0)
+                            ->where('aktivitas_harian.id_gudang', $gudang->id_gudang)
+                            ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT3)));
+                    })
+                    ->leftJoin('material_adjustment', function ($join) use ($tgl_akhir, $gudang){
+                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                            ->where('material_adjustment.id_gudang', $gudang->id_gudang)
+                            ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_akhir)));
+                    })
+                    ->leftJoin('gudang_stok', function ($join){
+                        $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+                    })
+                    ->where(function ($query) use ($tgl_akhir) {
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT3)));
+                        $query->orWhere(function($query) use($tgl_akhir){
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT3)));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . ' 00:30:00')));
+                            $query->where('id_shift', 2);
+                        });
+                        $query->orWhere('material_adjustment.tanggal', '<=', date($this->FORMAT_DATE, strtotime($tgl_akhir . $this->DECREMENT_DAY)));
+                        $query->orWhere(function ($query) use ($tgl_akhir) {
+                                $query->where('material_adjustment.tanggal', '=', date($this->FORMAT_DATE, strtotime($tgl_akhir . $this->DECREMENT_DAY)));
+                                $query->where(function($query){
+                                    $query->where('material_trans.shift_id', 2);
+                                    $query->orWhere('material_trans.shift_id', 1);
+                                });
+                        });
+                        $query->orWhere(function ($query) use ($tgl_akhir) {
+                            $query->where('material_trans.tanggal', '<', $tgl_akhir);
+                            $query->whereNull('material_trans.id_aktivitas_harian');
+                            $query->whereNull('material_trans.id_adjustment');
+                        });
+                    })
+                    ->where('tipe', 2)
+                    ->where('gudang_stok.id_gudang', $gudang->id_gudang)
+                    ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
+                    ->sum('material_trans.jumlah');
+
+                    $pre_keluar = MaterialTrans::
+                    leftJoin('aktivitas_harian', function($join) use($tgl_akhir, $gudang){
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                            ->where('draft', 0)
+                            ->where('aktivitas_harian.id_gudang', $gudang->id_gudang)
+                            ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT3)));
+                    })
+                    ->leftJoin('material_adjustment', function ($join) use ($tgl_akhir, $gudang){
+                        $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                            ->where('material_adjustment.id_gudang', $gudang->id_gudang)
+                            ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_akhir)));
+                    })
+                    ->leftJoin('gudang_stok', function ($join){
+                        $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+                    })
+                    ->where(function ($query) use ($tgl_akhir) {
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT3)));
+                        $query->orWhere(function($query) use($tgl_akhir){
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . $this->START_SHIFT3)));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_akhir . ' 00:30:00')));
+                            $query->where('id_shift', 2);
+                        });
+                        $query->orWhere('material_adjustment.tanggal', '<=', date($this->FORMAT_DATE, strtotime($tgl_akhir . $this->DECREMENT_DAY)));
+                        $query->orWhere(function ($query) use ($tgl_akhir) {
+                                $query->where('material_adjustment.tanggal', '=', date($this->FORMAT_DATE, strtotime($tgl_akhir . $this->DECREMENT_DAY)));
+                                $query->where(function($query){
+                                    $query->where('material_trans.shift_id', 2);
+                                    $query->orWhere('material_trans.shift_id', 1);
+                                });
+                        });
+                        $query->orWhere(function ($query) use ($tgl_akhir) {
+                            $query->where('material_trans.tanggal', '<', $tgl_akhir);
+                            $query->whereNull('material_trans.id_aktivitas_harian');
+                            $query->whereNull('material_trans.id_adjustment');
+                        });
+                    })
+                    ->where('tipe', 1)
+                    ->where('gudang_stok.id_gudang', $gudang->id_gudang)
+                    ->where('status_pallet', ($i+2)) //harus + 2 step agar cocok dengan status pada databse
+                    ->sum('material_trans.jumlah');
+
+                    $saldoAwal = $pre_masuk - $pre_keluar;
+                }
+                $totalTransaksi = 0;
+                for ($index_shift=0; $index_shift < count($shift); $index_shift++) {
                     $peralihanTambah = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($gudang){
                         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                             ->where('draft', 0)
@@ -515,9 +515,9 @@ class DashboardController extends Controller
                         })
                         ->sum('material_trans.jumlah');
 
-                    $tempJumlahPallet[$i] += $saldoAwal+$peralihanTambah-$peralihanKurang;
+                    $totalTransaksi += $peralihanTambah-$peralihanKurang;
                 }
-
+                $tempJumlahPallet[$i] += $saldoAwal+$totalTransaksi;
             }
 
             $temp = [
