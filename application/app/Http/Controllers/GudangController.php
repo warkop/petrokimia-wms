@@ -315,7 +315,13 @@ class GudangController extends Controller
 
     public function loadKoordinat(Area $area)
     {
-        $this->responseData     = json_decode($area->koordinat);
+        $area_lain = [];
+        $res_area_lain = Area::select('koordinat')->where('id', '<>', $area->id)->whereNotNull('koordinat')->get();
+        for ($index=0; $index < count($res_area_lain); $index++) {
+            $area_lain[$index] = json_decode($res_area_lain[$index]->koordinat);
+        }
+
+        $this->responseData     = [json_decode($area->koordinat), $area_lain];
         $this->responseCode     = 200;
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);

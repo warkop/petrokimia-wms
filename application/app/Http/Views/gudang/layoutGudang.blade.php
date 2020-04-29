@@ -21,6 +21,34 @@
         margin: 0px;
         padding: 0px
     }
+
+.shine {
+  background: #f6f7f8;
+  background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+  background-repeat: no-repeat;
+  background-size: 900px 400px; 
+  position: relative; 
+  display: block!important;
+  width: 100%; 
+  height: 100%; 
+  margin-top: 15px;
+  
+  -webkit-animation-duration: 1s;
+  -webkit-animation-fill-mode: forwards; 
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-name: placeholderShimmer;
+  -webkit-animation-timing-function: linear;
+}    
+
+@-webkit-keyframes placeholderShimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  
+  100% {
+    background-position: 100% 0; 
+  }
+}
 </style>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
@@ -105,7 +133,19 @@ function initMap() {
     bermudaTriangle.setMap(map);
 }
 
-function initialize(polygon) {
+function addPoly(polygon, warna) {
+    var poly = new google.maps.Polygon({
+        paths: polygon,
+        strokeColor: warna,
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: warna,
+        fillOpacity: 0.35
+    });
+    return poly;
+};
+
+function initialize(thisArea, otherArea) {
     const myLatlng = new google.maps.LatLng(-7.1546369, 112.640216);
     const myOptions = {
         zoom: 18,
@@ -113,6 +153,19 @@ function initialize(polygon) {
         mapTypeId: google.maps.MapTypeId.ROADMAP
     }
     map = new google.maps.Map(document.getElementById("layoutGudang"), myOptions);
+
+    
+    if (otherArea !== null) {
+        for (let i = 0; i < otherArea.length; i++) {
+
+            let hasilParsing = JSON.parse(otherArea[i]);
+
+            let polygon = addPoly(hasilParsing, '#00bcd4');
+            polygon.setMap(map);
+            // addListenersOnPolygon(polygon, otherArea[i]);
+        }
+    }
+
     drawingManager = new google.maps.drawing.DrawingManager({
         drawingMode: google.maps.drawing.OverlayType.POLYGON,
         drawingControl: true,
@@ -126,12 +179,13 @@ function initialize(polygon) {
     });
     drawingManager.setMap(map);
 
+    const color='#dd2c00'
     var layoutArea = new google.maps.Polygon({
-        paths: polygon,
-        strokeColor: '#FF0000',
+        paths: thisArea,
+        strokeColor: color,
         strokeOpacity: 0.8,
         strokeWeight: 2,
-        fillColor: '#FF0000',
+        fillColor: color,
         fillOpacity: 0.35,
         editable: true
     });
@@ -146,14 +200,6 @@ function initialize(polygon) {
     google.maps.event.addListener(drawingManager, "overlaycomplete", function (event) {
         overlayClickListener(event.overlay);
         const polygon = event.overlay.getPath().getArray();
-        // for (var i = 0; i < event.overlay.getPath().getLength(); i++) {
-        //     document.getElementById('koordinat').value += polygon.getPath().getAt(i).toUrlValue(6) + "<br>";
-        // }
-        // polygon.forEach(element => {
-        //     console.log('lat:'+element);
-        // });
-        
-        // console.log(event.overlay.getPath().getArray());
         $('#koordinat').val(JSON.stringify(event.overlay.getPath().getArray()));
     });
 }
@@ -178,33 +224,21 @@ function muatArea() {
     const pilih_area = $("#pilih_area").val();
     $.ajax({
         url:ajaxSource+"/load-koordinat/"+pilih_area,
+        beforeSend:()=>{
+            $("#layoutGudang").html('<div class="shine"></div>');
+        },
         success:response => {
-            const obj = response.data;
-            let polygon = [];
-            let tempData = [];
-            // console.log(JSON.parse(obj));
-            // for ( var index=0; index<obj.length; index++ ) {
-            //     tempData = JSON.stringify(obj[index]);
-            //     // console.log(tempData);
-            //     polygon.push(tempData);
-            // }
+            const area_dipilih = response.data[0];
+            const area_lain = response.data[1];
 
-            polygon = JSON.parse(obj);
-            // console.log(polygon);
-            // polygon = [
-            //     {lat: 25.774, lng: -80.190},
-            //     {lat: 18.466, lng: -66.118},
-            //     {lat: 32.321, lng: -64.757},
-            //     {lat: 25.774, lng: -80.190}
-            // ];
-            initialize(polygon);
+            const polygonAreaDipilih = JSON.parse(area_dipilih);
+
+            initialize(polygonAreaDipilih, area_lain);
         },
         error:response =>{
 
         }
     });
-
-    //  initialize();
 }
 
 $(function () {
@@ -230,6 +264,7 @@ $(function () {
             success:response=>{
                 swal.fire("Pemberitahuan", response.message, "success").then(()=>{
                     // $("#koordinat").val("");
+                    $("#save").prop("disabled", false);
                 });
             },
             error:response=>{
