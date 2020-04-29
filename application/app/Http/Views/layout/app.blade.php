@@ -61,7 +61,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			<div class="kt-header-mobile__toolbar">
 				<button class="kt-header-mobile__toggler kt-header-mobile__toggler--left" id="kt_aside_mobile_toggler"><span></span></button>
 				<button class="kt-header-mobile__toggler" id="kt_header_mobile_toggler"><span></span></button>
-				<button class="kt-header-mobile__topbar-toggler" id="kt_header_mobile_topbar_toggler"><i class="flaticon-more"></i></button>
+				<button class="kt-header-mobile__topbar-toggler" id="kt_header_mobile_topbar_toggler"><em class="flaticon-more"></em></button>
 			</div>
 		</div>
 
@@ -70,7 +70,7 @@ License: You must have a valid license purchased only from themeforest(the above
 			<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver kt-page">
 
 				<!-- begin:: Aside -->
-				<button class="kt-aside-close " id="kt_aside_close_btn"><i class="la la-close"></i></button>
+				<button class="kt-aside-close " id="kt_aside_close_btn"><em class="la la-close"></em></button>
 				<div class="kt-aside  kt-aside--fixed  kt-grid__item kt-grid kt-grid--desktop kt-grid--hor-desktop" id="kt_aside">
 
 					<!-- begin:: Aside -->
@@ -132,24 +132,24 @@ License: You must have a valid license purchased only from themeforest(the above
 								@if (auth()->user()->can('data-master'))
 								<li class="kt-menu__section ">
 									<h4 class="kt-menu__section-text">DATA MASTER</h4>
-									<i class="kt-menu__section-icon flaticon-more-v2"></i>
+									<em class="kt-menu__section-icon flaticon-more-v2"></em>
 								</li>
 								<li class="kt-menu__item  kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-									<span class="kt-menu__link-icon la la-tasks"></span><span class="kt-menu__link-text">Data Master</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
+									<span class="kt-menu__link-icon la la-tasks"></span><span class="kt-menu__link-text">Data Master</span><em class="kt-menu__ver-arrow la la-angle-right"></em></a>
 									<div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
 										<ul class="kt-menu__subnav">
 											<li id="master-nav" class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Data Master</span></span></li>
-											<li id="master-aktivitas-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-aktivitas')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Aktivitas</span></a></li>
-											<li id="master-karu-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-karu')}}" class="kt-menu__link" ><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kepala Regu</span></a></li>
-											<li id="master-material-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-material')}}" class="kt-menu__link" ><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Material</span></a></li>
-											<li id="master-tenagaNO-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-tenaga-kerja-nonorganik')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Tenaga Kerja Non Organik</span></a></li>
-											<li id="master-pemetaanSloc-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-pemetaan-sloc')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Pemetaan Sloc</span></a></li>
-											<li id="master-K-Berat-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-kerusakan-alat')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kerusakan Alat Berat</span></a></li>
-											<li id="master-K-A-B-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-kategori-alat-berat')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kategori Alat Berat</span></a></li>
-											<li id="master-jenisFoto-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-jenis-foto')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Jenis Foto</span></a></li>
-											<li id="master-yayasan-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-yayasan')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Yayasan</span></a></li>
+											<li id="master-aktivitas-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-aktivitas')}}" class="kt-menu__link"><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Aktivitas</span></a></li>
+											<li id="master-karu-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-karu')}}" class="kt-menu__link" ><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Kepala Regu</span></a></li>
+											<li id="master-material-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-material')}}" class="kt-menu__link" ><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Material</span></a></li>
+											<li id="master-tenagaNO-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-tenaga-kerja-nonorganik')}}" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Tenaga Kerja Non Organik</span></a></li>
+											<li id="master-pemetaanSloc-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-pemetaan-sloc')}}" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Pemetaan Sloc</span></a></li>
+											<li id="master-K-Berat-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-kerusakan-alat')}}" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Kerusakan Alat Berat</span></a></li>
+											<li id="master-K-A-B-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-kategori-alat-berat')}}" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Kategori Alat Berat</span></a></li>
+											<li id="master-jenisFoto-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-jenis-foto')}}" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Jenis Foto</span></a></li>
+											<li id="master-yayasan-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-yayasan')}}" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Yayasan</span></a></li>
 											@if (auth()->user()->can('data-master-user'))
-											<li id="master-user-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-user')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">User</span></a></li>
+											<li id="master-user-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/master-user')}}" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">User</span></a></li>
 											@endif
 										</ul>
 									</div>
@@ -158,28 +158,28 @@ License: You must have a valid license purchased only from themeforest(the above
 								@if (auth()->user()->can('report'))
 								<li class="kt-menu__section ">
 									<h4 class="kt-menu__section-text">REPORTS</h4>
-									<i class="kt-menu__section-icon flaticon-more-v2"></i>
+									<em class="kt-menu__section-icon flaticon-more-v2"></em>
 								</li>
 								<li class="kt-menu__item  kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-									<span class="kt-menu__link-icon la la-tasks"></span><span class="kt-menu__link-text">Report</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
+									<span class="kt-menu__link-icon la la-tasks"></span><span class="kt-menu__link-text">Report</span><em class="kt-menu__ver-arrow la la-angle-right"></em></a>
 									<div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
 										<ul class="kt-menu__subnav">
 											{{-- <li id="report-laporan-material-nav" class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Data Master</span></span></li> --}}
-											<li id="report-laporan-transaksi-material-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-transaksi-material')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Transaksi Material</span></a></li>
-											<li id="report-laporan-stok-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-stok')}}" class="kt-menu__link" ><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Posisi Stok</span></a></li>
-											{{-- <li id="report-absen-karyawan-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-absen-karyawan')}}" class="kt-menu__link" ><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Absen Karyawan</span></a></li> --}}
-											<li id="report-mutasi-pallet-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-mutasi-pallet')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Mutasi Pallet</span></a></li>
-											<li id="report-mutasi-stok-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-mutasi-stok')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Mutasi Stok</span></a></li>
-											<li id="report-produk-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-produk')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Produk</span></a></li>
-											<li id="report-material-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-material')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Material</span></a></li>
-											<li id="report-realisasi-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-realisasi')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Realisasi</span></a></li>
-											<li id="report-keluhan-alat-berat-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-keluhan-alat-berat')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Keluhan Alat Berat</span></a></li>
-											<li id="report-keluhan-gp-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-keluhan-gp')}}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Keluhan GP</span></a></li>
-											<li id="report-aktivitas-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-aktivitas')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Aktivitas</span></a></li>
-											<li id="report-log-sheet-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-log-sheet')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Log Sheet</span></a></li>
-											<li id="report-biaya-alat-berat-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-biaya-alat-berat')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Biaya Alat Berat</span></a></li>
-											<li id="report-biaya-tkbm-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-biaya-tkbm')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Biaya TKBM</span></a></li>
-											<li id="report-biaya-pallet-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-biaya-pallet')}}" class="kt-menu__link"><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Biaya Pallet</span></a></li>
+											<li id="report-laporan-transaksi-material-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-transaksi-material')}}" class="kt-menu__link"><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Transaksi Material</span></a></li>
+											<li id="report-laporan-stok-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-stok')}}" class="kt-menu__link" ><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Posisi Stok</span></a></li>
+											{{-- <li id="report-absen-karyawan-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-absen-karyawan')}}" class="kt-menu__link" ><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Absen Karyawan</span></a></li> --}}
+											<li id="report-mutasi-pallet-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-mutasi-pallet')}}" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Mutasi Pallet</span></a></li>
+											<li id="report-mutasi-stok-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-mutasi-stok')}}" class="kt-menu__link"><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Mutasi Stok</span></a></li>
+											<li id="report-produk-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-produk')}}" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Produk</span></a></li>
+											<li id="report-material-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-material')}}" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Material</span></a></li>
+											<li id="report-realisasi-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-realisasi')}}" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Realisasi</span></a></li>
+											<li id="report-keluhan-alat-berat-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-keluhan-alat-berat')}}" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Keluhan Alat Berat</span></a></li>
+											<li id="report-keluhan-gp-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-keluhan-gp')}}" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Keluhan GP</span></a></li>
+											<li id="report-aktivitas-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-aktivitas')}}" class="kt-menu__link"><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Aktivitas</span></a></li>
+											<li id="report-log-sheet-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-log-sheet')}}" class="kt-menu__link"><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Log Sheet</span></a></li>
+											<li id="report-biaya-alat-berat-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-biaya-alat-berat')}}" class="kt-menu__link"><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Biaya Alat Berat</span></a></li>
+											<li id="report-biaya-tkbm-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-biaya-tkbm')}}" class="kt-menu__link"><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Biaya TKBM</span></a></li>
+											<li id="report-biaya-pallet-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-biaya-pallet')}}" class="kt-menu__link"><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Biaya Pallet</span></a></li>
 										</ul>
 									</div>
 								</li>
@@ -198,7 +198,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					<div id="kt_header" class="kt-header kt-grid__item  kt-header--fixed ">
 
 						<!-- begin:: Header Menu -->
-						<button class="kt-header-menu-wrapper-close" id="kt_header_menu_mobile_close_btn"><i class="la la-close"></i></button>
+						<button class="kt-header-menu-wrapper-close" id="kt_header_menu_mobile_close_btn"><em class="la la-close"></em></button>
 						<div class="kt-header-menu-wrapper" id="kt_header_menu_wrapper">
 							<div id="kt_header_menu" class="kt-header-menu kt-header-menu-mobile  kt-header-menu--layout-default ">
 								<ul class="kt-menu__nav ">
@@ -225,15 +225,15 @@ License: You must have a valid license purchased only from themeforest(the above
 																	<rect id="bound" x="0" y="0" width="24" height="24" />
 																	<path d="M9,15 L7.5,15 C6.67157288,15 6,15.6715729 6,16.5 C6,17.3284271 6.67157288,18 7.5,18 C8.32842712,18 9,17.3284271 9,16.5 L9,15 Z M9,15 L9,9 L15,9 L15,15 L9,15 Z M15,16.5 C15,17.3284271 15.6715729,18 16.5,18 C17.3284271,18 18,17.3284271 18,16.5 C18,15.6715729 17.3284271,15 16.5,15 L15,15 L15,16.5 Z M16.5,9 C17.3284271,9 18,8.32842712 18,7.5 C18,6.67157288 17.3284271,6 16.5,6 C15.6715729,6 15,6.67157288 15,7.5 L15,9 L16.5,9 Z M9,7.5 C9,6.67157288 8.32842712,6 7.5,6 C6.67157288,6 6,6.67157288 6,7.5 C6,8.32842712 6.67157288,9 7.5,9 L9,9 L9,7.5 Z M11,13 L13,13 L13,11 L11,11 L11,13 Z M13,11 L13,7.5 C13,5.56700338 14.5670034,4 16.5,4 C18.4329966,4 20,5.56700338 20,7.5 C20,9.43299662 18.4329966,11 16.5,11 L13,11 Z M16.5,13 C18.4329966,13 20,14.5670034 20,16.5 C20,18.4329966 18.4329966,20 16.5,20 C14.5670034,20 13,18.4329966 13,16.5 L13,13 L16.5,13 Z M11,16.5 C11,18.4329966 9.43299662,20 7.5,20 C5.56700338,20 4,18.4329966 4,16.5 C4,14.5670034 5.56700338,13 7.5,13 L11,13 L11,16.5 Z M7.5,11 C5.56700338,11 4,9.43299662 4,7.5 C4,5.56700338 5.56700338,4 7.5,4 C9.43299662,4 11,5.56700338 11,7.5 L11,11 L7.5,11 Z" id="Path-2" fill="#000000" fill-rule="nonzero" />
 																</g>
-															</svg></span><span class="kt-menu__link-text">Team Manager</span><i class="kt-menu__hor-arrow la la-angle-right"></i></a>
+															</svg></span><span class="kt-menu__link-text">Team Manager</span><em class="kt-menu__hor-arrow la la-angle-right"></em></a>
 													<div class="kt-menu__submenu kt-menu__submenu--classic kt-menu__submenu--right">
 														<ul class="kt-menu__subnav">
-															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Add Team Member</span></a></li>
-															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Edit Team Member</span></a></li>
-															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Delete Team Member</span></a></li>
-															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Team Member Reports</span></a></li>
-															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Assign Tasks</span></a></li>
-															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Promote Team Member</span></a></li>
+															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Add Team Member</span></a></li>
+															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Edit Team Member</span></a></li>
+															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Delete Team Member</span></a></li>
+															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Team Member Reports</span></a></li>
+															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Assign Tasks</span></a></li>
+															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Promote Team Member</span></a></li>
 														</ul>
 													</div>
 												</li>
@@ -243,14 +243,14 @@ License: You must have a valid license purchased only from themeforest(the above
 																	<path d="M22,15 L22,19 C22,20.1045695 21.1045695,21 20,21 L4,21 C2.8954305,21 2,20.1045695 2,19 L2,15 L6.27924078,15 L6.82339262,16.6324555 C7.09562072,17.4491398 7.8598984,18 8.72075922,18 L15.381966,18 C16.1395101,18 16.8320364,17.5719952 17.1708204,16.8944272 L18.118034,15 L22,15 Z" id="Combined-Shape" fill="#000000" />
 																	<path d="M2.5625,13 L5.92654389,7.01947752 C6.2807805,6.38972356 6.94714834,6 7.66969497,6 L16.330305,6 C17.0528517,6 17.7192195,6.38972356 18.0734561,7.01947752 L21.4375,13 L18.118034,13 C17.3604899,13 16.6679636,13.4280048 16.3291796,14.1055728 L15.381966,16 L8.72075922,16 L8.17660738,14.3675445 C7.90437928,13.5508602 7.1401016,13 6.27924078,13 L2.5625,13 Z" id="Path" fill="#000000" opacity="0.3" />
 																</g>
-															</svg></span><span class="kt-menu__link-text">Projects Manager</span><i class="kt-menu__hor-arrow la la-angle-right"></i></a>
+															</svg></span><span class="kt-menu__link-text">Projects Manager</span><em class="kt-menu__hor-arrow la la-angle-right"></em></a>
 													<div class="kt-menu__submenu kt-menu__submenu--classic kt-menu__submenu--right">
 														<ul class="kt-menu__subnav">
-															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--line"><span></span></i><span class="kt-menu__link-text">Latest Projects</span></a></li>
-															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--line"><span></span></i><span class="kt-menu__link-text">Ongoing Projects</span></a></li>
-															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--line"><span></span></i><span class="kt-menu__link-text">Urgent Projects</span></a></li>
-															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--line"><span></span></i><span class="kt-menu__link-text">Completed Projects</span></a></li>
-															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--line"><span></span></i><span class="kt-menu__link-text">Dropped Projects</span></a></li>
+															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--line"><span></span></em><span class="kt-menu__link-text">Latest Projects</span></a></li>
+															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--line"><span></span></em><span class="kt-menu__link-text">Ongoing Projects</span></a></li>
+															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--line"><span></span></em><span class="kt-menu__link-text">Urgent Projects</span></a></li>
+															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--line"><span></span></em><span class="kt-menu__link-text">Completed Projects</span></a></li>
+															<li class="kt-menu__item " aria-haspopup="true"><a href="javascript:;" class="kt-menu__link "><em class="kt-menu__link-bullet kt-menu__link-bullet--line"><span></span></em><span class="kt-menu__link-text">Dropped Projects</span></a></li>
 														</ul>
 													</div>
 												</li>
@@ -305,7 +305,7 @@ License: You must have a valid license purchased only from themeforest(the above
 									<div class="kt-notification">
 										<a href="javascript:modalChangePassword({{ auth()->user()->id }})" class="kt-notification__item">
 											<div class="kt-notification__item-icon">
-												<i class="flaticon2-calendar-3 kt-font-success"></i>
+												<em class="flaticon2-calendar-3 kt-font-success"></em>
 											</div>
 											<div class="kt-notification__item-details">
 												<div class="kt-notification__item-title kt-font-bold">
@@ -361,7 +361,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
 		<!-- begin::Scrolltop -->
 		<div id="kt_scrolltop" class="kt-scrolltop">
-			<i class="fa fa-arrow-up"></i>
+			<em class="fa fa-arrow-up"></em>
 		</div>
 
 		<!-- end::Scrolltop -->

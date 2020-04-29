@@ -1236,18 +1236,8 @@ class ReportController extends Controller
                 ->withInput();
         }
         $gudang             = request()->input('gudang'); //multi
-        $material           = request()->input('material');
-        $pilih_material     = request()->input('pilih_material'); //multi
         $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
-
-        // $res = AreaStok::distinct()->select(
-        //     'id_material',
-        //     'id_area'
-        // )
-        //     ->with('material')
-        //     ->with('area', 'area.gudang')
-        // ;
 
         $resPallet = GudangStok::select(
             'id_gudang',
@@ -1263,13 +1253,7 @@ class ReportController extends Controller
                     $query = $query->orWhere('id', $value);
                 }
             })
-                ->get();
-            // $res = $res->whereHas('area.gudang', function ($query) use ($gudang) {
-            //     $query = $query->where('id_gudang', $gudang[0]);
-            //     foreach ($gudang as $key => $value) {
-            //         $query = $query->orWhere('id_gudang', $value);
-            //     }
-            // });
+            ->get();
 
             $resPallet = $resPallet->where(function($query) use($gudang) {
                 $query = $query->where('id_gudang', $gudang[0]);
@@ -1278,21 +1262,6 @@ class ReportController extends Controller
                 }
             });
         }
-
-        if ($material == 2) {
-            // $res = $res->where(function ($query) use ($pilih_material) {
-            //     $query = $query->where('id_material', $pilih_material[0]);
-            //     foreach ($pilih_material as $key => $value) {
-            //         $query = $query->orWhere('id_material', $value);
-            //     }
-            // });
-        } else {
-            // $res = $res->whereHas('material', function ($query) {
-            //     $query = $query->where('kategori', 1);
-            // });
-        }
-
-        // $res = $res->orderBy('id_material')->get()->groupBy('id_material');
 
         if (!is_dir(storage_path() . '/app/public/excel/')) {
             mkdir(storage_path() . '/app/public/excel', 755);

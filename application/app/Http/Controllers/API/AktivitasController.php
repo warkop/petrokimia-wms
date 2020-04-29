@@ -241,7 +241,6 @@ class AktivitasController extends Controller
 
     public function getArea(Request $req, $id_aktivitas, $id_material, $pindah=false) //memuat area
     {
-        $user = $req->get('my_auth');
         $gudang = $this->getCheckerGudang();
 
         $search = strip_tags($req->input('search'));

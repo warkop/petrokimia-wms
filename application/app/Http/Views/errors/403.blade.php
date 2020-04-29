@@ -26,7 +26,7 @@
                     <h1 class="font-weight-bold" style="font-size:8rem;color:DodgerBlue">403</h1>
                     <h3>Anda tidak diizinkan mengakses halaman ini</h3>
 
-                    <a class="font-weight-bold backtohome" href="{{url('/')}}" >Kembali ke halaman utama <span> <i class="fa fa-chevron-right"></i>  </span> </a>
+                    <a class="font-weight-bold backtohome" href="{{url('/')}}" >Kembali ke halaman utama <span> <em class="fa fa-chevron-right"></em>  </span> </a>
                 </div>
             </div>
         </div>

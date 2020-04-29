@@ -38,7 +38,7 @@
                     <div class="kt-login__wrapper">
                         <div class="kt-login__content">
                             <a class="kt-login__logo" href="{{('master-aktivitas')}}">
-                                <img src="{{asset('assets/extends/img/logo/logo_wms1.png')}}" width="100%">
+                                <img src="{{asset('assets/extends/img/logo/logo_wms1.png')}}" alt="{{asset('assets/extends/img/no-image.png')}}" width="100%">
                             </a>
                         </div>
                     </div>
@@ -58,75 +58,74 @@
                             @if (auth()->user()->can('dashboard'))
                             <div class="col-6 mb2">
                                 <button onclick="location.href='{{url('/dashboard')}}'" type="button"
-                                    class="btn btn-elevate btn-outline-success btn-icon-sm" style="width: 100%;"> <i class="la la-desktop"></i>
+                                    class="btn btn-elevate btn-outline-success btn-icon-sm" style="width: 100%;"> <em class="la la-desktop"></em>
                                     Dashboard</button>
                             </div>
                             @endif
                             @if (auth()->user()->can('data-master'))
                             <div class="col-6 mb2">
                                 <button type="button" class="btn btn-outline-success btn-icon-sm dropdown-toggle"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%;"> <i
-                                        class="la la-archive"></i> Masters </button>
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%;"> <em class="la la-archive"></em> Masters </button>
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <ul class="kt-nav">
                                         <li class="kt-nav__item">
                                             <a href="{{('master-aktivitas')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-line-chart"></i>
+                                                <em class="kt-nav__link-icon la la-line-chart"></em>
                                                 <span class="kt-nav__link-text">Aktivitas</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('master-karu')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-user"></i>
+                                                <em class="kt-nav__link-icon la la-user"></em>
                                                 <span class="kt-nav__link-text">Kepala Regu</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('master-material')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-clone"></i>
+                                                <em class="kt-nav__link-icon la la-clone"></em>
                                                 <span class="kt-nav__link-text">Material</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('master-tenaga-kerja-nonorganik')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-user-times"></i>
+                                                <em class="kt-nav__link-icon la la-user-times"></em>
                                                 <span class="kt-nav__link-text">Tenaga Kerja Non Organik</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('master-pemetaan-sloc')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-building"></i>
+                                                <em class="kt-nav__link-icon la la-building"></em>
                                                 <span class="kt-nav__link-text">Pemetaan Sloc</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('master-kerusakan-alat')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-wrench"></i>
+                                                <em class="kt-nav__link-icon la la-wrench"></em>
                                                 <span class="kt-nav__link-text">Kerusakan Alat Berat</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('master-kategori-alat-berat')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-truck"></i>
+                                                <em class="kt-nav__link-icon la la-truck"></em>
                                                 <span class="kt-nav__link-text">Kategori Alat Berat</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('master-jenis-foto')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-photo"></i>
+                                                <em class="kt-nav__link-icon la la-photo"></em>
                                                 <span class="kt-nav__link-text">Jenis Foto</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('master-yayasan')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-hand-lizard-o"></i>
+                                                <em class="kt-nav__link-icon la la-hand-lizard-o"></em>
                                                 <span class="kt-nav__link-text">Yayasan</span>
                                             </a>
                                         </li>
                                         @if (auth()->user()->can('data-master-user'))
                                             <li class="kt-nav__item">
                                                 <a href="{{('master-user')}}" class="kt-nav__link">
-                                                    <i class="kt-nav__link-icon la la-users"></i>
+                                                    <em class="kt-nav__link-icon la la-users"></em>
                                                     <span class="kt-nav__link-text">User</span>
                                                 </a>
                                             </li>    
@@ -138,15 +137,14 @@
                             @if (auth()->user()->can('main-menu'))
                             <div class="col-6 mb2">
                                 <button type="button" class="btn btn-outline-success btn-icon-sm dropdown-toggle"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
-                                        class="la la-laptop"></i> Main Menu</button>
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <em class="la la-laptop"></em> Main Menu</button>
                                 
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <ul class="kt-nav">
                                         @if (auth()->user()->can('layout'))
                                         <li class="kt-nav__item">
                                             <a href="{{('layout')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-map"></i>
+                                                <em class="kt-nav__link-icon la la-map"></em>
                                                 <span class="kt-nav__link-text">Layout</span>
                                             </a>
                                         </li>
@@ -154,7 +152,7 @@
                                         @if (auth()->user()->can('gudang'))
                                         <li class="kt-nav__item">
                                             <a href="{{('gudang')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-institution"></i>
+                                                <em class="kt-nav__link-icon la la-institution"></em>
                                                 <span class="kt-nav__link-text">Gudang</span>
                                             </a>
                                         </li>
@@ -162,7 +160,7 @@
                                         @can ('view', App\Http\Models\RencanaHarian::class)
                                         {{-- <li class="kt-nav__item">
                                             <a href="{{('rencana-harian')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la la-calendar"></i>
+                                                <em class="kt-nav__link-icon la la la-calendar"></em>
                                                 <span class="kt-nav__link-text">Rencana Harian</span>
                                             </a>
                                         </li> --}}
@@ -170,7 +168,7 @@
                                         @if (auth()->user()->can('penerimaan-gp'))
                                         <li class="kt-nav__item">
                                             <a href="{{('penerimaan-gp')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-columns"></i>
+                                                <em class="kt-nav__link-icon la la-columns"></em>
                                                 <span class="kt-nav__link-text">Penerimaan GP</span>
                                             </a>
                                         </li>
@@ -178,7 +176,7 @@
                                         @if (auth()->user()->can('log-aktivitas'))
                                         <li class="kt-nav__item">
                                             <a href="{{('log-aktivitas')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-line-chart"></i>
+                                                <em class="kt-nav__link-icon la la-line-chart"></em>
                                                 <span class="kt-nav__link-text">Log Aktivitas</span>
                                             </a>
                                         </li>
@@ -186,7 +184,7 @@
                                         @if (auth()->user()->can('log-aktivitas-user'))
                                         <li class="kt-nav__item">
                                             <a href="{{('/log-aktivitas-user')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-motorcycle"></i>
+                                                <em class="kt-nav__link-icon la la-motorcycle"></em>
                                                 <span class="kt-nav__link-text">Log Aktivitas User</span>
                                             </a>
                                         </li>
@@ -198,91 +196,90 @@
                             @if (auth()->user()->can('report'))
                             <div class="col-6 mb2">
                                 <button type="button" class="btn btn-outline-success btn-icon-sm dropdown-toggle"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%"> <i
-                                        class="la la-file"></i> Report</button>
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%"> <em class="la la-file"></em> Report</button>
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <ul class="kt-nav">
                                         <li class="kt-nav__item">
                                             <a href="{{url('report/laporan-transaksi-material')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-table"></i>
+                                                <em class="kt-nav__link-icon la la-table"></em>
                                                 <span class="kt-nav__link-text">Transaksi Material</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{url('report/laporan-stok')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-th-large"></i>
+                                                <em class="kt-nav__link-icon la la-th-large"></em>
                                                 <span class="kt-nav__link-text">Posisi Stok</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-mutasi-pallet')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon fa fa-arrows-alt-h"></i>
+                                                <em class="kt-nav__link-icon fa fa-arrows-alt-h"></em>
                                                 <span class="kt-nav__link-text">Mutasi Pallet</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-mutasi-stok')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon fa fa-arrows-alt-v"></i>
+                                                <em class="kt-nav__link-icon fa fa-arrows-alt-v"></em>
                                                 <span class="kt-nav__link-text">Mutasi Stok</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-produk')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon fa fa-boxes"></i>
+                                                <em class="kt-nav__link-icon fa fa-boxes"></em>
                                                 <span class="kt-nav__link-text">Produk</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-material')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon fa fa-warehouse"></i>
+                                                <em class="kt-nav__link-icon fa fa-warehouse"></em>
                                                 <span class="kt-nav__link-text">Material</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-realisasi')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon fa fa-check-square"></i>
+                                                <em class="kt-nav__link-icon fa fa-check-square"></em>
                                                 <span class="kt-nav__link-text">Realisasi</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{url('/report/laporan-keluhan-alat-berat')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon fa fa-truck-moving"></i>
+                                                <em class="kt-nav__link-icon fa fa-truck-moving"></em>
                                                 <span class="kt-nav__link-text">Keluhan Alat Berat</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-keluhan-gp')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-file-archive-o"></i>
+                                                <em class="kt-nav__link-icon la la-file-archive-o"></em>
                                                 <span class="kt-nav__link-text">Keluhan GP</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-aktivitas')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-bicycle"></i>
+                                                <em class="kt-nav__link-icon la la-bicycle"></em>
                                                 <span class="kt-nav__link-text">Aktivitas</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-log-sheet')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-empire"></i>
+                                                <em class="kt-nav__link-icon la la-empire"></em>
                                                 <span class="kt-nav__link-text">Log Sheet</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-biaya-alat-berat')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-dollar"></i>
+                                                <em class="kt-nav__link-icon la la-dollar"></em>
                                                 <span class="kt-nav__link-text">Biaya Alat Berat</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-biaya-tkbm')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-euro"></i>
+                                                <em class="kt-nav__link-icon la la-euro"></em>
                                                 <span class="kt-nav__link-text">Biaya TKBM</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
                                             <a href="{{('report/laporan-biaya-pallet')}}" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-bitcoin"></i>
+                                                <em class="kt-nav__link-icon la la-bitcoin"></em>
                                                 <span class="kt-nav__link-text">Biaya Pallet</span>
                                             </a>
                                         </li>
@@ -291,7 +288,7 @@
                             </div>
                             @endif
                             <div class="col-6">
-                                <button onclick="location.href='{{url('/logout')}}'" type="button" class="btn btn-outline-danger btn-icon-sm" style="width: 100%;"> <i class="la la-times-circle-o"></i> Keluar</button>
+                                <button onclick="location.href='{{url('/logout')}}'" type="button" class="btn btn-outline-danger btn-icon-sm" style="width: 100%;"> <em class="la la-times-circle-o"></em> Keluar</button>
                             </div>
                         </div>
                     </div>

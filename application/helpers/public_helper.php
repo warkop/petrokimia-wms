@@ -278,82 +278,52 @@ function helpCurrency($nominal, $start = '', $pemisah = '.', $end = '')
  * @param (int) $var
  * @return (string)
  */
-function helpTerbilang($num)
+function helpTerbilang($nilai)
 {
-	$digits = array(
-		0 => "nol",
-		1 => "satu",
-		2 => "dua",
-		3 => "tiga",
-		4 => "empat",
-		5 => "lima",
-		6 => "enam",
-		7 => "tujuh",
-		8 => "delapan",
-		9 => "sembilan");
-	$orders = array(
-		0 => "",
-		1 => "puluh",
-		2 => "ratus",
-		3 => "ribu",
-		6 => "juta",
-		9 => "miliar",
-		12 => "triliun",
-		15 => "kuadriliun");
-
-	$is_neg = $num < 0; $num = "$num";
-
-	$int = ""; 
-	
-	if (preg_match("/^[+-]?(\d+)/", $num, $m)) {
-		if (preg_last_error() == PREG_BACKTRACK_LIMIT_ERROR) {
-			return 'Backtrack limit was exhausted!';
-		}
-
-		$int = $m[1];
+	$huruf = array("", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas");
+	switch ($nilai) {
+		case ($nilai==0):
+			$terbilang = "Kosong";
+			break;
+		case ($nilai < 12 & $nilai != 0):
+			$terbilang = "" . $huruf[$nilai];
+			break;
+		case ($nilai < 20):
+			$terbilang = helpTerbilang($nilai - 10) . " Belas ";
+			break;
+		case ($nilai < 100):
+			$terbilang = helpTerbilang($nilai / 10) . " Puluh " . helpTerbilang($nilai % 10);
+			break;
+		case ($nilai < 200):
+			$terbilang = " Seratus " . helpTerbilang($nilai - 100);
+			break;
+		case ($nilai < 1000):
+			$terbilang = helpTerbilang($nilai / 100) . " Ratus " . helpTerbilang($nilai % 100);
+			break;
+		case ($nilai < 2000):
+			$terbilang = " Seribu " . helpTerbilang($nilai - 1000);
+			break;
+		case ($nilai < 1000000):
+			$terbilang = helpTerbilang($nilai / 1000) . " Ribu " . helpTerbilang($nilai % 1000);
+			break;
+		case ($nilai < 1000000000):
+			$terbilang = helpTerbilang($nilai / 1000000) . " Juta " . helpTerbilang($nilai % 1000000);
+			break;
+		case ($nilai < 1000000000000):
+			$terbilang = helpTerbilang($nilai / 1000000000) . " Milyar " . helpTerbilang($nilai % 1000000000);
+			break;
+		case ($nilai < 100000000000000):
+			$terbilang = helpTerbilang($nilai / 1000000000000) . " Trilyun " . helpTerbilang($nilai % 1000000000000);
+			break;
+		case ($nilai <= 100000000000000):
+			$terbilang = "Maaf Tidak Dapat di Prose Karena Jumlah nilai Terlalu Besar";
+			break;
+		default:
+			$terbilang = 'Angka tidak valid!';
+			break;
 	}
 
-	$mult = 0; $wint = "";
-
-	while (preg_match('/(\d{1,3})$/', $int, $m)) {
-
-		$s = $m[1] % 10;
-		$p = ($m[1] % 100 - $s)/10;
-		$r = ($m[1] - $p*10 - $s)/100;
-
-		if ($r==0) $g = "";
-		elseif ($r==1) $g = "se$orders[2]";
-		else $g = $digits[$r]." $orders[2]";
-
-		if ($p==0) {
-			if ($s==0);
-			elseif ($s==1) $g = ($g ? "$g ".$digits[$s] :
-			($mult==0 ? $digits[1] : "se"));
-			else $g = ($g ? "$g ":"") . $digits[$s];
-		} elseif ($p==1) {
-			if ($s==0) $g = ($g ? "$g ":"") . "se$orders[1]";
-			elseif ($s==1) $g = ($g ? "$g ":"") . "sebelas";
-			else $g = ($g ? "$g ":"") . $digits[$s] . " belas";
-		} else {
-			$g = ($g ? "$g ":"").$digits[$p]." puluh".
-			($s > 0 ? " ".$digits[$s] : "");
-		}
-
-		$wint = ($g ? $g.($g=="se" ? "":" ").$orders[$mult]:"").
-		($wint ? " $wint":"");
-
-		$int = preg_replace('/\d{1,3}$/', '', $int);
-		$mult+=3;
-	}
-	if (!$wint) $wint = $digits[0];
-	$frac = ""; if (preg_match("/\.(\d+)/", $num, $m)) $frac = $m[1];
-	$wfrac = "";
-	for ($i=0; $i<strlen($frac); $i++) {
-		$wfrac .= ($wfrac ? " ":"").$digits[substr($frac,$i,1)];
-	}
-	$hasil= ($is_neg ? "minus ":"").$wint.($wfrac ? " koma $wfrac":"");
-	$hasil=str_replace("sejuta","satu juta",$hasil);
-	return $hasil;
+	return $terbilang;
 }
 
 /**

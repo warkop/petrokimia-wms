@@ -5,9 +5,12 @@ use Faker\Generator as Faker;
 
 $factory->define(LaporanKerusakanFoto::class, function (Faker $faker) {
     $id_laporan = $faker->unique()->numberBetween(1, 50);
-    $dir = storage_path('app/public') . '/history/' . $id_laporan;
-    if (!file_exists(storage_path('app/public') . '/history/')) {
-        mkdir(storage_path('app/public') . '/history/', 755);
+    $public = 'app/public';
+    $history = '/history/';
+
+    $dir = storage_path($public) . $history . $id_laporan;
+    if (!file_exists(storage_path($public) . $history)) {
+        mkdir(storage_path($public) . $history, 755);
         if (!file_exists($dir)) {
             mkdir($dir, 755);
         }
@@ -23,12 +26,17 @@ $factory->define(LaporanKerusakanFoto::class, function (Faker $faker) {
     $file_ori = $faker->image($dir, $width, $height, 'cats', false);
     $ext = explode('.', $file_ori);
 
-    $enc = md5($ext[0]) . '.' . $ext[1];
+    $nama_file = $ext[0];
+    $extension = $ext[1];
+    $enc = md5_file($nama_file).'.' . $extension;
 
-    rename($dir.'/'.$file_ori, $dir . '/' . $enc);
+    try {
+        rename($dir.'/'.$file_ori, $dir . '/' . $enc);
+    } catch (\Throwable $th) {
+        return 0;
+    }
 
     $size = filesize($dir.'/'.$enc);
-    // $size = '';
 
     return [
         'id_laporan'    => $id_laporan,

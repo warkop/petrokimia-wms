@@ -26,7 +26,7 @@
                     <h1 class="font-weight-bold" style="font-size:8rem">404</h1>
                     <h3>Data yang anda cari tidak ditemukan</h3>
 
-                    <a class="font-weight-bold backtohome" href="{{url('/main')}}" >Kembali ke halaman utama <span> <i class="fa fa-chevron-right"></i>  </span> </a>
+                    <a class="font-weight-bold backtohome" href="{{url('/main')}}" >Kembali ke halaman utama <span> <em class="fa fa-chevron-right"></em>  </span> </a>
                 </div>
             </div>
         </div>

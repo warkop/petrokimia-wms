@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -25,7 +26,7 @@
                     <h1 class="font-weight-bold" style="font-size:4rem">Unauthorized</h1>
                     <h3 style="font-size:1.2rem">Anda belum terdaftar, silahkan daftar terlebih dahulu atau hubungi Administrator</h3>
 
-                    <a class="font-weight-bold backtohome" href="{{url('/')}}" >Kembali ke halaman utama <span> <i class="fa fa-chevron-right"></i>  </span> </a>
+                    <a class="font-weight-bold backtohome" href="{{url('/')}}" >Kembali ke halaman utama <span> <em class="fa fa-chevron-right"></em>  </span> </a>
                 </div>
             </div>
         </div>
