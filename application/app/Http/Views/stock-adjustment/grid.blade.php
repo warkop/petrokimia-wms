@@ -55,10 +55,10 @@
 			<table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
 				<thead>
 					<tr>
-						<th>No</th>
-                        <th>Tanggal Kejadian</th>
-                        <th>Foto</th>
-						<th>Actions</th>
+						<th scope="col">No</th>
+                        <th scope="col">Tanggal Kejadian</th>
+                        <th scope="col">Foto</th>
+						<th scope="col">Actions</th>
 					</tr>
 				</thead>
 			</table>					
@@ -141,14 +141,14 @@
                         <table class="table" id="table_produk">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th width="20%">Nama</th>
-                                    <th width="10%">Area</th>
-                                    <th>Tanggal Produksi</th>
-                                    <th width="15%">Jenis</th>
-                                    <th>Jumlah</th>
-                                    <th>Alasan</th>
-                                    <th><button type="button" class="btn btn-success btn-elevate btn-icon btn-sm" onclick="tambahProduk()"><i class="la la-plus"></i></button></th>
+                                    <th scope="col">No</th>
+                                    <th scope="col" width="20%">Nama</th>
+                                    <th scope="col" width="10%">Area</th>
+                                    <th scope="col">Tanggal Produksi</th>
+                                    <th scope="col" width="15%">Jenis</th>
+                                    <th scope="col">Jumlah</th>
+                                    <th scope="col">Alasan</th>
+                                    <th scope="col"><button type="button" class="btn btn-success btn-elevate btn-icon btn-sm" onclick="tambahProduk()"><i class="la la-plus"></i></button></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -161,12 +161,12 @@
                         <table class="table" id="table_pallet">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th width="20%">Nama</th>
-                                    <th width="20%">Jenis</th>
-                                    <th>Jumlah</th>
-                                    <th>Alasan</th>
-                                    <th width=""><button type="button" onclick="tambahPallet()" class="btn btn-success btn-elevate btn-icon btn-sm"><i class="la la-plus"></i></button></th>
+                                    <th scope="col">No</th>
+                                    <th scope="col" width="20%">Nama</th>
+                                    <th scope="col" width="20%">Jenis</th>
+                                    <th scope="col">Jumlah</th>
+                                    <th scope="col">Alasan</th>
+                                    <th scope="col" width=""><button type="button" onclick="tambahPallet()" class="btn btn-success btn-elevate btn-icon btn-sm"><i class="la la-plus"></i></button></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -219,13 +219,13 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama produk</th>
-                                    <th>Area</th>
-                                    <th>Tanggal Produksi</th>
-                                    <th>Jenis aktivitas</th>
-                                    <th>Jumlah</th>
-                                    <th>Alasan</th>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Nama produk</th>
+                                    <th scope="col">Area</th>
+                                    <th scope="col">Tanggal Produksi</th>
+                                    <th scope="col">Jenis aktivitas</th>
+                                    <th scope="col">Jumlah</th>
+                                    <th scope="col">Alasan</th>
                                 </tr>
                             </thead>
                             <tbody id="tubuh_produk">
@@ -239,11 +239,11 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama pallet</th>
-                                    <th>Jenis aktivitas</th>
-                                    <th>Jumlah</th>
-                                    <th>Alasan</th>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Nama pallet</th>
+                                    <th scope="col">Jenis aktivitas</th>
+                                    <th scope="col">Jumlah</th>
+                                    <th scope="col">Alasan</th>
                                 </tr>
                             </thead>
                             <tbody id="tubuh_pallet">

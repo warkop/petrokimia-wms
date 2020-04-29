@@ -31,11 +31,11 @@
                     <table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
                         <thead>
                             <tr>
-                                <th>No</th>
-                                <th>Nama</th>
-                                <th>Pekerjaan</th>
-                                <th>Shift Kerja</th>
-                                <th>Actions</th>
+                                <th scope="col">No</th>
+                                <th scope="col">Nama</th>
+                                <th scope="col">Pekerjaan</th>
+                                <th scope="col">Shift Kerja</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
                     </table>					

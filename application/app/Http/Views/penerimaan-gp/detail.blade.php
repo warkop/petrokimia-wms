@@ -455,10 +455,10 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama produk</th>
-                                    <th>Jumlah</th>
-                                    <th>Keluhan</th>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Nama produk</th>
+                                    <th scope="col">Jumlah</th>
+                                    <th scope="col">Keluhan</th>
                                 </tr>
                             </thead>
                             <tbody id="tubuh_produk">

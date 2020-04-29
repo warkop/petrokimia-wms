@@ -38,10 +38,10 @@
                     <div class="col-md-12">
                         <table class="table" id="table_material">
                             <thead class="text-center">
-                                <th width="35%">Material</th>
-                                <th width="20%">Bertambah</th>
-                                <th width="20%">Berkurang</th>
-                                <th width="5%"></th>
+                                <th scope="col" width="35%">Material</th>
+                                <th scope="col" width="20%">Bertambah</th>
+                                <th scope="col" width="20%">Berkurang</th>
+                                <th scope="col" width="5%"></th>
                             </thead>
                             <tbody>
                                 

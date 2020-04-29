@@ -84,14 +84,14 @@
                     <table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
                         <thead>
                             <tr>
-                                <th>No</th>
-                                <th>Tanggal</th>
-                                <th>Nama Material</th>
-                                <th>Jumlah</th>
-                                <th>Tipe</th>
-                                <th>Jenis</th>
-                                <th width="30%;">Alasan</th>
-                                <th>Foto</th>
+                                <th scope="col">No</th>
+                                <th scope="col">Tanggal</th>
+                                <th scope="col">Nama Material</th>
+                                <th scope="col">Jumlah</th>
+                                <th scope="col">Tipe</th>
+                                <th scope="col">Jenis</th>
+                                <th scope="col" width="30%;">Alasan</th>
+                                <th scope="col">Foto</th>
                             </tr>
                         </thead>
                     </table>					
@@ -226,8 +226,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="form-group">
-                                <table class="table" id="list"></table>
+                            <div class="form-group" id="list">
                             </div>
                         </div>
                     </div>
@@ -261,10 +260,11 @@
                 $("#list").html("<strong>Memuat Data</strong>")
             },
             success:response=>{
+                let html = '<table class="table">';
                 if (response.data == "") {
                     $("#list").html("<strong>Tidak ada pallet</strong>");
                 } else {
-                    let html = "<thead><tr><th>#</th><th>Nama Pallet</th><th>Jumlah Pallet</th></tr></thead>";
+                    html += "<thead><tr><th>#</th><th>Nama Pallet</th><th>Jumlah Pallet</th></tr></thead>";
 
                     const data = response.data;
                     html += "<tbody>";
@@ -278,7 +278,7 @@
                         no++;
                     });
 
-                    html += "</tbody>";
+                    html += "</tbody></table>";
 
                     $("#list").html(html);
                 }

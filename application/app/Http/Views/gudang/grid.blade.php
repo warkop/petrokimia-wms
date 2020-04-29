@@ -34,16 +34,12 @@
             <table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>Id Sloc</th>
-                        <th>Id Plant</th>
-                        <th>Nama Gudang</th>
-                        <th>Tipe Gudang</th>
-                        {{-- <th>Min Pallet</th> --}}
-                        {{-- <th>Min Terplas</th> --}}
-                        {{-- <th>Jumlah Pupuk</th> --}}
-                        {{-- <th>Jumlah Alat Berat</th> --}}
-                        <th>Actions</th>
+                        <th scope="col">No</th>
+                        <th scope="col">Id Sloc</th>
+                        <th scope="col">Id Plant</th>
+                        <th scope="col">Nama Gudang</th>
+                        <th scope="col">Tipe Gudang</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
             </table>
@@ -157,9 +153,9 @@
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
-                                        <th>Nama Pupuk</th>
-                                        <th>Jumlah</th>
+                                        <th scope="col">No</th>
+                                        <th scope="col">Nama Pupuk</th>
+                                        <th scope="col">Jumlah</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -219,9 +215,9 @@
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
-                                        <th>Kategori Alat Berat</th>
-                                        <th>Jumlah</th>
+                                        <th scope="col">No</th>
+                                        <th scope="col">Kategori Alat Berat</th>
+                                        <th scope="col">Jumlah</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -300,8 +296,8 @@
                             <table class="table table-striped table-bordered dttb-hargaPupukInternasional table-hover table-checkable" id="dttb-hargaPupukInternasional">
                                 <thead class="text-center">
                                     <tr>
-                                        <th>Aktivitas</th>
-                                        <th style="width: 20%">Action</th>
+                                        <th scope="col">Aktivitas</th>
+                                        <th scope="col" style="width: 20%">Action</th>
                                     </tr>     
                                 </thead>
                                 <tbody class="text-center" id="list_aktivitas">

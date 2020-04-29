@@ -109,12 +109,12 @@
 			<table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
 				<thead>
 					<tr>
-						<th>No</th>
-                        <th>Nama Grup</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Status</th>
-						<th>Actions</th>
+						<th scope="col">No</th>
+                        <th scope="col">Nama Grup</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
+                        <th scope="col">Status</th>
+						<th scope="col">Actions</th>
 					</tr>
 				</thead>
 			</table>					

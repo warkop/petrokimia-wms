@@ -204,6 +204,13 @@
                                     <img src="{{aset_extends('img/logo/map-1.png')}}"/><br/>
                                     <h2>Gudang Phonska</h2>
                                     <table class="gudang-info" style="border:none;">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Kapasitas</th>
+                                            <th scope="col"></th>
+                                            <th scope="col">Jumlah</th>
+                                        </tr>
+                                    </thead>
                                     <tr>
                                         <td>Kapasitas Indoor</td>
                                         <td>:</td>

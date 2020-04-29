@@ -30,10 +30,10 @@
 			<table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
 				<thead>
 					<tr>
-						<th>No</th>
-                        <th>Paket Alat Berat</th>
-                        <th>Harga (Rp)</th>
-						<th>Actions</th>
+						<th scope="col">No</th>
+                        <th scope="col">Paket Alat Berat</th>
+                        <th scope="col">Harga (Rp)</th>
+						<th scope="col">Actions</th>
 					</tr>
 				</thead>
 			</table>					

@@ -30,11 +30,11 @@
 			<table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
 				<thead>
 					<tr>
-						<th>No</th>
-                        <th>Nama Gudang</th>
-                        <th>Jumlah Pupuk</th>
-                        <th>Jumlah Alat Berat</th>
-						<th>Actions</th>
+						<th scope="col">No</th>
+                        <th scope="col">Nama Gudang</th>
+                        <th scope="col">Jumlah Pupuk</th>
+                        <th scope="col">Jumlah Alat Berat</th>
+						<th scope="col">Actions</th>
 					</tr>
 				</thead>
 			</table>					
@@ -93,9 +93,9 @@
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
-                                        <th>Nama Pupuk</th>
-                                        <th>Jumlah</th>
+                                        <th scope="col">No</th>
+                                        <th scope="col">Nama Pupuk</th>
+                                        <th scope="col">Jumlah</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -155,9 +155,9 @@
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
-                                        <th>Kategori Alat Berat</th>
-                                        <th>Jumlah</th>
+                                        <th scope="col">No</th>
+                                        <th scope="col">Kategori Alat Berat</th>
+                                        <th scope="col">Jumlah</th>
                                     </tr>
                                 </thead>
                                 <tbody>

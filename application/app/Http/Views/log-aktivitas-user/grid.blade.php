@@ -39,10 +39,10 @@
             <table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
                 <thead>
                     <tr class="text-center">
-                        <th>No</th>
-                        <th>Nama User</th>
-                        <th>Aktivitas</th>
-                        <th>Waktu</th>
+                        <th scope="col">No</th>
+                        <th scope="col">Nama User</th>
+                        <th scope="col">Aktivitas</th>
+                        <th scope="col">Waktu</th>
                     </tr>
                 </thead>
                 <tbody class="text-center">

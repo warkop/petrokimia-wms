@@ -85,69 +85,11 @@
                 <div class="col-md-12">
                     <table class="table" id="table_housekeeper">
                         <thead>
-                            {{-- <th width="10%">No</th> --}}
-                            <th width="30%">Nama Housekepper</th>
-                            <th>Area Kerja</th>
-                            <th width="10%"><button type="button" class="btn btn-success btn-sm btn-block" onclick="tambahHouseKeeper()"><i class="fa fa-plus"></i> Tambah</button></th>
+                            <th scope="col">Nama Housekepper</th>
+                            <th scope="col">Area Kerja</th>
+                            <th scope="col"><button type="button" class="btn btn-success btn-sm btn-block" onclick="tambahHouseKeeper()"><em class="fa fa-plus"></em> Tambah</button></th>
                         </thead>
                         <tbody>
-                            {{-- <tr>
-                                <td>1</td>
-                                <td>
-                                    <select class="form-control m-select2 kt_select2_housekeeping" style="width: 100% !important" name="param" multiple="multiple" >
-                                        <option value="AK">Suryati</option>
-                                        <option value="HI">Maya</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="form-control m-select2" id="kt_select2_11" name="param" multiple="multiple">
-                                        <option>Pilih area</option>
-                                        <option>Area A</option>
-                                        <option>Area B</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <button class="btn btn-danger btn-sm btn-block"><i class="fa fa-trash"></i> Remove</button>
-                                </td>
-                            </tr> --}}
-                            {{-- <tr>
-                                <td>2</td>
-                                <td>
-                                    <select class="form-control m-select2 kt_select2_housekeeping" style="width: 100% !important" name="param" multiple="multiple">
-                                        <option value="AK">Suryati</option>
-                                        <option value="HI">Suryati</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="form-control m-select2" id="kt_select2_12" name="param" multiple="multiple">
-                                        <option>Pilih area</option>
-                                        <option>Area A</option>
-                                        <option>Area B</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <button class="btn btn-danger btn-sm btn-block"><i class="fa fa-trash"></i> Remove</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>
-                                    <select class="form-control m-select2 kt_select2_housekeeping" style="width: 100% !important" name="param" multiple="multiple">
-                                        <option value="AK">Suryati</option>
-                                        <option value="HI">Suryati</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="form-control m-select2" id="kt_select2_13" name="param" multiple="multiple">
-                                        <option>Pilih area</option>
-                                        <option>Area A</option>
-                                        <option>Area B</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <button class="btn btn-danger btn-sm btn-block"><i class="fa fa-trash"></i> Remove</button>
-                                </td>
-                            </tr> --}}
                         </tbody>
                     </table>
                 </div>

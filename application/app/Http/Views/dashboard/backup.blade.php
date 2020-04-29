@@ -103,9 +103,9 @@
                         </div>
                         <div class="container row">
                             <p> 
-                                <span class="mr1"> <i class="fa fa-square gd-a-color-1"></i> Gudang Ponska</span>
-                                <span class="mr1"> <i class="fa fa-square gd-a-color-2"></i> Gudang Amurea</span>
-                                <span class="mr1"> <i class="fa fa-square gd-a-color-3"></i> Gudang Petrocas</span>
+                                <span class="mr1"> <em class="fa fa-square gd-a-color-1"></em> Gudang Ponska</span>
+                                <span class="mr1"> <em class="fa fa-square gd-a-color-2"></em> Gudang Amurea</span>
+                                <span class="mr1"> <em class="fa fa-square gd-a-color-3"></em> Gudang Petrocas</span>
                             </p>
                         </div>
                         <div class="row">
@@ -282,9 +282,9 @@
                     <table class="table table-striped- table-bordered table-hover table-checkable" id="dttb-kondisi-palet" >
                         <thead>
                             <tr>
-                                <th style="font-size:14px">Nama Gudang</th>
-                                <th style="font-size:14px" class="text-center">Ketersediaan Palet</th>
-                                <th style="font-size:14px" class="text-center">Kemampuan Tampung (Hari)</th>
+                                <th scope="col" style="font-size:14px">Nama Gudang</th>
+                                <th scope="col" style="font-size:14px" class="text-center">Ketersediaan Palet</th>
+                                <th scope="col" style="font-size:14px" class="text-center">Kemampuan Tampung (Hari)</th>
                             </tr>
                         </thead>
                     </table>

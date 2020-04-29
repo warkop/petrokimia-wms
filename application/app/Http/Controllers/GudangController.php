@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Validator;
 
 class GudangController extends Controller
 {
+    private $koordinat = 'koordinat';
     public function index()
     {
         $data['title'] = 'Gudang';
@@ -90,8 +91,6 @@ class GudangController extends Controller
         if (!$saved) {
             $this->responseCode     = 502;
             $this->responseMessage  = 'Data gagal disimpan!';
-
-            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         } else {
             $material = $req->input('material');
             $stok_min = $req->input('stok_min');
@@ -103,8 +102,6 @@ class GudangController extends Controller
                         StokMaterial::where('id_gudang', $models->id)
                             ->where('id_material', $material[$i])
                         ->update(['stok_min' => $stok_min[$i]]);
-                        // $resource->stok_min = $stok_min[$i];
-                        // $resource->save();
                     } else {
                         $stok_material = new StokMaterial();
     
@@ -171,7 +168,6 @@ class GudangController extends Controller
         $this->responseCode = 200;
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
         return response()->json($response, $this->responseCode);
-        // return response()->render(200, $data);
     }
 
     public function getPallet()
@@ -218,7 +214,6 @@ class GudangController extends Controller
             $errors = $validator->errors();
             $this->responseMessage = '';
 
-            $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);
             return response()->json(['errors' => $errors, 'message' => 'Inputan tidak valid'], $this->responseCode);
         }
 
@@ -245,7 +240,7 @@ class GudangController extends Controller
 
     public function removeAktivitas($id_gudang, $id_aktivitas)
     {
-        $res = AktivitasGudang::where('id_gudang', $id_gudang)->where('id_aktivitas', $id_aktivitas)->forceDelete();
+        AktivitasGudang::where('id_gudang', $id_gudang)->where('id_aktivitas', $id_aktivitas)->forceDelete();
 
         $res = AktivitasGudang::where('id_gudang', $id_gudang)->get();
         $this->responseData = $res;
@@ -291,14 +286,7 @@ class GudangController extends Controller
 
     public function storeKoordinat(Request $req)
     {
-        $validatedData = $req->validate([
-            'koordinat' => 'required',
-            'pilih_area' => 'required',
-        ], [
-            'required' => ':attribute wajib diisi!',
-        ]);
-
-        $koordinat      = $req->input('koordinat');
+        $koordinat      = $req->input($this->koordinat);
         $id_area        = $req->input('pilih_area');
 
         $area = Area::find($id_area);
@@ -316,7 +304,7 @@ class GudangController extends Controller
     public function loadKoordinat(Area $area)
     {
         $area_lain = [];
-        $res_area_lain = Area::select('koordinat')->where('id', '<>', $area->id)->whereNotNull('koordinat')->get();
+        $res_area_lain = Area::select($this->koordinat)->where('id', '<>', $area->id)->whereNotNull($this->koordinat)->get();
         for ($index=0; $index < count($res_area_lain); $index++) {
             $area_lain[$index] = json_decode($res_area_lain[$index]->koordinat);
         }

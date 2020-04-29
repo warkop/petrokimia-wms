@@ -65,15 +65,15 @@
             <table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>Tanggal</th>
-                        <th>Aktivitas</th>
-                        <th>Gudang</th>
-                        <th>Shift</th>
-                        <th>Nopol</th>
-                        <th>Driver</th>
-                        <th>No. SO / Posto</th>
-                        <th>Actions</th>
+                        <th scope="col">No</th>
+                        <th scope="col">Tanggal</th>
+                        <th scope="col">Aktivitas</th>
+                        <th scope="col">Gudang</th>
+                        <th scope="col">Shift</th>
+                        <th scope="col">Nopol</th>
+                        <th scope="col">Driver</th>
+                        <th scope="col">No. SO / Posto</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
             </table>

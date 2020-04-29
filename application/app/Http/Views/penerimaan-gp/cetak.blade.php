@@ -332,11 +332,13 @@
 
                     <div class="col-md-6 mb1">
                         <table>
+                            <thead>
                             <tr>
-                              <th>Area</th>
-                              <th>Tanggal</th>
-                              <th>Daya Tampung</th>
+                              <th scope="col">Area</th>
+                              <th scope="col">Tanggal</th>
+                              <th scope="col">Daya Tampung</th>
                             </tr>
+                            </thead>
                             @foreach ($produk as $item)
                                 <tr>
                                     <td>Area {{ $item->nama_area }}</td>
@@ -349,6 +351,12 @@
 
                     <div class="col-md-5 mb1 ml1">
                         <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Jenis dan Jumlah</th>
+                                    <th scope="col">Tipe Aktivitas</th>
+                                  </tr>
+                            </thead>
                             @foreach ($pallet as $key)
                                 @if ($key->status_pallet == 1)
                                     @php $status = 'Stok' @endphp

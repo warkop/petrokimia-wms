@@ -34,10 +34,10 @@
             <table class="table table-striped- table-bordered table-hover table-checkable">
                 <thead id="inputAdjst">
                     <tr>
-                        <th class="text-center">No</th>
-                        <th class="text-center">Nomor Lambung</th>
-                        <th class="text-center">Nomor Polisi</th>
-                        <th class="text-center">Actions</th>
+                        <th scope="col" class="text-center">No</th>
+                        <th scope="col" class="text-center">Nomor Lambung</th>
+                        <th scope="col" class="text-center">Nomor Polisi</th>
+                        <th scope="col" class="text-center">Actions</th>
                     </tr>
                         <tr class="text-center">
                             <td>1</td>

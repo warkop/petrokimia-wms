@@ -32,14 +32,14 @@
 			<table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
 				<thead>
 					<tr>
-						<th>No</th>
-                        <th>Nama</th>
-                        <th>NIK</th>
-                        <th>No. Hp</th>
-                        <th>Gudang</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-						<th>Actions</th>
+						<th scope="col">No</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col">NIK</th>
+                        <th scope="col">No. Hp</th>
+                        <th scope="col">Gudang</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
+						<th scope="col">Actions</th>
 					</tr>
 				</thead>
 			</table>					
@@ -131,9 +131,9 @@
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
-                                        <th>Nama</th>
-                                        <th>Job Desk</th>
+                                        <th scope="col">No</th>
+                                        <th scope="col">Nama</th>
+                                        <th scope="col">Job Desk</th>
                                     </tr>
                                 </thead>
                                 <tbody>

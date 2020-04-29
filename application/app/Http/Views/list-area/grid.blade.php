@@ -28,11 +28,11 @@
             <table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>Nama area</th>
-                        <th>Kapasitas (Ton)</th>
-                        <th>Jenis</th>
-                        <th>Actions</th>
+                        <th scope="col">No</th>
+                        <th scope="col">Nama area</th>
+                        <th scope="col">Kapasitas (Ton)</th>
+                        <th scope="col">Jenis</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
             </table>
