@@ -38,6 +38,9 @@ use App\Http\Requests\ApiSaveUploadBaRequest;
 use App\Http\Resources\AktivitasResource;
 use App\Http\Resources\AlatBeratResource;
 use App\Http\Resources\AreaPenerimaanGiResource;
+use App\Http\Resources\GetAreaProductionResource;
+use App\Http\Resources\GetAreaResource;
+use App\Http\Resources\GetAreaStokResource;
 use App\Http\Resources\GetSistroResource;
 use App\Http\Resources\HistoryMaterialAreaResource;
 use App\Http\Resources\ListNotifikasiResource;
@@ -276,6 +279,7 @@ class AktivitasController extends Controller
                 $resource = $resource->where('id_material', $id_material);
             }
             $resource = $resource->get();
+            $data = GetAreaResource::collection($resource);
         } else {
             $tanggal = date('Y-m-d', strtotime(now()));
             $resource = Area::select(
@@ -292,13 +296,25 @@ class AktivitasController extends Controller
             })
             ->where('id_gudang', $gudang->id)
             ->get();
+            $data = GetAreaProductionResource::collection($resource);
         }
-        return (new AktivitasResource($resource))->additional([
+
+        
+
+        return response()->json([
+            'data' => $data,
             'status' => [
                 'message' => '',
-                'code' => Response::HTTP_OK,
+                'code' => Response::HTTP_OK
             ]
         ], Response::HTTP_OK);
+
+        // return (new AktivitasResource($resource))->additional([
+        //     'status' => [
+        //         'message' => '',
+        //         'code' => Response::HTTP_OK,
+        //     ]
+        // ], Response::HTTP_OK);
     }
 
     public function pindahArea(Request $req) //memuat area untuk keperluan pindah area
@@ -348,10 +364,13 @@ class AktivitasController extends Controller
                 $detail = $detail->orderBy('nama', 'ASC');
             }
 
-            return (new AktivitasResource($detail->get()))->additional([
+            $data = GetAreaStokResource::collection($detail->get());
+
+            return response()->json([
+                'data' => $data,
                 'status' => [
                     'message' => '',
-                    'code' => Response::HTTP_OK,
+                    'code' => Response::HTTP_OK
                 ]
             ], Response::HTTP_OK);
         } else {
