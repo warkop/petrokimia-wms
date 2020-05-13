@@ -1727,13 +1727,16 @@ class AktivitasController extends Controller
             'aktivitas_harian.created_at',
             'aktivitas_harian.created_by',
             'tenaga_kerja_non_organik.nama as nama_checker',
-            'karu.nama as nama_karu'
+            'karu.nama as nama_karu',
+            'aktivitas_harian.id_shift',
+            'shift_kerja.nama as nama_shift'
         )
         ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
         ->leftJoin('alat_berat', 'aktivitas_harian.id_alat_berat', '=', 'alat_berat.id')
         ->leftJoin('users', 'users.id', '=', 'aktivitas_harian.updated_by')
         ->leftJoin('tenaga_kerja_non_organik', 'tenaga_kerja_non_organik.id', '=', 'users.id_tkbm')
         ->leftJoin('karu', 'karu.id', '=', 'users.id_karu')
+        ->leftJoin('shift_kerja', 'shift_kerja.id', '=', 'aktivitas_harian.id_shift')
         ->where('aktivitas_harian.id', $id)
         ->orderBy('aktivitas_harian.id', 'desc')
         ->get();
