@@ -69,7 +69,7 @@
                     </select>
                 </div>
             </div> --}}
-            <div class="form-group row">
+            {{-- <div class="form-group row">
                 <h4 class="col-2 col-form-label text-kiri">Kegiatan</h4>
                 <div class="col-6">
                     <select class="form-control m-select2" id="kegiatan" name="kegiatan[]" multiple="multiple" style="width: 100%">
@@ -78,7 +78,7 @@
                         @endforeach
                     </select>
                 </div>
-            </div>
+            </div> --}}
             <div class="form-group row">
                 <h4 class="col-2 col-form-label text-kiri">Produk</h4>
                 <div class="col-6">
