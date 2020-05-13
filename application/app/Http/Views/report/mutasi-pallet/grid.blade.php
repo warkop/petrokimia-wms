@@ -50,7 +50,7 @@
                         </label> 
                     </div>
                     <div class="mt1" id="textadd" style="display:none;">
-                        <select class="form-control m-select2" id="pallet" name="pilih_pallet[]" multiple="multiple" style="width:100%">
+                        <select class="form-control m-select2" id="pallet" name="pilih_pallet[]" style="width:100%">
                             @foreach ($pallet as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>
                             @endforeach
