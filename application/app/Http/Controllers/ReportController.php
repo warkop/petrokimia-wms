@@ -143,7 +143,7 @@ class ReportController extends Controller
             });
         }
 
-        $res = $res->get();
+        $res = $res->orderBy('aktivitas_harian.updated_at', 'asc')->get();
         $preview = false;
         if (request()->preview == true) {
             $preview = true;
@@ -1209,7 +1209,7 @@ class ReportController extends Controller
             $gudang = $gudang->where('id', $localGudang->id);
         }
         $data['gudang'] = $gudang->get();
-        $data['material'] = Material::orderBy('kategori', 'asc')->get();
+        $data['material'] = Material::where('kategori', 3)->orWhere('kategori', 2)->orderBy('kategori', 'asc')->get();
         return view('report.material.grid', $data);
     }
 
@@ -2721,7 +2721,7 @@ class ReportController extends Controller
     {
         $data['title']      = 'Laporan Keluhan GP';
         $data['gudang']     = Gudang::gp()->get();
-        $data['keluhan']    = Keluhan::all();
+        // $data['keluhan']    = Keluhan::all();
         $data['aktivitas']  = Aktivitas::whereNotNull('pengiriman')->get();
         $data['produk']     = Material::produk()->get();
         return view('report.keluhan-gp.grid', $data);
