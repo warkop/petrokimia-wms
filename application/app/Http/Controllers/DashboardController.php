@@ -546,9 +546,9 @@ class DashboardController extends Controller
         $pilih_gudang     = request()->input('gudang');
 
         if ($pilih_gudang == null) {
-            $gudang = Gudang::select('id')->internal()->orderBy('nama')->get()->pluck('id')->toArray();
+            $gudang = Gudang::select('id', 'nama')->internal()->orderBy('id')->get()->toArray();
         } else {
-            $gudang = $pilih_gudang;
+            $gudang = Gudang::select('id', 'nama')->whereIn('id', $pilih_gudang)->orderBy('id')->get()->toArray();
         }
 
         $date = explode('/', $tanggal);
@@ -558,68 +558,144 @@ class DashboardController extends Controller
 
         $data = [];
         $temp_tgl = $tgl_awal;
-        do {
-            $transaksiKeluar = MaterialTrans::leftJoin('aktivitas_harian', function($join){
-                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian');
-            })
-            ->leftJoin('aktivitas', function($join) {
-                $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+
+        for ($i=0; $i<count($gudang); $i++) {
+            $totalKeluar = 0;
+            $totalMasuk = 0;
+
+            for ($k=0; $k<count($shift); $k++) {
+                $transaksiKeluar = MaterialTrans::leftJoin('aktivitas_harian', function($join){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian');
+                })
+                ->leftJoin('aktivitas', function($join) {
+                    $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                    ;
+                })
+                ->whereNotNull('status_produk')
+                ->where('draft', 0)
+                ->where('tipe', 1)
+                ->where('aktivitas_harian.id_gudang', $gudang[$i]['id'])
+                // ->where(function($query) use($gudang){
+                //     for ($i=0; $i < count($gudang); $i++) {
+                //         $query->orWhere('aktivitas_harian.id_gudang', $gudang[$i]);
+                //     }
+                // })
+                // ->where(function($query) use($shift){
+                //     for ($i=0; $i < count($shift); $i++) {
+                //         $query->orWhere('aktivitas_harian.id_shift', $shift[$i]);
+                //     }
+                // })
+                ->where('aktivitas_harian.id_shift', $shift[$k])
+                ->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), [$tgl_awal, $tgl_akhir])
+                ->where('aktivitas.status_aktivitas', 1)
+                ->where('status_produk', 1)
+                ->sum('material_trans.jumlah')
                 ;
-            })
-            ->whereNotNull('status_produk')
-            ->where('draft', 0)
-            ->where('tipe', 1)
-            ->where(function($query) use($gudang){
-                for ($i=0; $i < count($gudang); $i++) {
-                    $query->orWhere('aktivitas_harian.id_gudang', $gudang[$i]);
-                }
-            })
-            ->where(function($query) use($shift){
-                for ($i=0; $i < count($shift); $i++) {
-                    $query->orWhere('aktivitas_harian.id_shift', $shift[$i]);
-                }
-            })
-            ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $temp_tgl)
-            ->where('aktivitas.status_aktivitas', 1)
-            ->where('status_produk', 1)
-            ->sum('material_trans.jumlah')
-            ;
+        
+                $transaksiMasuk = MaterialTrans::leftJoin('aktivitas_harian', function($join){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ;
+                })
+                ->leftJoin('aktivitas', function($join) {
+                    $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                    ;
+                })
+                ->whereNotNull('status_produk')
+                ->where('draft', 0)
+                ->where('tipe', 2)
+                ->where('aktivitas_harian.id_gudang', $gudang[$i]['id'])
+                // ->where(function($query) use($gudang){
+                //     for ($i=0; $i < count($gudang); $i++) {
+                //         $query->orWhere('aktivitas_harian.id_gudang', $gudang[$i]);
+                //     }
+                // })
+                // ->where(function($query) use($shift){
+                //     for ($i=0; $i < count($shift); $i++) {
+                //         $query->orWhere('aktivitas_harian.id_shift', $shift[$i]);
+                //     }
+                // })
+                ->where('aktivitas_harian.id_shift', $shift[$k])
+                ->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), [$tgl_awal, $tgl_akhir])
+                ->where('aktivitas.status_aktivitas', 2)
+                ->where('status_produk', 1)
+                ->sum('material_trans.jumlah')
+                ;
+
+                $totalKeluar = $totalKeluar+$transaksiKeluar;
+                $totalMasuk = $totalMasuk+$transaksiMasuk;
+            }
+            $temp[0] = $gudang[$i]['nama'];
+            $temp[1] = (double)$totalMasuk;
+            $temp[2] = (double)$totalKeluar;
     
-            $transaksiMasuk = MaterialTrans::leftJoin('aktivitas_harian', function($join){
-                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                ;
-            })
-            ->leftJoin('aktivitas', function($join) {
-                $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                ;
-            })
-            ->whereNotNull('status_produk')
-            ->where('draft', 0)
-            ->where('tipe', 2)
-            ->where(function($query) use($gudang){
-                for ($i=0; $i < count($gudang); $i++) {
-                    $query->orWhere('aktivitas_harian.id_gudang', $gudang[$i]);
-                }
-            })
-            ->where(function($query) use($shift){
-                for ($i=0; $i < count($shift); $i++) {
-                    $query->orWhere('aktivitas_harian.id_shift', $shift[$i]);
-                }
-            })
-            ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $temp_tgl)
-            ->where('aktivitas.status_aktivitas', 2)
-            ->where('status_produk', 1)
-            ->sum('material_trans.jumlah')
-            ;
-
-            $temp[0] = date('d-m-Y', strtotime($temp_tgl));
-            $temp[1] = (double)$transaksiMasuk;
-            $temp[2] = (double)$transaksiKeluar;
-
             array_push($data, $temp);
+        }
 
-            $temp_tgl = date($this->FORMAT_DATE, strtotime($temp_tgl.$this->INCREMENT_DAY));
-        } while ($temp_tgl != $tgl_akhir);
+        
+
+
+        // do {
+        //     $transaksiKeluar = MaterialTrans::leftJoin('aktivitas_harian', function($join){
+        //         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian');
+        //     })
+        //     ->leftJoin('aktivitas', function($join) {
+        //         $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+        //         ;
+        //     })
+        //     ->whereNotNull('status_produk')
+        //     ->where('draft', 0)
+        //     ->where('tipe', 1)
+        //     ->where(function($query) use($gudang){
+        //         for ($i=0; $i < count($gudang); $i++) {
+        //             $query->orWhere('aktivitas_harian.id_gudang', $gudang[$i]);
+        //         }
+        //     })
+        //     ->where(function($query) use($shift){
+        //         for ($i=0; $i < count($shift); $i++) {
+        //             $query->orWhere('aktivitas_harian.id_shift', $shift[$i]);
+        //         }
+        //     })
+        //     ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $temp_tgl)
+        //     ->where('aktivitas.status_aktivitas', 1)
+        //     ->where('status_produk', 1)
+        //     ->sum('material_trans.jumlah')
+        //     ;
+    
+        //     $transaksiMasuk = MaterialTrans::leftJoin('aktivitas_harian', function($join){
+        //         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+        //         ;
+        //     })
+        //     ->leftJoin('aktivitas', function($join) {
+        //         $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+        //         ;
+        //     })
+        //     ->whereNotNull('status_produk')
+        //     ->where('draft', 0)
+        //     ->where('tipe', 2)
+        //     ->where(function($query) use($gudang){
+        //         for ($i=0; $i < count($gudang); $i++) {
+        //             $query->orWhere('aktivitas_harian.id_gudang', $gudang[$i]);
+        //         }
+        //     })
+        //     ->where(function($query) use($shift){
+        //         for ($i=0; $i < count($shift); $i++) {
+        //             $query->orWhere('aktivitas_harian.id_shift', $shift[$i]);
+        //         }
+        //     })
+        //     ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $temp_tgl)
+        //     ->where('aktivitas.status_aktivitas', 2)
+        //     ->where('status_produk', 1)
+        //     ->sum('material_trans.jumlah')
+        //     ;
+
+        //     $temp[0] = date('d-m-Y', strtotime($temp_tgl));
+        //     $temp[1] = (double)$transaksiMasuk;
+        //     $temp[2] = (double)$transaksiKeluar;
+
+        //     array_push($data, $temp);
+
+        //     $temp_tgl = date($this->FORMAT_DATE, strtotime($temp_tgl.$this->INCREMENT_DAY));
+        // } while ($temp_tgl != $tgl_akhir);
         
         $this->responseCode = 200;
         $this->responseMessage = 'Data tersedia.';
@@ -636,9 +712,9 @@ class DashboardController extends Controller
         $pilih_gudang     = request()->input('gudang');
 
         if ($pilih_gudang == null) {
-            $gudang = Gudang::select('id')->internal()->orderBy('nama')->get()->pluck('id')->toArray();
+            $gudang = Gudang::select('id', 'nama')->internal()->orderBy('id')->get()->toArray();
         } else {
-            $gudang = $pilih_gudang;
+            $gudang = Gudang::select('id', 'nama')->whereIn('id', $pilih_gudang)->orderBy('id')->get()->toArray();
         }
 
         $date = explode('/', $tanggal);
@@ -646,85 +722,78 @@ class DashboardController extends Controller
         $tgl_awal = date($this->FORMAT_DATE, strtotime($date[0]));
         $tgl_akhir = date($this->FORMAT_DATE, strtotime($date[1].$this->INCREMENT_DAY));
 
-        $temp_tgl = $tgl_awal;
-
         $data = [];
-        do {
+        for ($i=0; $i<count($gudang); $i++) {
             $realisasiMuat = 0;
             $kapasitasMuatBuruh = 0;
-            for ($i=0; $i<count($gudang); $i++) {
-                for ($k=0; $k<count($shift); $k++) {
-                    if ($shift[$k] == 3) {
-                        $kapasitas = DB::table('realisasi')
-                        ->leftJoin('rencana_harian', 'rencana_harian.id', '=', 'realisasi.id_rencana')
-                        ->where('id_gudang', $gudang[$i])
-                        ->where('id_shift', $shift[$k])
-                        ->where('rencana_harian.tanggal', date($this->FORMAT_DATE, strtotime($temp_tgl.$this->DECREMENT_DAY)))
-                        ->first()
-                        ;
-                        $kapasitasMuatBuruh = $kapasitasMuatBuruh+(($kapasitas->jumlah_buruh??0)*60);
-        
-                        $realisasiMuat += MaterialTrans::leftJoin('aktivitas_harian', function($join){
-                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                            ->where('draft', 0);
-                        })
-                        ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                        ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
-                        ->whereNotNull('status_produk')
-                        ->where(function($query) use ($gudang, $i){
-                            $query->orWhere('aktivitas_harian.id_gudang', $gudang[$i]);
-                            $query->orWhere('material_adjustment.id_gudang', $gudang[$i]);  
-                        })
-                        ->where(function($query) use($temp_tgl){
-                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), date($this->FORMAT_DATE, strtotime($temp_tgl.$this->DECREMENT_DAY)));
-                            $query->orWhere('material_adjustment.tanggal', $temp_tgl);
-                        })
-                        ->whereNotNull('butuh_tkbm')
-                        ->where('id_shift', $shift[$k])
-                        ->sum('material_trans.jumlah')
-                        ;
-                    } else if ($shift[$k] == 2 || $shift[$k] == 1) {
-                        $kapasitas = DB::table('realisasi')
-                        ->leftJoin('rencana_harian', 'rencana_harian.id', '=', 'realisasi.id_rencana')
-                        ->where('id_gudang', $gudang[$i])
-                        ->where('id_shift', $shift[$k])
-                        ->where('rencana_harian.tanggal', $temp_tgl)
-                        ->first()
-                        ;
+            for ($k=0; $k<count($shift); $k++) {
+                if ($shift[$k] == 3) {
+                    $kapasitas = DB::table('realisasi')
+                    ->leftJoin('rencana_harian', 'rencana_harian.id', '=', 'realisasi.id_rencana')
+                    ->where('id_gudang', $gudang[$i]['id'])
+                    ->where('id_shift', $shift[$k])
+                    ->whereBetween('rencana_harian.tanggal', [date($this->FORMAT_DATE, strtotime($tgl_awal.$this->DECREMENT_DAY)), date($this->FORMAT_DATE, strtotime($tgl_akhir.$this->DECREMENT_DAY))])
+                    ->first()
+                    ;
+                    $kapasitasMuatBuruh = $kapasitasMuatBuruh+(($kapasitas->jumlah_buruh??0)*60);
+    
+                    $realisasiMuat += MaterialTrans::leftJoin('aktivitas_harian', function($join){
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0);
+                    })
+                    ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                    ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
+                    ->whereNotNull('status_produk')
+                    ->where(function($query) use ($gudang, $i){
+                        $query->orWhere('aktivitas_harian.id_gudang', $gudang[$i]['id']);
+                        $query->orWhere('material_adjustment.id_gudang', $gudang[$i]['id']);  
+                    })
+                    ->where(function($query) use($tgl_awal, $tgl_akhir){
+                        $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), [date($this->FORMAT_DATE, strtotime($tgl_awal.$this->DECREMENT_DAY)), date($this->FORMAT_DATE, strtotime($tgl_akhir.$this->DECREMENT_DAY))]);
+                        $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
+                    })
+                    ->whereNotNull('butuh_tkbm')
+                    ->where('id_shift', $shift[$k])
+                    ->sum('material_trans.jumlah')
+                    ;
+                } else if ($shift[$k] == 2 || $shift[$k] == 1) {
+                    $kapasitas = DB::table('realisasi')
+                    ->leftJoin('rencana_harian', 'rencana_harian.id', '=', 'realisasi.id_rencana')
+                    ->where('id_gudang', $gudang[$i]['id'])
+                    ->where('id_shift', $shift[$k])
+                    ->whereBetween('rencana_harian.tanggal', [$tgl_awal, $tgl_akhir])
+                    ->first()
+                    ;
 
-                        $kapasitasMuatBuruh = $kapasitasMuatBuruh+($kapasitas->jumlah_buruh??0)*60;
-        
-                        $realisasiMuat += MaterialTrans::leftJoin('aktivitas_harian', function($join){
-                            $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                            ->where('draft', 0);
-                        })
-                        ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                        ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
-                        ->whereNotNull('status_produk')
-                        ->where(function($query) use ($gudang, $i){
-                            $query->orWhere('aktivitas_harian.id_gudang', $gudang[$i]);
-                            $query->orWhere('material_adjustment.id_gudang', $gudang[$i]);  
-                        })
-                        ->where(function($query) use($temp_tgl){
-                            $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), $temp_tgl);
-                            $query->orWhere('material_adjustment.tanggal', $temp_tgl);
-                        })
-                        ->whereNotNull('butuh_tkbm')
-                        ->where('id_shift', $shift[$k])
-                        ->sum('material_trans.jumlah')
-                        ;
-                    }
+                    $kapasitasMuatBuruh = $kapasitasMuatBuruh+($kapasitas->jumlah_buruh??0)*60;
+    
+                    $realisasiMuat += MaterialTrans::leftJoin('aktivitas_harian', function($join){
+                        $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0);
+                    })
+                    ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                    ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'id_adjustment')
+                    ->whereNotNull('status_produk')
+                    ->where(function($query) use ($gudang, $i){
+                        $query->orWhere('aktivitas_harian.id_gudang', $gudang[$i]['id']);
+                        $query->orWhere('material_adjustment.id_gudang', $gudang[$i]['id']);  
+                    })
+                    ->where(function($query) use($tgl_awal, $tgl_akhir){
+                        $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd')"), [$tgl_awal, $tgl_akhir]);
+                        $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
+                    })
+                    ->whereNotNull('butuh_tkbm')
+                    ->where('id_shift', $shift[$k])
+                    ->sum('material_trans.jumlah')
+                    ;
                 }
             }
-
-            $temp[0] = date('d-m-Y', strtotime($temp_tgl));
+            $temp[0] = $gudang[$i]['nama'];
             $temp[1] = $kapasitasMuatBuruh;
             $temp[2] = (double)$realisasiMuat;
 
             array_push($data, $temp);
-
-            $temp_tgl = date($this->FORMAT_DATE, strtotime($temp_tgl.$this->INCREMENT_DAY));
-        } while ($temp_tgl != $tgl_akhir);
+        }
 
         $this->responseCode = 200;
         $this->responseMessage = 'Data tersedia.';
