@@ -498,7 +498,7 @@ function getTonaseProdukRusak() {
                 
             };
 
-            var chart = new google.visualization.ColumnChart(document.getElementById('produkrusak'));
+            var chart = new google.visualization.BarChart(document.getElementById('produkrusak'));
 
             chart.draw(data, options);
         },
@@ -552,7 +552,7 @@ function getTonaseAlatBerat() {
                 },
             };
 
-            var chart = new google.visualization.ColumnChart(document.getElementById('realisasipenggunaan'));
+            var chart = new google.visualization.BarChart(document.getElementById('realisasipenggunaan'));
 
             chart.draw(data, options);
         },
