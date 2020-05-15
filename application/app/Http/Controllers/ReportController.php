@@ -24,6 +24,7 @@ use App\Http\Models\Yayasan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Worksheet\MemoryDrawing;
@@ -4895,12 +4896,12 @@ class ReportController extends Controller
 
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'BIAYA Rp/Ton');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'BIAYA Rp/Ton (Rupiah)');
         $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
 
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REALISASI BIAYA ALAT BERAT');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REALISASI BIAYA ALAT BERAT (Rupiah)');
         $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
 
         $row = 7;
@@ -4947,14 +4948,14 @@ class ReportController extends Controller
 
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. '. helpCurrency($value->anggaran));
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->anggaran);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom)->getNumberFormat()->setFormatCode('#,##0');
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
             
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. '. helpCurrency($jumlahTonase*$value->anggaran));
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($jumlahTonase*$value->anggaran));
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom)->getNumberFormat()->setFormatCode('#,##0');
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
             $biaya = $jumlahTonase * $value->anggaran;
             $totalBiaya += $biaya;
@@ -4989,8 +4990,8 @@ class ReportController extends Controller
 
         $col++;
         $abjad++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($totalBiaya));
-        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalBiaya);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom)->getNumberFormat()->setFormatCode('#,##0');
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle('Laporan Biaya Alat Berat');
@@ -5253,12 +5254,12 @@ class ReportController extends Controller
 
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'BIAYA Rp/Ton');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'BIAYA Rp/Ton (Rupiah)');
         $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
 
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REALISASI BIAYA TKBM');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REALISASI BIAYA TKBM (Rupiah)');
         $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
 
         $row = 7;
@@ -5299,14 +5300,14 @@ class ReportController extends Controller
 
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp . ' . helpCurrency($value->anggaran_tkbm));
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->anggaran_tkbm);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom)->getNumberFormat()->setFormatCode('#,##0');
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($jumlahTonase * $value->anggaran_tkbm));
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($jumlahTonase * $value->anggaran_tkbm));
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom)->getNumberFormat()->setFormatCode('#,##0');
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
             $biaya = $jumlahTonase * $value->anggaran_tkbm;
             $totalBiaya += $biaya;
@@ -5340,8 +5341,8 @@ class ReportController extends Controller
         
         $col++;
         $abjad++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($totalBiaya));
-        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalBiaya);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom)->getNumberFormat()->setFormatCode('#,##0');
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
         //Sheet Title
@@ -5606,12 +5607,12 @@ class ReportController extends Controller
 
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'BIAYA Rp/Ton');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'BIAYA Rp/Ton (Rupiah)');
         $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
 
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REALISASI BIAYA PALLET');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REALISASI BIAYA PALLET (Rupiah)');
         $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
 
         $row = 7;
@@ -5652,14 +5653,14 @@ class ReportController extends Controller
 
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp . ' . helpCurrency($value->anggaran_pallet));
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($value->anggaran_pallet));
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom)->getNumberFormat()->setFormatCode('#,##0');
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($jumlahTonase * $value->anggaran_pallet));
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($jumlahTonase * $value->anggaran_pallet));
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom)->getNumberFormat()->setFormatCode('#,##0');
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
             $biaya = $jumlahTonase * $value->anggaran_pallet;
             $totalBiaya += $biaya;
@@ -5694,8 +5695,8 @@ class ReportController extends Controller
 
         $col++;
         $abjad++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rp. ' . helpCurrency($totalBiaya));
-        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalBiaya);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom)->getNumberFormat()->setFormatCode('#,##0');
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
         //Sheet Title
