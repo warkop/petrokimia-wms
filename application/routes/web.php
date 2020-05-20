@@ -254,6 +254,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/laporan-biaya-alat-berat', 'ReportController@laporanBiayaAlatBerat');
         Route::get('/laporan-biaya-tkbm', 'ReportController@laporanBiayaTkbm');
         Route::get('/laporan-biaya-pallet', 'ReportController@laporanBiayaPallet');
+        Route::get('/laporan-keluhan-operator', 'ReportController@laporanKeluhanOperator');
         
         Route::get('/transaksi-material', 'ReportController@transaksiMaterial');
         Route::get('/stok', 'ReportController@stok');
@@ -270,6 +271,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/biaya-alat-berat', 'ReportController@biayaAlatBerat');
         Route::get('/biaya-tkbm', 'ReportController@biayaTkbm');
         Route::get('/biaya-pallet', 'ReportController@biayaPallet');
+        Route::get('/keluhan-operator', 'ReportController@keluhanOperator');
     });
 });
 

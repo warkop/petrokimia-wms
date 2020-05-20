@@ -12,6 +12,7 @@ use App\Http\Models\GudangStok;
 use App\Http\Models\Karu;
 use App\Http\Models\KategoriAlatBerat;
 use App\Http\Models\Keluhan;
+use App\Http\Models\KeluhanOperator;
 use App\Http\Models\LaporanKerusakan;
 use App\Http\Models\Material;
 use App\Http\Models\MaterialTrans;
@@ -716,8 +717,7 @@ class ReportController extends Controller
 
         $res = AreaStok::distinct()->select(
             'id_material',
-            'id_area',
-            'gudang.nama'
+            'id_area'
         )
         ->join('area', 'area.id', '=', 'area_stok.id_area')
         ->join('gudang', 'gudang.id', '=', 'area.id_gudang')
@@ -755,7 +755,11 @@ class ReportController extends Controller
             });
         }
 
-        $res = $res->orderBy('gudang.nama', 'asc')->orderBy('id_material', 'asc')->get()->groupBy('id_material');
+        $res = $res
+        // ->orderBy('gudang.nama', 'asc')
+        ->orderBy('id_material', 'asc')
+        ->get()
+        ->groupBy('id_material');
 
         if (!is_dir(storage_path() . '/app/public/excel/')) {
             mkdir(storage_path() . '/app/public/excel', 755);
@@ -5729,22 +5733,244 @@ class ReportController extends Controller
 
     public function laporanKeluhanOperator()
     {
-        
+        $data['title'] = 'Laporan Keluhan Operator';
+        $data['keluhan'] = Keluhan::get();
+        return view('report.keluhan-operator.grid', $data);
     }
 
     public function keluhanOperator()
     {
+        $keluhan           = request()->input('keluhan'); //multi
+        $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
+        $res = KeluhanOperator::select(
+            'tenaga_kerja_non_organik.nama as nama_operator',
+            'tenaga_kerja_non_organik.nik',
+            'keluhan.nama as nama_keluhan',
+            'keterangan',
+            'keluhan_operator.created_at as tanggal'
+        )
+        ->join('tenaga_kerja_non_organik', 'tenaga_kerja_non_organik.id', '=', 'keluhan_operator.id_operator')
+        ->join('keluhan', 'keluhan.id', '=', 'keluhan_operator.id_keluhan')
+            ;
         
+        if ($keluhan) {
+            $res = $res->where('keluhan_operator.id_keluhan', $keluhan[0]);
+            foreach ($keluhan as $key => $value) {
+                $res = $res->orWhere('keluhan_operator.id_keluhan', $value);
+            }
+        }
+
+        $res = $res->orderBy('keluhan_operator.created_at')->get();
+
+        $preview = false;
+        if (request()->preview == true) {
+            $preview = true;
+        }
+
+        $nama_file = date("YmdHis") . '_keluhan_operator.xlsx';
+        $this->generateExcelKeluhanOperator($res, $nama_file, $tgl_awal, $tgl_akhir, $preview);
     }
 
-    public function generateExcelKeluhanOperator($res, $nama_file, $resGudang, $resAktivitas, $tgl_awal, $tgl_akhir, $preview)
+    public function generateExcelKeluhanOperator($res, $nama_file, $tgl_awal, $tgl_akhir, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
 
         $sheetIndex = 0;
+        //start: style
+        $style_title = array(
+            'font' => array(
+                'bold' => true
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            )
+        );
+        $style_acara = array(
+            'font' => array(
+                'size' => 14,
+                'bold' => true
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            )
+        );
+        $style_judul_kolom = array(
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'color' => array('rgb' => 'D3D3D3')
+            ),
+            'font' => array(
+                'bold' => true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                )
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'  => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            )
+        );
+        $style_ontop = array(
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'color' => array('rgb' => '98d6ea')
+            ),
+            'font' => array(
+                'bold' => true
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                )
+            ),
+        );
+        $style_kolom = array(
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                )
+            ),
+
+        );
+        $style_no['alignment'] = array(
+            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+        );
+
+        $style_isi_kolom = array(
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                )
+            ),
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'color' => array('rgb' => '98d6ea')
+            ),
+            'font' => array(
+                'bold' => true
+            ),
+        );
+        $style_note = array(
+            'font' => array(
+                'bold' => true
+            )
+        );
+        //end: style
+
+        $objSpreadsheet->createSheet($sheetIndex);
+        $objSpreadsheet->setActiveSheetIndex($sheetIndex);
+
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+
+        // start : title
+        $col = 1;
+        $row = 1;
+        $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'LAPORAN KELUHAN OPERATOR');
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':F' . $row);
+
+        $row++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PERIODE : ' . date('d/m/Y', strtotime($tgl_awal)) . ' - ' . date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':F' . $row);
+
+        $col = 1;
+        $row++;
+
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($style_acara);
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($style_note);
+
+        // end : title
+        // start : judul kolom
+        $col = 1;
+        $row = 6;
+        $abjadOri = 'A';
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'NO');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'NAMA OPERATOR');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'NO. BADGE');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TANGGAL');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'JENIS KELUHAN');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'KETERANGAN');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
+
+        $row = 7;
+        // end : judul kolom
+
+        // start : isi kolom
+        $no = 1;
+        $totalBiaya = 0;
+        $totalRealisasi = 0;
+        foreach ($res as $value) {
+            $col = 1;
+            $abjad = 'A';
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
+
+            $col++;
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama_operator);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+
+            $col++;
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nik);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+
+            $col++;
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->tanggal)));
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+
+            $col++;
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama_keluhan);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+
+            $col++;
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->keterangan);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
+
+            $row++;
+            $no++;
+        }
 
         //Sheet Title
-        $objSpreadsheet->getActiveSheet()->setTitle('Laporan Biaya Pallet');
+        $objSpreadsheet->getActiveSheet()->setTitle('Laporan Keluhan Operator');
         // end : isi kolom
         // end : sheet
 
