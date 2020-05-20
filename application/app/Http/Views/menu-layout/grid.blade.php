@@ -46,27 +46,10 @@
                     <p class="col-12 mb2">Nama Area : <strong><span id="nama">-</span></strong></p>
                     <p class="col-12 mb2">Nama Gudang : <strong><span id="nama_gudang">-</span></strong></p>
                     <p class="col-12 mb2">Kapasitas Area : <strong><span id="kapasitas">- </span> Ton</strong></p>
+                    <p class="col-12 mb2">Total terpakai : <strong><span id="terpakai">- </span> Ton</strong></p>
                     <div class="border-pembatas mb1"></div>
-                    <div id="list">
+                    {{-- <div id="list">
 
-                    </div>
-                    {{-- <div class="col-12 mb1">
-                        <p class="boldd-500" id="tanggal">
-                            Tanggal : 30 September 2019
-                        </p>
-                        <p class="boldd-500">
-                            Urea 100 Ton
-                        </p>
-                        <div class="border-pembatas"></div>
-                    </div>
-                    <div class="col-12">
-                        <p class="boldd-500">
-                            Tanggal : 1 Oktober 2019
-                        </p>
-                        <p class="boldd-500">
-                            ZA 200 Ton
-                        </p>
-                        <div class="border-pembatas"></div>
                     </div> --}}
                 </div>
                 <div class="col-12 mt1"> 

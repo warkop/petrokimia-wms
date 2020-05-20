@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Area;
+use App\Http\Models\AreaStok;
 use App\Http\Resources\LayoutAreaResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -37,7 +38,9 @@ class LayoutController extends Controller
     public function detailArea($id)
     {
         $area = Area::with('areaStok', 'areaStok.material')->with('gudang')->find($id);
-        $this->responseData = $area;
+        $areaStok = AreaStok::where('id_area', $id)->sum('jumlah');
+
+        $this->responseData = ['area' => $area, 'terpakai' => $areaStok];
         $this->responseCode = 200;
 
         $response = helpResponse($this->responseCode, $this->responseData, $this->responseMessage, $this->responseStatus);

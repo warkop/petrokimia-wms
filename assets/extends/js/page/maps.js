@@ -6,16 +6,6 @@ function loadArea() {
         url: ajaxSource +"/load-area",
         success:response=>{
             const obj = response.data;
-            // console.log(obj);
-            // let path = [];
-            // if (obj !== null) {
-            //     for (let i = 0; i < obj.length; i++) {
-
-            //         let temp = JSON.parse(obj[i].koordinat);
-            //         path.push(temp);
-            //         demo6(path, obj[i].warna);
-            //     }
-            // }
             demo6(obj);
         },
         error:response=>{
@@ -44,17 +34,6 @@ const demo6 =  (data, warna) => {
             addListenersOnPolygon(polygon, data[i]);
         }
     }
-    // console.log(warna);
-    // var layoutArea = new google.maps.Polygon({
-    //     paths: polygon,
-    //     strokeColor: warna,
-    //     strokeOpacity: 0.8,
-    //     strokeWeight: 2,
-    //     fillColor: warna,
-    //     fillOpacity: 0.35
-    // });
-
-    // layoutArea.setMap(map);
 }
 
 function addPoly(polygon, warna) {
@@ -81,21 +60,22 @@ function loadData(id) {
         success:(response)=>{
             const obj = response.data;
             let html = "";
-            $("#nama").html(obj.nama);
-            $("#nama_gudang").html(obj.gudang.nama);
-            $("#kapasitas").html(obj.kapasitas);
-            for (let i = 0; i < obj.area_stok.length; i++) {
-                const element = obj.area_stok[i];
-                html += `<div class="col-12 mb1">
-                    <p class="boldd-500" id="tanggal">
-                        Tanggal : ${helpDateFormat(element.tanggal, 'li')}
-                    </p>
-                    <p class="boldd-500">
-                        ${element.material.nama} ${element.jumlah} Ton
-                    </p>
-                    <div class="border-pembatas"></div>
-                </div>`;
-            }
+            $("#nama").html(obj.area.nama);
+            $("#nama_gudang").html(obj.area.gudang.nama);
+            $("#kapasitas").html(obj.area.kapasitas);
+            $("#terpakai").html(obj.terpakai);
+            // for (let i = 0; i < obj.area.area_stok.length; i++) {
+            //     const element = obj.area.area_stok[i];
+            //     html += `<div class="col-12 mb1">
+            //         <p class="boldd-500" id="tanggal">
+            //             Tanggal : ${helpDateFormat(element.tanggal, 'li')}
+            //         </p>
+            //         <p class="boldd-500">
+            //             ${element.material.nama} ${element.jumlah} Ton
+            //         </p>
+            //         <div class="border-pembatas"></div>
+            //     </div>`;
+            // }
 
             $("#list").html(html);
         },
