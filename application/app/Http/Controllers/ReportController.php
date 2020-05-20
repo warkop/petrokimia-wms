@@ -716,8 +716,11 @@ class ReportController extends Controller
 
         $res = AreaStok::distinct()->select(
             'id_material',
-            'id_area'
+            'id_area',
+            'gudang.nama'
         )
+        ->join('area', 'area.id', '=', 'area_stok.id_area')
+        ->join('gudang', 'gudang.id', '=', 'area.id_gudang')
         ->with('material')
         ->with('area', 'area.gudang')
         ->where('status', 1);
@@ -752,7 +755,7 @@ class ReportController extends Controller
             });
         }
 
-        $res = $res->orderBy('id_material')->get()->groupBy('id_material');
+        $res = $res->orderBy('gudang.nama', 'asc')->orderBy('id_material', 'asc')->get()->groupBy('id_material');
 
         if (!is_dir(storage_path() . '/app/public/excel/')) {
             mkdir(storage_path() . '/app/public/excel', 755);
@@ -3034,9 +3037,10 @@ class ReportController extends Controller
         $tgl_awal           = request()->input('tgl_awal') == null? '' : date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir          = request()->input('tgl_akhir') == null ? '' : date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
 
-        $res = MaterialTrans::with('aktivitasHarian', 'aktivitasHarian.gudang', 'aktivitasHarian.gudangTujuan')
+        $res = MaterialTrans::select('material_trans.*')->with('aktivitasHarian', 'aktivitasHarian.gudang', 'aktivitasHarian.gudangTujuan')
         ->with('material')
         ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+        ->leftJoin('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
         ->whereHas('material', function($query) {
             $query->where('kategori', 1);
         })
@@ -3044,7 +3048,7 @@ class ReportController extends Controller
             $query->where('draft', 0);
         })
         ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
-        ->orderBy('material_trans.id', 'asc')
+        ->orderBy('gudang.nama', 'asc')
         ;
 
         if ($gudang != null) {
@@ -5698,6 +5702,46 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalBiaya);
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom)->getNumberFormat()->setFormatCode('#,##0');
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
+
+        //Sheet Title
+        $objSpreadsheet->getActiveSheet()->setTitle('Laporan Biaya Pallet');
+        // end : isi kolom
+        // end : sheet
+
+        #### END : SHEET SESI ####
+        if ($preview == true) {
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($objSpreadsheet);
+            echo $writer->generateHTMLHeader();
+            echo $writer->generateStyles(true);
+            echo $writer->generateSheetData();
+            echo $writer->generateHTMLFooter();
+        } else {
+            $writer = new Xlsx($objSpreadsheet);
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+            $writer->save("php://output");
+        }
+    }
+
+    public function laporanKeluhanOperator()
+    {
+        
+    }
+
+    public function keluhanOperator()
+    {
+        
+    }
+
+    public function generateExcelKeluhanOperator($res, $nama_file, $resGudang, $resAktivitas, $tgl_awal, $tgl_akhir, $preview)
+    {
+        $objSpreadsheet = new Spreadsheet();
+
+        $sheetIndex = 0;
 
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle('Laporan Biaya Pallet');
