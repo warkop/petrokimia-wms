@@ -176,7 +176,7 @@
                                             </div>
                                         </div>
                                         <div class="mt-4">
-                                            <h5 class="mt4">Stok Palet dan Terplas Per Tanggal 
+                                            <h5 class="mt4">Stok Pallet Per Tanggal 
                                                 <span id="pallet_tgl_awal"></span> - <span id="pallet_tgl_akhir"></span>
                                             </h5>
                                             <div id="stokpaletbulan" style="height: 500px;"></div>
