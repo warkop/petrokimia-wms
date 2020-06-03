@@ -629,7 +629,7 @@ function getProduksiPengeluaran() {
                 colors: ['#FFC201','#28DAC6'],
                 legend:{position: 'bottom'},
                 vAxis: { gridlines: { count: 5 } , title:"TONASE", titleTextStyle:{bold:true, italic:false}},
-                hAxis: { slantedText:true, slantedTextAngle:45,format: 'long' },
+                hAxis: { title:"GUDANG", slantedText:true, slantedTextAngle:45,format: 'long', titleTextStyle:{bold:true, italic:false} },
                 chartArea: {
                     bottom: 150
                 },
@@ -715,7 +715,7 @@ function getPemuatanProduk() {
                 colors: ['#FD7F0C','#1ACA98'],
                 legend:{position: 'bottom'},
                 vAxis: { gridlines: { count: 5 }, title:"TONASE", titleTextStyle:{bold:true, italic:false} },
-                hAxis: { slantedText:true, slantedTextAngle:45 },
+                hAxis: { title:"GUDANG", slantedText:true, slantedTextAngle:45, titleTextStyle:{bold:true, italic:false} },
                 chartArea: {
                     bottom: 150
                 },
