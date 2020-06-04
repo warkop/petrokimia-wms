@@ -256,12 +256,12 @@ class ApiAktivitasRequest extends FormRequest
                                 'min:0',
                                 'max:' . $area->kapasitas,
                                 'numeric',
-                                Rule::unique('area_stok')->where(function ($query) use ($list_area, $list_jumlah, $request, $i, $j, $k) {
-                                    return $query
-                                        ->where('id_area', $list_area[$j]['id_area_stok'])
-                                        ->where('id_material', $request->list_produk[$i]['produk'])
-                                        ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])));
-                                }),
+                                // Rule::unique('area_stok')->where(function ($query) use ($list_area, $list_jumlah, $request, $i, $j, $k) {
+                                //     return $query
+                                //         ->where('id_area', $list_area[$j]['id_area_stok'])
+                                //         ->where('id_material', $request->list_produk[$i]['produk'])
+                                //         ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])));
+                                // }),
                             ];
                         }
                     }
