@@ -1078,36 +1078,48 @@ class ReportController extends Controller
                 $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                     ->where('draft', 0);
             })
-                ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-                ->where(function ($query) use ($value) {
-                    $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
-                    $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
-                })
-                ->where('id_material', $value->id_material)
-                ->where(function ($query) use ($tgl_awal) {
-                    $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
-                })
-                ->where('tipe', 1)
-                ->sum('jumlah')
+            ->leftJoin('aktivitas', function ($join){
+                $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->whereNotNull('status_aktivitas')
                 ;
+            })
+            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
+            ->where(function ($query) use ($value) {
+                $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
+                $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
+            })
+            ->where('id_material', $value->id_material)
+            ->where(function ($query) use ($tgl_awal) {
+                $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
+                $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
+            })
+            ->where('tipe', 1)
+            ->sum('jumlah')
+            ;
             $materialTransMenambah = MaterialTrans::
             leftJoin('aktivitas_harian', function ($join){
                 $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                     ->where('draft', 0);
             })
-                ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-                ->where(function ($query) use ($value) {
-                    $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
-                    $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
-                })
-                ->where('id_material', $value->id_material)
-                ->where(function ($query) use ($tgl_awal) {
-                    $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
-                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
-                })
-                ->where('tipe', 2)
-                ->sum('jumlah');
+            ->leftJoin('aktivitas', function ($join){
+                $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->whereNotNull('status_aktivitas')
+                ;
+            })
+            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
+            ->where(function ($query) use ($value) {
+                $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
+                $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
+            })
+            ->where('id_material', $value->id_material)
+            ->where(function ($query) use ($tgl_awal) {
+                $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
+                $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
+            })
+            ->where('tipe', 2)
+            
+            ->sum('jumlah')
+            ;
             $stokAwal = $materialTransMenambah - $materialTransMengurang;
 
             $col++;
@@ -1123,6 +1135,11 @@ class ReportController extends Controller
             //pemasukan
             foreach ($gudang as $item) {
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                ->leftJoin('aktivitas', function ($join){
+                    $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                    ->whereNotNull('status_aktivitas')
+                    ;
+                })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
                 ->whereHas('areaStok.area', function ($query) use ($item) {
                     $query->where('id_gudang', $item->id);
@@ -1148,6 +1165,11 @@ class ReportController extends Controller
             $abjadPengeluaran = $abjadPemasukan;
             foreach ($gudang as $item) {
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                ->leftJoin('aktivitas', function ($join){
+                    $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                    ->whereNotNull('status_aktivitas')
+                    ;
+                })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
                 ->whereHas('areaStok.area', function ($query) use ($item) {
                     $query->where('id_gudang', $item->id);
@@ -1180,6 +1202,11 @@ class ReportController extends Controller
             
             //stok awal produk rusak
             $transRusakMenambah = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            ->leftJoin('aktivitas', function ($join){
+                $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->whereNotNull('status_aktivitas')
+                ;
+            })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
             ->whereHas('areaStok.area', function ($query) use ($value) {
                 $query->where('id_gudang', $value->area->id_gudang);
@@ -1194,6 +1221,11 @@ class ReportController extends Controller
             ->sum('jumlah');
 
             $transRusakMengurang = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            ->leftJoin('aktivitas', function ($join){
+                $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->whereNotNull('status_aktivitas')
+                ;
+            })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
             ->whereHas('areaStok.area', function ($query) use ($value) {
                 $query->where('id_gudang', $value->area->id_gudang);
@@ -1212,6 +1244,11 @@ class ReportController extends Controller
             //jumlah rusak
             $rusakTambah = 0;
             $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                ->leftJoin('aktivitas', function ($join){
+                    $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                    ->whereNotNull('status_aktivitas')
+                    ;
+                })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
                 ->whereHas('areaStok.area', function ($query) use ($value) {
                     $query->where('id_gudang', $value->area->id_gudang);
@@ -1229,6 +1266,11 @@ class ReportController extends Controller
 
             $rusakKurang = 0;
             $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                ->leftJoin('aktivitas', function ($join){
+                    $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                    ->whereNotNull('status_aktivitas')
+                    ;
+                })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
                 ->whereHas('areaStok.area', function ($query) use ($value) {
                     $query->where('id_gudang', $value->area->id_gudang);
@@ -1953,8 +1995,60 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row+1));
         // scope end "Dipinjam"
 
-        // scope start "Alih kondisi"
+        // scope start "Alih kondisi (+)"
         $abjadOri++; // R
+        $abjadAlihPlus = $abjadOri; // R
+        $abjadAlihPlus++;
+        $abjadAlihPlus++;
+        $col++;
+        $row--;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'ALIH KONDISI (+)');
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadAlihPlus . $row);
+
+        $row++;
+        $col = 18;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'KOSONG');
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row+1));
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PAKAI');
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row+1));
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'RUSAK');
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row+1));
+        // scope end "Alih kondisi (+)"
+
+        // scope start "Alih kondisi (-)"
+        $abjadOri++;
+        $abjadAlihMinus = $abjadOri; // J
+        $abjadAlihMinus++;
+        $abjadAlihMinus++;
+        $col++;
+        $row--;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'ALIH KONDISI (-)');
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadAlihMinus . $row);
+
+        $row++;
+        $col = 21;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'KOSONG');
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row+1));
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PAKAI');
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row+1));
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'RUSAK');
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row+1));
+        // scope end "Alih kondisi"
+
+        // scope start "Alih kondisi"
+        $abjadOri++; // T
         $col++;
         $row--;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'ALIH KONDISI');
@@ -1965,7 +2059,7 @@ class ReportController extends Controller
         // scope end "Alih kondisi"
 
         // scope start "Akhir"
-        $abjadOri++; // S
+        $abjadOri++; // V
         $abjadAkhir = $abjadOri;
         $abjadAkhir++;
         $abjadAkhir++;
@@ -1984,23 +2078,23 @@ class ReportController extends Controller
         $row++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'KOSONG');
 
-        $abjadOri++; // T
+        $abjadOri++; // W
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PAKAI');
 
-        $abjadOri++; //U
+        $abjadOri++; // X
         $col++;
         $row--;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'RUSAK');
 
-        $abjadOri++; //V
+        $abjadOri++; // Y
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TOTAL');
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadAkhir . $row . ':' . $abjadAkhir . ($row + 1));
         // scope end "Akhir"
 
         // scope start "Total Pallet"
-        $abjadOri++; // W
+        $abjadOri++; // Z
         $abjadTotal = $abjadOri;
         $abjadTotal++;
         $col++;
@@ -2199,7 +2293,7 @@ class ReportController extends Controller
                 ->where('tipe', 1)
                 ->where('id_shift', $shift)
                 ->where('gudang_stok.id_gudang', $value->id_gudang)
-                ->where('status_pallet', '<>', 1)
+                ->where('status_pallet', $kondisi)
                 ->where('material_trans.id_material', $value->id_material)
                 ->sum('material_trans.jumlah');
             
@@ -2243,7 +2337,7 @@ class ReportController extends Controller
                 ->where('tipe', 2)
                 ->where('id_shift', $shift)
                 ->where('gudang_stok.id_gudang', $value->id_gudang)
-                ->where('status_pallet', '<>', 1)
+                ->where('status_pallet', $kondisi)
                 ->where('material_trans.id_material', $value->id_material)
                 ->sum('material_trans.jumlah');
             
@@ -2280,7 +2374,7 @@ class ReportController extends Controller
             $abjadIncrement = 'A';
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d', strtotime($tgl_sekarang)));
             $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
-            $objSpreadsheet->getActiveSheet()->mergeCells($abjadIncrement . $row . ':' . $abjadIncrement . ($row + 4));
+            $objSpreadsheet->getActiveSheet()->mergeCells($abjadIncrement . $row . ':' . $abjadIncrement . ($row + 3));
             $totalMasukKosong   = 0; 
             $totalMasukPakai    = 0; 
             $totalMasukRusak    = 0; 
@@ -2293,6 +2387,14 @@ class ReportController extends Controller
 
             $totalSusutYpg = 0; 
             $totalSusutLainlain = 0; 
+
+            $totalAlihKondisiPlusKosong = 0;
+            $totalAlihKondisiPlusPakai = 0;
+            $totalAlihKondisiPlusRusak = 0;
+
+            $totalAlihKondisiMinusKosong = 0;
+            $totalAlihKondisiMinusPakai = 0;
+            $totalAlihKondisiMinusRusak = 0;
             
             $totalDipinjam = 0;
              
@@ -2306,9 +2408,9 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, helpRoman($shift));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
                 
-                $saldoAwalKosong    = $this->mutasiPalletGetStokAwal($res, $tgl_awal, $shift, 3);
-                $saldoAwalPakai     = $this->mutasiPalletGetStokAwal($res, $tgl_awal, $shift, 2);
-                $saldoAwalRusak     = $this->mutasiPalletGetStokAwal($res, $tgl_awal, $shift, 4);
+                $saldoAwalKosong    = $this->mutasiPalletGetStokAwal($res, $tgl_sekarang, $shift, 3);
+                $saldoAwalPakai     = $this->mutasiPalletGetStokAwal($res, $tgl_sekarang, $shift, 2);
+                $saldoAwalRusak     = $this->mutasiPalletGetStokAwal($res, $tgl_sekarang, $shift, 4);
                 
                 $col++;
                 $abjadIncrement++;
@@ -2423,8 +2525,58 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
                 $stokAkhirKosong -= $peminjaman;
                 
-                $peralihanBertambah = $this->mutasiPalletPeralihanBertambah($res, $tgl_sekarang, $shift);
-                $peralihanBerkurang = $this->mutasiPalletPeralihanBerkurang($res, $tgl_sekarang, $shift);
+                $peralihanBertambahKosong   = $this->mutasiPalletPeralihanBertambah($res, $tgl_sekarang, $shift, 3);
+                $peralihanBertambahPakai    = $this->mutasiPalletPeralihanBertambah($res, $tgl_sekarang, $shift, 2);
+                $peralihanBertambahRusak    = $this->mutasiPalletPeralihanBertambah($res, $tgl_sekarang, $shift, 4);
+
+                $col++;
+                $abjadIncrement++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanBertambahKosong); //jumlah alih kondisi (+) kosong
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                $totalAlihKondisiPlusKosong += $peralihanBertambahKosong;
+
+                $col++;
+                $abjadIncrement++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanBertambahPakai); //jumlah alih kondisi (+) pakai
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                $totalAlihKondisiPlusPakai += $peralihanBertambahPakai;
+
+                $col++;
+                $abjadIncrement++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanBertambahRusak); //jumlah alih kondisi (+) rusak
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                $totalAlihKondisiPlusRusak += $peralihanBertambahRusak;
+
+                $peralihanBerkurangKosong   = $this->mutasiPalletPeralihanBerkurang($res, $tgl_sekarang, $shift, 3);
+                $peralihanBerkurangPakai    = $this->mutasiPalletPeralihanBerkurang($res, $tgl_sekarang, $shift, 2);
+                $peralihanBerkurangRusak    = $this->mutasiPalletPeralihanBerkurang($res, $tgl_sekarang, $shift, 4);
+
+                $col++;
+                $abjadIncrement++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanBerkurangKosong); //jumlah alih kondisi (-) kosong
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                $totalAlihKondisiMinusKosong += $peralihanBerkurangKosong;
+
+                $col++;
+                $abjadIncrement++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanBerkurangPakai); //jumlah alih kondisi (-) pakai
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                $totalAlihKondisiMinusPakai += $peralihanBerkurangPakai;
+
+                $col++;
+                $abjadIncrement++;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanBerkurangRusak); //jumlah alih kondisi (-) rusak
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                $totalAlihKondisiMinusPakai += $peralihanBerkurangPakai;
+
+                $peralihanBertambah = $peralihanBertambahKosong+$peralihanBertambahPakai+$peralihanBertambahRusak;
+                $peralihanBerkurang = $peralihanBerkurangKosong+$peralihanBerkurangPakai+$peralihanBerkurangRusak;
 
                 $status = 'CEK LAGI';
 
@@ -2552,6 +2704,36 @@ class ReportController extends Controller
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalDipinjam);
             $abjadIncrement++;
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+
+            $col++;
+            $abjadIncrement++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalAlihKondisiPlusKosong);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+
+            $col++;
+            $abjadIncrement++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalAlihKondisiPlusPakai);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+
+            $col++;
+            $abjadIncrement++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalAlihKondisiPlusRusak);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+
+            $col++;
+            $abjadIncrement++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalAlihKondisiMinusKosong);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+
+            $col++;
+            $abjadIncrement++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalAlihKondisiMinusPakai);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+
+            $col++;
+            $abjadIncrement++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalAlihKondisiMinusRusak);
             $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
 
             $col++;
@@ -5294,6 +5476,10 @@ class ReportController extends Controller
                             $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                                 ->where('draft', 0);
                         })
+                        ->leftJoin('aktivitas', function ($join){
+                            $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                            ->whereNotNull('status_aktivitas');
+                        })
                         ->leftJoin('material_adjustment', function ($join){
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment');
                         })
@@ -5326,6 +5512,10 @@ class ReportController extends Controller
                             $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                                 ->where('draft', 0);
                         })
+                        ->leftJoin('aktivitas', function ($join){
+                            $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                            ->whereNotNull('status_aktivitas');
+                        })
                         ->leftJoin('material_adjustment', function ($join){
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment');
                         })
@@ -5352,6 +5542,10 @@ class ReportController extends Controller
                         ->leftJoin('aktivitas_harian', function ($join) {
                             $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                                 ->where('draft', 0);
+                        })
+                        ->leftJoin('aktivitas', function ($join){
+                            $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                            ->whereNotNull('status_aktivitas');
                         })
                         ->leftJoin('material_adjustment', function ($join) {
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment');
@@ -5391,6 +5585,10 @@ class ReportController extends Controller
                                 // })
                                 ;
                         })
+                        ->leftJoin('aktivitas', function ($join){
+                            $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                            ->whereNotNull('status_aktivitas');
+                        })
                         ->leftJoin('material_adjustment', function ($join) use ($tanggal, $resShift) {
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                                 // ->where('material_adjustment.tanggal', $tanggal);
@@ -5422,6 +5620,10 @@ class ReportController extends Controller
                                 // })
                                 ;
                         })
+                        ->leftJoin('aktivitas', function ($join){
+                            $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                            ->whereNotNull('status_aktivitas');
+                        })
                         ->leftJoin('material_adjustment', function ($join) use ($tanggal, $resShift) {
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                                 ->where('material_adjustment.tanggal', $tanggal)
@@ -5451,6 +5653,10 @@ class ReportController extends Controller
                                 //     $query->where('id_shift', 2);
                                 // })
                                 ;
+                        })
+                        ->leftJoin('aktivitas', function ($join){
+                            $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                                ->whereNotNull('status_aktivitas');
                         })
                         ->leftJoin('material_adjustment', function ($join) use ($tanggal, $resShift) {
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
