@@ -5109,6 +5109,11 @@ class ReportController extends Controller
                         ->where('draft', 0)
                         ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
                 })
+                ->leftJoin('aktivitas', function ($join) {
+                    $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                        ->whereNotNull('status_aktivitas')
+                        ;
+                })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                         ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
@@ -5126,6 +5131,11 @@ class ReportController extends Controller
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
                         ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
+                })
+                ->leftJoin('aktivitas', function ($join) {
+                    $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                        ->whereNotNull('status_aktivitas')
+                        ;
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -5147,6 +5157,11 @@ class ReportController extends Controller
             $stokAkhir = $stokAwal;
             foreach ($gudang as $item) {
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
+                ->leftJoin('aktivitas', function ($join) {
+                    $join->on('aktivitas.id', '=', 'ah.id_aktivitas')
+                        ->whereNotNull('status_aktivitas')
+                        ;
+                })
                 ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
                 ->where('ah.id_gudang', $item->id)
                 ->where('tipe', 2)
@@ -5166,6 +5181,11 @@ class ReportController extends Controller
             }
             foreach ($gudang as $item) {
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
+                ->leftJoin('aktivitas', function ($join) {
+                    $join->on('aktivitas.id', '=', 'ah.id_aktivitas')
+                        ->whereNotNull('status_aktivitas')
+                        ;
+                })
                 ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
                 ->where('ah.id_gudang', $item->id)
                 ->where('tipe', 1)
