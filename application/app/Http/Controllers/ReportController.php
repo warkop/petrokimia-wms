@@ -33,8 +33,14 @@ use PhpOffice\PhpSpreadsheet\Worksheet\IOFactory;
 
 class ReportController extends Controller
 {
+    private $AKTIVITAS_UPDATED_AT_FULLDATE = "TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')";
+    private $FORMAT_FULLDATE = 'Y-m-d H:i:s';
     private $FORMAT_DATE = 'Y-m-d';
+    private $START_SHIFT3 = ' 23:00:00 -1 day';
+    private $START_SHIFT1 = ' 07:00:00';
+    private $START_SHIFT2 = ' 15:00:00';
     private $INCREMENT_DAY = "+1 day";
+    private $DECREMENT_DAY = "-1 day";
     private $style_note;
     private $style_judul_kolom;
     private $style_acara;
@@ -2120,55 +2126,342 @@ class ReportController extends Controller
         // end : judul kolom
     }
 
+    private function mutasiPalletGetFromShift1($res, $tgl_sekarang, $shift, $kondisi)
+    {
+        # code...
+    }
+    private function mutasiPalletGetFromShift2($res, $tgl_sekarang, $shift, $kondisi)
+    {
+        # code...
+    }
+    private function mutasiPalletGetFromShift3($res, $tgl_sekarang, $shift, $kondisi)
+    {
+        # code...
+    }
+
     private function mutasiPalletGetStokAwal($res, $tgl_sekarang, $shift, $kondisi)
     {
         $saldoAwal = 0;
-        foreach ($res as $value) {
-            $masuk      = MaterialTrans::
-            leftJoin('aktivitas_harian', function($join) use ($tgl_sekarang, $value, $shift){
-                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                ->where('draft', 0)
-                ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-                ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_sekarang . ' 23:00:00 -1 day')))
-                ;
-            })
-            ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
-                $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                    ->where('material_adjustment.id_gudang', $value->id_gudang)
-                    ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_sekarang)));
-            })
-            ->leftJoin('gudang_stok', function ($join) {
-                $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
-            })
-            ->where('material_trans.id_material', $value->id_material)
-            ->where('tipe', 2)
-            ->where('id_shift', $shift)
-            ->where('gudang_stok.id_gudang', $value->id_gudang)
-            ->where('status_pallet', $kondisi)
-            ->sum('material_trans.jumlah');
+        // foreach ($res as $value) {
+        //     $masuk      = MaterialTrans::
+        //     leftJoin('aktivitas_harian', function($join) use ($tgl_sekarang, $value, $shift){
+        //         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+        //         ->where('draft', 0)
+        //         ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+        //         ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_sekarang . ' 23:00:00 -1 day')))
+        //         ;
+        //     })
+        //     ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
+        //         $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+        //             ->where('material_adjustment.id_gudang', $value->id_gudang)
+        //             ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_sekarang)));
+        //     })
+        //     ->leftJoin('gudang_stok', function ($join) {
+        //         $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+        //     })
+        //     ->where('material_trans.id_material', $value->id_material)
+        //     ->where('tipe', 2)
+        //     ->where(function($query) use($shift) {
+        //         $query->where('id_shift', $shift);
+        //         $query->orWhere('shift_id', $shift);
+        //         $query->orWhere('shift', $shift);
+        //     })
+        //     ->where('gudang_stok.id_gudang', $value->id_gudang)
+        //     ->where('status_pallet', $kondisi)
+        //     ->sum('material_trans.jumlah');
 
-            $keluar     = MaterialTrans::
-            leftJoin('aktivitas_harian', function($join) use($tgl_sekarang, $value){
-                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                    ->where('draft', 0)
-                    ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-                    ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_sekarang . ' 23:00:00 -1 day')));
-            })
-            ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
-                $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                    ->where('material_adjustment.id_gudang', $value->id_gudang)
-                    ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_sekarang)));
-            })
-            ->leftJoin('gudang_stok', function ($join){
-                $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
-            })
-            ->where('material_trans.id_material', $value->id_material)
-            ->where('tipe', 1)
-            ->where('id_shift', $shift)
-            ->where('gudang_stok.id_gudang', $value->id_gudang)
-            ->where('status_pallet', $kondisi)
-            ->sum('material_trans.jumlah');
-            $saldoAwal  = $saldoAwal + $masuk - $keluar;
+        //     $keluar     = MaterialTrans::
+        //     leftJoin('aktivitas_harian', function($join) use($tgl_sekarang, $value){
+        //         $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+        //             ->where('draft', 0)
+        //             ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+        //             ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_sekarang . ' 23:00:00 -1 day')));
+        //     })
+        //     ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
+        //         $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+        //             ->where('material_adjustment.id_gudang', $value->id_gudang)
+        //             ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_sekarang)));
+        //     })
+        //     ->leftJoin('gudang_stok', function ($join){
+        //         $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+        //     })
+        //     ->where('material_trans.id_material', $value->id_material)
+        //     ->where('tipe', 1)
+        //     ->where(function($query) use($shift) {
+        //         $query->where('id_shift', $shift);
+        //         $query->orWhere('shift_id', $shift);
+        //         $query->orWhere('shift', $shift);
+        //     })
+        //     ->where('gudang_stok.id_gudang', $value->id_gudang)
+        //     ->where('status_pallet', $kondisi)
+        //     ->sum('material_trans.jumlah');
+        //     $saldoAwal  = $saldoAwal + $masuk - $keluar;
+        // }
+
+        foreach ($res as $value) {
+            if ($shift == 2) {
+                $pre_masuk     = MaterialTrans::
+                leftJoin('aktivitas_harian', function($join) use($tgl_sekarang, $value){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0)
+                        ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+                        ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                })
+                ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
+                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                        ->where('material_adjustment.id_gudang', $value->id_gudang)
+                        ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_sekarang)));
+                })
+                ->leftJoin('gudang_stok', function ($join){
+                    $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+                })
+                ->where(function ($query) use ($tgl_sekarang) {
+                    $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT2)));
+                    $query->orWhere(function($query) use($tgl_sekarang){
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT2)));
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . ' 23:00:00')));
+                        $query->where('id_shift', 1);
+                    });
+                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_sekarang);
+                    $query->orWhere(function ($query) use ($tgl_sekarang) {
+                            $query->where('material_adjustment.tanggal', '=', $tgl_sekarang);
+                            $query->where(function($query){
+                                $query->where('material_trans.shift_id', 1);
+                                $query->orWhere('material_trans.shift_id', 3);
+                            });
+                    });
+                    $query->orWhere(function ($query) use ($tgl_sekarang) {
+                        $query->where('material_trans.tanggal', '<', $tgl_sekarang);
+                        $query->whereNull('material_trans.id_aktivitas_harian');
+                        $query->whereNull('material_trans.id_adjustment');
+                    });
+                })
+                ->where('tipe', 2)
+                ->where('material_trans.id_material', $value->id_material)
+                ->where('gudang_stok.id_gudang', $value->id_gudang)
+                ->where('status_pallet', $kondisi) //harus + 2 step agar cocok dengan status pada databse
+                ->sum('material_trans.jumlah');
+
+                $pre_keluar     = MaterialTrans::
+                leftJoin('aktivitas_harian', function($join) use($tgl_sekarang, $value){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0)
+                        ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+                        ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                })
+                ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
+                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                        ->where('material_adjustment.id_gudang', $value->id_gudang)
+                        ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_sekarang)));
+                })
+                ->leftJoin('gudang_stok', function ($join){
+                    $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+                })
+                ->where(function ($query) use ($tgl_sekarang) {
+                    $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT2)));
+                    $query->orWhere(function($query) use($tgl_sekarang){
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT2)));
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . ' 23:00:00')));
+                        $query->where('id_shift', 1);
+                    });
+                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_sekarang);
+                    $query->orWhere(function ($query) use ($tgl_sekarang) {
+                            $query->where('material_adjustment.tanggal', '=', $tgl_sekarang);
+                            $query->where(function($query){
+                                $query->where('material_trans.shift_id', 1);
+                                $query->orWhere('material_trans.shift_id', 3);
+                            });
+                    });
+                    $query->orWhere(function ($query) use ($tgl_sekarang) {
+                        $query->where('material_trans.tanggal', '<', $tgl_sekarang);
+                        $query->whereNull('material_trans.id_aktivitas_harian');
+                        $query->whereNull('material_trans.id_adjustment');
+                    });
+                })
+                ->where('tipe', 1)
+                ->where('material_trans.id_material', $value->id_material)
+                ->where('gudang_stok.id_gudang', $value->id_gudang)
+                ->where('status_pallet', $kondisi) //harus + 2 step agar cocok dengan status pada databse
+                ->sum('material_trans.jumlah');
+
+                $saldoAwal = $saldoAwal + $pre_masuk - $pre_keluar;
+            } else if ($shift == 1) {
+                $pre_masuk     = MaterialTrans::
+                leftJoin('aktivitas_harian', function($join) use($tgl_sekarang, $value){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0)
+                        ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+                        ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                })
+                ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
+                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                        ->where('material_adjustment.id_gudang', $value->id_gudang)
+                        ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_sekarang)));
+                })
+                ->leftJoin('gudang_stok', function ($join){
+                    $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+                })
+                ->where(function ($query) use ($tgl_sekarang) {
+                    $query->where(function($query) use($tgl_sekarang){
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT1)));
+                        $query->orWhere(function($query) use($tgl_sekarang){
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT1)));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT2)));
+                            $query->where('id_shift', 3);
+                        });
+                    });
+
+                    $query->orWhere(function ($query) use ($tgl_sekarang) {
+                        $query->where('material_adjustment.tanggal', '<', $tgl_sekarang);
+                        $query->orWhere(function($query) use ($tgl_sekarang){
+                            $query->where('material_adjustment.tanggal', '=', $tgl_sekarang);
+                            $query->where('material_adjustment.shift', '=', 3);
+                        });
+                    });
+                    $query->orWhere(function ($query) use ($tgl_sekarang) {
+                        $query->where('material_trans.tanggal', '<', $tgl_sekarang);
+                        $query->whereNull('material_trans.id_aktivitas_harian');
+                        $query->whereNull('material_trans.id_adjustment');
+                    });
+                })
+                ->where('gudang_stok.id_gudang', $value->id_gudang)
+                ->where('tipe', 2)
+                ->where('material_trans.id_material', $value->id_material)
+                ->where('status_pallet', $kondisi) //harus + 2 step agar cocok dengan status pada databse
+                ->sum('material_trans.jumlah');
+
+                $pre_keluar     = MaterialTrans::
+                leftJoin('aktivitas_harian', function($join) use($tgl_sekarang, $value){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0)
+                        ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+                        ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                })
+                ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
+                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                        ->where('material_adjustment.id_gudang', $value->id_gudang)
+                        ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_sekarang)));
+                })
+                ->leftJoin('gudang_stok', function ($join){
+                    $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+                })
+                ->where(function ($query) use ($tgl_sekarang) {
+                    $query->where(function($query) use($tgl_sekarang){
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT1)));
+                        $query->orWhere(function($query) use($tgl_sekarang){
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT1)));
+                            $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT2)));
+                            $query->where('id_shift', 3);
+                        });
+                    });
+
+                    $query->orWhere(function ($query) use ($tgl_sekarang) {
+                        $query->where('material_adjustment.tanggal', '<', $tgl_sekarang);
+                        $query->orWhere(function($query) use ($tgl_sekarang){
+                            $query->where('material_adjustment.tanggal', '=', $tgl_sekarang);
+                            $query->where('material_adjustment.shift', '=', 3);
+                        });
+                    });
+                    $query->orWhere(function ($query) use ($tgl_sekarang) {
+                        $query->where('material_trans.tanggal', '<', $tgl_sekarang);
+                        $query->whereNull('material_trans.id_aktivitas_harian');
+                        $query->whereNull('material_trans.id_adjustment');
+                    });
+                })
+                ->where('gudang_stok.id_gudang', $value->id_gudang)
+                ->where('tipe', 1)
+                ->where('material_trans.id_material', $value->id_material)
+                ->where('status_pallet', $kondisi) //harus + 2 step agar cocok dengan status pada databse
+                ->sum('material_trans.jumlah');
+
+                $saldoAwal = $saldoAwal + $pre_masuk - $pre_keluar;
+            } else if ($shift == 3) {
+                $pre_masuk = MaterialTrans::
+                leftJoin('aktivitas_harian', function($join) use($tgl_sekarang, $value){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0)
+                        ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+                        ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                })
+                ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
+                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                        ->where('material_adjustment.id_gudang', $value->id_gudang)
+                        ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_sekarang)));
+                })
+                ->leftJoin('gudang_stok', function ($join){
+                    $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+                })
+                ->where(function ($query) use ($tgl_sekarang) {
+                    $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                    $query->orWhere(function($query) use($tgl_sekarang){
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . ' 00:30:00')));
+                        $query->where('id_shift', 2);
+                    });
+                    $query->orWhere('material_adjustment.tanggal', '<=', date($this->FORMAT_DATE, strtotime($tgl_sekarang . $this->DECREMENT_DAY)));
+                    $query->orWhere(function ($query) use ($tgl_sekarang) {
+                            $query->where('material_adjustment.tanggal', '=', date($this->FORMAT_DATE, strtotime($tgl_sekarang . $this->DECREMENT_DAY)));
+                            $query->where(function($query){
+                                $query->where('material_trans.shift_id', 2);
+                                $query->orWhere('material_trans.shift_id', 1);
+                            });
+                    });
+                    $query->orWhere(function ($query) use ($tgl_sekarang) {
+                        $query->where('material_trans.tanggal', '<', $tgl_sekarang);
+                        $query->whereNull('material_trans.id_aktivitas_harian');
+                        $query->whereNull('material_trans.id_adjustment');
+                    });
+                })
+                ->where('tipe', 2)
+                ->where('material_trans.id_material', $value->id_material)
+                ->where('gudang_stok.id_gudang', $value->id_gudang)
+                ->where('status_pallet', $kondisi) //harus + 2 step agar cocok dengan status pada databse
+                ->sum('material_trans.jumlah');
+
+                $pre_keluar = MaterialTrans::
+                leftJoin('aktivitas_harian', function($join) use($tgl_sekarang, $value){
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0)
+                        ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+                        ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                })
+                ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
+                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                        ->where('material_adjustment.id_gudang', $value->id_gudang)
+                        ->where('material_adjustment.tanggal', '<', date($this->FORMAT_DATE, strtotime($tgl_sekarang)));
+                })
+                ->leftJoin('gudang_stok', function ($join){
+                    $join->on('gudang_stok.id', '=', 'material_trans.id_gudang_stok');
+                })
+                ->where(function ($query) use ($tgl_sekarang) {
+                    $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                    $query->orWhere(function($query) use($tgl_sekarang){
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . ' 00:30:00')));
+                        $query->where('id_shift', 2);
+                    });
+                    $query->orWhere('material_adjustment.tanggal', '<=', date($this->FORMAT_DATE, strtotime($tgl_sekarang . $this->DECREMENT_DAY)));
+                    $query->orWhere(function ($query) use ($tgl_sekarang) {
+                            $query->where('material_adjustment.tanggal', '=', date($this->FORMAT_DATE, strtotime($tgl_sekarang . $this->DECREMENT_DAY)));
+                            $query->where(function($query){
+                                $query->where('material_trans.shift_id', 2);
+                                $query->orWhere('material_trans.shift_id', 1);
+                            });
+                    });
+                    $query->orWhere(function ($query) use ($tgl_sekarang) {
+                        $query->where('material_trans.tanggal', '<', $tgl_sekarang);
+                        $query->whereNull('material_trans.id_aktivitas_harian');
+                        $query->whereNull('material_trans.id_adjustment');
+                    });
+                })
+                ->where('tipe', 1)
+                ->where('material_trans.id_material', $value->id_material)
+                ->where('gudang_stok.id_gudang', $value->id_gudang)
+                ->where('status_pallet', $kondisi) //harus + 2 step agar cocok dengan status pada databse
+                ->sum('material_trans.jumlah');
+
+                $saldoAwal = $saldoAwal + $pre_masuk - $pre_keluar;
+            }
         }
 
         return $saldoAwal;
@@ -2294,7 +2587,11 @@ class ReportController extends Controller
                     });
                 })
                 ->where('tipe', 1)
-                ->where('id_shift', $shift)
+                ->where(function($query) use($shift) {
+                    $query->where('id_shift', $shift);
+                    $query->orWhere('shift_id', $shift);
+                    $query->orWhere('shift', $shift);
+                })
                 ->where('gudang_stok.id_gudang', $value->id_gudang)
                 ->where('status_pallet', $kondisi)
                 ->where('material_trans.id_material', $value->id_material)
@@ -2338,7 +2635,11 @@ class ReportController extends Controller
                     });
                 })
                 ->where('tipe', 2)
-                ->where('id_shift', $shift)
+                ->where(function($query) use($shift) {
+                    $query->where('id_shift', $shift);
+                    $query->orWhere('shift_id', $shift);
+                    $query->orWhere('shift', $shift);
+                })
                 ->where('gudang_stok.id_gudang', $value->id_gudang)
                 ->where('status_pallet', $kondisi)
                 ->where('material_trans.id_material', $value->id_material)
@@ -4242,6 +4543,38 @@ class ReportController extends Controller
         $this->generateExcelTransaksiMaterial($res, $nama_file, $produk, $resGudang, $tgl_awal, $tgl_akhir, $preview);
     }
 
+    private function getKuantum($result)
+    {
+        $kuantums = '';
+        $kuantum = '';
+
+        foreach ($result->materialTrans as $key) {
+            if ($key->material->kategori == 1){
+                if ($kuantums == '') {
+                    $kuantums = $key->material->nama;
+                } else {
+                    $kuantums = $kuantums.', '. $key->material->nama;
+                }
+
+                if ($kuantum == '') {
+                    if ($key->tipe == 1) {
+                        $kuantum = '-' . round($key->jumlah, 3);
+                    } else {
+                        $kuantum = round($key->jumlah, 3);
+                    }
+                } else {
+                    if ($key->tipe == 1) {
+                        $kuantum = $kuantum . ', ' . '-' . round($key->jumlah, 3);
+                    } else {
+                        $kuantum = $kuantum . ', ' . round($key->jumlah, 3);
+                    }
+                }
+            }
+        }
+
+        return $kuantums;
+    }
+
     public function generateExcelTransaksiMaterial($res, $nama_file, $produk, $resGudang, $tgl_awal, $tgl_akhir, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
@@ -4319,12 +4652,12 @@ class ReportController extends Controller
         $col = 1;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
-        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':F' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':I' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Transaksi Material');
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
         $row++;
-        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':F' . $row);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':I' . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Peridode: '.date('d/m/Y', strtotime($tgl_awal)).' - ' . date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
 
@@ -4344,37 +4677,47 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
 
         // end : title
         // start : judul kolom
         $col = 1;
         $row = 5;
         $abjadOri = 'A';
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'NO');
 
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Nama Material');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TANGGAL');
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'SHIFT');
         
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Nama Aktivitas');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'NAMA TRANSAKSI');
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'NAMA GUDANG');
+        
         
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Jumlah');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'NAMA CHECKER');
 
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Tanggal');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'NAMA PRODUK');
 
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Asal');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'KUANTUM');
 
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Tujuan');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TUJUAN');
 
         $abjad = 'A';
         
@@ -4438,21 +4781,29 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->material->nama);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->created_at)));
 
             $col++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($value->aktivitasHarian->id_shift));
+            
+            $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($value->aktivitasHarian->aktivitas != null)?$value->aktivitasHarian->aktivitas->nama:'-');
+
+            $col++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, (!empty($value->aktivitasHarian->gudang))?$value->aktivitasHarian->gudang->nama:'');
+            
+            $col++;
+            $user = Users::find($value->aktivitasHarian->updated_by);
+            $tenaga_kerja = TenagaKerjaNonOrganik::find($user->id);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tenaga_kerja->nama);
+
+            $col++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->material->nama);
 
             $col++;
             $objSpreadsheet->getActiveSheet()->getStyle('D' . $row)->applyFromArray($style_no);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->tipe == 1 ? '-'. round($value->jumlah, 3) : round($value->jumlah, 3));
             $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
-
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->created_at)));
-
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, (!empty($value->aktivitasHarian->gudang))?$value->aktivitasHarian->gudang->nama:'');
 
             $col++;
             if ($value->aktivitasHarian->so == null) {
@@ -7198,22 +7549,5 @@ class ReportController extends Controller
             header('Content-Disposition: attachment; filename="' . $nama_file . '"');
             $writer->save("php://output");
         }
-    }
-
-    public function laporanCancellation()
-    {
-        $data['title'] = 'Laporan Cancellation';
-        $data['gudang'] = Gudang::internal()->get();
-        return view('report.cancellation.grid', $data);
-    }
-
-    public function cancellation()
-    {
-        # code...
-    }
-
-    public function generateExcelCancellation()
-    {
-        # code...
     }
 }
