@@ -1080,7 +1080,7 @@ class ReportController extends Controller
             })
             ->leftJoin('aktivitas', function ($join){
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                ->whereNotNull('status_aktivitas')
+                // ->whereNotNull('status_aktivitas')
                 ;
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -1094,6 +1094,7 @@ class ReportController extends Controller
                 $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
             })
             ->where('tipe', 1)
+            ->whereNotNull('status_aktivitas')
             ->sum('jumlah')
             ;
             $materialTransMenambah = MaterialTrans::
@@ -1103,7 +1104,7 @@ class ReportController extends Controller
             })
             ->leftJoin('aktivitas', function ($join){
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                ->whereNotNull('status_aktivitas')
+                // ->whereNotNull('status_aktivitas')
                 ;
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -1117,7 +1118,7 @@ class ReportController extends Controller
                 $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
             })
             ->where('tipe', 2)
-            
+            ->whereNotNull('status_aktivitas')
             ->sum('jumlah')
             ;
             $stokAwal = $materialTransMenambah - $materialTransMengurang;
@@ -1137,7 +1138,7 @@ class ReportController extends Controller
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                 ->leftJoin('aktivitas', function ($join){
                     $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                    ->whereNotNull('status_aktivitas')
+                    
                     ;
                 })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -1151,6 +1152,7 @@ class ReportController extends Controller
                     $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                     $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
                 })
+                ->whereNotNull('status_aktivitas')
                 ->sum('jumlah');
 
                 $stokAkhir += $materialTrans;
@@ -1167,7 +1169,7 @@ class ReportController extends Controller
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                 ->leftJoin('aktivitas', function ($join){
                     $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                    ->whereNotNull('status_aktivitas')
+                    // ->whereNotNull('status_aktivitas')
                     ;
                 })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -1181,6 +1183,7 @@ class ReportController extends Controller
                     $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                     $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
                 })
+                ->whereNotNull('status_aktivitas')
                 ->sum('jumlah');
 
                 $stokAkhir -= $materialTrans;
@@ -5111,7 +5114,7 @@ class ReportController extends Controller
                 })
                 ->leftJoin('aktivitas', function ($join) {
                     $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                        ->whereNotNull('status_aktivitas')
+                        // ->whereNotNull('status_aktivitas')
                         ;
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
@@ -5124,6 +5127,7 @@ class ReportController extends Controller
                     $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
                 ->where('tipe', 1)
+                ->whereNotNull('status_aktivitas')
                 ->sum('jumlah');
 
             $materialTransMenambah = MaterialTrans::
@@ -5134,7 +5138,7 @@ class ReportController extends Controller
                 })
                 ->leftJoin('aktivitas', function ($join) {
                     $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                        ->whereNotNull('status_aktivitas')
+                        // ->whereNotNull('status_aktivitas')
                         ;
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
@@ -5147,6 +5151,7 @@ class ReportController extends Controller
                     $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
                 })
                 ->where('tipe', 2)
+                ->whereNotNull('status_aktivitas')
                 ->sum('jumlah');
 
             $stokAwal = $materialTransMenambah - $materialTransMengurang;
@@ -5159,7 +5164,7 @@ class ReportController extends Controller
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
                 ->leftJoin('aktivitas', function ($join) {
                     $join->on('aktivitas.id', '=', 'ah.id_aktivitas')
-                        ->whereNotNull('status_aktivitas')
+                        // ->whereNotNull('status_aktivitas')
                         ;
                 })
                 ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
@@ -5171,6 +5176,7 @@ class ReportController extends Controller
                 })
                 ->where('id_material', $value->id_material)
                 ->where('draft', 0)
+                ->whereNotNull('status_aktivitas')
                 ->sum('jumlah');
                 
                 $stokAkhir += $materialTrans;
@@ -5183,7 +5189,7 @@ class ReportController extends Controller
                 $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
                 ->leftJoin('aktivitas', function ($join) {
                     $join->on('aktivitas.id', '=', 'ah.id_aktivitas')
-                        ->whereNotNull('status_aktivitas')
+                        // ->whereNotNull('status_aktivitas')
                         ;
                 })
                 ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
@@ -5195,6 +5201,7 @@ class ReportController extends Controller
                 })
                 ->where('id_material', $value->id_material)
                 ->where('draft', 0)
+                ->whereNotNull('status_aktivitas')
                 ->sum('jumlah');
 
                 $stokAkhir -= $materialTrans;
@@ -7191,5 +7198,22 @@ class ReportController extends Controller
             header('Content-Disposition: attachment; filename="' . $nama_file . '"');
             $writer->save("php://output");
         }
+    }
+
+    public function laporanCancellation()
+    {
+        $data['title'] = 'Laporan Cancellation';
+        $data['gudang'] = Gudang::internal()->get();
+        return view('report.cancellation.grid', $data);
+    }
+
+    public function cancellation()
+    {
+        # code...
+    }
+
+    public function generateExcelCancellation()
+    {
+        # code...
     }
 }
