@@ -2839,6 +2839,7 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
                 $totalAlihKondisiPlusKosong += $peralihanBertambahKosong;
+                $stokAkhirKosong += $peralihanBertambahKosong;
 
                 $col++;
                 $abjadIncrement++;
@@ -2846,6 +2847,7 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
                 $totalAlihKondisiPlusPakai += $peralihanBertambahPakai;
+                $stokAkhirPakai += $peralihanBertambahPakai;
 
                 $col++;
                 $abjadIncrement++;
@@ -2853,6 +2855,7 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
                 $totalAlihKondisiPlusRusak += $peralihanBertambahRusak;
+                $stokAkhirRusak += $peralihanBertambahRusak;
 
                 $peralihanBerkurangKosong   = $this->mutasiPalletPeralihanBerkurang($res, $tgl_sekarang, $shift, 3);
                 $peralihanBerkurangPakai    = $this->mutasiPalletPeralihanBerkurang($res, $tgl_sekarang, $shift, 2);
@@ -2864,6 +2867,7 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
                 $totalAlihKondisiMinusKosong += $peralihanBerkurangKosong;
+                $stokAkhirKosong -= $peralihanBerkurangKosong;
 
                 $col++;
                 $abjadIncrement++;
@@ -2871,13 +2875,15 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
                 $totalAlihKondisiMinusPakai += $peralihanBerkurangPakai;
+                $stokAkhirPakai -= $peralihanBerkurangPakai;
 
                 $col++;
                 $abjadIncrement++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $peralihanBerkurangRusak); //jumlah alih kondisi (-) rusak
                 $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
-                $totalAlihKondisiMinusPakai += $peralihanBerkurangPakai;
+                $totalAlihKondisiMinusRusak += $peralihanBerkurangRusak;
+                $stokAkhirRusak -= $peralihanBerkurangRusak;
 
                 $peralihanBertambah = $peralihanBertambahKosong+$peralihanBertambahPakai+$peralihanBertambahRusak;
                 $peralihanBerkurang = $peralihanBerkurangKosong+$peralihanBerkurangPakai+$peralihanBerkurangRusak;
@@ -4781,10 +4787,10 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y', strtotime($value->created_at)));
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y H:i:s', strtotime($value->created_at)));
 
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($value->aktivitasHarian->id_shift));
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Shift '.$value->aktivitasHarian->id_shift);
             
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($value->aktivitasHarian->aktivitas != null)?$value->aktivitasHarian->aktivitas->nama:'-');
@@ -4801,7 +4807,7 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->material->nama);
 
             $col++;
-            $objSpreadsheet->getActiveSheet()->getStyle('D' . $row)->applyFromArray($style_no);
+            $objSpreadsheet->getActiveSheet()->getStyle('H' . $row)->applyFromArray($style_no);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->tipe == 1 ? '-'. round($value->jumlah, 3) : round($value->jumlah, 3));
             $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
 
