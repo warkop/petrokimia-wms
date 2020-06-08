@@ -6074,10 +6074,18 @@ class ReportController extends Controller
                 $keluar = 0;
                 
                 foreach ($stokTanggalIni as $singletonKey) {
-                    if ($singletonKey->tipe == 2) {
-                        $masuk = $masuk + $singletonKey->jumlah;
-                    } else if ($singletonKey->tipe == 1) {
-                        $keluar = $keluar + $singletonKey->jumlah;
+                    if ($singletonKey->id_aktivitas_harian != null && $singletonKey->status_aktivitas != null) {
+                        if ($singletonKey->tipe == 2) {
+                            $masuk = $masuk + $singletonKey->jumlah;
+                        } else if ($singletonKey->tipe == 1) {
+                            $keluar = $keluar + $singletonKey->jumlah;
+                        }
+                    } else if ($singletonKey->id_aktivitas_harian == null) {
+                        if ($singletonKey->tipe == 2) {
+                            $masuk = $masuk + $singletonKey->jumlah;
+                        } else if ($singletonKey->tipe == 1) {
+                            $keluar = $keluar + $singletonKey->jumlah;
+                        }
                     }
                 }
 
