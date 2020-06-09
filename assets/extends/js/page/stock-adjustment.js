@@ -191,6 +191,12 @@ function tambahProduk(id = "", tipe = "", jumlah = "") {
                         <select class="form-control m-select2" id="produk-${rows}" name="produk[]" onchange="checkProduk(this)" aria-placeholder="Pilih Produk" style="width: 100%;">
                         </select>
                     </td>
+                    <td>
+                        <select class="form-control" name="jenis_produk[]" id="jenis-produk-${rows}" style="width: 100%;">
+                          <option value="1">Normal</option>
+                          <option value="2">Rusak</option>
+                        </select>
+                    </td>
                     <td id="tempat-area-${rows}">
                         <select class="form-control m-select2 pilih_area" id="area-${rows}" name="area[]" aria-placeholder="Pilih Area" style="width: 100%;">
                         </select>
@@ -580,10 +586,19 @@ function detail(id) {
             } else if (element.tipe == 2) {
                 text_tipe = "Menambah";
             }
+
+            let text_jenis_produk = "";
+            if (element.jenis_produk == 1) {
+                text_jenis_produk = "Normal";
+            } else if (element.jenis_produk == 2) {
+                text_jenis_produk = "Rusak";
+            }
+
             text += `
                 <tr>
                     <td>${i}</td>
                     <td>${element.nama}</td>
+                    <td>${text_jenis_produk}</td>
                     <td>${element.nama_area}</td>
                     <td>${helpDateFormat(element.tanggal, "li")}</td>
                     <td>${text_tipe}</td>

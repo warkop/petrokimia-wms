@@ -72,7 +72,7 @@
 <!--begin::Modal-->
 <div class="modal fade btn_close_modal" id="modal_form" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog" role="document" style="max-width: 1200px;">
+    <div class="modal-dialog" role="document" style="max-width: 1600px;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Tambah Data</h5>
@@ -143,8 +143,9 @@
                                 <tr>
                                     <th scope="col">No</th>
                                     <th scope="col" width="20%">Nama</th>
+                                    <th scope="col">Jenis produk</th>
                                     <th scope="col" width="10%">Area</th>
-                                    <th scope="col">Tanggal Produksi</th>
+                                    <th scope="col"  width="10%">Tanggal Produksi</th>
                                     <th scope="col" width="15%">Jenis</th>
                                     <th scope="col">Jumlah</th>
                                     <th scope="col">Alasan</th>
@@ -221,6 +222,7 @@
                                 <tr>
                                     <th scope="col">No</th>
                                     <th scope="col">Nama produk</th>
+                                    <th scope="col">Jenis produk</th>
                                     <th scope="col">Area</th>
                                     <th scope="col">Tanggal Produksi</th>
                                     <th scope="col">Jenis aktivitas</th>

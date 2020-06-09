@@ -52,12 +52,12 @@ class MaterialAdjusmentRequest extends FormRequest
                         $areaStok = AreaStok::where('id_area', $area->id)
                         ->where('id_material', request()->produk[$i])
                         ->where('tanggal', date('Y-m-d', strtotime(request()->tanggal_produksi[$i])))
-                        ->where('status', 1)
+                        ->where('status', request()->jenis_produk[$i])
                         ->sum('jumlah');
                         $rules['produk_jumlah.' . $i] = 'numeric|max:'. (float)$areaStok;
                     } else {
                         $areaStok = AreaStok::where('id_area', $area->id)
-                        ->where('status', 1)
+                        ->where('status', request()->jenis_produk[$i])
                         ->sum('jumlah');
     
                         // if ($area->kapasitas != null) {

@@ -89,6 +89,7 @@ class MaterialAdjustmentController extends Controller
 
         //material trans
         $produk        = $req->input('produk');
+        $jenis_produk  = $req->input('jenis_produk');
         $area          = $req->input('area');
         $tanggal       = $req->input('tanggal_produksi');
         $action_produk = $req->input('action_produk');
@@ -97,6 +98,7 @@ class MaterialAdjustmentController extends Controller
         if (!empty($produk)) {
             $panjang          = count($produk);
             $produk           = array_values((array)$produk);
+            $jenis_produk     = array_values((array)$jenis_produk);
             $area             = array_values((array)$area);
             $tanggal          = array_values((array)$tanggal);
             $action_produk    = array_values((array)$action_produk);
@@ -107,14 +109,14 @@ class MaterialAdjustmentController extends Controller
                 $areaStok = AreaStok::where('id_area', $area[$i])
                 ->where('id_material', $produk[$i])
                 ->where('tanggal', date('Y-m-d', strtotime($tanggal[$i])))
-                ->where('status', 1)
+                ->where('status', $jenis_produk)
                 ->first();
                 if (empty($areaStok)) {
                     $areaStok = new AreaStok;
                     $areaStok->id_area      = $area[$i];
                     $areaStok->id_material  = $produk[$i];
                     $areaStok->tanggal      = date('Y-m-d', strtotime($tanggal[$i]));
-                    $areaStok->status       = 1;
+                    $areaStok->status       = $jenis_produk[$i];
                     $areaStok->jumlah       = $produk_jumlah[$i];
                 } else {
                     if ($action_produk[$i] == 1) {
@@ -134,7 +136,7 @@ class MaterialAdjustmentController extends Controller
                 $materialTrans->alasan          = $produk_alasan[$i];
                 $materialTrans->id_area_stok    = $areaStok->id;
                 $materialTrans->tanggal         = date('Y-m-d', strtotime($tanggal[$i]));
-                $materialTrans->status_produk   = 1;
+                $materialTrans->status_produk   = $jenis_produk[$i];
                 $materialTrans->id_area         = $area[$i];
                 $materialTrans->shift_id        = $shift_id;
                 $materialTrans->save();
@@ -252,6 +254,7 @@ class MaterialAdjustmentController extends Controller
                     ->select(
                         'ma.id',
                         'm.nama as nama',
+                        'mt.status_produk as jenis_produk',
                         'm.id as id_produk',
                         'a.nama as nama_area',
                         'ars.tanggal',
