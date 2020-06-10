@@ -45,14 +45,14 @@
                                 <div class="form-group">
                                     <label>Tanggal Awal</label>
                                     <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
-                                        placeholder="Pilih tanggal">
+                                        placeholder="Pilih tanggal" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Tanggal Akhir</label>
                                     <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
-                                        placeholder="Pilih tanggal">
+                                        placeholder="Pilih tanggal" required>
                                 </div>
                             </div>
                         </div>
