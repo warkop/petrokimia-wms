@@ -228,6 +228,11 @@ function edit(id = '') {
                 $('#status_aktivitas').val(obj.data['status_aktivitas']).change();
             }
 
+            if (obj.data['jenis_aktivitas'] != null) {
+                $("#jenis_aktivitas").selectpicker('refresh');
+                $('#jenis_aktivitas').val(obj.data['jenis_aktivitas']).change();
+            }
+
             if (obj.data['upload_foto'] != null) {
                 $('#upload_foto').prop('checked', true);
             }

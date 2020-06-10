@@ -105,6 +105,7 @@ class AktivitasController extends Controller
         $aktivitas->penerimaan_gi              = $req->input('penerimaan_gi');
         $aktivitas->biaya_pallet               = $req->input('biaya_pallet');
         $aktivitas->cancelable                 = $req->input('cancelable');
+        $aktivitas->jenis_aktivitas            = $req->input('jenis_aktivitas');
         $aktivitas->start_date                 = $req->input('start_date');
         $aktivitas->end_date                   = $req->input('end_date');
 

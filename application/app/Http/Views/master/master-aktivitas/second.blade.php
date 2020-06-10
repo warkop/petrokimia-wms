@@ -160,6 +160,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="kel mb2">
+                            <span><em><strong>Jenis Aktivitas</strong></em></span>
+                            <div class="row">
+                                <div class="col-6">
+                                    <select class="form-control kt-selectpicker" name="jenis_aktivitas" id="jenis_aktivitas">
+                                        <option value="">-</option>
+                                        <option value="1">Import</option>
+                                        <option value="2">Rebag</option>
+                                        <option value="3">Reprod</option>
+                                        <option value="4">Produksi</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="kel">
