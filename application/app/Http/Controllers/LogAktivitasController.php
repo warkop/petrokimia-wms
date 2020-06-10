@@ -141,5 +141,11 @@ class LogAktivitasController extends Controller
         $data['fotoKelayakanAfter'] = AktivitasKelayakanFoto::where('id_aktivitas_harian', $aktivitasHarian->id)->where('jenis', 2)->get();
 
         return view('log-aktivitas.cetak', $data);
+
+    }
+
+    public function print_cancel()
+    {
+        return view('log-aktivitas.cetak-cancel');    
     }
 }

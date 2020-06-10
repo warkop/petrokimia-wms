@@ -231,6 +231,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/{aktivitasHarian}', 'LogAktivitasController@show')->where('aktivitasHarian', '[0-9]+');
         Route::get('/get-area/{id_gudang}/{id_material}/{id_aktivitas_harian}', 'LogAktivitasController@getArea')->where('id_material', '[0-9]+')->where('id_gudang', '[0-9]+')->where('id_aktivitas_harian', '[0-9]+');
         Route::get('/cetak-aktivitas/{id}', 'LogAktivitasController@print')->where('id', '[0-9]+');
+        Route::get('/cetak-aktivitas-cancel', 'LogAktivitasController@print_cancel');
     });
 
     Route::group(['prefix' => 'log-aktivitas-user'], function () {
