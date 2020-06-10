@@ -181,6 +181,7 @@ License: You must have a valid license purchased only from themeforest(the above
 											<li id="report-biaya-tkbm-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-biaya-tkbm')}}" class="kt-menu__link"><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Biaya TKBM</span></a></li>
 											<li id="report-biaya-pallet-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-biaya-pallet')}}" class="kt-menu__link"><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Biaya Pallet</span></a></li>
 											<li id="report-keluhan-operator-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-keluhan-operator')}}" class="kt-menu__link"><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Keluhan Operator</span></a></li>
+											<li id="report-cancellation-nav" class="kt-menu__item " aria-haspopup="true"><a href="{{url('/report/laporan-cancellation')}}" class="kt-menu__link"><em class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></em><span class="kt-menu__link-text">Cancellation</span></a></li>
 										</ul>
 									</div>
 								</li>

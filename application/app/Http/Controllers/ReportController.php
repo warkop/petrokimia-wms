@@ -4799,8 +4799,9 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, (!empty($value->aktivitasHarian->gudang))?$value->aktivitasHarian->gudang->nama:'');
             
             $col++;
-            $user = Users::find($value->aktivitasHarian->updated_by);
-            $tenaga_kerja = TenagaKerjaNonOrganik::find($user->id);
+            $user = Users::withoutGlobalScopes()->find($value->aktivitasHarian->updated_by);
+            dd($user->id);
+            $tenaga_kerja = TenagaKerjaNonOrganik::withoutGlobalScopes()->find($user->id);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tenaga_kerja->nama);
 
             $col++;
@@ -7543,6 +7544,255 @@ class ReportController extends Controller
 
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle('Laporan Keluhan Operator');
+        // end : isi kolom
+        // end : sheet
+
+        #### END : SHEET SESI ####
+        if ($preview == true) {
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Html($objSpreadsheet);
+            echo $writer->generateHTMLHeader();
+            echo $writer->generateStyles(true);
+            echo $writer->generateSheetData();
+            echo $writer->generateHTMLFooter();
+        } else {
+            $writer = new Xlsx($objSpreadsheet);
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header("Cache-Control: post-check=0, pre-check=0", false);
+            header("Pragma: no-cache");
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $nama_file . '"');
+            $writer->save("php://output");
+        }
+    }
+
+    public function laporanCancellation()
+    {
+        $data['title'] = 'Laporan Cancellation';
+        $data['gudang'] = Gudang::internal()->get();
+        $gudang = Gudang::internal();
+
+        $localGudang = $this->getCheckerGudang(auth()->user()->role_id);
+
+        if ($localGudang) {
+            $gudang = $gudang->where('id', $localGudang->id);
+        }
+        $data['gudang'] = $gudang->get();
+        return view('report.cancellation.grid', $data);
+    }
+
+    public function cancellation()
+    {
+        $validator = Validator::make(
+            request()->all(),[
+            'tgl_awal' => 'required|before_or_equal:tgl_akhir',
+            'tgl_akhir' => 'required|after_or_equal:tgl_awal',
+        ],[
+            'required' => ':attribute wajib diisi!',
+            'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
+            'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
+        ],[
+            'tgl_awal' => 'Tanggal Awal',
+            'tgl_akhir' => 'Tanggal Akhir',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('report/laporan-aktivitas')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $aktivitas  = request()->aktivitas;
+        $shift      = request()->shift;
+        $gudang     = request()->gudang;
+        $tgl_awal   = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+        $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
+
+        $res = AktivitasHarian::with('aktivitas')
+        ->with('gudang')
+        ->with('aktivitasFoto')
+        ->with('materialTrans')
+        ->where('updated_at', '>=', $tgl_awal)
+        ->where('updated_at', '<=', $tgl_akhir)
+        ->where('draft', 0)
+        ->where('canceled', 1)
+        ->orderBy('updated_at', 'asc')
+        ;
+
+        if (!empty($gudang)) {
+            $res = $res->where(function ($query) use ($gudang) {
+                $query->where('id_gudang', $gudang[0]);
+                foreach ($gudang as $key => $value) {
+                    $query->orWhere('id_gudang', $value);
+                }
+            });
+        }
+
+        $res = $res->orderBy('aktivitas_harian.updated_at', 'asc')->get();
+        $preview = false;
+        if (request()->preview == true) {
+            $preview = true;
+        }
+
+        $nama_file = date("YmdHis") . '_cancellation.xlsx';
+        $this->generateExcelCancellation($res, $nama_file, $tgl_awal, $tgl_akhir, $preview);
+    }
+
+    public function generateExcelCancellation($res, $nama_file, $tgl_awal, $tgl_akhir, $preview)
+    {
+        $objSpreadsheet = new Spreadsheet();
+
+        $sheetIndex = 0;
+
+        $objSpreadsheet->createSheet($sheetIndex);
+        $objSpreadsheet->setActiveSheetIndex($sheetIndex);
+
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+
+        // start : title
+        $col = 1;
+        $row = 1;
+        $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REKAP DATA CANCELLATION');
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($this->style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':F' . $row);
+
+        $row++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PERIODE : ' . date('d/m/Y', strtotime($tgl_awal)) . ' - ' . date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($this->style_title);
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':F' . $row);
+
+        $col = 1;
+        $row++;
+
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($this->style_acara);
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($this->style_note);
+
+        // end : title
+        // start : judul kolom
+        $col = 1;
+        $row = 6;
+        $abjadOri = 'A';
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'NO');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($this->style_judul_kolom);
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'GUDANG');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($this->style_judul_kolom);
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'NAMA CHECKER');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($this->style_judul_kolom);
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'AKTIVITAS YANG DICANCEL');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($this->style_judul_kolom);
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'KUANTUM CANCEL');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($this->style_judul_kolom);
+
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'DOKUMENTASI BERKAS');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($this->style_judul_kolom);
+
+        $row = 7;
+        // end : judul kolom
+
+        // start : isi kolom
+        $no = 1;
+        foreach ($res as $value) {
+            $col = 1;
+            $abjad = 'A';
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($this->style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($this->style_no);
+
+            $user = Users::find($value->updated_by);
+            $checker = TenagaKerjaNonOrganik::find($user->id_tkbm);
+
+            $jumlah = 0;
+            foreach ($value->materialTrans as $transaction) {
+                $jumlah += $transaction->jumlah;
+            } 
+
+            $col++;
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->gudang->nama);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($this->style_kolom);
+
+            $col++;
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $checker->nama);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($this->style_kolom);
+
+            $col++;
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->aktivitas->nama);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($this->style_kolom);
+
+            $col++;
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlah.' Ton');
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($this->style_kolom);
+
+            $temp = '';
+            $x = 6;
+            $y = 6;
+            $col++;
+            foreach ($value->aktivitasFoto as $row2) {
+                $temp .= $row2->foto;
+                
+                if (!empty($value->id) && file_exists(storage_path("/app/public/aktivitas_harian/" . $value->id . "/" . $row2->foto))) {
+                    $image_url = base_url() . "application/storage/app/public/aktivitas_harian/" . $value->id . "/" . $row2->foto;
+                    if (isset($image_url) && !empty($image_url)) {
+                        if (strpos($image_url, ".png") === false) {
+                            $image_resource = imagecreatefromjpeg($image_url);
+                        } else {
+                            $image_resource = imagecreatefrompng($image_url);
+                        }
+                        $objDrawing = new MemoryDrawing;
+                        $objDrawing->setName($row2->foto);
+                        $objDrawing->setDescription('gambar ' . $row2->foto);
+                        $objDrawing->setImageResource($image_resource);
+                        $objDrawing->setCoordinates(strtoupper(toAlpha($col - 1)) . $row);
+                        //setOffsetX works properly
+                        $objDrawing->setOffsetX($x);
+                        $objDrawing->setOffsetY($y);
+                        //set width, height
+                        $objDrawing->setWidth(120);
+                        $objDrawing->setWorksheet($objSpreadsheet->getActiveSheet());
+                        // $objSpreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(110);
+                        
+                        $y += $objDrawing->getHeight();
+                        $objSpreadsheet->getActiveSheet()->getRowDimension($row)->setRowHeight($y);
+                    }
+                } else {
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "File tidak ada di server ");
+                }
+            }
+
+            $col++;
+            $abjad++;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '');
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($this->style_kolom);
+
+            $row++;
+            $no++;
+        }
+
+        //Sheet Title
+        $objSpreadsheet->getActiveSheet()->setTitle('Laporan Cancellation');
         // end : isi kolom
         // end : sheet
 

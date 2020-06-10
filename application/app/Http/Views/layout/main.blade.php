@@ -289,6 +289,12 @@
                                                 <span class="kt-nav__link-text">Keluhan Operator</span>
                                             </a>
                                         </li>
+                                        <li class="kt-nav__item">
+                                            <a href="{{('report/laporan-cancellation')}}" class="kt-nav__link">
+                                                <em class="kt-nav__link-icon la la-bitcoin"></em>
+                                                <span class="kt-nav__link-text">Keluhan Cancellation</span>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>

@@ -55,7 +55,7 @@ class AktivitasHarian extends Model
 
     public function aktivitasFoto()
     {
-        return $this->hasManyThrough(AktivitasFoto::class, JenisFoto::class, 'id_aktivitas_harian', 'id_foto_jenis', 'id', 'id');
+        return $this->hasMany(AktivitasFoto::class, 'id_aktivitas_harian', 'id');
     }
 
     public function produk()
