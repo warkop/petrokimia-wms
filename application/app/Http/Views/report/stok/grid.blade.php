@@ -11,7 +11,7 @@
 
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
-    <form action="{{url('report/stok')}}" method="GET" target="_blank">
+    <form action="{{url('report/stok')}}" method="GET">
     <div class="kt-portlet">
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">

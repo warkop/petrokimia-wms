@@ -23,7 +23,7 @@
                 </p>
             </div>
         </div>
-        <form action="{{url('report/biaya-pallet')}}" method="GET" target="_blank">
+        <form action="{{url('report/biaya-pallet')}}" method="GET">
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row mt2">
