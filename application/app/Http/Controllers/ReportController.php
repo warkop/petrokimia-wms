@@ -780,8 +780,6 @@ class ReportController extends Controller
         $validator = Validator::make(
             request()->all(),
             [
-                'gudang' => 'required',
-                'produk' => 'required',
                 'tgl_awal' => 'required|before_or_equal:tgl_akhir',
                 'tgl_akhir' => 'required|after_or_equal:tgl_awal',
             ],[
@@ -790,8 +788,6 @@ class ReportController extends Controller
                 'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
             ],
             [
-                'gudang' => 'Gudang',
-                'produk' => 'Produk',
                 'tgl_awal' => 'Tanggal Awal',
                 'tgl_akhir' => 'Tanggal Akhir',
             ]
@@ -1153,6 +1149,13 @@ class ReportController extends Controller
             $stokAkhir = $stokAwal;
 
             $abjadPemasukan = 'E';
+            /*
+                jenis aktivitas
+                1 = import
+                2 = rebag
+                3 = reprod
+                4 = produksi
+            */
 
             // pemasukan: start
             // produksi
@@ -1172,9 +1175,7 @@ class ReportController extends Controller
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                 $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
-            ->whereNull('pengaruh_tgl_produksi')
-            ->whereNotNull('status_aktivitas')
-            ->whereNull('internal_gudang')
+            ->where('jenis_aktivitas', 4)
             ->sum('jumlah');    
             $stokAkhir += $produksi;
             $col++;    
@@ -1227,10 +1228,8 @@ class ReportController extends Controller
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                 $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
-            ->whereNotNull('aktivitas.pengiriman')
             ->whereIn('area.id_gudang', $gudang)
-            ->whereNotNull('status_aktivitas')
-            ->whereNull('internal_gudang')
+            ->where('aktivitas.jenis_aktivitas', 1)
             ->sum('material_trans.jumlah');
 
             $stokAkhir += $gudangPenyangga;
@@ -1257,18 +1256,7 @@ class ReportController extends Controller
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                 $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
-            ->whereNull('aktivitas.so')
-            ->whereNull('connect_sistro')
-            ->whereNull('pengiriman')
-            ->whereNull('kelayakan')
-            ->whereNull('peminjaman')
-            ->whereNull('penerimaan_gi')
-            ->whereNull('penyusutan')
-            ->whereNull('status_aktivitas')
-            ->whereNull('internal_gudang')
-            ->whereNull('pengiriman_produk_rusak')
-            ->whereNull('aktivitas.cancelable')
-            ->whereNotNull('pengaruh_tgl_produksi')
+            ->where('aktivitas.jenis_aktivitas', 2)
             ->sum('jumlah');
 
             $stokAkhir += $rebagPlus;
@@ -1357,8 +1345,7 @@ class ReportController extends Controller
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                 $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
-            ->whereNotNull('produk_rusak')
-            ->whereNotNull('pengaruh_tgl_produksi')
+            ->where('jenis_aktivitas', 3)
             ->sum('jumlah');
 
             $stokAkhir -= $reprod;
@@ -1385,18 +1372,7 @@ class ReportController extends Controller
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                 $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
-            ->whereNull('aktivitas.so')
-            ->whereNull('connect_sistro')
-            ->whereNull('pengiriman')
-            ->whereNull('kelayakan')
-            ->whereNull('peminjaman')
-            ->whereNull('penerimaan_gi')
-            ->whereNull('penyusutan')
-            ->whereNull('status_aktivitas')
-            ->whereNull('internal_gudang')
-            ->whereNull('pengiriman_produk_rusak')
-            ->whereNull('aktivitas.cancelable')
-            ->whereNotNull('pengaruh_tgl_produksi')
+            ->where('jenis_aktivitas', 2)
             ->sum('jumlah');
 
             $stokAkhir -= $rebagMinus;
