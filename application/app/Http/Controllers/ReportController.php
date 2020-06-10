@@ -883,18 +883,7 @@ class ReportController extends Controller
         $col = 1;
         $row = 1;
 
-        $abjadTitle = 'D';
-        foreach ($gudang as $key) {
-            $abjadTitle++;
-        }
-
-        foreach ($gudang as $key) {
-            $abjadTitle++;
-        }
-
-        $abjadTitle++;
-        $abjadTitle++;
-        $abjadTitle++;
+        $abjadTitle = 'O';
 
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
@@ -929,10 +918,9 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
 
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
-        $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+        for ($i='A'; $i < 'O'; $i++) {
+            $objSpreadsheet->getActiveSheet()->getColumnDimension($i)->setAutoSize(true);
+        }
 
         // end : title
         // start : judul kolom
@@ -1046,7 +1034,7 @@ class ReportController extends Controller
         $style_judul_kolom = array(
             'fill' => array(
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                'color' => array('rgb' => '8FAADC')
+                'color' => array('rgb' => 'f0a500')
             ),
             'font' => array(
                 'bold' => true
