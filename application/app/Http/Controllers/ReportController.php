@@ -4800,9 +4800,8 @@ class ReportController extends Controller
             
             $col++;
             $user = Users::withoutGlobalScopes()->find($value->aktivitasHarian->updated_by);
-            dd($user->id);
-            $tenaga_kerja = TenagaKerjaNonOrganik::withoutGlobalScopes()->find($user->id);
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tenaga_kerja->nama);
+            $tenaga_kerja = TenagaKerjaNonOrganik::withoutGlobalScopes()->find($user->id_tkbm);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tenaga_kerja->nama??'-');
 
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->material->nama);
@@ -7299,6 +7298,25 @@ class ReportController extends Controller
 
     public function keluhanOperator()
     {
+        $validator = Validator::make(
+            request()->all(),[
+            'tgl_awal' => 'required|before_or_equal:tgl_akhir',
+            'tgl_akhir' => 'required|after_or_equal:tgl_awal',
+        ],[
+            'required' => ':attribute wajib diisi!',
+            'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
+            'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
+        ],[
+            'tgl_awal' => 'Tanggal Awal',
+            'tgl_akhir' => 'Tanggal Akhir',
+        ]);
+        
+        if ($validator->fails()) {
+            return redirect('report/laporan-keluhan-operator')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $keluhan           = request()->input('keluhan'); //multi
         $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
@@ -7597,13 +7615,11 @@ class ReportController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('report/laporan-aktivitas')
+            return redirect('report/laporan-cancellation')
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        $aktivitas  = request()->aktivitas;
-        $shift      = request()->shift;
         $gudang     = request()->gudang;
         $tgl_awal   = date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
