@@ -5042,7 +5042,6 @@ class ReportController extends Controller
             
             $col++;
             $user = Users::withoutGlobalScopes()->find($value->aktivitasHarian->updated_by);
-            return 0;
             $tenaga_kerja = TenagaKerjaNonOrganik::withoutGlobalScopes()->find($user->id_tkbm);
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $tenaga_kerja->nama??'-');
 
