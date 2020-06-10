@@ -12,7 +12,7 @@
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
     <div class="kt-portlet">
-        <form action="{{url('report/mutasi-stok')}}" method="GET" target="_blank">
+        <form action="{{url('report/mutasi-stok')}}" method="GET">
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">

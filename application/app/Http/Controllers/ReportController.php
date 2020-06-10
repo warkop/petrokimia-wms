@@ -780,13 +780,18 @@ class ReportController extends Controller
         $validator = Validator::make(
             request()->all(),
             [
-                'tgl_awal' => 'required',
-                'tgl_akhir' => 'required',
-            ],
-            [
+                'gudang' => 'required',
+                'produk' => 'required',
+                'tgl_awal' => 'required|before_or_equal:tgl_akhir',
+                'tgl_akhir' => 'required|after_or_equal:tgl_awal',
+            ],[
                 'required' => ':attribute wajib diisi!',
+                'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
+                'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
             ],
             [
+                'gudang' => 'Gudang',
+                'produk' => 'Produk',
                 'tgl_awal' => 'Tanggal Awal',
                 'tgl_akhir' => 'Tanggal Akhir',
             ]
@@ -1359,13 +1364,16 @@ class ReportController extends Controller
         $validator = Validator::make(
             request()->all(),
             [
-                'tgl_awal' => 'required',
-                'tgl_akhir' => 'required',
-            ],
-            [
+                'material' => 'required',
+                'tgl_awal' => 'required|before_or_equal:tgl_akhir',
+                'tgl_akhir' => 'required|after_or_equal:tgl_awal',
+            ],[
                 'required' => ':attribute wajib diisi!',
+                'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
+                'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
             ],
             [
+                'material' => 'Material',
                 'tgl_awal' => 'Tanggal Awal',
                 'tgl_akhir' => 'Tanggal Akhir',
             ]
@@ -1758,6 +1766,7 @@ class ReportController extends Controller
     {
         $validator = Validator::make(
             request()->all(),[
+            'pallet' => 'required',
             'tgl_awal' => 'required|before_or_equal:tgl_akhir',
             'tgl_akhir' => 'required|after_or_equal:tgl_awal',
         ],[
@@ -1765,6 +1774,7 @@ class ReportController extends Controller
             'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
             'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
         ],[
+            'pallet' => 'Pallet',
             'gudang' => 'Gudang',
             'tgl_awal' => 'Tanggal Awal',
             'tgl_akhir' => 'Tanggal Akhir',
@@ -3868,6 +3878,7 @@ class ReportController extends Controller
     {
         $validator = Validator::make(
             request()->all(),[
+            'produk' => 'required',
             'tgl_awal' => 'required|before_or_equal:tgl_akhir',
             'tgl_akhir' => 'required|after_or_equal:tgl_awal',
         ],[
@@ -3875,6 +3886,7 @@ class ReportController extends Controller
             'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
             'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
         ],[
+            'produk' => 'Produk',
             'tgl_awal' => 'Tanggal Awal',
             'tgl_akhir' => 'Tanggal Akhir',
         ]);
@@ -4177,6 +4189,28 @@ class ReportController extends Controller
 
     public function keluhanGp()
     {
+        $validator = Validator::make(
+            request()->all(),[
+            'produk' => 'required',
+            'tgl_awal' => 'required|before_or_equal:tgl_akhir',
+            'tgl_akhir' => 'required|after_or_equal:tgl_awal',
+        ],[
+            'required' => ':attribute wajib diisi!',
+            'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
+            'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
+        ],[
+            'produk' => 'Produk',
+            'gudang' => 'Gudang',
+            'tgl_awal' => 'Tanggal Awal',
+            'tgl_akhir' => 'Tanggal Akhir',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('report/laporan-keluhan-gp')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $gudang             = request()->input('gudang'); //multi
         $produk             = request()->input('produk');
         $pilih_produk       = request()->input('pilih_produk'); //multi
@@ -4451,12 +4485,14 @@ class ReportController extends Controller
         $data['gudang'] = $gudang->get();
         $data['produk'] = Material::produk()->get();
         return view('report.transaksi-material.grid', $data);
+
     }
 
     public function transaksiMaterial()
     {
         $validator = Validator::make(
             request()->all(),[
+            'material' => 'required',
             'tgl_awal' => 'required|before_or_equal:tgl_akhir',
             'tgl_akhir' => 'required|after_or_equal:tgl_awal',
         ],[
@@ -4464,6 +4500,7 @@ class ReportController extends Controller
             'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
             'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
         ],[
+            'material' => 'Material',
             'gudang' => 'Gudang',
             'tgl_awal' => 'Tanggal Awal',
             'tgl_akhir' => 'Tanggal Akhir',
@@ -4911,6 +4948,23 @@ class ReportController extends Controller
 
     public function stok()
     {
+        $validator = Validator::make(
+            request()->all(),[
+            'tgl_awal' => 'required',
+            'produk' => 'required',
+        ],[
+            'required' => ':attribute wajib diisi!',
+        ],[
+            'produk' => 'Produk',
+            'tgl_awal' => 'Tanggal',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('report/laporan-stok')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $gudang     = request()->input('gudang'); //multi
         $tipe_produk= request()->input('produk');
         $produk     = request()->input('pilih_produk'); //multi
@@ -5200,11 +5254,12 @@ class ReportController extends Controller
             request()->all(),
             [
                 'produk'    => 'required',
-                'tgl_awal'  => 'required',
-                'tgl_akhir' => 'required',
-            ],
-            [
+                'tgl_awal' => 'required|before_or_equal:tgl_akhir',
+                'tgl_akhir' => 'required|after_or_equal:tgl_awal',
+            ],[
                 'required' => ':attribute wajib diisi!',
+                'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
+                'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
             ],
             [
                 'produk'    => 'Produk',
@@ -6208,11 +6263,12 @@ class ReportController extends Controller
         $validator = Validator::make(
             request()->all(),
             [
-                'tgl_awal'  => 'required',
-                'tgl_akhir' => 'required',
-            ],
-            [
+                'tgl_awal' => 'required|before_or_equal:tgl_akhir',
+                'tgl_akhir' => 'required|after_or_equal:tgl_awal',
+            ],[
                 'required' => ':attribute wajib diisi!',
+                'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
+                'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
             ],
             [
                 'tgl_awal'  => 'Tanggal Awal',
@@ -6604,11 +6660,12 @@ class ReportController extends Controller
         $validator = Validator::make(
             request()->all(),
             [
-                'tgl_awal'  => 'required',
-                'tgl_akhir' => 'required',
-            ],
-            [
+                'tgl_awal' => 'required|before_or_equal:tgl_akhir',
+                'tgl_akhir' => 'required|after_or_equal:tgl_awal',
+            ],[
                 'required' => ':attribute wajib diisi!',
+                'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
+                'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
             ],
             [
                 'tgl_awal'  => 'Tanggal Awal',
@@ -6956,11 +7013,12 @@ class ReportController extends Controller
         $validator = Validator::make(
             request()->all(),
             [
-                'tgl_awal'  => 'required',
-                'tgl_akhir' => 'required',
-            ],
-            [
+                'tgl_awal' => 'required|before_or_equal:tgl_akhir',
+                'tgl_akhir' => 'required|after_or_equal:tgl_awal',
+            ],[
                 'required' => ':attribute wajib diisi!',
+                'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
+                'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
             ],
             [
                 'tgl_awal'  => 'Tanggal Awal',

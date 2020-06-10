@@ -23,7 +23,7 @@
             </div>
         </div>
         
-        <form action="{{ url('report/keluhan-gp') }}" method="GET" target="_blank">
+        <form action="{{ url('report/keluhan-gp') }}" method="GET">
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row">
@@ -101,6 +101,9 @@
                     </div>
                 </div>
             </div>
+            @foreach ($errors->all() as $error)
+                <div class="alert alert-danger">{{ $error }}</div>
+            @endforeach
         </div>
         <div class="kt-portlet__foot">
             <div class="kt-form__actions">
