@@ -102,7 +102,7 @@
 
 <script>
     $('#gudang').select2({
-        placeholder: "Pilih gudang"
+        placeholder: "Semua gudang"
     });
     $('#produk').select2({
         placeholder: "Pilih Produk",
