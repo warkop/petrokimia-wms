@@ -26,7 +26,7 @@ class Area extends CustomModel
 
     public function gudang()
     {
-        return $this->belongsTo(Gudang::class, 'id_gudang');
+        return $this->hasOne(Gudang::class, 'id', 'id_gudang')->withoutGlobalScopes();
     }
 
     public function areaStok()
