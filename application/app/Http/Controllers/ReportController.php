@@ -2317,19 +2317,6 @@ class ReportController extends Controller
         // end : judul kolom
     }
 
-    private function mutasiPalletGetFromShift1($res, $tgl_sekarang, $shift, $kondisi)
-    {
-        # code...
-    }
-    private function mutasiPalletGetFromShift2($res, $tgl_sekarang, $shift, $kondisi)
-    {
-        # code...
-    }
-    private function mutasiPalletGetFromShift3($res, $tgl_sekarang, $shift, $kondisi)
-    {
-        # code...
-    }
-
     private function mutasiPalletGetStokAwal($res, $tgl_sekarang, $shift, $kondisi)
     {
         $saldoAwal = 0;
@@ -2396,7 +2383,7 @@ class ReportController extends Controller
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
                         ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-                        ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                        ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . ' 16:30:00')));
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -2438,7 +2425,7 @@ class ReportController extends Controller
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
                         ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-                        ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                        ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . ' 16:30:00')));
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -2482,7 +2469,7 @@ class ReportController extends Controller
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
                         ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-                        ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                        ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT1)));
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -2526,7 +2513,7 @@ class ReportController extends Controller
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
                         ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-                        ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                        ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT1)));
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -5900,7 +5887,6 @@ class ReportController extends Controller
         ->get()
         ->groupBy('id_area')
         ;
-        // dd($res);
         $nama_file = date("YmdHis") . '_logsheet.xlsx';
 
         $resGudang = Gudang::find($gudang);
