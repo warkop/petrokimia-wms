@@ -180,67 +180,81 @@ class ReportController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('report/laporan-aktivitas')
-                ->withErrors($validator)
-                ->withInput();
+            $msg = '';
+            foreach ($validator->errors()->all() as $message) { $msg .= '<div class="alert alert-danger">'.$message.'</div>'; }
+            return response()->json([
+                'title'=>'Oopss...',
+                'data'=>$msg,
+                'type'=>'error'
+            ],400);
         }
 
-        $aktivitas  = request()->aktivitas;
-        $shift      = request()->shift;
-        $gudang     = request()->gudang;
-        $tgl_awal   = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
 
-        $res = AktivitasHarian::with('aktivitas')
-        ->with('gudang')
-        ->with('materialTrans.material')
-        ->where('updated_at', '>=', $tgl_awal)
-        ->where('updated_at', '<=', $tgl_akhir)
-        ->where('draft', 0)
-        ->whereHas('aktivitas', function($query) {
-            $query->whereNull('penerimaan_gi');
-        })
-        ->whereHas('materialTrans.material', function($query) {
-            $query->where('kategori', 1);
-        })
-        ->orderBy('updated_at', 'asc')
-        ;
+        if(request()->input('validate') == true){
+            $aktivitas  = request()->aktivitas;
+            $shift      = request()->shift;
+            $gudang     = request()->gudang;
+            $tgl_awal   = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+            $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
+    
+            $res = AktivitasHarian::with('aktivitas')
+            ->with('gudang')
+            ->with('materialTrans.material')
+            ->where('updated_at', '>=', $tgl_awal)
+            ->where('updated_at', '<=', $tgl_akhir)
+            ->where('draft', 0)
+            ->whereHas('aktivitas', function($query) {
+                $query->whereNull('penerimaan_gi');
+            })
+            ->whereHas('materialTrans.material', function($query) {
+                $query->where('kategori', 1);
+            })
+            ->orderBy('updated_at', 'asc')
+            ;
+    
+            if (!empty($aktivitas)) {
+                $res = $res->where(function ($query) use($aktivitas){
+                    $query->where('id_aktivitas', $aktivitas[0]);
+                    foreach ($aktivitas as $key => $value) {
+                        $query->orWhere('id_aktivitas', $value);
+                    }
+                });
+            }
+    
+            if (!empty($gudang)) {
+                $res = $res->where(function ($query) use ($gudang) {
+                    $query->where('id_gudang', $gudang[0]);
+                    foreach ($gudang as $key => $value) {
+                        $query->orWhere('id_gudang', $value);
+                    }
+                });
+            }
+    
+            if (!empty($shift)) {
+                $res = $res->where(function ($query) use ($shift) {
+                    $query->where('id_shift', $shift[0]);
+                    foreach ($shift as $key => $value) {
+                        $query->orWhere('id_shift', $value);
+                    }
+                });
+            }
+    
+            $res = $res->orderBy('aktivitas_harian.updated_at', 'asc')->get();
+            $preview = false;
+            if (request()->preview == true) {
+                $preview = true;
+            }
+    
+            $nama_file = date("YmdHis") . '_aktivitas_harian.xlsx';
+            $this->generateExcelAktivitas($res, $nama_file, $tgl_awal, $tgl_akhir, $preview);
+        } else {
+            return response()->json([
+                "code"=>200,
+                "msg"=>"Data Berhasil Di Muat",
+                "data"=>str_replace("%5B%5D","[]",$this->convertParameter(request()->all()))
+            ],http_response_code());
 
-        if (!empty($aktivitas)) {
-            $res = $res->where(function ($query) use($aktivitas){
-                $query->where('id_aktivitas', $aktivitas[0]);
-                foreach ($aktivitas as $key => $value) {
-                    $query->orWhere('id_aktivitas', $value);
-                }
-            });
         }
-
-        if (!empty($gudang)) {
-            $res = $res->where(function ($query) use ($gudang) {
-                $query->where('id_gudang', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query->orWhere('id_gudang', $value);
-                }
-            });
-        }
-
-        if (!empty($shift)) {
-            $res = $res->where(function ($query) use ($shift) {
-                $query->where('id_shift', $shift[0]);
-                foreach ($shift as $key => $value) {
-                    $query->orWhere('id_shift', $value);
-                }
-            });
-        }
-
-        $res = $res->orderBy('aktivitas_harian.updated_at', 'asc')->get();
-        $preview = false;
-        if (request()->preview == true) {
-            $preview = true;
-        }
-
-        $nama_file = date("YmdHis") . '_aktivitas_harian.xlsx';
-        $this->generateExcelAktivitas($res, $nama_file, $tgl_awal, $tgl_akhir, $preview);
     }
 
     public function laporanKeluhanAlatBerat()
@@ -794,69 +808,84 @@ class ReportController extends Controller
         );
 
         if ($validator->fails()) {
-            return redirect('report/laporan-produk')
-                ->withErrors($validator)
-                ->withInput();
+            $msg = '';
+            foreach ($validator->errors()->all() as $message) { $msg .= '<div class="alert alert-danger">'.$message.'</div>'; }
+            return response()->json([
+                'title'=>'Oopss...',
+                'data'=>$msg,
+                'type'=>'error'
+            ],400);
         }
-        $gudang             = request()->input('gudang'); //multi
-        $produk             = request()->input('produk');
-        $pilih_produk       = request()->input('pilih_produk'); //multi
-        $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
 
-        $res = AreaStok::distinct()->select(
-            'id_material',
-            'id_area'
-        )
-        ->join('area', 'area.id', '=', 'area_stok.id_area')
-        ->join('gudang', 'gudang.id', '=', 'area.id_gudang')
-        ->with('material')
-        ->with('area', 'area.gudang')
-        ->where('status', 1);
-
-        if ($gudang) {
-            $resGudang = Gudang::select('id', 'nama')->whereIn('id', $gudang)->orderBy('id')->get()->pluck('id')->toArray();
-            
-            $res = $res->whereHas('area.gudang', function ($query) use ($gudang) {
-                $query = $query->where('id_gudang', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query = $query->orWhere('id_gudang', $value);
-                }
-            });
+        if(request()->input('validate') == true){
+            $gudang             = request()->input('gudang'); //multi
+            $produk             = request()->input('produk');
+            $pilih_produk       = request()->input('pilih_produk'); //multi
+            $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+            $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
+    
+            $res = AreaStok::distinct()->select(
+                'id_material',
+                'id_area'
+            )
+            ->join('area', 'area.id', '=', 'area_stok.id_area')
+            ->join('gudang', 'gudang.id', '=', 'area.id_gudang')
+            ->with('material')
+            ->with('area', 'area.gudang')
+            ->where('status', 1);
+    
+            if ($gudang) {
+                $resGudang = Gudang::select('id', 'nama')->whereIn('id', $gudang)->orderBy('id')->get()->pluck('id')->toArray();
+                
+                $res = $res->whereHas('area.gudang', function ($query) use ($gudang) {
+                    $query = $query->where('id_gudang', $gudang[0]);
+                    foreach ($gudang as $key => $value) {
+                        $query = $query->orWhere('id_gudang', $value);
+                    }
+                });
+            } else {
+                $resGudang = Gudang::select('id', 'nama')->internal()->orderBy('id')->get()->pluck('id')->toArray();
+            }
+    
+            if ($produk == 2) {
+                $res = $res->where(function ($query) use ($pilih_produk) {
+                    $query = $query->where('id_material', $pilih_produk[0]);
+                    foreach ($pilih_produk as $key => $value) {
+                        $query = $query->orWhere('id_material', $value);
+                    }
+                });
+            } else {
+                $res = $res->whereHas('material', function ($query) {
+                    $query = $query->where('kategori', 1);
+                });
+            }
+    
+            $res = $res
+            // ->orderBy('gudang.nama', 'asc')
+            ->orderBy('id_material', 'asc')
+            ->get()
+            ->groupBy('id_material');
+    
+            if (!is_dir(storage_path() . '/app/public/excel/')) {
+                mkdir(storage_path() . '/app/public/excel', 755);
+            }
+    
+            $preview = false;
+            if (request()->preview == true) {
+                $preview = true;
+            }
+    
+            $nama_file = date("YmdHis") . '_produk.xlsx';
+            $this->generateExcelProduk($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir, $preview);
         } else {
-            $resGudang = Gudang::select('id', 'nama')->internal()->orderBy('id')->get()->pluck('id')->toArray();
+            return response()->json([
+                "code"=>200,
+                "msg"=>"Data Berhasil Di Muat",
+                "data"=>str_replace("%5B%5D","[]",$this->convertParameter(request()->all()))
+            ],http_response_code());
+
         }
 
-        if ($produk == 2) {
-            $res = $res->where(function ($query) use ($pilih_produk) {
-                $query = $query->where('id_material', $pilih_produk[0]);
-                foreach ($pilih_produk as $key => $value) {
-                    $query = $query->orWhere('id_material', $value);
-                }
-            });
-        } else {
-            $res = $res->whereHas('material', function ($query) {
-                $query = $query->where('kategori', 1);
-            });
-        }
-
-        $res = $res
-        // ->orderBy('gudang.nama', 'asc')
-        ->orderBy('id_material', 'asc')
-        ->get()
-        ->groupBy('id_material');
-
-        if (!is_dir(storage_path() . '/app/public/excel/')) {
-            mkdir(storage_path() . '/app/public/excel', 755);
-        }
-
-        $preview = false;
-        if (request()->preview == true) {
-            $preview = true;
-        }
-
-        $nama_file = date("YmdHis") . '_produk.xlsx';
-        $this->generateExcelProduk($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir, $preview);
     }
 
     public function generateExcelProduk($res, $nama_file, $gudang, $tgl_awal, $tgl_akhir, $preview)
@@ -1561,52 +1590,67 @@ class ReportController extends Controller
         );
 
         if ($validator->fails()) {
-            return redirect('report/laporan-material')
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $gudang             = request()->input('gudang'); //multi
-        $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
-
-        $resPallet = GudangStok::select(
-            'id_gudang',
-            'id_material'
-        )->distinct()->with('gudang');
-
-        $resGudang = Gudang::internal()->get();
-        
-        if ($gudang) {
-            $resGudang = Gudang::where(function ($query) use ($gudang) {
-                $query = $query->where('id', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query = $query->orWhere('id', $value);
-                }
-            })
-            ->get();
-
-            $resPallet = $resPallet->where(function($query) use($gudang) {
-                $query = $query->where('id_gudang', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query = $query->orWhere('id_gudang', $value);
-                }
-            });
+            $msg = '';
+            foreach ($validator->errors()->all() as $message) { $msg .= '<div class="alert alert-danger">'.$message.'</div>'; }
+            return response()->json([
+                'title'=>'Oopss...',
+                'data'=>$msg,
+                'type'=>'error'
+            ],400);
         }
 
-        if (!is_dir(storage_path() . '/app/public/excel/')) {
-            mkdir(storage_path() . '/app/public/excel', 755);
+        if(request()->input('validate') == true){     
+            $gudang             = request()->input('gudang'); //multi
+            $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+            $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
+
+            $resPallet = GudangStok::select(
+                'id_gudang',
+                'id_material'
+            )->distinct()->with('gudang');
+
+            $resGudang = Gudang::internal()->get();
+            
+            if ($gudang) {
+                $resGudang = Gudang::where(function ($query) use ($gudang) {
+                    $query = $query->where('id', $gudang[0]);
+                    foreach ($gudang as $key => $value) {
+                        $query = $query->orWhere('id', $value);
+                    }
+                })
+                ->get();
+
+                $resPallet = $resPallet->where(function($query) use($gudang) {
+                    $query = $query->where('id_gudang', $gudang[0]);
+                    foreach ($gudang as $key => $value) {
+                        $query = $query->orWhere('id_gudang', $value);
+                    }
+                });
+            }
+
+            if (!is_dir(storage_path() . '/app/public/excel/')) {
+                mkdir(storage_path() . '/app/public/excel', 755);
+            }
+
+            $preview = false;
+            if (request()->preview == true) {
+                $preview = true;
+            }
+
+            $resPallet = $resPallet->get();
+
+            $res = '';
+            $nama_file = date("YmdHis") . '_material.xlsx';
+            $this->generateExcelMaterial($res, $nama_file, $resGudang, $resPallet, $tgl_awal, $tgl_akhir, $preview);
+
+        } else {
+            return response()->json([
+                "code"=>200,
+                "msg"=>"Data Berhasil Di Muat",
+                "data"=>str_replace("%5B%5D","[]",$this->convertParameter(request()->all()))
+            ],http_response_code());
+
         }
-
-        $preview = false;
-        if (request()->preview == true) {
-            $preview = true;
-        }
-
-        $resPallet = $resPallet->get();
-
-        $res = '';
-        $nama_file = date("YmdHis") . '_material.xlsx';
-        $this->generateExcelMaterial($res, $nama_file, $resGudang, $resPallet, $tgl_awal, $tgl_akhir, $preview);
     }
 
     public function generateExcelMaterial($res, $nama_file, $gudang, $resPallet, $tgl_awal, $tgl_akhir, $preview)
@@ -1962,9 +2006,13 @@ class ReportController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('report/laporan-mutasi-pallet')
-                ->withErrors($validator)
-                ->withInput();
+            $msg = '';
+            foreach ($validator->errors()->all() as $message) { $msg .= '<div class="alert alert-danger">'.$message.'</div>'; }
+            return response()->json([
+                'title'=>'Oopss...',
+                'data'=>$msg,
+                'type'=>'error'
+            ],400);
         }
 
         $gudang             = request()->input('gudang'); //multi
@@ -1973,51 +2021,60 @@ class ReportController extends Controller
         $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
 
-        $res = GudangStok::distinct()->select('id_gudang', 'id_material');
-        $res = $res->with('gudang')->whereHas('gudang', function($query) {
-            $query->where('tipe_gudang', 1);
-        });
-
-
-        $resGudang = Gudang::internal()->get();
-        if ($gudang) {
-            $res = $res->where(function ($query) use ($gudang) {
-                $query->where('id_gudang', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query->orWhere('id_gudang', $value);
-                }
+        if(request()->input('validate') == true){
+            $res = GudangStok::distinct()->select('id_gudang', 'id_material');
+            $res = $res->with('gudang')->whereHas('gudang', function($query) {
+                $query->where('tipe_gudang', 1);
             });
 
-            $resGudang = Gudang::where(function ($query) use ($gudang){
-                $query->where('id', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query->orWhere('id', $value);
-                }
-            })->get();
-        }
 
-        if ($pallet == 2) {
-            $res = $res->where(function ($query) use ($pilih_pallet) {
-                foreach ($pilih_pallet as $key => $value) {
-                    $query = $query->orWhere('id_material', $value);
-                }
-            });
+            $resGudang = Gudang::internal()->get();
+            if ($gudang) {
+                $res = $res->where(function ($query) use ($gudang) {
+                    $query->where('id_gudang', $gudang[0]);
+                    foreach ($gudang as $key => $value) {
+                        $query->orWhere('id_gudang', $value);
+                    }
+                });
+
+                $resGudang = Gudang::where(function ($query) use ($gudang){
+                    $query->where('id', $gudang[0]);
+                    foreach ($gudang as $key => $value) {
+                        $query->orWhere('id', $value);
+                    }
+                })->get();
+            }
+
+            if ($pallet == 2) {
+                $res = $res->where(function ($query) use ($pilih_pallet) {
+                    foreach ($pilih_pallet as $key => $value) {
+                        $query = $query->orWhere('id_material', $value);
+                    }
+                });
+            } else {
+                $res = $res->whereHas('material', function ($query) {
+                    $query = $query->where('kategori', 2);
+                });
+            }
+
+            $res = $res
+            ->orderBy('id_gudang', 'asc')->get();
+
+            $preview = false;
+            if (request()->preview == true) {
+                $preview = true;
+            }
+
+            $nama_file = date("YmdHis") . '_mutasi_pallet.xlsx';
+            $this->generateExcelMutasiPallet($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir, $preview);
         } else {
-            $res = $res->whereHas('material', function ($query) {
-                $query = $query->where('kategori', 2);
-            });
+            return response()->json([
+                "code"=>200,
+                "msg"=>"Data Berhasil Di Muat",
+                "data"=>str_replace("%5B%5D","[]",$this->convertParameter(request()->all()))
+            ],http_response_code());
+
         }
-
-        $res = $res
-        ->orderBy('id_gudang', 'asc')->get();
-
-        $preview = false;
-        if (request()->preview == true) {
-            $preview = true;
-        }
-
-        $nama_file = date("YmdHis") . '_mutasi_pallet.xlsx';
-        $this->generateExcelMutasiPallet($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir, $preview);
     }
 
     private function headerExcelMutasiPallet($objSpreadsheet, $tgl_awal, $tgl_akhir)
@@ -4008,81 +4065,94 @@ class ReportController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('report/laporan-realisasi')
-                ->withErrors($validator)
-                ->withInput();
+            $msg = '';
+            foreach ($validator->errors()->all() as $message) { $msg .= '<div class="alert alert-danger">'.$message.'</div>'; }
+            return response()->json([
+                'title'=>'Oopss...',
+                'data'=>$msg,
+                'type'=>'error'
+            ],400);
         }
 
-        $gudang             = request()->input('gudang'); //multi
-        $produk             = request()->input('produk');
-        $pilih_produk       = request()->input('pilih_produk'); //multi
-        $shift              = request()->input('shift'); //multi
-        $kegiatan           = request()->input('kegiatan'); //multi
-        $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
+        if(request()->input('validate') == true){
+            $gudang             = request()->input('gudang'); //multi
+            $produk             = request()->input('produk');
+            $pilih_produk       = request()->input('pilih_produk'); //multi
+            $shift              = request()->input('shift'); //multi
+            $kegiatan           = request()->input('kegiatan'); //multi
+            $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+            $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
 
-        $res = DB::table('aktivitas_harian')->select(
-            'aktivitas.nama',
-            'aktivitas_harian.updated_at as tanggal',
-            'g.nama as nama_gudang', 
-            'id_shift',
-            'm.nama as nama_material',
-            'mt.jumlah'
-            )
-            ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-            ->leftJoin('gudang as g', 'g.id', '=', 'aktivitas_harian.id_gudang')
-            ->leftJoin('material_trans as mt', 'mt.id_aktivitas_harian', '=', 'aktivitas_harian.id')
-            ->leftJoin('material as m', 'm.id', '=', 'id_material')
-            ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
-            ->where('draft', 0)
-            ->whereNull('peminjaman')
-            ->whereNull('penerimaan_gi')
-            ->where('kategori', 1)
-            ->orderBy('aktivitas_harian.updated_at', 'asc')
-            ;
-        
-        if ($shift) {
-            $res = $res->where(function ($query) use ($shift) {
-                foreach ($shift as $key => $value) {
-                    $query->orWhere('id_shift', $value);
-                }
-            });
-        }
-        if ($gudang) {
-            $res = $res->where(function ($query) use ($gudang) {
-                foreach ($gudang as $key => $value) {
-                    $query->orWhere('id_gudang', $value);
-                }
-            });
-        }
-
-        if ($kegiatan) {
-            $res = $res->where(function ($query) use ($kegiatan) {
-                foreach ($kegiatan as $key => $value) {
-                    $query->orWhere('id_aktivitas', $value);
-                }
-            });
-        }
-
-        if ($produk == 2) {
-            $res = $res->where(function ($query) use ($pilih_produk,$produk) {
-                if ($produk == 2) {
-                    foreach ($pilih_produk as $key => $value) {
-                        $query->orWhere('m.id', $value);
+            $res = DB::table('aktivitas_harian')->select(
+                'aktivitas.nama',
+                'aktivitas_harian.updated_at as tanggal',
+                'g.nama as nama_gudang', 
+                'id_shift',
+                'm.nama as nama_material',
+                'mt.jumlah'
+                )
+                ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->leftJoin('gudang as g', 'g.id', '=', 'aktivitas_harian.id_gudang')
+                ->leftJoin('material_trans as mt', 'mt.id_aktivitas_harian', '=', 'aktivitas_harian.id')
+                ->leftJoin('material as m', 'm.id', '=', 'id_material')
+                ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
+                ->where('draft', 0)
+                ->whereNull('peminjaman')
+                ->whereNull('penerimaan_gi')
+                ->where('kategori', 1)
+                ->orderBy('aktivitas_harian.updated_at', 'asc')
+                ;
+            
+            if ($shift) {
+                $res = $res->where(function ($query) use ($shift) {
+                    foreach ($shift as $key => $value) {
+                        $query->orWhere('id_shift', $value);
                     }
-                }
-            });
+                });
+            }
+            if ($gudang) {
+                $res = $res->where(function ($query) use ($gudang) {
+                    foreach ($gudang as $key => $value) {
+                        $query->orWhere('id_gudang', $value);
+                    }
+                });
+            }
+
+            if ($kegiatan) {
+                $res = $res->where(function ($query) use ($kegiatan) {
+                    foreach ($kegiatan as $key => $value) {
+                        $query->orWhere('id_aktivitas', $value);
+                    }
+                });
+            }
+
+            if ($produk == 2) {
+                $res = $res->where(function ($query) use ($pilih_produk,$produk) {
+                    if ($produk == 2) {
+                        foreach ($pilih_produk as $key => $value) {
+                            $query->orWhere('m.id', $value);
+                        }
+                    }
+                });
+            }
+
+            $res = $res->get();
+
+            $preview = false;
+            if (request()->preview == true) {
+                $preview = true;
+            }
+
+            $nama_file = date("YmdHis") . '_realisasi.xlsx';
+            $this->generateExcelRealisasi($res, $nama_file, $kegiatan, $shift, $tgl_awal, $tgl_akhir, $preview);
+        } else {
+            return response()->json([
+                "code"=>200,
+                "msg"=>"Data Berhasil Di Muat",
+                "data"=>str_replace("%5B%5D","[]",$this->convertParameter(request()->all()))
+            ],http_response_code());
+
         }
-
-        $res = $res->get();
-
-        $preview = false;
-        if (request()->preview == true) {
-            $preview = true;
-        }
-
-        $nama_file = date("YmdHis") . '_realisasi.xlsx';
-        $this->generateExcelRealisasi($res, $nama_file, $kegiatan, $shift, $tgl_awal, $tgl_akhir, $preview);
     }
 
     public function generateExcelRealisasi($res, $nama_file, $kegiatan, $shift, $tgl_awal, $tgl_akhir, $preview)
@@ -4322,67 +4392,81 @@ class ReportController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('report/laporan-keluhan-gp')
-                ->withErrors($validator)
-                ->withInput();
+            $msg = '';
+            foreach ($validator->errors()->all() as $message) { $msg .= '<div class="alert alert-danger">'.$message.'</div>'; }
+            return response()->json([
+                'title'=>'Oopss...',
+                'data'=>$msg,
+                'type'=>'error'
+            ],400);
         }
 
-        $gudang             = request()->input('gudang'); //multi
-        $produk             = request()->input('produk');
-        $pilih_produk       = request()->input('pilih_produk'); //multi
-        $kegiatan           = request()->input('kegiatan'); //multi
-        $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
-        $res = AktivitasKeluhanGp::select(
-            'aktivitas_keluhan_gp.*',
-            'g.nama as nama_gudang',
-            'm.nama as nama_material',
-            'ah.updated_at as tanggal'
-            )
-            ->leftJoin('aktivitas_harian as ah', 'aktivitas_keluhan_gp.id_aktivitas_harian', '=', 'ah.id')
-            ->leftJoin('material as m', 'm.id', '=', 'aktivitas_keluhan_gp.id_material')
-            ->leftJoin('gudang as g', 'g.id', '=', 'ah.id_gudang')
-            ->whereBetween('ah.updated_at', [$tgl_awal, $tgl_akhir])
-            ->where(function ($query) use ($pilih_produk, $produk) {
-                if ($produk == 2) {
-                    foreach ($pilih_produk as $key => $value) {
-                        $query->orWhere('m.id', $value);
-                    }
-                }
-            })
-            ;
-
-        $localGudang = $this->getCheckerGudang(auth()->user()->role_id);
-
-        if ($localGudang) {
-            $res = $res->where('g.id', $localGudang->id);
-        }
-
-        if ($gudang) {
-            $res = $res->where(function ($query) use ($gudang) {
-                $query->where('id_gudang', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query->orWhere('id_gudang', $value);
-                }
-            });
-        }
         
-        if ($kegiatan) {
-            $res = $res->where('ah.id_aktivitas', $kegiatan[0]);
-            foreach ($kegiatan as $key => $value) {
-                $res = $res->orWhere('ah.id_aktivitas', $value);
+        if(request()->input('validate') == true){
+            $gudang             = request()->input('gudang'); //multi
+            $produk             = request()->input('produk');
+            $pilih_produk       = request()->input('pilih_produk'); //multi
+            $kegiatan           = request()->input('kegiatan'); //multi
+            $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+            $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
+            $res = AktivitasKeluhanGp::select(
+                'aktivitas_keluhan_gp.*',
+                'g.nama as nama_gudang',
+                'm.nama as nama_material',
+                'ah.updated_at as tanggal'
+                )
+                ->leftJoin('aktivitas_harian as ah', 'aktivitas_keluhan_gp.id_aktivitas_harian', '=', 'ah.id')
+                ->leftJoin('material as m', 'm.id', '=', 'aktivitas_keluhan_gp.id_material')
+                ->leftJoin('gudang as g', 'g.id', '=', 'ah.id_gudang')
+                ->whereBetween('ah.updated_at', [$tgl_awal, $tgl_akhir])
+                ->where(function ($query) use ($pilih_produk, $produk) {
+                    if ($produk == 2) {
+                        foreach ($pilih_produk as $key => $value) {
+                            $query->orWhere('m.id', $value);
+                        }
+                    }
+                })
+                ;
+    
+            $localGudang = $this->getCheckerGudang(auth()->user()->role_id);
+    
+            if ($localGudang) {
+                $res = $res->where('g.id', $localGudang->id);
             }
+    
+            if ($gudang) {
+                $res = $res->where(function ($query) use ($gudang) {
+                    $query->where('id_gudang', $gudang[0]);
+                    foreach ($gudang as $key => $value) {
+                        $query->orWhere('id_gudang', $value);
+                    }
+                });
+            }
+            
+            if ($kegiatan) {
+                $res = $res->where('ah.id_aktivitas', $kegiatan[0]);
+                foreach ($kegiatan as $key => $value) {
+                    $res = $res->orWhere('ah.id_aktivitas', $value);
+                }
+            }
+    
+            $res = $res->orderBy('ah.updated_at')->get();
+    
+            $preview = false;
+            if (request()->preview == true) {
+                $preview = true;
+            }
+    
+            $nama_file = date("YmdHis") . '_keluhan_gp.xlsx';
+            $this->generateExcelKeluhanGp($res, $nama_file, $tgl_awal, $tgl_akhir, $preview);
+        } else {
+            return response()->json([
+                "code"=>200,
+                "msg"=>"Data Berhasil Di Muat",
+                "data"=>str_replace("%5B%5D","[]",$this->convertParameter(request()->all()))
+            ],http_response_code());
+
         }
-
-        $res = $res->orderBy('ah.updated_at')->get();
-
-        $preview = false;
-        if (request()->preview == true) {
-            $preview = true;
-        }
-
-        $nama_file = date("YmdHis") . '_keluhan_gp.xlsx';
-        $this->generateExcelKeluhanGp($res, $nama_file, $tgl_awal, $tgl_akhir, $preview);
     }
 
     public function generateExcelKeluhanGp($res, $nama_file, $tgl_awal, $tgl_akhir, $preview)
@@ -4623,9 +4707,13 @@ class ReportController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('report/laporan-transaksi-material')
-                ->withErrors($validator)
-                ->withInput();
+            $msg = '';
+            foreach ($validator->errors()->all() as $message) { $msg .= '<div class="alert alert-danger">'.$message.'</div>'; }
+            return response()->json([
+                'title'=>'Oopss...',
+                'data'=>$msg,
+                'type'=>'error'
+            ],400);
         }
 
         $gudang             = request()->input('gudang'); //multi
@@ -4634,74 +4722,100 @@ class ReportController extends Controller
         $tgl_awal           = request()->input('tgl_awal') == null? '' : date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir          = request()->input('tgl_akhir') == null ? '' : date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
 
-        $res = MaterialTrans::select('material_trans.*')->with('aktivitasHarian', 'aktivitasHarian.gudang', 'aktivitasHarian.gudangTujuan')
-        ->with('material')
-        ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-        ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-        ->leftJoin('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
-        ->whereHas('material', function($query) {
-            $query->where('kategori', 1);
-        })
-        ->whereHas('aktivitasHarian', function($query) {
-            $query->where('draft', 0);
-        })
-        ->whereNull('penerimaan_gi')
-        ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
-        ->orderBy('gudang.nama', 'asc')
-        ;
+        if(request()->input('validate') == true){
+            $res = MaterialTrans::select('material_trans.*')->with('aktivitasHarian', 'aktivitasHarian.gudang', 'aktivitasHarian.gudangTujuan')
+            ->with('material')
+            ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+            ->leftJoin('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
+            ->whereHas('material', function($query) {
+                $query->where('kategori', 1);
+            })
+            ->whereHas('aktivitasHarian', function($query) {
+                $query->where('draft', 0);
+            })
+            ->whereNull('penerimaan_gi')
+            ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
+            ->orderBy('gudang.nama', 'asc')
+            ;
 
-        if ($gudang != null) {
-            $res = $res->whereHas('aktivitasHarian', function ($query) use ($gudang) {
-                $query = $query->where('id_gudang', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query = $query->orWhere('id_gudang', $value);
-                }
-            });
+            if ($gudang != null) {
+                $res = $res->whereHas('aktivitasHarian', function ($query) use ($gudang) {
+                    $query = $query->where('id_gudang', $gudang[0]);
+                    foreach ($gudang as $key => $value) {
+                        $query = $query->orWhere('id_gudang', $value);
+                    }
+                });
 
-            $resGudang = Gudang::internal()->where(function ($query) use ($gudang) {
-                $query->where('id', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query = $query->orWhere('id', $value);
-                }
-            })->get();
+                $resGudang = Gudang::internal()->where(function ($query) use ($gudang) {
+                    $query->where('id', $gudang[0]);
+                    foreach ($gudang as $key => $value) {
+                        $query = $query->orWhere('id', $value);
+                    }
+                })->get();
+            } else {
+                $resGudang = Gudang::internal()->get();
+            }
+
+            if ($material == 2) {
+                $res = $res->where(function ($query) use ($pilih_material) {
+                    foreach ($pilih_material as $key => $value) {
+                        $query = $query->orWhere('id_material', $value);
+                    }
+                });
+
+                $produk = Material::produk()->where(function($query) use($pilih_material){
+                    $query->where('id', $pilih_material[0]);
+                    foreach ($pilih_material as $key => $value) {
+                        $query = $query->orWhere('id', $value);
+                    }
+                })->get();
+            } else {
+                $res = $res->whereHas('material', function ($query) {
+                    $query = $query->where('kategori', 1);
+                });
+
+                $produk = Material::produk()->get();
+            }
+
+            $res = $res->get();
+
+            $preview = false;
+            if (request()->preview == true) {
+                $preview = true;
+            }
+
+            if (!is_dir(storage_path() . '/app/public/excel/')) {
+                mkdir(storage_path() . '/app/public/excel', 755);
+            }
+
+            $nama_file = date("YmdHis") . '_transaksi_material.xlsx';
+            $this->generateExcelTransaksiMaterial($res, $nama_file, $produk, $resGudang, $tgl_awal, $tgl_akhir, $preview);
         } else {
-            $resGudang = Gudang::internal()->get();
-        }
+            return response()->json([
+                "code"=>200,
+                "msg"=>"Data Berhasil Di Muat",
+                "data"=>str_replace("%5B%5D","[]",$this->convertParameter(request()->all()))
+            ],http_response_code());
 
-        if ($material == 2) {
-            $res = $res->where(function ($query) use ($pilih_material) {
-                foreach ($pilih_material as $key => $value) {
-                    $query = $query->orWhere('id_material', $value);
+        }
+    }
+
+    public function convertParameter($array, $qs = false) {
+        $parts = array();
+        if ($qs) {
+            $parts[] = $qs;
+        }
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                foreach ($value as $value2) {
+                    $parts[] = http_build_query(array($key.'[]' => $value2));
                 }
-            });
-
-            $produk = Material::produk()->where(function($query) use($pilih_material){
-                $query->where('id', $pilih_material[0]);
-                foreach ($pilih_material as $key => $value) {
-                    $query = $query->orWhere('id', $value);
-                }
-            })->get();
-        } else {
-            $res = $res->whereHas('material', function ($query) {
-                $query = $query->where('kategori', 1);
-            });
-
-            $produk = Material::produk()->get();
+            } else {
+                $parts[] = http_build_query(array($key => $value));
+            }
         }
-
-        $res = $res->get();
-
-        $preview = false;
-        if (request()->preview == true) {
-            $preview = true;
-        }
-
-        if (!is_dir(storage_path() . '/app/public/excel/')) {
-            mkdir(storage_path() . '/app/public/excel', 755);
-        }
-
-        $nama_file = date("YmdHis") . '_transaksi_material.xlsx';
-        $this->generateExcelTransaksiMaterial($res, $nama_file, $produk, $resGudang, $tgl_awal, $tgl_akhir, $preview);
+        return join('&', $parts);
     }
 
     private function getKuantum($result)
@@ -5078,9 +5192,13 @@ class ReportController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('report/laporan-stok')
-                ->withErrors($validator)
-                ->withInput();
+            $msg = '';
+            foreach ($validator->errors()->all() as $message) { $msg .= '<div class="alert alert-danger">'.$message.'</div>'; }
+            return response()->json([
+                'title'=>'Oopss...',
+                'data'=>$msg,
+                'type'=>'error'
+            ],400);
         }
 
         $gudang     = request()->input('gudang'); //multi
@@ -5100,7 +5218,16 @@ class ReportController extends Controller
             $preview = true;
         }
 
-        $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl, $preview);
+        if(request()->input('validate') == true){
+            $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl, $preview);
+        } else {
+            return response()->json([
+                "code"=>200,
+                "msg"=>"Data Berhasil Di Muat",
+                "data"=>str_replace("%5B%5D","[]",$this->convertParameter(request()->all()))
+            ],http_response_code());
+
+        }
     }
 
     public function generateExcelStok($res, $nama_file, $produk, $area, $tgl_awal, $preview)
@@ -5387,47 +5514,50 @@ class ReportController extends Controller
         );
 
         if ($validator->fails()) {
-            return redirect('report/laporan-mutasi-stok')
-                ->withErrors($validator)
-                ->withInput();
+            $msg = '';
+            foreach ($validator->errors()->all() as $message) { $msg .= '<div class="alert alert-danger">'.$message.'</div>'; }
+            return response()->json([
+                'title'=>'Oopss...',
+                'data'=>$msg,
+                'type'=>'error'
+            ],400);
         }
-        $produk             = request()->input('produk');
-        $pilih_produk       = request()->input('pilih_produk'); //multi
-        $tgl_awal   = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
 
-        $res = MaterialTrans::distinct()->select(
-            'id_material',
-            'm.nama'
-        )
-        ->leftJoin('material as m', 'm.id', '=', 'material_trans.id_material')
-        ->leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
-        ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
-        ->where('draft', 0)
-        ->where(function($query) use($tgl_awal, $tgl_akhir) {
-            $query->whereBetween(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
-            $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
-        })
-        ;
+        if(request()->input('validate') == true){
+            $produk             = request()->input('produk');
+            $pilih_produk       = request()->input('pilih_produk'); //multi
+            $tgl_awal   = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+            $tgl_akhir  = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
 
-        if ($produk == 2) {
-            $res = $res->where(function ($query) use ($pilih_produk) {
-                $query = $query->where('material_trans.id_material', $pilih_produk[0]);
-                foreach ($pilih_produk as $key => $value) {
-                    $query = $query->orWhere('material_trans.id_material', $value);
-                }
-            });
+            $res = MaterialTrans::distinct()->select(
+                'id_material',
+                'm.nama'
+            )
+            ->leftJoin('material as m', 'm.id', '=', 'material_trans.id_material')
+            ->leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
+            ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
+            ->where('draft', 0)
+            ->where(function($query) use($tgl_awal, $tgl_akhir) {
+                $query->whereBetween(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
+                $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
+            })
+            ;
+
+            $preview = false;
+            if (request()->preview == true) {
+                $preview = true;
+            }
+
+            $nama_file = date("YmdHis") . '_mutasi_stok.xlsx';
+            $this->generateExcelMutasiStok($res->get(), $nama_file, $tgl_awal, $tgl_akhir, $preview);
         } else {
-            $res = $res->where('kategori', 1);
-        }
+            return response()->json([
+                "code"=>200,
+                "msg"=>"Data Berhasil Di Muat",
+                "data"=>str_replace("%5B%5D","[]",$this->convertParameter(request()->all()))
+            ],http_response_code());
 
-        $preview = false;
-        if (request()->preview == true) {
-            $preview = true;
         }
-
-        $nama_file = date("YmdHis") . '_mutasi_stok.xlsx';
-        $this->generateExcelMutasiStok($res->get(), $nama_file, $tgl_awal, $tgl_akhir, $preview);
     }
 
     public function generateExcelMutasiStok($res, $nama_file, $tgl_awal, $tgl_akhir, $preview)
@@ -6762,79 +6892,93 @@ class ReportController extends Controller
         );
 
         if ($validator->fails()) {
-            return redirect('report/laporan-biaya-alat-berat')
-                ->withErrors($validator)
-                ->withInput();
+            $msg = '';
+            foreach ($validator->errors()->all() as $message) { $msg .= '<div class="alert alert-danger">'.$message.'</div>'; }
+            return response()->json([
+                'title'=>'Oopss...',
+                'data'=>$msg,
+                'type'=>'error'
+            ],400);
         }
-        $gudang             = request()->input('gudang');
-        $jenis_alat_berat   = request()->input('jenis_alat_berat');
-        $aktivitas          = request()->input('aktivitas');
-        $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
+        
+        if(request()->input('validate') == true){
+            $gudang             = request()->input('gudang');
+            $jenis_alat_berat   = request()->input('jenis_alat_berat');
+            $aktivitas          = request()->input('aktivitas');
+            $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+            $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
+    
+            $res = DB::table('aktivitas_harian_alat_berat')
+                ->distinct()
+                ->select(
+                'aktivitas_harian.*',
+                'alat_berat.id_kategori',
+                'aktivitas.nama as nama_aktivitas',
+                'aktivitas_harian.updated_at as tanggal_aktivitas',
+                'gudang.nama as nama_gudang',
+                'alat_berat_kat.nama as nama_kategori',
+                DB::raw('(SELECT anggaran FROM aktivitas_alat_berat WHERE aktivitas_alat_berat.id_kategori_alat_berat = alat_berat_kat.id AND aktivitas_alat_berat.id_aktivitas = aktivitas.id LIMIT 1) as anggaran')
+                )
+                ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'aktivitas_harian_alat_berat.id_aktivitas_harian')
+                ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->leftJoin('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
+                ->leftJoin('alat_berat', 'alat_berat.id', '=', 'aktivitas_harian_alat_berat.id_alat_berat')
+                ->leftJoin('alat_berat_kat', 'alat_berat_kat.id', '=', 'alat_berat.id_kategori')
+                ->whereBetween(DB::raw("TO_CHAR( aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS' )"), [date('Y-m-d H:i:s', strtotime($tgl_awal.' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir.' 23:00:00 -1 day'))])
+                ->whereNotNull('butuh_alat_berat')
+                ->latest('aktivitas_harian.updated_at')
+                ;
+    
+            $nama_file = date("YmdHis") . '_biaya_alat_berat.xlsx';
+    
+            $resGudang = Gudang::get();
+            if ($gudang) {
+                $res = $res->where(function ($query) use ($gudang) {
+                    $query->where('id_gudang', $gudang[0]);
+                    foreach ($gudang as $key => $value) {
+                        $query->orWhere('id_gudang', $value);
+                    }
+                });
+                $resGudang      = Gudang::whereIn('id', $gudang)->get();
+            }
+    
+            $resAktivitas = Aktivitas::get();
+            if ($aktivitas) {
+                $res = $res->where(function ($query) use ($aktivitas) {
+                    $query->where('id_aktivitas', $aktivitas[0]);
+                    foreach ($aktivitas as $key => $value) {
+                        $query->orWhere('id_aktivitas', $value);
+                    }
+                });
+                $resAktivitas   = Aktivitas::whereIn('id', $aktivitas)->get();
+            }
+    
+            $resJenisAlatBerat = KategoriAlatBerat::get();
+            if ($jenis_alat_berat) {
+                $res = $res->where(function ($query) use ($jenis_alat_berat) {
+                    $query->where('id_kategori', $jenis_alat_berat[0]);
+                    foreach ($jenis_alat_berat as $key => $value) {
+                        $query->orWhere('id_kategori', $value);
+                    }
+                });
+                $resJenisAlatBerat      = KategoriAlatBerat::whereIn('id', $jenis_alat_berat);
+            }
+    
+            $preview = false;
+            if (request()->preview == true) {
+                $preview = true;
+            }
+            $res = $res->get();
+    
+            $this->generateExcelBiayaAlatBerat($res, $nama_file, $resGudang, $resAktivitas, $resJenisAlatBerat, $tgl_awal, $tgl_akhir, $preview);
+        } else {
+            return response()->json([
+                "code"=>200,
+                "msg"=>"Data Berhasil Di Muat",
+                "data"=>str_replace("%5B%5D","[]",$this->convertParameter(request()->all()))
+            ],http_response_code());
 
-        $res = DB::table('aktivitas_harian_alat_berat')
-            ->distinct()
-            ->select(
-            'aktivitas_harian.*',
-            'alat_berat.id_kategori',
-            'aktivitas.nama as nama_aktivitas',
-            'aktivitas_harian.updated_at as tanggal_aktivitas',
-            'gudang.nama as nama_gudang',
-            'alat_berat_kat.nama as nama_kategori',
-            DB::raw('(SELECT anggaran FROM aktivitas_alat_berat WHERE aktivitas_alat_berat.id_kategori_alat_berat = alat_berat_kat.id AND aktivitas_alat_berat.id_aktivitas = aktivitas.id LIMIT 1) as anggaran')
-            )
-            ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'aktivitas_harian_alat_berat.id_aktivitas_harian')
-            ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-            ->leftJoin('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
-            ->leftJoin('alat_berat', 'alat_berat.id', '=', 'aktivitas_harian_alat_berat.id_alat_berat')
-            ->leftJoin('alat_berat_kat', 'alat_berat_kat.id', '=', 'alat_berat.id_kategori')
-            ->whereBetween(DB::raw("TO_CHAR( aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS' )"), [date('Y-m-d H:i:s', strtotime($tgl_awal.' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir.' 23:00:00 -1 day'))])
-            ->whereNotNull('butuh_alat_berat')
-            ->latest('aktivitas_harian.updated_at')
-            ;
-
-        $nama_file = date("YmdHis") . '_biaya_alat_berat.xlsx';
-
-        $resGudang = Gudang::get();
-        if ($gudang) {
-            $res = $res->where(function ($query) use ($gudang) {
-                $query->where('id_gudang', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query->orWhere('id_gudang', $value);
-                }
-            });
-            $resGudang      = Gudang::whereIn('id', $gudang)->get();
         }
-
-        $resAktivitas = Aktivitas::get();
-        if ($aktivitas) {
-            $res = $res->where(function ($query) use ($aktivitas) {
-                $query->where('id_aktivitas', $aktivitas[0]);
-                foreach ($aktivitas as $key => $value) {
-                    $query->orWhere('id_aktivitas', $value);
-                }
-            });
-            $resAktivitas   = Aktivitas::whereIn('id', $aktivitas)->get();
-        }
-
-        $resJenisAlatBerat = KategoriAlatBerat::get();
-        if ($jenis_alat_berat) {
-            $res = $res->where(function ($query) use ($jenis_alat_berat) {
-                $query->where('id_kategori', $jenis_alat_berat[0]);
-                foreach ($jenis_alat_berat as $key => $value) {
-                    $query->orWhere('id_kategori', $value);
-                }
-            });
-            $resJenisAlatBerat      = KategoriAlatBerat::whereIn('id', $jenis_alat_berat);
-        }
-
-        $preview = false;
-        if (request()->preview == true) {
-            $preview = true;
-        }
-        $res = $res->get();
-
-        $this->generateExcelBiayaAlatBerat($res, $nama_file, $resGudang, $resAktivitas, $resJenisAlatBerat, $tgl_awal, $tgl_akhir, $preview);
     }
 
     public function generateExcelBiayaAlatBerat($res, $nama_file, $resGudang, $resAktivitas, $resJenisAlatBerat, $tgl_awal, $tgl_akhir, $preview)
@@ -7159,60 +7303,74 @@ class ReportController extends Controller
         );
 
         if ($validator->fails()) {
-            return redirect('report/laporan-biaya-tkbm')
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $gudang             = request()->input('gudang');
-        $aktivitas          = request()->input('aktivitas');
-        $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
-
-        $res = DB::table('aktivitas_harian')
-            ->select(
-            'aktivitas_harian.*',
-            'aktivitas.anggaran_tkbm',
-            'gudang.nama as nama_gudang',
-            'aktivitas.nama as nama_aktivitas'
-            )
-            ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-            ->leftJoin('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
-            ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
-            ->whereNotNull('butuh_tkbm')
-            ->latest('aktivitas_harian.updated_at')
-            ;
-
-        $nama_file = date("YmdHis") . '_biaya_tkbm.xlsx';
-
-        $resGudang = Gudang::get();
-        if ($gudang) {
-            $res = $res->where(function ($query) use ($gudang) {
-                $query->where('id_gudang', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query->orWhere('id_gudang', $value);
-                }
-            });
-            $resGudang      = Gudang::whereIn('id', $gudang)->get();
+            $msg = '';
+            foreach ($validator->errors()->all() as $message) { $msg .= '<div class="alert alert-danger">'.$message.'</div>'; }
+            return response()->json([
+                'title'=>'Oopss...',
+                'data'=>$msg,
+                'type'=>'error'
+            ],400);
         }
 
-        $resAktivitas = Aktivitas::get();
-        if ($aktivitas) {
-            $res = $res->where(function ($query) use ($aktivitas) {
-                $query->where('id_aktivitas', $aktivitas[0]);
-                foreach ($aktivitas as $key => $value) {
-                    $query->orWhere('id_aktivitas', $value);
-                }
-            });
-            $resAktivitas   = Aktivitas::whereIn('id', $aktivitas)->get();
-        }
+        if(request()->input('validate') == true){
+            $gudang             = request()->input('gudang');
+            $aktivitas          = request()->input('aktivitas');
+            $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+            $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
+    
+            $res = DB::table('aktivitas_harian')
+                ->select(
+                'aktivitas_harian.*',
+                'aktivitas.anggaran_tkbm',
+                'gudang.nama as nama_gudang',
+                'aktivitas.nama as nama_aktivitas'
+                )
+                ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->leftJoin('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
+                ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
+                ->whereNotNull('butuh_tkbm')
+                ->latest('aktivitas_harian.updated_at')
+                ;
+    
+            $nama_file = date("YmdHis") . '_biaya_tkbm.xlsx';
+    
+            $resGudang = Gudang::get();
+            if ($gudang) {
+                $res = $res->where(function ($query) use ($gudang) {
+                    $query->where('id_gudang', $gudang[0]);
+                    foreach ($gudang as $key => $value) {
+                        $query->orWhere('id_gudang', $value);
+                    }
+                });
+                $resGudang      = Gudang::whereIn('id', $gudang)->get();
+            }
+    
+            $resAktivitas = Aktivitas::get();
+            if ($aktivitas) {
+                $res = $res->where(function ($query) use ($aktivitas) {
+                    $query->where('id_aktivitas', $aktivitas[0]);
+                    foreach ($aktivitas as $key => $value) {
+                        $query->orWhere('id_aktivitas', $value);
+                    }
+                });
+                $resAktivitas   = Aktivitas::whereIn('id', $aktivitas)->get();
+            }
+    
+            $preview = false;
+            if (request()->preview == true) {
+                $preview = true;
+            }
+            $res = $res->get();
+    
+            $this->generateExcelBiayaTkbm($res, $nama_file, $resGudang, $resAktivitas, $tgl_awal, $tgl_akhir, $preview);
+        } else {
+            return response()->json([
+                "code"=>200,
+                "msg"=>"Data Berhasil Di Muat",
+                "data"=>str_replace("%5B%5D","[]",$this->convertParameter(request()->all()))
+            ],http_response_code());
 
-        $preview = false;
-        if (request()->preview == true) {
-            $preview = true;
         }
-        $res = $res->get();
-
-        $this->generateExcelBiayaTkbm($res, $nama_file, $resGudang, $resAktivitas, $tgl_awal, $tgl_akhir, $preview);
     }
 
     public function generateExcelBiayaTkbm($res, $nama_file, $resGudang, $resAktivitas, $tgl_awal, $tgl_akhir, $preview)
@@ -7512,60 +7670,74 @@ class ReportController extends Controller
         );
 
         if ($validator->fails()) {
-            return redirect('report/laporan-biaya-tkbm')
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $gudang             = request()->input('gudang');
-        $aktivitas          = request()->input('aktivitas');
-        $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
-
-        $res = DB::table('aktivitas_harian')
-            ->select(
-            'aktivitas_harian.*',
-            'aktivitas.anggaran_pallet',
-            'gudang.nama as nama_gudang',
-            'aktivitas.nama as nama_aktivitas'
-            )
-            ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-            ->leftJoin('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
-            ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
-            ->whereNotNull('biaya_pallet')
-            ->latest('aktivitas_harian.updated_at')
-            ;
-
-        $nama_file = date("YmdHis") . '_biaya_pallet.xlsx';
-
-        $resGudang = Gudang::get();
-        if ($gudang) {
-            $res = $res->where(function ($query) use ($gudang) {
-                $query->where('id_gudang', $gudang[0]);
-                foreach ($gudang as $key => $value) {
-                    $query->orWhere('id_gudang', $value);
-                }
-            });
-            $resGudang      = Gudang::whereIn('id', $gudang)->get();
+            $msg = '';
+            foreach ($validator->errors()->all() as $message) { $msg .= '<div class="alert alert-danger">'.$message.'</div>'; }
+            return response()->json([
+                'title'=>'Oopss...',
+                'data'=>$msg,
+                'type'=>'error'
+            ],400);
         }
 
-        $resAktivitas = Aktivitas::get();
-        if ($aktivitas) {
-            $res = $res->where(function ($query) use ($aktivitas) {
-                $query->where('id_aktivitas', $aktivitas[0]);
-                foreach ($aktivitas as $key => $value) {
-                    $query->orWhere('id_aktivitas', $value);
-                }
-            });
-            $resAktivitas   = Aktivitas::whereIn('id', $aktivitas)->get();
-        }
+        if(request()->input('validate') == true){
+            $gudang             = request()->input('gudang');
+            $aktivitas          = request()->input('aktivitas');
+            $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+            $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
+    
+            $res = DB::table('aktivitas_harian')
+                ->select(
+                'aktivitas_harian.*',
+                'aktivitas.anggaran_pallet',
+                'gudang.nama as nama_gudang',
+                'aktivitas.nama as nama_aktivitas'
+                )
+                ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                ->leftJoin('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
+                ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
+                ->whereNotNull('biaya_pallet')
+                ->latest('aktivitas_harian.updated_at')
+                ;
+    
+            $nama_file = date("YmdHis") . '_biaya_pallet.xlsx';
+    
+            $resGudang = Gudang::get();
+            if ($gudang) {
+                $res = $res->where(function ($query) use ($gudang) {
+                    $query->where('id_gudang', $gudang[0]);
+                    foreach ($gudang as $key => $value) {
+                        $query->orWhere('id_gudang', $value);
+                    }
+                });
+                $resGudang      = Gudang::whereIn('id', $gudang)->get();
+            }
+    
+            $resAktivitas = Aktivitas::get();
+            if ($aktivitas) {
+                $res = $res->where(function ($query) use ($aktivitas) {
+                    $query->where('id_aktivitas', $aktivitas[0]);
+                    foreach ($aktivitas as $key => $value) {
+                        $query->orWhere('id_aktivitas', $value);
+                    }
+                });
+                $resAktivitas   = Aktivitas::whereIn('id', $aktivitas)->get();
+            }
+    
+            $preview = false;
+            if (request()->preview == true) {
+                $preview = true;
+            }
+            $res = $res->get();
+    
+            $this->generateExcelBiayaPallet($res, $nama_file, $resGudang, $resAktivitas, $tgl_awal, $tgl_akhir, $preview);
+        } else {
+            return response()->json([
+                "code"=>200,
+                "msg"=>"Data Berhasil Di Muat",
+                "data"=>str_replace("%5B%5D","[]",$this->convertParameter(request()->all()))
+            ],http_response_code());
 
-        $preview = false;
-        if (request()->preview == true) {
-            $preview = true;
         }
-        $res = $res->get();
-
-        $this->generateExcelBiayaPallet($res, $nama_file, $resGudang, $resAktivitas, $tgl_awal, $tgl_akhir, $preview);
     }
 
     public function generateExcelBiayaPallet($res, $nama_file, $resGudang, $resAktivitas, $tgl_awal, $tgl_akhir, $preview)
@@ -7855,42 +8027,55 @@ class ReportController extends Controller
         ]);
         
         if ($validator->fails()) {
-            return redirect('report/laporan-keluhan-operator')
-                ->withErrors($validator)
-                ->withInput();
+            $msg = '';
+            foreach ($validator->errors()->all() as $message) { $msg .= '<div class="alert alert-danger">'.$message.'</div>'; }
+            return response()->json([
+                'title'=>'Oopss...',
+                'data'=>$msg,
+                'type'=>'error'
+            ],400);
         }
 
-        $keluhan           = request()->input('keluhan'); //multi
-        $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
-        $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
-        $res = KeluhanOperator::select(
-            'tenaga_kerja_non_organik.nama as nama_operator',
-            'tenaga_kerja_non_organik.nik',
-            'keluhan.nama as nama_keluhan',
-            'keterangan',
-            'keluhan_operator.created_at as tanggal',
-            'keluhan_operator.created_by'
-        )
-        ->join('tenaga_kerja_non_organik', 'tenaga_kerja_non_organik.id', '=', 'keluhan_operator.id_operator')
-        ->join('keluhan', 'keluhan.id', '=', 'keluhan_operator.id_keluhan')
-            ;
-        
-        if ($keluhan) {
-            $res = $res->where('keluhan_operator.id_keluhan', $keluhan[0]);
-            foreach ($keluhan as $key => $value) {
-                $res = $res->orWhere('keluhan_operator.id_keluhan', $value);
+        if(request()->input('validate') == true){
+            $keluhan           = request()->input('keluhan'); //multi
+            $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
+            $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir') . '+1 day'));
+            $res = KeluhanOperator::select(
+                'tenaga_kerja_non_organik.nama as nama_operator',
+                'tenaga_kerja_non_organik.nik',
+                'keluhan.nama as nama_keluhan',
+                'keterangan',
+                'keluhan_operator.created_at as tanggal',
+                'keluhan_operator.created_by'
+            )
+            ->join('tenaga_kerja_non_organik', 'tenaga_kerja_non_organik.id', '=', 'keluhan_operator.id_operator')
+            ->join('keluhan', 'keluhan.id', '=', 'keluhan_operator.id_keluhan')
+                ;
+            
+            if ($keluhan) {
+                $res = $res->where('keluhan_operator.id_keluhan', $keluhan[0]);
+                foreach ($keluhan as $key => $value) {
+                    $res = $res->orWhere('keluhan_operator.id_keluhan', $value);
+                }
             }
+    
+            $res = $res->orderBy('keluhan_operator.created_at')->get();
+    
+            $preview = false;
+            if (request()->preview == true) {
+                $preview = true;
+            }
+    
+            $nama_file = date("YmdHis") . '_keluhan_operator.xlsx';
+            $this->generateExcelKeluhanOperator($res, $nama_file, $tgl_awal, $tgl_akhir, $preview);
+        } else {
+            return response()->json([
+                "code"=>200,
+                "msg"=>"Data Berhasil Di Muat",
+                "data"=>str_replace("%5B%5D","[]",$this->convertParameter(request()->all()))
+            ],http_response_code());
+
         }
-
-        $res = $res->orderBy('keluhan_operator.created_at')->get();
-
-        $preview = false;
-        if (request()->preview == true) {
-            $preview = true;
-        }
-
-        $nama_file = date("YmdHis") . '_keluhan_operator.xlsx';
-        $this->generateExcelKeluhanOperator($res, $nama_file, $tgl_awal, $tgl_akhir, $preview);
     }
 
     public function generateExcelKeluhanOperator($res, $nama_file, $tgl_awal, $tgl_akhir, $preview)
