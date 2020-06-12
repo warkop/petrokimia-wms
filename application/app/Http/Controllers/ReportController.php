@@ -4789,12 +4789,6 @@ class ReportController extends Controller
 
     public function transaksiMaterial()
     {
-        // return response()->json([
-        //     "code"=>200,
-        //     "msg"=>"Data Berhasil Di Muat",
-        //     "data"=>request()->input('preview')
-        //  ],http_response_code());
-        //  die;
         $validator = Validator::make(
             request()->all(),[
             'material' => 'required',
