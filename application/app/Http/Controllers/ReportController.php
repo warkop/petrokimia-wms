@@ -2639,23 +2639,22 @@ class ReportController extends Controller
         return $pengeluaran;
     }
 
-    private function mutasiPalletPenyusutan($res, $yayasan, $tgl_sekarang, $shift, $kondisi)
+    private function mutasiPalletPenyusutan($res, $tgl_sekarang, $shift, $kondisi)
     {
         $penyusutan = 0;
+        $yayasan = Yayasan::get();
         foreach ($res as $value) {
             foreach ($yayasan as $item) {
-                $materialTrans = MaterialTrans::whereHas('aktivitasHarian', function ($query) use ($item, $value, $shift) {
-                    $query->where('id_gudang', $value->gudang->id);
-                    $query->where('id_yayasan', $item->id);
-                    $query->where('id_shift', $shift);
-                })
-                ->whereHas('aktivitasHarian.aktivitas', function ($query) {
-                    $query->whereNotNull('penyusutan');
-                })
+                $materialTrans = MaterialTrans::
+                join('aktivitas_harian', 'aktivitas_harian.id', '=', 'id_aktivitas_harian')
+                ->join('aktivitas', 'aktivitas.id', '=', 'id_aktivitas')
                 ->where('status_pallet', $kondisi)
                 ->where('tipe', 1)
-                ->where('created_at', '>=', date('Y-m-d', strtotime($tgl_sekarang)))
-                ->where('created_at', '<=', date('Y-m-d', strtotime($tgl_sekarang)))
+                ->whereNotNull('penyusutan')
+                ->where('id_gudang', $value->id_gudang)
+                ->where('id_yayasan', $item->id)
+                ->where('id_shift', $shift)
+                ->where(DB::raw("TO_CHAR(material_trans.created_at, 'yyyy-mm-dd')"), $tgl_sekarang)
                 ->where('id_material', $value->id_material)
                 ->sum('jumlah');
                 $penyusutan += $materialTrans;
@@ -2930,7 +2929,7 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
 
-                $penyusutanRusak = $this->mutasiPalletPenyusutan($res, $gudang, $tgl_sekarang, $shift, 4);
+                $penyusutanRusak = $this->mutasiPalletPenyusutan($res, $tgl_sekarang, $shift, 4);
                 $col++;
                 $abjadIncrement++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $penyusutanRusak); //jumlah penyusutan Rusak
@@ -2938,7 +2937,7 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
                 $stokAkhirRusak -= $penyusutanRusak;
 
-                $penyusutanPakai = $this->mutasiPalletPenyusutan($res, $gudang, $tgl_sekarang, $shift, 2);
+                $penyusutanPakai = $this->mutasiPalletPenyusutan($res, $tgl_sekarang, $shift, 2);
                 $col++;
                 $abjadIncrement++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $penyusutanPakai); //jumlah penyusutan Pakai
