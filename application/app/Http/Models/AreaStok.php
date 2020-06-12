@@ -24,7 +24,7 @@ class AreaStok extends Model
 
     public function area()
     {
-        return $this->belongsTo('App\Http\Models\Area', 'id_area');
+        return $this->belongsTo('App\Http\Models\Area', 'id_area')->withoutGlobalScopes();
     }
 
     public function material()
