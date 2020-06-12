@@ -2590,7 +2590,7 @@ class ReportController extends Controller
         return $saldoAwal;
     }
 
-    private function mutasiPalletGetPemasukan($res, $gudang, $tgl_sekarang, $shift, $kondisi)
+    private function mutasiPalletGetPemasukan($res, $tgl_sekarang, $shift, $kondisi)
     {
         $penambahan = 0;
         foreach ($res as $value) {
@@ -2603,8 +2603,9 @@ class ReportController extends Controller
             ->whereNotNull('internal_gudang')
             ->where('status_pallet', $kondisi)
             ->where('tipe', 1)
+            ->where('id_shift', $shift)
             ->where('aktivitas_harian.id_gudang_tujuan', $value->id_gudang)
-            ->where('material_trans.created_at', $tgl_sekarang)
+            ->where(DB::raw("TO_CHAR(material_trans.created_at, 'yyyy-mm-dd')"), $tgl_sekarang)
             ->where('id_material', $value->id_material)
             ->sum('jumlah');
             $penambahan = $penambahan+$materialTrans;
@@ -2613,7 +2614,7 @@ class ReportController extends Controller
         return $penambahan;
     }
 
-    private function mutasiPalletGetPengeluaran($res, $gudang, $tgl_sekarang, $shift, $kondisi)
+    private function mutasiPalletGetPengeluaran($res, $tgl_sekarang, $shift, $kondisi)
     {
         $pengeluaran = 0;
         foreach ($res as $value) {
@@ -2627,8 +2628,9 @@ class ReportController extends Controller
             ->whereNotNull('aktivitas_harian.id_gudang_tujuan')
             ->where('status_pallet', $kondisi)
             ->where('tipe', 1)
+            ->where('id_shift', $shift)
             ->where('aktivitas_harian.id_gudang', $value->id_gudang)
-            ->where('material_trans.created_at', $tgl_sekarang)
+            ->where(DB::raw("TO_CHAR(material_trans.created_at, 'yyyy-mm-dd')"), $tgl_sekarang)
             ->where('id_material', $value->id_material)
             ->sum('jumlah');
             $pengeluaran = $pengeluaran+$materialTrans;
@@ -2866,9 +2868,9 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
 
-                $pemasukanKosong = $this->mutasiPalletGetPemasukan($res, $gudang, $tgl_sekarang, $shift, 3);
-                $pemasukanPakai = $this->mutasiPalletGetPemasukan($res, $gudang, $tgl_sekarang, $shift, 2);
-                $pemasukanRusak = $this->mutasiPalletGetPemasukan($res, $gudang, $tgl_sekarang, $shift, 4);
+                $pemasukanKosong = $this->mutasiPalletGetPemasukan($res, $tgl_sekarang, $shift, 3);
+                $pemasukanPakai = $this->mutasiPalletGetPemasukan($res, $tgl_sekarang, $shift, 2);
+                $pemasukanRusak = $this->mutasiPalletGetPemasukan($res, $tgl_sekarang, $shift, 4);
 
                 $col++;
                 $abjadIncrement++;
@@ -2897,9 +2899,9 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
 
-                $pengeluaranKosong = $this->mutasiPalletGetPengeluaran($res, $gudang, $tgl_sekarang, $shift, 3);
-                $pengeluaranPakai = $this->mutasiPalletGetPengeluaran($res, $gudang, $tgl_sekarang, $shift, 2);
-                $pengeluaranRusak = $this->mutasiPalletGetPengeluaran($res, $gudang, $tgl_sekarang, $shift, 4);
+                $pengeluaranKosong = $this->mutasiPalletGetPengeluaran($res, $tgl_sekarang, $shift, 3);
+                $pengeluaranPakai = $this->mutasiPalletGetPengeluaran($res, $tgl_sekarang, $shift, 2);
+                $pengeluaranRusak = $this->mutasiPalletGetPengeluaran($res, $tgl_sekarang, $shift, 4);
 
                 $col++;
                 $abjadIncrement++;
@@ -5603,14 +5605,12 @@ class ReportController extends Controller
         $row++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TOTAL GI');
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
+
+        $col++;
+        $row--;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TOTAL PEMASUKAN');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         
-        // foreach ($gudang as $key) {
-        //     $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $key->nama);
-        //     $i++;
-        //     $col++;
-        //     $abjadPemasukan++;
-        //     $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
-        // }
         $row = 5;
         
         $abjadPemasukan = chr(ord($abjadPemasukan) - 1);
