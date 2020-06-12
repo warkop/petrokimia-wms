@@ -12,7 +12,7 @@
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
     <div class="kt-portlet">
-        <form action="{{url('report/mutasi-stok')}}" method="GET">
+        <form id="form-report">
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
@@ -71,17 +71,15 @@
                     </div>
                 </div>
             </div>
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-danger">{{ $error }}</div>
-            @endforeach
+            <div id="error-msg"></div>
         </div>
         <div class="kt-portlet__foot">
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="offset-lg-2">
                         {{-- <a href="{{asset('assets/reports/mutasi-stok/mutasi-stok.xlsx')}}" class="btn btn-success"> <i class="fa fa-print"></i> Cetak Laporan</a> --}}
-                        <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
-                        <button type="submit" name="preview" value="true" class="btn btn-warning" download=""> <i class="fa fa-binoculars "></i> Preview Laporan</button>
+                        <button type="button" onclick="cetak('mutasi-stok')" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
+                        <button type="button" onclick="cetak('mutasi-stok','preview')" class="btn btn-warning" download=""> <i class="fa fa-binoculars "></i> Preview Laporan</button>
                     </div>
                 </div>
             </div>
@@ -90,6 +88,7 @@
     </div>
 </div>
 
+<script src="{{asset('assets/extends/js/page/cetak-report.js')}}"></script>
 <script>
     $('#pilih').select2({
         placeholder: "Pilih produk",

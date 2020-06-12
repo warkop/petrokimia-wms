@@ -13,7 +13,7 @@
 <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
     <!--Begin::Dashboard 6-->
     <div class="kt-portlet">
-        <form action="{{url('report/aktivitas-harian')}}" method="GET">
+        <form id="form-report">
         <div class="kt-portlet__head">
             <div class="kt-portlet__head-title">
                 <h4 class="kt-portlet__head-text title_sub pt-4">
@@ -75,17 +75,15 @@
                     </div>
                 </div>
             </div>
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-danger">{{ $error }}</div>
-            @endforeach
+            <div id="error-msg"></div>
         </div>
         <div class="kt-portlet__foot">
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="offset-lg-2">
                         {{-- <a href="{{asset('assets/reports/aktivitas/aktivitas.xlsx')}}" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</a> --}}
-                        <button type="submit" name="cetak" value="true" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
-                        <button type="submit" name="preview" value="true" class="btn btn-warning" download=""> <i class="fa fa-binoculars "></i> Preview Laporan</button>
+                        <button type="button" onclick="cetak('aktivitas-harian')" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
+                        <button type="button" onclick="cetak('aktivitas-harian','preview')" class="btn btn-warning" download=""> <i class="fa fa-binoculars "></i> Preview Laporan</button>                
                     </div>
                 </div>
             </div>
@@ -96,6 +94,7 @@
 <!-- end:: Content -->
 
 {{-- <script src="{{asset('assets/extends/js/page/reportAktivitas.js')}}" type="text/javascript"></script> --}}
+<script src="{{asset('assets/extends/js/page/cetak-report.js')}}"></script>
 <script>
 $('#gudang').select2({
     placeholder: "Semua gudang",

@@ -23,7 +23,7 @@
                 </p>
             </div>
         </div>
-        <form action="{{url('report/biaya-pallet')}}" method="GET">
+        <form id="form-report">
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row mt2">
@@ -69,16 +69,14 @@
                     </div>
                 </div>
             </div>
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-danger">{{ $error }}</div>
-            @endforeach
+            <div id="error-msg"></div>
         </div>
         <div class="kt-portlet__foot">
             <div class="kt-form__actions">
                 <div class="row">
                     <div class="offset-lg-2">
-                        <button type="submit" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</a></button>
-                        <button type="submit" name="preview" value="true" class="btn btn-warning" download=""> <i class="fa fa-binoculars "></i> Preview Laporan</button>
+                        <button type="button" onclick="cetak('biaya-pallet')" class="btn btn-success" download=""> <i class="fa fa-print"></i> Cetak Laporan</button>
+                        <button type="button" onclick="cetak('biaya-pallet','preview')" class="btn btn-warning" download=""> <i class="fa fa-binoculars "></i> Preview Laporan</button>
                     </div>
                 </div>
             </div>
@@ -87,6 +85,8 @@
     </div>
 </div>
 
+
+<script src="{{asset('assets/extends/js/page/cetak-report.js')}}"></script>
 <script>
     $('#gudang').select2({
         placeholder: "Semua gudang"
