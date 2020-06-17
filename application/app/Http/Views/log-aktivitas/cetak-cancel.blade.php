@@ -25,7 +25,7 @@
                         JENIS AKTIVITAS YANG DICANCEL
                     </label>
                     <p class="boldd-500">
-                        Pengiriman Gd. Penyangga
+                        {{$aktivitasHarian->aktivitas->nama??'-'}}
                     </p>
                 </div>
                 <div class="col-md-6 mb1">
@@ -33,7 +33,7 @@
                         SHIFT KERJA
                     </label>
                     <p class="boldd-500">
-                        Shift 2
+                        {{$aktivitasHarian->shift->nama??'-'}}
                     </p>
                 </div>
                 <div class="col-md-6 mb1">
@@ -41,7 +41,7 @@
                         SISTRO/ NO SO
                     </label>
                     <p class="boldd-500">
-                        -
+                        {{$aktivitasHarian->sistro??'-'}}
                     </p>
                 </div>
                 <div class="col-md-6 mb1">
@@ -49,7 +49,7 @@
                         NOPOL
                     </label>
                     <p class="boldd-500">
-                        -
+                        {{$aktivitasHarian->nopol??'-'}}
                     </p>
                 </div>
                 <div class="col-md-6 mb1">
@@ -57,7 +57,7 @@
                         CHECKER
                     </label>
                     <p class="boldd-500">
-                        Baharuddin
+                        {{$aktivitasHarian->checker->name??'-'}}
                     </p>
                 </div>
                 <section class="row col-md-12 mt2" style="margin:0">
@@ -73,34 +73,66 @@
                     </div>
 
                     <div class="col-md-6 mb1">
+                        @if (count($produk) > 0)
                         <table>
                             <thead>
                             <tr>
                               <th scope="col">PRODUK</th>
                               <th scope="col">TANGGAL PRODUK</th>
-                              <th scope="col">KUANTUM</th>
+                              <th scope="col">QUANTUM</th>
                             </tr>
                             </thead>
+                            @foreach ($produk as $item)
                                 <tr>
-                                    <td>ZA Sub 50Kg</td>
-                                    <td>24 Maret 2020</td>
-                                    <td>30 Ton</td>
+                                    <td>Area {{ $item->nama_material }}</td>
+                                    <td>{{ helpDate($item->tanggal, 'mi') }}</td>
+                                    <td>{{ $item->jumlah }} Ton</td>
                                 </tr>
+                            @endforeach
                         </table>
+                        @else
+                            <p><strong>Tidak ada produk dalam transaksi</strong></p>
+                        @endif
                     </div>
 
                     <div class="col-md-5 mb1 ml1">
-                        -
+                        @if (count($pallet) > 0)
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Jenis dan Jumlah</th>
+                                    <th scope="col">Tipe Aktivitas</th>
+                                  </tr>
+                            </thead>
+                            @foreach ($pallet as $key)
+                                @if ($key->status_pallet == 1)
+                                    @php $status = 'Stok' @endphp
+                                @elseif ($key->status_pallet == 2)
+                                    @php $status = 'Terpakai' @endphp
+                                @elseif ($key->status_pallet == 3)
+                                    @php $status = 'Kosong' @endphp
+                                @else
+                                    @php $status = 'Rusak' @endphp
+                                @endif
+                                <tr>
+                                <td>{{$key->material->nama}} - {{$key->jumlah}} ( Pallet {{ $status }} )</td>
+                                <td>{{ $key->tipe == 1?'Mengurangi':'Menambah' }}</td>
+                                </tr>
+                            @endforeach
+                        </table>
+                        @else
+                            <p><strong>Tidak ada pallet dalam transaksi</strong></p>
+                        @endif
                     </div>
                 </section>
-                <div class="col-md-12 mb1">
+                {{-- <div class="col-md-12 mb1">
                     <label>
                         DOKUMENTASI BERITA ACARA
                     </label>
                     <div class="text-center">
                         <img src="{{asset('assets/main/metronic/media/blog/surat.jpg')}}" width="60%"/>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
         {{-- <div class="footer">
