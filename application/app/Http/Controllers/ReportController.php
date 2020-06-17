@@ -5490,6 +5490,7 @@ class ReportController extends Controller
     {
         $data['title'] = 'Laporan Mutasi Stok';
         $data['produk'] = Material::produk()->get();
+        $data['gudang'] = Gudang::internal()->get();
         return view('report.mutasi-stok.grid', $data);
     }
 
@@ -5524,6 +5525,7 @@ class ReportController extends Controller
         }
 
         if(request()->input('validate') == true){
+            $gudang             = request()->input('gudang');
             $produk             = request()->input('produk');
             $pilih_produk       = request()->input('pilih_produk'); //multi
             $tgl_awal   = date('Y-m-d', strtotime(request()->input('tgl_awal')));
@@ -5537,11 +5539,19 @@ class ReportController extends Controller
             ->leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
             ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
             ->where('draft', 0)
+            ->where('ah.id_gudang', $gudang)
             ->where(function($query) use($tgl_awal, $tgl_akhir) {
                 $query->whereBetween(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                 $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
             })
             ;
+
+            if ($produk == 2) {
+                $res->where('id_material', $pilih_produk[0]);
+                foreach ($pilih_produk as $key => $value) {
+                    $res->orWhere('id_material', $value);
+                }
+            }
 
             $preview = false;
             if (request()->preview == true) {
@@ -5549,7 +5559,7 @@ class ReportController extends Controller
             }
 
             $nama_file = date("YmdHis") . '_mutasi_stok.xlsx';
-            $this->generateExcelMutasiStok($res->get(), $nama_file, $tgl_awal, $tgl_akhir, $preview);
+            $this->generateExcelMutasiStok($res->get(), $gudang, $nama_file, $tgl_awal, $tgl_akhir, $preview);
         } else {
             return response()->json([
                 "code"=>200,
@@ -5560,122 +5570,36 @@ class ReportController extends Controller
         }
     }
 
-    public function generateExcelMutasiStok($res, $nama_file, $tgl_awal, $tgl_akhir, $preview)
+    private function headerExcelMutasiStokStokAwal($objSpreadsheet, $tgl_awal, $tgl_akhir)
     {
-        $objSpreadsheet = new Spreadsheet();
-
-        $sheetIndex = 0;
-
-        //start: style
-        $style_title = array(
-            'font' => array(
-                'bold' => true
-            ),
-            'alignment' => array(
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-            )
-        );
-        $style_acara = array(
-            'font' => array(
-                'size' => 14,
-                'bold' => true
-            ),
-            'alignment' => array(
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-            )
-        );
-        $style_judul_kolom = array(
-            'fill' => array(
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                'color' => array('rgb' => 'D3D3D3')
-            ),
-            'font' => array(
-                'bold' => true
-            ),
-            'borders' => array(
-                'allBorders' => array(
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-                )
-            ),
-            'alignment' => array(
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'vertical'  => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-            )
-        );
-        $style_ontop = array(
-            'alignment' => array(
-                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
-            )
-        );
-        $style_kolom = array(
-            'borders' => array(
-                'allBorders' => array(
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-                )
-            ),
-
-        );
-        $style_no['alignment'] = array(
-            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-        );
-
-        $style_isi_kolom = array(
-            'borders' => array(
-                'allBorders' => array(
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-                )
-            )
-        );
-        $style_note = array(
-            'font' => array(
-                'bold' => true
-            )
-        );
-        //end: style
-
-        // start : sheet
-        $objSpreadsheet->createSheet($sheetIndex);
-        $objSpreadsheet->setActiveSheetIndex($sheetIndex);
-
         // start : title
         $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
         $col = 1;
         $row = 1;
-        $gudang = Gudang::internal()->get();
-        $abjadTitle = 'C';
-
-        foreach ($gudang as $key) {
-            $abjadTitle++;
-        }
-
-        foreach ($gudang as $key) {
-            $abjadTitle++;
-        }
-
-        $abjadTitle++;
+        $abjadTitle = 'N';
 
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Laporan Harian Mutasi Stock Gudang Gresik I & II');
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($this->style_title);
         $row++;
         $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Departemen Distribusi Wilayah I');
         $objSpreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(30);
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($this->style_title);
         $row++;
         $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Tanggal ' . date('d/m/Y', strtotime($tgl_awal)) . ' - ' . date('d/m/Y', strtotime($tgl_akhir . '-1 day')));
         $objSpreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(30);
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_title);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($this->style_title);
 
         $col = 1;
         $row++;
 
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_acara);
-        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($this->style_acara);
+        $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($this->style_note);
 
         // end : title
         // start : judul kolom
@@ -5733,180 +5657,528 @@ class ReportController extends Controller
         $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         
-        $row++;
+        $row = 7;
+        $col = 8;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TOTAL GI');
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
 
+        $row = 6;
         $col++;
-        $row--;
+        $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TOTAL PEMASUKAN');
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadPemasukan . $row . ':'. $abjadPemasukan . ($row + 1));
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         
         $row = 5;
-        
-        $abjadPemasukan = chr(ord($abjadPemasukan) - 1);
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':'. $abjadPemasukan . $row);
         // pemasukan: end
-        
+        // pengeluaranL start
+        $col = 10;
+        $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PENGELUARAN');
-        $i = 0;
+        
         $row = 6;
         $abjadPengeluaran = $abjadPemasukan;
-        foreach ($gudang as $key) {
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $key->nama);
-            $i++;
-            $col++;
-            $abjadPengeluaran++;
-            $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
-        }
-
-        $row = 5;
-        $abjadPemasukan = chr(ord($abjadPemasukan) + 1);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'POSTO');
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
-        $objSpreadsheet->getActiveSheet()->mergeCells($abjadPemasukan . $row . ':' . $abjadPengeluaran . $row);
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Stok Akhir');
-        
-
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':'. $abjadPengeluaran . ($row + 1));
         
         $abjadPengeluaran++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'SO');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':'. $abjadPengeluaran . ($row + 1));
+        
+        $abjadPengeluaran++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'GUDANG INTERNAL');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
+        
+        $row++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TOTAL GI');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
+
+        $abjadPengeluaran++;
+        $col++;
+        $row--;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TOTAL PENGELUARAN');
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row+1));
+
+        $row = 5;
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadPemasukan . $row . ':'. $abjadPengeluaran . $row);
+        // pengeluaran: end
+
+        $row = 5;
+        $col++;
+        
+        $abjadPengeluaran++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Stok Akhir');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row+2));
+        
         $abjad = 'A';
 
         
         $row = 5;
-        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":". $abjadPengeluaran . ($row+1))->applyFromArray($style_judul_kolom);
-        $row = 6;
-        // end : judul kolom
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":". $abjadPengeluaran . ($row+2))->applyFromArray($this->style_judul_kolom);
+    }
 
+    private function mutasiStokGetStokAwal($id_material, $gudang, $tgl_sekarang, $shift)
+    {
+        if ($shift == 2) {
+            $materialTrans = MaterialTrans::
+            leftJoin('aktivitas_harian', function ($join) use ($tgl_sekarang) {
+                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0)
+                    ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_sekarang . ' 23:00:00')));
+            })
+            ->leftJoin('aktivitas', function ($join) {
+                $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                    ;
+            })
+            ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang) {
+                $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                    ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_sekarang)));
+            })
+            ->where(function ($query) use ($tgl_sekarang) {
+                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT2)));
+                $query->orWhere(function($query) use($tgl_sekarang){
+                    $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT2)));
+                    $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . ' 23:00:00')));
+                    $query->where('id_shift', 1);
+                });
+                $query->orWhere('material_adjustment.tanggal', '<', $tgl_sekarang);
+                $query->orWhere(function ($query) use ($tgl_sekarang) {
+                        $query->where('material_adjustment.tanggal', '=', $tgl_sekarang);
+                        $query->where(function($query){
+                            $query->where('material_trans.shift_id', 1);
+                            $query->orWhere('material_trans.shift_id', 3);
+                        });
+                });
+            })
+            ->where('id_material', $id_material)
+            ->where(function($query) use ($gudang) {
+                $query->where('aktivitas_harian.id_gudang', $gudang);
+                $query->orWhere('material_adjustment.id_gudang', $gudang);
+            })
+            ->get();
+
+            $transaksiBerkurang = 0;
+            $transaksiBertambah = 0;
+            foreach ($materialTrans as $transaksi) {
+                if ($transaksi->id_aktivitas_harian != null && $transaksi->status_aktivitas != null) {
+                    if ($transaksi->tipe == 2) {
+                        $transaksiBertambah = $transaksiBertambah + $transaksi->jumlah;
+                    } else if ($transaksi->tipe == 1) {
+                        $transaksiBerkurang = $transaksiBerkurang + $transaksi->jumlah;
+                    }
+                } else if ($transaksi->id_aktivitas_harian == null) {
+                    if ($transaksi->tipe == 2) {
+                        $transaksiBertambah = $transaksiBertambah + $transaksi->jumlah;
+                    } else if ($transaksi->tipe == 1) {
+                        $transaksiBerkurang = $transaksiBerkurang + $transaksi->jumlah;
+                    }
+                }
+            }
+        } else if ($shift == 1) {
+            $materialTrans = MaterialTrans::
+            leftJoin('aktivitas_harian', function ($join) use ($tgl_sekarang) {
+                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0)
+                    ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_sekarang . $this->START_SHIFT1)));
+            })
+            ->leftJoin('aktivitas', function ($join) {
+                $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                    ;
+            })
+            ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang) {
+                $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                    ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_sekarang)));
+            })
+            ->where(function ($query) use ($tgl_sekarang) {
+                $query->where(function($query) use($tgl_sekarang){
+                    $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT1)));
+                    $query->orWhere(function($query) use($tgl_sekarang){
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT1)));
+                        $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT2)));
+                        $query->where('id_shift', 3);
+                    });
+                });
+
+                $query->orWhere(function ($query) use ($tgl_sekarang) {
+                    $query->where('material_adjustment.tanggal', '<', $tgl_sekarang);
+                    $query->orWhere(function($query) use ($tgl_sekarang){
+                        $query->where('material_adjustment.tanggal', '=', $tgl_sekarang);
+                        $query->where('material_adjustment.shift', '=', 3);
+                    });
+                });
+            })
+            ->where('id_material', $id_material)
+            ->where(function($query) use ($gudang) {
+                $query->where('aktivitas_harian.id_gudang', $gudang);
+                $query->orWhere('material_adjustment.id_gudang', $gudang);
+            })
+            ->get();
+
+            $transaksiBerkurang = 0;
+            $transaksiBertambah = 0;
+            foreach ($materialTrans as $transaksi) {
+                if ($transaksi->id_aktivitas_harian != null && $transaksi->status_aktivitas != null) {
+                    if ($transaksi->tipe == 2) {
+                        $transaksiBertambah = $transaksiBertambah + $transaksi->jumlah;
+                    } else if ($transaksi->tipe == 1) {
+                        $transaksiBerkurang = $transaksiBerkurang + $transaksi->jumlah;
+                    }
+                } else if ($transaksi->id_aktivitas_harian == null) {
+                    if ($transaksi->tipe == 2) {
+                        $transaksiBertambah = $transaksiBertambah + $transaksi->jumlah;
+                    } else if ($transaksi->tipe == 1) {
+                        $transaksiBerkurang = $transaksiBerkurang + $transaksi->jumlah;
+                    }
+                }
+            }
+        } else if ($shift == 3) {
+            $materialTrans = MaterialTrans::
+            leftJoin('aktivitas_harian', function ($join) use ($tgl_sekarang) {
+                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0)
+                    ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_sekarang . $this->START_SHIFT3)));
+            })
+            ->leftJoin('aktivitas', function ($join) {
+                $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
+                    ;
+            })
+            ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang) {
+                $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
+                    ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_sekarang)));
+            })
+            ->where(function ($query) use ($tgl_sekarang) {
+                $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                $query->orWhere(function($query) use($tgl_sekarang){
+                    $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '>=', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
+                    $query->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . ' 00:30:00')));
+                    $query->where('id_shift', 2);
+                });
+                $query->orWhere('material_adjustment.tanggal', '<=', date($this->FORMAT_DATE, strtotime($tgl_sekarang . $this->DECREMENT_DAY)));
+                $query->orWhere(function ($query) use ($tgl_sekarang) {
+                        $query->where('material_adjustment.tanggal', '=', date($this->FORMAT_DATE, strtotime($tgl_sekarang . $this->DECREMENT_DAY)));
+                        $query->where(function($query){
+                            $query->where('material_trans.shift_id', 2);
+                            $query->orWhere('material_trans.shift_id', 1);
+                        });
+                });
+            })
+            ->where('id_material', $id_material)
+            ->where(function($query) use ($gudang) {
+                $query->where('aktivitas_harian.id_gudang', $gudang);
+                $query->orWhere('material_adjustment.id_gudang', $gudang);
+            })
+            ->get();
+
+            $transaksiBerkurang = 0;
+            $transaksiBertambah = 0;
+            foreach ($materialTrans as $transaksi) {
+                if ($transaksi->id_aktivitas_harian != null && $transaksi->status_aktivitas != null) {
+                    if ($transaksi->tipe == 2) {
+                        $transaksiBertambah = $transaksiBertambah + $transaksi->jumlah;
+                    } else if ($transaksi->tipe == 1) {
+                        $transaksiBerkurang = $transaksiBerkurang + $transaksi->jumlah;
+                    }
+                } else if ($transaksi->id_aktivitas_harian == null) {
+                    if ($transaksi->tipe == 2) {
+                        $transaksiBertambah = $transaksiBertambah + $transaksi->jumlah;
+                    } else if ($transaksi->tipe == 1) {
+                        $transaksiBerkurang = $transaksiBerkurang + $transaksi->jumlah;
+                    }
+                }
+            }
+        }
+        
+        return $transaksiBertambah - $transaksiBerkurang; 
+    }
+
+    private function mutasiStokGetPemasukanPenyangga($id_material, $gudang, $tgl_sekarang, $shift)
+    {
+        $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
+        ->leftJoin('aktivitas', 'aktivitas.id', '=', 'ah.id_aktivitas')
+        ->where('tipe', 2)
+        ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), date('Y-m-d H:i:s', strtotime($tgl_sekarang)))
+        ->where('id_material', $id_material)
+        ->where('draft', 0)
+        ->where('ah.id_gudang', $gudang)
+        ->where('id_shift', $shift)
+        ->whereNotNull('pengiriman')
+        ->whereNotNull('status_aktivitas')
+        ->sum('jumlah');
+        
+        return $materialTrans;
+    }
+
+    private function mutasiStokGetPemasukanProduksi($id_material, $gudang, $tgl_sekarang, $shift)
+    {
+        $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
+        ->leftJoin('aktivitas', 'aktivitas.id', '=', 'ah.id_aktivitas')
+        ->where('tipe', 2)
+        ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), date('Y-m-d H:i:s', strtotime($tgl_sekarang)))
+        ->where('id_material', $id_material)
+        ->where('draft', 0)
+        ->where('ah.id_gudang', $gudang)
+        ->where('id_shift', $shift)
+        ->where('jenis_aktivitas', 4)
+        ->sum('jumlah');
+        
+        return $materialTrans;
+    }
+
+    private function mutasiStokGetPemasukanImpor($id_material, $gudang, $tgl_sekarang, $shift)
+    {
+        $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
+        ->leftJoin('aktivitas', 'aktivitas.id', '=', 'ah.id_aktivitas')
+        ->where('tipe', 2)
+        ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), date('Y-m-d H:i:s', strtotime($tgl_sekarang)))
+        ->where('id_material', $id_material)
+        ->where('draft', 0)
+        ->where('ah.id_gudang', $gudang)
+        ->where('id_shift', $shift)
+        ->where('jenis_aktivitas', 1)
+        ->sum('jumlah');
+        
+        return $materialTrans;
+    }
+
+    private function mutasiStokGetPemasukanGudangInternal($id_material, $gudang, $tgl_sekarang, $shift)
+    {
+        $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
+        ->leftJoin('aktivitas', 'aktivitas.id', '=', 'ah.id_aktivitas')
+        ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), date('Y-m-d H:i:s', strtotime($tgl_sekarang)))
+        ->where('id_material', $id_material)
+        ->where('tipe', 1)
+        ->where('draft', 0)
+        ->where('ah.id_gudang_tujuan', $gudang)
+        ->where('ah.id_gudang', '<>', $gudang)
+        ->where('id_shift', $shift)
+        ->whereNotNull('internal_gudang')
+        ->whereNotNull('approve')
+        ->sum('jumlah');
+        
+        return $materialTrans;
+    }
+
+    private function mutasiStokGetPengeluaranPosto($id_material, $gudang, $tgl_sekarang, $shift)
+    {
+        $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
+        ->leftJoin('aktivitas','aktivitas.id', '=', 'ah.id_aktivitas')
+        ->where('tipe', 1)
+        ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), date('Y-m-d H:i:s', strtotime($tgl_sekarang)))
+        ->where('id_material', $id_material)
+        ->where('ah.id_gudang', $gudang)
+        ->where('draft', 0)
+        ->where('id_shift', $shift)
+        ->whereNotNull('connect_sistro')
+        ->sum('jumlah');
+        
+        return $materialTrans;
+    }
+
+    private function mutasiStokGetPengeluaranSo($id_material, $gudang, $tgl_sekarang, $shift)
+    {
+        $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
+        ->leftJoin('aktivitas','aktivitas.id', '=', 'ah.id_aktivitas')
+        ->where('tipe', 1)
+        ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), date('Y-m-d H:i:s', strtotime($tgl_sekarang)))
+        ->where('id_material', $id_material)
+        ->where('ah.id_gudang', $gudang)
+        ->where('draft', 0)
+        ->where('id_shift', $shift)
+        ->whereNotNull('aktivitas.so')
+        ->sum('jumlah');
+        
+        return $materialTrans;
+    }
+
+    private function mutasiStokGetPengeluaranGudangInternal($id_material, $gudang, $tgl_sekarang, $shift)
+    {
+        $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
+        ->leftJoin('aktivitas', 'aktivitas.id', '=', 'ah.id_aktivitas')
+        ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
+        ->where('tipe', 1)
+        ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), date('Y-m-d H:i:s', strtotime($tgl_sekarang)))
+        ->where('id_material', $id_material)
+        ->where('draft', 0)
+        ->where(function($query) use ($gudang) {
+            $query->where('ah.id_gudang_tujuan', '<>', $gudang);
+            $query->where('ah.id_gudang', $gudang);
+        })
+        ->where('id_shift', $shift)
+        ->whereNotNull('internal_gudang')
+        ->whereNotNull('approve')
+        ->sum('jumlah');
+        
+        return $materialTrans;
+    }
+
+    public function generateExcelMutasiStok($res, $gudang, $nama_file, $tgl_awal, $tgl_akhir, $preview)
+    {
+        $objSpreadsheet = new Spreadsheet();
+        $sheetIndex = 0;
+        $objSpreadsheet->createSheet($sheetIndex);
+        $objSpreadsheet->setActiveSheetIndex($sheetIndex);
+
+        //start: style
+        $style_no['alignment'] = array(
+            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+        );
+
+        //end: style
+
+        // start : sheet title
+        $this->headerExcelMutasiStokStokAwal($objSpreadsheet, $tgl_awal, $tgl_akhir);
+        // end : sheet title
+        
         // start : isi kolom
         $no = 0;
-        foreach ($res as $value) {
-            $abjad = 'A';
-            $no++;
-            $col = 1;
-            $row++;
+        $shifts = [3,1,2];
 
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":". $abjadPengeluaran . $row)->applyFromArray($style_kolom);
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':'. $abjadPengeluaran . $row)->applyFromArray($style_ontop);
+        $tgl_sekarang = $tgl_awal;
+        $row = 8;
+        
+        do {
+            $col=1;
+            $abjadIncrement = 'A';
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d', strtotime($tgl_sekarang)));
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
+            // $objSpreadsheet->getActiveSheet()->mergeCells($abjadIncrement . $row . ':' . $abjadIncrement . ($row + 3));
 
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $no); //nomor
+            $countMergePerTanggal = 0;
+            $rowPerTanggal = $row;
+            foreach ($shifts as $shift) {
+                $col=2;
+                $abjadIncrement = 'B';
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, helpRoman($shift));
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
 
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama); //nama
+                $countMergePerShift = 0;
+                $rowPerShift = $row;
+                foreach ($res as $value) {
+                    $col=3;
+                    $abjadIncrement = 'C';
+                    
+                    $totalPemasukan = 0;
+        
+                    $totalPengeluaran = 0;
+        
+                    $saldoAwal    = $this->mutasiStokGetStokAwal($value->id_material, $gudang, $tgl_sekarang, $shift);
+    
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->nama); //nama
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                    
+                    $col++;
+                    $abjadIncrement++;
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($saldoAwal, 3)); //stok awal
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
 
-            $materialTransMengurang = MaterialTrans::
-                leftJoin('aktivitas_harian', function ($join) use ($tgl_awal) {
-                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                        ->where('draft', 0)
-                        ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
-                })
-                ->leftJoin('aktivitas', function ($join) {
-                    $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                        // ->whereNotNull('status_aktivitas')
-                        ;
-                })
-                ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
-                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                        ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
-                })
-                ->where('id_material', $value->id_material)
-                ->where(function ($query) use ($tgl_awal) {
-                    $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
-                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
-                })
-                ->where('tipe', 1)
-                ->whereNotNull('status_aktivitas')
-                ->sum('jumlah');
+                    $col++;
+                    $abjadIncrement++;
+                    $produksi = $this->mutasiStokGetPemasukanProduksi($value->id_material, $gudang, $tgl_sekarang, $shift);
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($produksi, 3));
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                    $totalPemasukan = $totalPemasukan + $produksi;
+                    
+                    $col++;
+                    $abjadIncrement++;
+                    $penyangga = $this->mutasiStokGetPemasukanPenyangga($value->id_material, $gudang, $tgl_sekarang, $shift);
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($penyangga, 3));
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                    $totalPemasukan = $totalPemasukan + $penyangga;
 
-            $materialTransMenambah = MaterialTrans::
-                leftJoin('aktivitas_harian', function ($join) use ($tgl_awal) {
-                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                        ->where('draft', 0)
-                        ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
-                })
-                ->leftJoin('aktivitas', function ($join) {
-                    $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                        // ->whereNotNull('status_aktivitas')
-                        ;
-                })
-                ->leftJoin('material_adjustment', function ($join) use ($tgl_awal) {
-                    $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                        ->where('material_adjustment.tanggal', '<', date('Y-m-d', strtotime($tgl_awal)));
-                })
-                ->where('id_material', $value->id_material)
-                ->where(function ($query) use ($tgl_awal) {
-                    $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')));
-                    $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
-                })
-                ->where('tipe', 2)
-                ->whereNotNull('status_aktivitas')
-                ->sum('jumlah');
+                    $col++;
+                    $abjadIncrement++;
+                    $impor = $this->mutasiStokGetPemasukanImpor($value->id_material, $gudang, $tgl_sekarang, $shift);
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($impor, 3));
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                    $totalPemasukan = $totalPemasukan + $impor;
+                    
+                    $col++;
+                    $abjadIncrement++;
+                    $gudangInternal = $this->mutasiStokGetPemasukanGudangInternal($value->id_material, $gudang, $tgl_sekarang, $shift);
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($gudangInternal, 3));
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                    $totalPemasukan = $totalPemasukan + $gudangInternal;
 
-            $stokAwal = $materialTransMenambah - $materialTransMengurang;
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAwal, 3)); //stok awal
-            $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':'. $abjadPengeluaran . $row)->applyFromArray($style_no);
-            $stokAkhir = $stokAwal;
-            foreach ($gudang as $item) {
-                $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
-                ->leftJoin('aktivitas', function ($join) {
-                    $join->on('aktivitas.id', '=', 'ah.id_aktivitas')
-                        // ->whereNotNull('status_aktivitas')
-                        ;
-                })
-                ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
-                ->where('ah.id_gudang', $item->id)
-                ->where('tipe', 2)
-                ->where(function($query) use($tgl_awal, $tgl_akhir){
-                    $query->whereBetween(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
-                    $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
-                })
-                ->where('id_material', $value->id_material)
-                ->where('draft', 0)
-                ->whereNotNull('status_aktivitas')
-                ->sum('jumlah');
-                
-                $stokAkhir += $materialTrans;
-                $col++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 3)); //pemasukan per gudang per item
-                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
-                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':'. $abjadPengeluaran . $row)->applyFromArray($style_no);
+                    $col++;
+                    $abjadIncrement++;
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalPemasukan, 3));
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+
+                    $col++;
+                    $abjadIncrement++;
+                    $posto = $this->mutasiStokGetPengeluaranPosto($value->id_material, $gudang, $tgl_sekarang, $shift);
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($posto, 3));
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                    $totalPengeluaran = $totalPengeluaran + $posto;
+
+                    $col++;
+                    $abjadIncrement++;
+                    $so = $this->mutasiStokGetPengeluaranSo($value->id_material, $gudang, $tgl_sekarang, $shift);
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($so, 3));
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                    $totalPengeluaran = $totalPengeluaran + $so;
+
+                    $col++;
+                    $abjadIncrement++;
+                    $pengeluaranGudangInternal = $this->mutasiStokGetPengeluaranGudangInternal($value->id_material, $gudang, $tgl_sekarang, $shift);
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($pengeluaranGudangInternal, 3));
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+                    $totalPengeluaran = $totalPengeluaran + $pengeluaranGudangInternal;
+
+                    $col++;
+                    $abjadIncrement++;
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalPengeluaran, 3));
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+
+                    $col++;
+                    $abjadIncrement++;
+                    $stokAkhir = $saldoAwal + $totalPemasukan - $totalPengeluaran;
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAkhir, 3));
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+
+                    $row++;
+                    $countMergePerShift++;
+                }
+
+                $objSpreadsheet->getActiveSheet()->mergeCells('B' . $rowPerShift . ':' . 'B' . ($rowPerShift+$countMergePerShift-1));
+                $countMergePerTanggal += $countMergePerShift;
             }
-            foreach ($gudang as $item) {
-                $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
-                ->leftJoin('aktivitas', function ($join) {
-                    $join->on('aktivitas.id', '=', 'ah.id_aktivitas')
-                        // ->whereNotNull('status_aktivitas')
-                        ;
-                })
-                ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
-                ->where('ah.id_gudang', $item->id)
-                ->where('tipe', 1)
-                ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
-                    $query->whereBetween(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
-                    $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
-                })
-                ->where('id_material', $value->id_material)
-                ->where('draft', 0)
-                ->whereNotNull('status_aktivitas')
-                ->sum('jumlah');
 
-                $stokAkhir -= $materialTrans;
-                $col++;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($materialTrans, 3)); //pengeluaran per gudang per item
-                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
-                $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ':'. $abjadPengeluaran . $row)->applyFromArray($style_no);
-            }
-
-            $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAkhir, 3)); //stok akhir
-            $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
-            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
-            
-        }
-
+            $objSpreadsheet->getActiveSheet()->mergeCells('A' . $rowPerTanggal . ':' . 'A' . ($rowPerTanggal+$countMergePerTanggal-1));
+            $tgl_sekarang = date($this->FORMAT_DATE, strtotime($tgl_sekarang.$this->INCREMENT_DAY));
+        } while($tgl_sekarang != $tgl_akhir);
+        
         //Sheet Title
         $objSpreadsheet->getActiveSheet()->setTitle("Laporan Mutasi Stok");
         // end : isi kolom
@@ -6764,7 +7036,7 @@ class ReportController extends Controller
 
                 $jumlah  += $pre_masuk - $pre_keluar + $masuk - $keluar;
 
-                
+
             }
 
             if ($jumlahStokAwal >0 || $totalMasuk > 0 || $totalKeluar > 0) {

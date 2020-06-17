@@ -26,6 +26,16 @@
         </div>
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
+            <div class="form-group row mt2">
+                <h4 class="col-2 col-form-label text-kiri">Gudang</h4>
+                <div class="col-6">
+                    <select class="form-control m-select2" id="gudang" name="gudang" style="width: 100%">
+                        @foreach ($gudang as $item)
+                            <option value="{{$item->id}}">{{$item->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
             <div class="form-group row">
                 <h4 class="col-2 col-form-label text-kiri">Produk</h4>
                 <div class="col-6">
@@ -90,6 +100,10 @@
 
 <script src="{{asset('assets/extends/js/page/cetak-report.js')}}"></script>
 <script>
+    $('#gudang').select2({
+        placeholder: "Pilih Gudang",
+        allowClear: true
+    });
     $('#pilih').select2({
         placeholder: "Pilih produk",
         allowClear: true
