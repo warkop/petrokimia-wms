@@ -8626,7 +8626,6 @@ class ReportController extends Controller
 
         $res = AktivitasHarian::with('aktivitas')
         ->with('gudang')
-        ->with('aktivitasFoto')
         ->with('materialTrans')
         ->where('updated_at', '>=', $tgl_awal)
         ->where('updated_at', '<=', $tgl_akhir)
@@ -8762,40 +8761,36 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $jumlah.' Ton');
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($this->style_kolom);
 
-            $temp = '';
             $x = 6;
             $y = 6;
             $col++;
-            foreach ($value->aktivitasFoto as $row2) {
-                $temp .= $row2->foto;
                 
-                if (!empty($value->id) && file_exists(storage_path("/app/public/aktivitas_harian/" . $value->id . "/" . $row2->foto))) {
-                    $image_url = base_url() . "application/storage/app/public/aktivitas_harian/" . $value->id . "/" . $row2->foto;
-                    if (isset($image_url) && !empty($image_url)) {
-                        if (strpos($image_url, ".png") === false) {
-                            $image_resource = imagecreatefromjpeg($image_url);
-                        } else {
-                            $image_resource = imagecreatefrompng($image_url);
-                        }
-                        $objDrawing = new MemoryDrawing;
-                        $objDrawing->setName($row2->foto);
-                        $objDrawing->setDescription('gambar ' . $row2->foto);
-                        $objDrawing->setImageResource($image_resource);
-                        $objDrawing->setCoordinates(strtoupper(toAlpha($col - 1)) . $row);
-                        //setOffsetX works properly
-                        $objDrawing->setOffsetX($x);
-                        $objDrawing->setOffsetY($y);
-                        //set width, height
-                        $objDrawing->setWidth(120);
-                        $objDrawing->setWorksheet($objSpreadsheet->getActiveSheet());
-                        // $objSpreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(110);
-                        
-                        $y += $objDrawing->getHeight();
-                        $objSpreadsheet->getActiveSheet()->getRowDimension($row)->setRowHeight($y);
+            if (!empty($value->id) && file_exists(storage_path("/app/public/ba/" . $value->id . "/" . $value->ba))) {
+                $image_url = base_url() . "application/storage/app/public/ba/" . $value->id . "/" . $value->ba;
+                if (isset($image_url) && !empty($image_url)) {
+                    if (strpos($image_url, ".png") === false) {
+                        $image_resource = imagecreatefromjpeg($image_url);
+                    } else {
+                        $image_resource = imagecreatefrompng($image_url);
                     }
-                } else {
-                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "File tidak ada di server ");
+                    $objDrawing = new MemoryDrawing;
+                    $objDrawing->setName($value->ba);
+                    $objDrawing->setDescription('gambar ' . $value->ba);
+                    $objDrawing->setImageResource($image_resource);
+                    $objDrawing->setCoordinates(strtoupper(toAlpha($col - 1)) . $row);
+                    //setOffsetX works properly
+                    $objDrawing->setOffsetX($x);
+                    $objDrawing->setOffsetY($y);
+                    //set width, height
+                    $objDrawing->setWidth(120);
+                    $objDrawing->setWorksheet($objSpreadsheet->getActiveSheet());
+                    // $objSpreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(110);
+                    
+                    $y += $objDrawing->getHeight();
+                    $objSpreadsheet->getActiveSheet()->getRowDimension($row)->setRowHeight($y);
                 }
+            } else {
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "File tidak ada di server ");
             }
 
             $col++;
