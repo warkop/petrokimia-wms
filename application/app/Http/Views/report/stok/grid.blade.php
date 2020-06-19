@@ -37,7 +37,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <h4 class="col-2 col-form-label text-kiri">Produk</h4>
+                <h4 class="col-2 col-form-label text-kiri">Produk <span class="text-danger">*</span></h4>
                 <div class="col-6">
                     <div class="kt-radio-inline">
                         <label class="kt-radio kt-radio--success">
@@ -60,7 +60,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <h4 class="col-2 col-form-label text-kiri">Laporan Per Tanggal</h4>
+                <h4 class="col-2 col-form-label text-kiri">Laporan Per Tanggal <span class="text-danger">*</span></h4>
                 <div class="col-6">
                     <div class="form-group">
                         <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly

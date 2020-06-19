@@ -8617,9 +8617,13 @@ class ReportController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('report/laporan-cancellation')
-                ->withErrors($validator)
-                ->withInput();
+            $msg = '';
+            foreach ($validator->errors()->all() as $message) { $msg .= '<div class="alert alert-danger">'.$message.'</div>'; }
+            return response()->json([
+                'title'=>'Oopss...',
+                'data'=>$msg,
+                'type'=>'error'
+            ],400);
         }
 
         $gudang     = request()->gudang;

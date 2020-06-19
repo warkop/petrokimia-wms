@@ -27,7 +27,7 @@
         <div class="kt-portlet__body">
             <label class="boldd uppercase">Report Builder</label>
             <div class="form-group row">
-                <h4 class="col-2 col-form-label text-kiri">Gudang</h4>
+                <h4 class="col-2 col-form-label text-kiri">Gudang <span class="text-danger">*</span></h4>
                 <div class="col-6">
                     <select class="form-control m-select2" id="gudang" name="gudang" style="width: 100%" required>
                         <option></option>
@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <h4 class="col-2 col-form-label text-kiri">Shift</h4>
+                <h4 class="col-2 col-form-label text-kiri">Shift <span class="text-danger">*</span></h4>
                 <div class="col-6">
                     <select class="form-control m-select2" id="shift" name="shift" style="width: 100%" required>
                         <option></option>
@@ -49,7 +49,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <h4 class="col-2 col-form-label text-kiri">Produk</h4>
+                <h4 class="col-2 col-form-label text-kiri">Produk <span class="text-danger">*</span></h4>
                 <div class="col-6">
                     <div class="mt1" id="textadd">
                         <select class="form-control m-select2" id="pilih" name="pilih_produk" style="width:100%" required>
@@ -62,7 +62,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <h4 class="col-2 col-form-label text-kiri">Tanggal</h4>
+                <h4 class="col-2 col-form-label text-kiri">Tanggal <span class="text-danger">*</span></h4>
                 <div class="col-6">
                     <div class="col-md-6">
                         <input type="text" class="form-control" id="start_date" name="tanggal" readonly placeholder="Pilih tanggal" required>

@@ -33,14 +33,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Tanggal Awal</label>
+                                    <label>Tanggal Awal <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
                                         placeholder="Pilih tanggal">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Tanggal Akhir</label>
+                                    <label>Tanggal Akhir <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
                                         placeholder="Pilih tanggal">
                                 </div>
@@ -80,7 +80,7 @@
                 </div>
             </div> --}}
             <div class="form-group row">
-                <h4 class="col-2 col-form-label text-kiri">Produk</h4>
+                <h4 class="col-2 col-form-label text-kiri">Produk <span class="text-danger">*</span></h4>
                 <div class="col-6">
                     <div class="kt-radio-inline">
                         <label class="kt-radio kt-radio--success">

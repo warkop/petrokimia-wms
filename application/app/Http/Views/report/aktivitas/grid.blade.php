@@ -58,7 +58,7 @@
                 </div>
             </div>
             <div class="form-group row mt2" style="margin-bottom: 0;">
-                <h4 class="col-2 col-form-label text-kiri">Tanggal Awal</h4>
+                <h4 class="col-2 col-form-label text-kiri">Tanggal Awal <span class="text-danger">*</span></h4>
                 <div class="col-4">
                     <div class="form-group">
                         <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
@@ -67,7 +67,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <h4 class="col-2 col-form-label text-kiri">Tanggal Akhir</h4>
+                <h4 class="col-2 col-form-label text-kiri">Tanggal Akhir <span class="text-danger">*</span></h4>
                 <div class="col-4">
                     <div class="form-group">
                         <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly

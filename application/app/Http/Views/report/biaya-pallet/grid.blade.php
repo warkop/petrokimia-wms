@@ -53,14 +53,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Start Date</label>
+                                    <label>Tanggal Awal <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
                                         placeholder="Pilih tanggal">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>End Date</label>
+                                    <label>TAnggal Akhir <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
                                         placeholder="Pilih tanggal">
                                 </div>
