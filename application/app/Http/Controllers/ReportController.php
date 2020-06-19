@@ -5500,6 +5500,7 @@ class ReportController extends Controller
             request()->all(),
             [
                 'produk'    => 'required',
+                'gudang' => 'required',
                 'tgl_awal' => 'required|before_or_equal:tgl_akhir',
                 'tgl_akhir' => 'required|after_or_equal:tgl_awal',
             ],[
@@ -5509,6 +5510,7 @@ class ReportController extends Controller
             ],
             [
                 'produk'    => 'Produk',
+                'gudang' => 'Gudang',
                 'tgl_awal'  => 'Tanggal Awal',
                 'tgl_akhir' => 'Tanggal Akhir',
             ]

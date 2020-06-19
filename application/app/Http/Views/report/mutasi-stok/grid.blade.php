@@ -30,6 +30,7 @@
                 <h4 class="col-2 col-form-label text-kiri">Gudang</h4>
                 <div class="col-6">
                     <select class="form-control m-select2" id="gudang" name="gudang" style="width: 100%">
+                        <option value=""></option>
                         @foreach ($gudang as $item)
                             <option value="{{$item->id}}">{{$item->nama}}</option>
                         @endforeach
@@ -102,7 +103,6 @@
 <script>
     $('#gudang').select2({
         placeholder: "Pilih Gudang",
-        allowClear: true
     });
     $('#pilih').select2({
         placeholder: "Pilih produk",
