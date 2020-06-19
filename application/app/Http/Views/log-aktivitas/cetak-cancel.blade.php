@@ -124,15 +124,17 @@
                             <p><strong>Tidak ada pallet dalam transaksi</strong></p>
                         @endif
                     </div>
-                </section>
-                {{-- <div class="col-md-12 mb1">
+                </section>    
+                @if ($aktivitasHarian->ba != NULL)
+                <div class="col-md-12 mb1">
                     <label>
                         DOKUMENTASI BERITA ACARA
                     </label>
                     <div class="text-center">
-                        <img src="{{asset('assets/main/metronic/media/blog/surat.jpg')}}" width="60%"/>
+                    <img src="{{url('application/storage/app/public/ba')}}/{{$aktivitasHarian->id}}/{{$aktivitasHarian->ba}}" width="60%"/>
                     </div>
-                </div> --}}
+                </div>
+                @endif
             </div>
         </div>
         {{-- <div class="footer">
