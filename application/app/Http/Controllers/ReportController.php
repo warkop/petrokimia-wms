@@ -7050,28 +7050,28 @@ class ReportController extends Controller
                 $col++;
                 $abjad++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($jumlahStokAwal, 3));
-                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,###.00');
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
                 $col++;
                 $abjad++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalMasuk, 3));
-                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,###.00');
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
                 $col++;
                 $abjad++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalKeluar, 3));
-                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,###.00');
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
                 $col++;
                 $abjad++;
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($jumlah, 3));
-                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,###.00');
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
@@ -7089,22 +7089,22 @@ class ReportController extends Controller
 
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalStokAwal, 3));
-        $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+        $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,###.00');
         $objSpreadsheet->getActiveSheet()->getStyle('B' . $row)->applyFromArray($style_isi_kolom);
 
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalMasukKeseluruhan, 3));
-        $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+        $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,###.00');
         $objSpreadsheet->getActiveSheet()->getStyle('C' . $row)->applyFromArray($style_isi_kolom);
 
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalKeluarKeseluruhan, 3));
-        $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+        $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,###.00');
         $objSpreadsheet->getActiveSheet()->getStyle('D' . $row)->applyFromArray($style_isi_kolom);
         
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($totalStokAkhir, 3));
-        $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.00');
+        $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,###.00');
         $objSpreadsheet->getActiveSheet()->getStyle('E' . $row)->applyFromArray($style_isi_kolom);
 
         //Sheet Title
