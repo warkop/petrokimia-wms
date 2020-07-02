@@ -109,7 +109,7 @@ class MaterialAdjustmentController extends Controller
                 $areaStok = AreaStok::where('id_area', $area[$i])
                 ->where('id_material', $produk[$i])
                 ->where('tanggal', date('Y-m-d', strtotime($tanggal[$i])))
-                ->where('status', $jenis_produk)
+                ->where('status', $jenis_produk[$i])
                 ->first();
                 if (empty($areaStok)) {
                     $areaStok = new AreaStok;
