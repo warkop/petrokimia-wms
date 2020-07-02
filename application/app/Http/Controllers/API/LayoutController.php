@@ -12,6 +12,8 @@ use App\Http\Models\Karu;
 use App\Http\Models\RencanaHarian;
 use App\Http\Models\RencanaTkbm;
 use App\Http\Resources\AktivitasResource;
+use App\Http\Resources\LayoutGetDataResource;
+use App\Http\Resources\LayoutGetDetailResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
@@ -54,7 +56,7 @@ class LayoutController extends Controller
                 'tipe_gudang',
                 'kapasitas',
                 'tipe as tipe_area',
-                DB::raw('(SELECT SUM(jumlah) FROM area_stok WHERE area_stok.id_area = area.id) AS total'),
+                DB::raw("(SELECT sum(jumlah) FROM area_stok WHERE area_stok.id_area = area.id) AS total"),
                 DB::raw('
                     CASE
                         WHEN tipe_gudang=1 THEN \'Internal\'
@@ -129,7 +131,7 @@ class LayoutController extends Controller
             }
         }
 
-        $obj =  AktivitasResource::collection($res)->additional([
+        $obj =  LayoutGetDataResource::collection($res)->additional([
             'pallet' => [
                 'stok'      => $stok,
                 'terpakai'  => $terpakai,
@@ -137,9 +139,9 @@ class LayoutController extends Controller
                 'rusak'     => $rusak,
             ],
             'produk' => [
-                'total'     => $produkNormal+$produkRusak,
-                'normal'    => $produkNormal,
-                'rusak'     => $produkRusak,
+                'total'     => round($produkNormal+$produkRusak, 3),
+                'normal'    => round($produkNormal, 3),
+                'rusak'     => round($produkRusak, 3),
             ],
             'status' => [
                 'message'   => '',
@@ -167,7 +169,7 @@ class LayoutController extends Controller
         ->where('id_area',$id_area)
         ->get();
 
-        $obj =  AktivitasResource::collection($res)->additional([
+        $obj =  LayoutGetDetailResource::collection($res)->additional([
             'status' => [
                 'message' => '',
                 'code' => Response::HTTP_OK
