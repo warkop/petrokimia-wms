@@ -909,6 +909,56 @@ class ReportController extends Controller
         $style_no['alignment'] = array(
             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
         );
+
+        $style_judul_kolom = array(
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'color' => array('rgb' => 'f0a500')
+            ),
+            'font' => array(
+                'bold' => true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                )
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            )
+        );
+
+        $style_ontop = array(
+            'alignment' => array(
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
+            )
+        );
+
+        $style_kolom = array(
+
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                )
+            ),
+        );
+
+        $style_acara = array(
+            'font' => array(
+                'size' => 14,
+                'bold' => true
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            )
+        );
+
+        $style_note = array(
+            'font' => array(
+                'bold' => true
+            )
+        );
         // start : title
         $col = 1;
         $row = 1;
@@ -927,24 +977,7 @@ class ReportController extends Controller
         $col = 1;
         $row++;
 
-        $style_acara = array(
-            'font' => array(
-                'size' => 14,
-                'bold' => true
-            ),
-            'alignment' => array(
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-            )
-        );
-
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_acara);
-
-        $style_note = array(
-            'font' => array(
-                'bold' => true
-            )
-        );
-
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
 
@@ -1061,24 +1094,6 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row + 1));
 
         $abjad = 'A';
-        $style_judul_kolom = array(
-            'fill' => array(
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                'color' => array('rgb' => 'f0a500')
-            ),
-            'font' => array(
-                'bold' => true
-            ),
-            'borders' => array(
-                'allBorders' => array(
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-                )
-            ),
-            'alignment' => array(
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-            )
-        );
         $row = 5;
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadPengeluaran . ($row + 1))->applyFromArray($style_judul_kolom);
         $row = 6;
@@ -1091,22 +1106,6 @@ class ReportController extends Controller
             $col = 1;
             $row++;
             $value = $value[0];
-
-            $style_ontop = array(
-                'alignment' => array(
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
-                )
-            );
-
-            $style_kolom = array(
-
-                'borders' => array(
-                    'allBorders' => array(
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-                    )
-                ),
-
-            );
 
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadPengeluaran . $row)->applyFromArray($style_kolom);
 
@@ -1128,7 +1127,6 @@ class ReportController extends Controller
             })
             ->leftJoin('aktivitas', function ($join){
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                // ->whereNotNull('status_aktivitas')
                 ;
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -1142,7 +1140,6 @@ class ReportController extends Controller
                 $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
             })
             ->where('tipe', 1)
-            ->whereNotNull('status_aktivitas')
             ->sum('jumlah')
             ;
             $materialTransMenambah = MaterialTrans::
@@ -1152,7 +1149,6 @@ class ReportController extends Controller
             })
             ->leftJoin('aktivitas', function ($join){
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                // ->whereNotNull('status_aktivitas')
                 ;
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
@@ -1166,7 +1162,6 @@ class ReportController extends Controller
                 $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
             })
             ->where('tipe', 2)
-            ->whereNotNull('status_aktivitas')
             ->sum('jumlah')
             ;
             $stokAwal = $materialTransMenambah - $materialTransMengurang;
@@ -1428,12 +1423,13 @@ class ReportController extends Controller
             $transRusakMenambah = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
             ->leftJoin('aktivitas', function ($join){
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                ->whereNotNull('status_aktivitas')
+                ->where('draft', 0)
                 ;
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            ->whereHas('areaStok.area', function ($query) use ($value) {
-                $query->where('id_gudang', $value->area->id_gudang);
+            ->where(function ($query) use ($value) {
+                $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
+                $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
             })
             ->where('status_produk', 2)
             ->where('id_material', $value->id_material)
@@ -1447,12 +1443,13 @@ class ReportController extends Controller
             $transRusakMengurang = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
             ->leftJoin('aktivitas', function ($join){
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                ->whereNotNull('status_aktivitas')
+                ->where('draft', 0)
                 ;
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            ->whereHas('areaStok.area', function ($query) use ($value) {
-                $query->where('id_gudang', $value->area->id_gudang);
+            ->where(function ($query) use ($value) {
+                $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
+                $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
             })
             ->where('status_produk', 2)
             ->where('id_material', $value->id_material)
@@ -1519,7 +1516,10 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->getStyle($abjadNormal. $row)->applyFromArray($style_kolom);
             $objSpreadsheet->getActiveSheet()->getStyle($abjadNormal. $row)->applyFromArray($style_no);
 
-            $siapJual = $stokAkhir-$rusak;
+            $siapJual = 0;
+            if ($stokAkhir > 1) {
+                $siapJual = $stokAkhir-$rusak;
+            }
             
             $col++;
             $abjadNormal++;
@@ -5542,6 +5542,7 @@ class ReportController extends Controller
             ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
             ->where('draft', 0)
             ->where('ah.id_gudang', $gudang)
+            ->where('m.kategori', 1)
             ->where(function($query) use($tgl_awal, $tgl_akhir) {
                 $query->whereBetween(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                 $query->orWhereBetween('ma.created_at', [$tgl_awal, $tgl_akhir]);
