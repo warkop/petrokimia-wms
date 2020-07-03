@@ -20,7 +20,7 @@ class LayoutGetDetailResource extends Resource
             "nama_area"     => $this->nama_area,
             "nama_material" => $this->nama_material,
             "tanggal"       => date('Y-m-d', strtotime($this->tanggal)),
-            "jumlah"        => (string)round($this->jumlah),
+            "jumlah"        => $this->jumlah,
             "kapasitas"     => $this->kapasitas,
             "status"        => $this->status
         ];

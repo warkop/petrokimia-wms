@@ -21,7 +21,7 @@ class LayoutGetDataResource extends Resource
             'tipe_gudang' => $this->tipe_gudang,
             'kapasitas' => $this->kapasitas,
             'tipe_area' => $this->tipe_area,
-            'total' => (string)round($this->total, 3),
+            'total' => $this->total,
             'text_tipe_gudang' => $this->text_tipe_gudang,
             'text_tipe_area' => $this->text_tipe_area
         ];

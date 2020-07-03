@@ -56,7 +56,7 @@ class LayoutController extends Controller
                 'tipe_gudang',
                 'kapasitas',
                 'tipe as tipe_area',
-                DB::raw("(SELECT sum(jumlah) FROM area_stok WHERE area_stok.id_area = area.id) AS total"),
+                DB::raw("(SELECT to_char(sum(jumlah), 'FM999999990.000') FROM area_stok WHERE area_stok.id_area = area.id) AS total"),
                 DB::raw('
                     CASE
                         WHEN tipe_gudang=1 THEN \'Internal\'
@@ -160,7 +160,7 @@ class LayoutController extends Controller
             'area.nama as nama_area',
             'material.nama as nama_material',
             'area_stok.tanggal',
-            'area_stok.jumlah',
+            DB::raw("to_char(area_stok.jumlah, 'FM999999990.000') as jumlah"),
             'area.kapasitas',
             'area_stok.status'
         )
