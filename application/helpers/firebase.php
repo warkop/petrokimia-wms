@@ -26,7 +26,7 @@ function send_firebase($token, $message, $single = TRUE)
 		// AIzaSyB51tOqTWGicD8qEji3oPlULG1oNSEUjfo
 	$headers = array(
 		/* Key didapat dari project di website firebase */
-		'Authorization:key = AIzaSyBMCPS1IxeQX2ZPFwWNxSjpi2LUD9SyPeM',
+		'Authorization:key = AIzaSyDXEzlW0kgiUBH1C7-UrqIezWuUXdsIugc',
 		'Content-Type: application/json'
 	);
 
