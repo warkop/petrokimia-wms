@@ -8,7 +8,7 @@
 </script>
 
 <link rel="stylesheet" href="{{asset('assets/extends/css/map.css')}}">
-<script src="https://maps.google.com/maps/api/js?key=AIzaSyDMHi0AIoQz1JmkicVxHhJJ7mf5cNeXucQ" type="text/javascript" defer>
+<script src="https://maps.google.com/maps/api/js?key=AIzaSyDXEzlW0kgiUBH1C7-UrqIezWuUXdsIugc" type="text/javascript" defer>
 </script>
 {{-- <script src="{{aset_tema()}}vendors/custom/gmaps/gmaps.js" type="text/javascript"></script> --}}
 {{-- <script src="{{aset_tema()}}app/custom/general/components/maps/google-maps.js" type="text/javascript"></script> --}}

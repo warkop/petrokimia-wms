@@ -12,7 +12,7 @@
 {{-- <script src="//maps.google.com/maps/api/js?key=AIzaSyBDHDV2ksjKZ8xtSOZEOBe4_DQM87VrXgI" type="text/javascript" defer></script> --}}
 {{-- <script src="{{aset_tema()}}vendors/custom/gmaps/gmaps.js" type="text/javascript"></script> --}}
 {{-- <script src="{{aset_tema()}}app/custom/general/components/maps/google-maps.js" type="text/javascript"></script> --}}
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMHi0AIoQz1JmkicVxHhJJ7mf5cNeXucQ&libraries=drawing" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDXEzlW0kgiUBH1C7-UrqIezWuUXdsIugc&libraries=drawing" async defer></script>
 {{-- <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;libraries=drawing&amp;dummy=.js"></script> --}}
 <!-- begin:: Content -->
 <style>
