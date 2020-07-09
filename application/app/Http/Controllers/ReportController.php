@@ -1599,7 +1599,7 @@ class ReportController extends Controller
         if(request()->input('validate') == true){     
             $gudang             = request()->input('gudang'); //multi
             $material           = request()->input('material'); 
-            $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir')));
+            $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
 
             $resultMaterials = GudangStok::select(
                 'id_gudang',
