@@ -41,17 +41,24 @@
                 <div class="col-6">
                     <div class="kt-radio-inline">
                         <label class="kt-radio kt-radio--success">
-                            <input id="semuaCheck" type="radio" name="material" value="1" onclick="checkSemua()"> Semua
+                            <input id="check_material_pallet" type="radio" name="material" value="1" onclick="checkBoxMaterialPallet()"> Material pallet
                             <span></span>
                         </label>
                         <label class="kt-radio kt-radio--warning">
-                            <input id="myCheck" type="radio" name="material" value="2" onclick="checkBx()"> Spesifik
+                            <input id="check_material_lain_lain" type="radio" name="material" value="2" onclick="checkBoxMaterialLainlain()"> Material lain-lain
                             <span></span>
                         </label> 
                     </div>
-                    <div class="mt1" id="textadd" style="display:none;">
-                        <select class="form-control m-select2" id="material" name="pilih_material[]" multiple="multiple" style="width:100%">
-                            @foreach ($material as $item)
+                    <div class="mt1" id="textadd1" style="display:none;">
+                        <select class="form-control m-select2" id="material_pallet" name="pilih_material_pallet" style="width:100%">
+                            @foreach ($material_pallet as $item)
+                                <option value="{{$item->id}}">{{$item->nama}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mt1" id="textadd2" style="display:none;">
+                        <select class="form-control m-select2" id="material_lain_lain" name="pilih_material_lain_lain[]" multiple="multiple" style="width:100%">
+                            @foreach ($material_lain_lain as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>
                             @endforeach
                         </select>
@@ -65,14 +72,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Tanggal Awal <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
-                                        placeholder="Pilih tanggal">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Tanggal Akhir <span class="text-danger">*</span></label>
+                                    <label>Tanggal<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
                                         placeholder="Pilih tanggal">
                                 </div>
@@ -101,10 +101,14 @@
 <script src="{{asset('assets/extends/js/page/cetak-report.js')}}"></script>
 <script>
     $('#gudang').select2({
-        placeholder: "Pilih gudang"
+        placeholder: "Semua gudang"
     });
-    $('#material').select2({
-        placeholder: "Pilih Material",
+    $('#material_pallet').select2({
+        placeholder: "Pilih Pallet",
+    });
+
+    $('#material_lain_lain').select2({
+        placeholder: "Semua Material Lain-lain",
         allowClear: true
     });
 
@@ -115,24 +119,29 @@
         orientation: "top left"
     });
 
-function checkBx() {
-  var checkBox = document.getElementById("myCheck");
-  var text = document.getElementById("textadd");
+function checkBoxMaterialPallet() {
+  var checkBox = document.getElementById("check_material_pallet");
+  var text1 = document.getElementById("textadd1");
+  var text2 = document.getElementById("textadd2");
   if (checkBox.checked == true){
-    text.style.display = "block";
+    text1.style.display = "block";
+    text2.style.display = "none";
   } else {
-     text.style.display = "none";
+    text1.style.display = "none";
+    text2.style.display = "block";
   }
 }
 
-function checkSemua() {
-    var checkBox = document.getElementById("semuaCheck");
-    var text = document.getElementById("textadd");
+function checkBoxMaterialLainlain() {
+    var checkBox = document.getElementById("check_material_lain_lain");
+    var text1 = document.getElementById("textadd1");
+    var text2 = document.getElementById("textadd2");
     if (checkBox.checked == true){
-        text.style.display = "none";
-        $("#pallet").val('').trigger('change');
+        text1.style.display = "none";
+        text2.style.display = "block";
     } else {
-        text.style.display = "block";
+        text1.style.display = "block";
+        text2.style.display = "none";
     }
 }
 </script>
