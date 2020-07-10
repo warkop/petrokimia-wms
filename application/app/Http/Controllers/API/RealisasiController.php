@@ -357,6 +357,7 @@ class RealisasiController extends Controller
         $realisasiMaterial->tanggal       = now();
         $realisasiMaterial->id_shift      = $rencana_harian->id_shift;
         $realisasiMaterial->created_at    = now();
+        $realisasiMaterial->created_by    = $user->id_user;
 
         $realisasiMaterial->save();
         if (!empty($list_material)) {
@@ -402,7 +403,6 @@ class RealisasiController extends Controller
         $array = [
             'id'            => $realisasiMaterial->id,
             'created_at'    => date('Y-m-d H:i:s', strtotime($realisasiMaterial->created_at)),
-            'updated_at'    => date('Y-m-d H:i:s', strtotime($realisasiMaterial->updated_at)),
             'tanggal'       => date('Y-m-d', strtotime($realisasiMaterial->tanggal)),
             'id_shift'      => $realisasiMaterial->id_shift,
         ];
