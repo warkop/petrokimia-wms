@@ -5094,6 +5094,7 @@ class ReportController extends Controller
             ->whereNull('penerimaan_gi')
             ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
             ->orderBy('gudang.nama', 'asc')
+            ->orderBy('aktivitas_harian.updated_at', 'asc')
             ;
 
             if ($gudang != null) {
@@ -5413,7 +5414,7 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y H:i:s', strtotime($value->created_at)));
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d-m-Y H:i:s', strtotime($value->aktivitasHarian->updated_at)));
 
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Shift '.$value->aktivitasHarian->id_shift);
