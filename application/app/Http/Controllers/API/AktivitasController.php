@@ -268,8 +268,8 @@ class AktivitasController extends Controller
                 DB::raw("COALESCE(TO_CHAR(area_stok.tanggal, 'YYYY-MM-DD'), TO_CHAR(now(),'YYYY-MM-DD')) as tanggal"),
                 'area.tipe',
                 'area_stok.id_material',
-                DB::raw('COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = '.$id_material.$condition.'),0) as jumlah'),
-                'area_stok.jumlah as jumlah_area'
+                DB::raw("to_char(COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = ".$id_material.$condition."),0), 'FM999999990.000') as jumlah"),
+                DB::raw("to_char(area_stok.jumlah, 'FM999999990.000') as jumlah_area")
             )
             ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
             ->where('id_gudang', $gudang->id)
@@ -288,7 +288,7 @@ class AktivitasController extends Controller
                 'area.kapasitas',
                 'area.tipe',
                 DB::raw("TO_CHAR(now(),'YYYY-MM-DD') as tanggal"),
-                DB::raw("COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = " . $id_material . " and tanggal = '".$tanggal."') ,0) as jumlah")
+                DB::raw("to_char(COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = " . $id_material . " and tanggal = '".$tanggal."') ,0), 'FM999999990.000') as jumlah")
             )
             ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
             ->where(function ($where) use ($search) {
@@ -336,14 +336,14 @@ class AktivitasController extends Controller
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
         if ($aktivitas->pengaruh_tgl_produksi != null) {
             $detail = DB::table('')->selectRaw(
-                '
+                "
                         area_stok.id,
                         area.nama,
                         area.kapasitas,
                         area_stok.tanggal,
                         area_stok.status,
                         area.tipe,
-                        area_stok.jumlah'
+                        to_char(area_stok.jumlah, 'FM999999990.000') as jumlah"
             )
                 ->from('area_stok')
                 ->join('area', 'area.id', '=', 'area_stok.id_area')
@@ -1757,7 +1757,7 @@ class AktivitasController extends Controller
             'koefisien_pallet',
             DB::raw('CASE WHEN status_produk=1 THEN \'Produk Stok\' ELSE \'Produk Rusak\' END AS text_status_produk'),
             DB::raw('CASE WHEN tipe=1 THEN \'Mengurangi\' ELSE \'Menambah\' END AS text_tipe'),
-            'jumlah',
+            DB::raw("to_char(jumlah, 'FM999999990.000') as jumlah"),
             'id_area'
         )
         ->join('material', 'material_trans.id_material', '=', 'material.id')
@@ -1834,7 +1834,7 @@ class AktivitasController extends Controller
             'material_trans.status_pallet',
             'tanggal',
             'material.nama as nama_barang',
-            'material_trans.jumlah'
+            DB::raw("to_char(material_trans.jumlah, 'FM999999990.000') as jumlah")
         )
             ->leftJoin('area', 'area.id', '=', 'material_trans.id_area')
             ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')

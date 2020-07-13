@@ -21,7 +21,7 @@ class GetAreaStokResource extends Resource
             'tanggal'   => $this->tanggal,
             'status'    => $this->status,
             'tipe'      => $this->tipe,
-            'jumlah'    => round($this->jumlah, 2),
+            'jumlah'    => $this->jumlah,
         ];
     }
 }

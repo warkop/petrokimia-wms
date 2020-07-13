@@ -21,8 +21,8 @@ class GetAreaResource extends Resource
             'tanggal'       => $this->tanggal,
             'tipe'          => $this->tipe,
             'id_material'   => $this->id_material,
-            'jumlah'        => round($this->jumlah, 2),
-            'jumlah_area'   => round($this->jumlah_area, 2),
+            'jumlah'        => $this->jumlah,
+            'jumlah_area'   => $this->jumlah_area,
         ];
     }
 }

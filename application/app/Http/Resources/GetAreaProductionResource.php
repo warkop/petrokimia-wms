@@ -20,7 +20,7 @@ class GetAreaProductionResource extends Resource
             'kapasitas' => $this->kapasitas,
             'tipe'      => $this->tipe,
             'tanggal'   => $this->tanggal,
-            'jumlah'    => round($this->jumlah, 2),
+            'jumlah'    => $this->jumlah,
         ];
     }
 }
