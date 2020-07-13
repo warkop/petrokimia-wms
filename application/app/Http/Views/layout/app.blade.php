@@ -41,7 +41,19 @@ License: You must have a valid license purchased only from themeforest(the above
         
 		@include('layout.header')
 		<link rel="stylesheet" href="{{aset_extends('css/global.css')}}">
-        @include('layout.footer')
+		@include('layout.footer')
+		<style>
+			.se-pre-con {
+				position: fixed;
+				left: 0px;
+				top: 0px;
+				width: 100%;
+				height: 100%;
+				z-index: 9999;
+				background: url(<?php echo aset_extends()?>/img/preloader_3.gif) center no-repeat rgba(255, 255, 255, 0.5);
+				z-index: 100000;
+			}
+		</style>
 	</head>
 
 	<!-- end::Head -->

@@ -176,37 +176,33 @@ function edit(id = '') {
         backdrop: 'static',
         keyboard: false
     }, 'show');
-
+    $('.se-pre-con').show();
     $.ajax({
         type: "GET",
         url: ajaxUrl + "/" + id,
         beforeSend: function () {
             preventLeaving();
             $('.btn_close_modal').addClass('hide');
-            $('.se-pre-con').show();
+            // $('.se-pre-con').show();
         },
         success: function (response) {
             window.onbeforeunload = false;
             $('.btn_close_modal').removeClass('hide');
-            $('.se-pre-con').hide();
+            // $('.se-pre-con').hide();
 
             let obj = response;
 
             if (obj.status == "OK") {
-                loadPegawai(obj.data['role_id']);
+                
                 $('#nama').val(obj.data['name']);
                 $('#username').val(obj.data['username']);
                 $('#email').val(obj.data['email']);
                 $("#radio"+obj.data['role_id']).prop("checked",true);
                 
                 if (obj.data['role_id'] == 5) {
-                    setTimeout(() => {
-                        $("#pilih").val(obj.data['id_karu']).trigger('change.select2');
-                    }, 1000);
+                    loadPegawai(obj.data['role_id'], obj.data['id_karu']);
                 } else {
-                    setTimeout(() => {
-                        $("#pilih").val(obj.data['id_tkbm']).trigger('change.select2');
-                    }, 1000);
+                    loadPegawai(obj.data['role_id'], obj.data['id_tkbm']);
                 }
 
                 if (obj.data['start_date'] != null) {
@@ -254,7 +250,8 @@ function edit(id = '') {
     });
 }
 
-function loadPegawai(role='') {
+function loadPegawai(role='', id_pegawai='') {
+    $('.se-pre-con').show();
     if (role == '') {
         role = $('input[name=role_id]:checked').val();
     }
@@ -275,6 +272,11 @@ function loadPegawai(role='') {
             }
 
             $("#pilih").html(element);
+
+            if (id_pegawai != '') {
+                $("#pilih").val(id_pegawai).trigger('change.select2');
+            }
+            $('.se-pre-con').hide();
         },
         error:(response)=>{
             let head = 'Maaf',
