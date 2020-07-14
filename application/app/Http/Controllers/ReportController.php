@@ -1730,7 +1730,8 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($this->style_title);
         $row++;
         $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':H' . $row);
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TANGGAL ' . strtoupper(helpDate($tgl_akhir, 'li')));
+        $presentTanggal = date('d-m-Y', strtotime($tgl_akhir.'-1 day'));
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TANGGAL ' . strtoupper(helpDate($presentTanggal, 'li')));
         $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($this->style_title);
         
         $col = 1;
@@ -2147,7 +2148,8 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($this->style_title);
         $row++;
         $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':D' . $row);
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TANGGAL ' . strtoupper(helpDate($tgl_akhir, 'li')));
+        $presentTanggal = date('d-m-Y', strtotime($tgl_akhir.'-1 day'));
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TANGGAL ' . strtoupper(helpDate($presentTanggal, 'li')));
         $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($this->style_title);
 
         $col = 1;
