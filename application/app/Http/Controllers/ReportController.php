@@ -1745,7 +1745,7 @@ class ReportController extends Controller
         $col = 7;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Tanggal: ');
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d', strtotime($tgl_akhir)));
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d', strtotime($tgl_akhir.'-1 day')));
         $objSpreadsheet->getActiveSheet()->getStyle('H' . $row)->applyFromArray($style_tanggal);
 
         // end : title
