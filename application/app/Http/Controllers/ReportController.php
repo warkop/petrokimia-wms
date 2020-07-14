@@ -1420,7 +1420,7 @@ class ReportController extends Controller
             $rusakSaldoAwal = 0;
             
             //stok awal produk rusak
-            $transRusakMenambah = MaterialTrans::leftJoin('aktivitas_harians', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            $transRusakMenambah = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
             ->leftJoin('aktivitas', function ($join){
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
                 ->where('draft', 0)
