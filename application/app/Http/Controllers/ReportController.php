@@ -1420,7 +1420,7 @@ class ReportController extends Controller
             $rusakSaldoAwal = 0;
             
             //stok awal produk rusak
-            $transRusakMenambah = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            $transRusakMenambah = MaterialTrans::leftJoin('aktivitas_harians', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
             ->leftJoin('aktivitas', function ($join){
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
                 ->where('draft', 0)
@@ -1609,9 +1609,11 @@ class ReportController extends Controller
                 
                 $pilih_material_lain_lain = request()->input('pilih_material_lain_lain');
                 if ($pilih_material_lain_lain != null) {
-                    foreach ($pilih_material_lain_lain as $key => $value) {
-                        $resultMaterials = $resultMaterials->orWhere('id_material', $value);
-                    }
+                    $resultMaterials->where(function($query) use ($pilih_material_lain_lain) {
+                        foreach ($pilih_material_lain_lain as $key => $value) {
+                            $query->orWhere('id_material', $value);
+                        }
+                    });
                 } else {
                     $resultMaterials = $resultMaterials->whereHas('material', function($query) {
                         $query->where('kategori', 3);
