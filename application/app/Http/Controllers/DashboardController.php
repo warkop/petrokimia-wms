@@ -893,7 +893,6 @@ class DashboardController extends Controller
         $tanggal_akhir = date($this->FORMAT_DATE,strtotime($tgl[1]));
         $where1_2 = "where date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
         $where3 = "where date(akt.created_at) BETWEEN '{$tanggal_awal}' AND '{$tanggal_akhir}'";
-
         if($shift != ""){
             $where_shift1_2 = "";
             for($i=0;$i < count($shift); $i++){
@@ -916,6 +915,8 @@ class DashboardController extends Controller
             if($where_shift3 != ""){
                 $where3 .= " and ({$where_shift3})";
             }
+            $where1_2 .= ' and mat.kategori = 1 ';
+            $where3 .= ' and mat.kategori = 1 ';
         } else {
             $where1_2 .= " and (id_shift = 1 or id_shift = 2) and mat.kategori = 1";
             $where3 .= " and id_shift = 3 and mat.kategori = 1";
