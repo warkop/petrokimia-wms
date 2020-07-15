@@ -39,18 +39,8 @@
             <div class="form-group row">
                 <h4 class="col-2 col-form-label text-kiri">Pallet <span class="text-danger">*</span></h4>
                 <div class="col-6">
-                    <div class="kt-radio-inline">
-                        <label class="kt-radio kt-radio--success">
-                            <input id="semuaCheck" type="radio" name="pallet" value="1" onclick="checkSemua()"> Semua
-                            <span></span>
-                        </label>
-                        <label class="kt-radio kt-radio--warning">
-                            <input id="myCheck" type="radio" name="pallet" value="2" onclick="checkBx()"> Spesifik
-                            <span></span>
-                        </label> 
-                    </div>
-                    <div class="mt1" id="textadd" style="display:none;">
-                        <select class="form-control m-select2" id="pallet" name="pilih_pallet[]" style="width:100%">
+                    <div class="mt1" id="textadd">
+                        <select class="form-control m-select2" id="pallet" name="pilih_pallet" style="width:100%">
                             @foreach ($pallet as $item)
                                 <option value="{{$item->id}}">{{$item->nama}}</option>
                             @endforeach
@@ -105,7 +95,6 @@
     });
     $('#pallet').select2({
         placeholder: "Pilih pallet",
-        allowClear: true
     });
 
     $('#start_date, #end_date').datepicker({

@@ -2352,7 +2352,7 @@ class ReportController extends Controller
     {
         $validator = Validator::make(
             request()->all(),[
-            'pallet' => 'required',
+            'pilih_pallet' => 'required',
             'tgl_awal' => 'required|before_or_equal:tgl_akhir',
             'tgl_akhir' => 'required|after_or_equal:tgl_awal',
         ],[
@@ -2360,7 +2360,7 @@ class ReportController extends Controller
             'after_or_equal' => ':attribute harus lebih dari atau sama dengan :date!',
             'before_or_equal' => ':attribute harus kurang dari atau sama dengan :date!',
         ],[
-            'pallet' => 'Pallet',
+            'pilih_pallet' => 'Pallet',
             'gudang' => 'Gudang',
             'tgl_awal' => 'Tanggal Awal',
             'tgl_akhir' => 'Tanggal Akhir',
@@ -2377,8 +2377,7 @@ class ReportController extends Controller
         }
 
         $gudang             = request()->input('gudang'); //multi
-        $pallet             = request()->input('pallet');
-        $pilih_pallet       = request()->input('pilih_pallet'); //multi
+        $pilih_pallet       = request()->input('pilih_pallet');
         $tgl_awal           = date('Y-m-d', strtotime(request()->input('tgl_awal')));
         $tgl_akhir          = date('Y-m-d', strtotime(request()->input('tgl_akhir').'+1 day'));
 
@@ -2406,17 +2405,7 @@ class ReportController extends Controller
                 })->get();
             }
 
-            if ($pallet == 2) {
-                $res = $res->where(function ($query) use ($pilih_pallet) {
-                    foreach ($pilih_pallet as $key => $value) {
-                        $query = $query->orWhere('id_material', $value);
-                    }
-                });
-            } else {
-                $res = $res->whereHas('material', function ($query) {
-                    $query = $query->where('kategori', 2);
-                });
-            }
+            $res = $res->where('id_material', $pilih_pallet);
 
             $res = $res
             ->orderBy('id_gudang', 'asc')->get();
@@ -2426,8 +2415,9 @@ class ReportController extends Controller
                 $preview = true;
             }
 
+            $pallet = Material::find($pilih_pallet);
             $nama_file = date("YmdHis") . '_mutasi_pallet.xlsx';
-            $this->generateExcelMutasiPallet($res, $nama_file, $resGudang, $tgl_awal, $tgl_akhir, $preview);
+            $this->generateExcelMutasiPallet($res, $pallet, $nama_file, $resGudang, $tgl_awal, $tgl_akhir, $preview);
         } else {
             return response()->json([
                 "code"=>200,
@@ -2438,7 +2428,7 @@ class ReportController extends Controller
         }
     }
 
-    private function headerExcelMutasiPallet($objSpreadsheet, $tgl_awal, $tgl_akhir)
+    private function headerExcelMutasiPallet($objSpreadsheet, $tgl_awal, $tgl_akhir, $pallet)
     {
         // start : title
         for ($i='A'; $i < 'X'; $i++) {
@@ -2467,6 +2457,9 @@ class ReportController extends Controller
 
         $col = 1;
         $row++;
+        $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $pallet->nama);
+        $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($this->style_title);
 
         $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($this->style_acara);
         $objSpreadsheet->getActiveSheet()->getStyle('A' . $row)->applyFromArray($this->style_note);
@@ -3196,7 +3189,7 @@ class ReportController extends Controller
         return $peralihanBertambah;
     }
 
-    public function generateExcelMutasiPallet($res, $nama_file, $gudang, $tgl_awal, $tgl_akhir, $preview)
+    public function generateExcelMutasiPallet($res, $pallet, $nama_file, $gudang, $tgl_awal, $tgl_akhir, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
         $sheetIndex = 0;
@@ -3207,7 +3200,7 @@ class ReportController extends Controller
         // end : sheet
         
         // start : draw title
-        $this->headerExcelMutasiPallet($objSpreadsheet, $tgl_awal, $tgl_akhir);
+        $this->headerExcelMutasiPallet($objSpreadsheet, $tgl_awal, $tgl_akhir, $pallet);
         // end : draw title
 
         // start : isi kolom
