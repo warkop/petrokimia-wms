@@ -1067,7 +1067,7 @@ function getKeluhanAlatBerat() {
                 $("#keluhanmuatan").html(`
                         &nbsp;&nbsp;&nbsp;
                         <div class="alert alert-danger center-horizontal-vertical" role="alert" >
-                            <div class="alert-text"><strong>Data masih kosong!</strong></div>
+                            <div class="alert-text"><strong>Tidak ada keluhan!</strong></div>
                         </div>`)
             } else {
                 // Adding tooltip column  
