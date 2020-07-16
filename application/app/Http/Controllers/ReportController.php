@@ -3007,6 +3007,8 @@ class ReportController extends Controller
             ->where('aktivitas_harian.id_gudang_tujuan', $value->id_gudang)
             ->where(DB::raw("TO_CHAR(material_trans.created_at, 'yyyy-mm-dd')"), $tgl_sekarang)
             ->where('id_material', $value->id_material)
+            ->whereNull('aktivitas_harian.canceled')
+            ->whereNull('aktivitas_harian.cancelable')
             ->sum('jumlah');
             $penambahan = $penambahan+$materialTrans;
         }
@@ -3033,6 +3035,8 @@ class ReportController extends Controller
             ->where('aktivitas_harian.id_gudang', $value->id_gudang)
             ->where(DB::raw("TO_CHAR(material_trans.created_at, 'yyyy-mm-dd')"), $tgl_sekarang)
             ->where('id_material', $value->id_material)
+            ->whereNull('aktivitas_harian.canceled')
+            ->whereNull('aktivitas_harian.cancelable')
             ->sum('jumlah');
             $pengeluaran = $pengeluaran+$materialTrans;
         }
@@ -3057,6 +3061,8 @@ class ReportController extends Controller
                 ->where('id_shift', $shift)
                 ->where(DB::raw("TO_CHAR(material_trans.created_at, 'yyyy-mm-dd')"), $tgl_sekarang)
                 ->where('id_material', $value->id_material)
+                ->whereNull('aktivitas_harian.canceled')
+                ->whereNull('aktivitas_harian.cancelable')
                 ->sum('jumlah');
                 $penyusutan += $materialTrans;
             }
@@ -3120,6 +3126,8 @@ class ReportController extends Controller
                 ->where('gudang_stok.id_gudang', $value->id_gudang)
                 ->where('status_pallet', $kondisi)
                 ->where('material_trans.id_material', $value->id_material)
+                ->whereNull('canceled')
+                ->whereNull('cancelable')
                 ->sum('material_trans.jumlah');
             
             $peralihanBerkurang += $transaksi;
@@ -3168,6 +3176,8 @@ class ReportController extends Controller
                 ->where('gudang_stok.id_gudang', $value->id_gudang)
                 ->where('status_pallet', $kondisi)
                 ->where('material_trans.id_material', $value->id_material)
+                ->whereNull('canceled')
+                ->whereNull('cancelable')
                 ->sum('material_trans.jumlah');
             
             $peralihanBertambah += $transaksi;
