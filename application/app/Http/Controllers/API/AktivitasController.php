@@ -944,27 +944,29 @@ class AktivitasController extends Controller
                         $jums_list_produk = count($list_produk);
     
                         for ($i = 0; $i < $jums_list_produk; $i++) {
-                            $produk = $list_produk[$i]['produk'];
-                            $status_produk = $list_produk[$i]['status_produk'];
-                            $list_area = $list_produk[$i]['list_area'];
+                            $produk         = $list_produk[$i]['produk'];
+                            $status_produk  = $list_produk[$i]['status_produk'];
+                            $list_area      = $list_produk[$i]['list_area'];
                             $jums_list_area = count($list_area);
     
                             for ($j = 0; $j < $jums_list_area; $j++) {
-                                $tipe = $list_area[$j]['tipe'];
-                                $id_area = $list_area[$j]['id_area_stok'];
-                                $list_jumlah = $list_area[$j]['list_jumlah'];
-                                $jums_list_jumlah = count($list_jumlah);
+                                $tipe               = $list_area[$j]['tipe'];
+                                $id_area            = $list_area[$j]['id_area_stok'];
+                                $list_jumlah        = $list_area[$j]['list_jumlah'];
+                                $jums_list_jumlah   = count($list_jumlah);
     
                                 for ($k = 0; $k < $jums_list_jumlah; $k++) {
                                     if ($list_jumlah[$k]['tanggal'] != null) {
                                         $area_stok = AreaStok::where('id_area', $id_area)
                                             ->where('id_material', $produk)
                                             ->where('tanggal', date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])))
+                                            ->where('status', $status_produk)
                                             ->first();
                                     } else {
                                         $area_stok = AreaStok::where('id_area', $id_area)
                                             ->where('id_material', $produk)
                                             ->whereNull('tanggal')
+                                            ->where('status', $status_produk)
                                             ->first();
                                     }
     
@@ -982,6 +984,7 @@ class AktivitasController extends Controller
                                         $area_stok->id_material = $produk;
                                         $area_stok->tanggal = $list_jumlah[$k]['tanggal'] != null ? date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])) : null;
                                         $area_stok->jumlah = $list_jumlah[$k]['jumlah'];
+                                        $area_stok->status      = $status_produk;
                                         $area_stok->save();
                                     }
     
@@ -1210,7 +1213,8 @@ class AktivitasController extends Controller
             'material_trans.tipe',
             'material_trans.jumlah',
             'area_stok.tanggal',
-            'area_stok.id_area'
+            'area_stok.id_area',
+            'material_trans.status_produk'
         )
         ->leftJoin('material', 'material.id', '=', 'material_trans.id_material')
         ->leftJoin('area_stok', 'area_stok.id', '=', 'material_trans.id_area_stok')
