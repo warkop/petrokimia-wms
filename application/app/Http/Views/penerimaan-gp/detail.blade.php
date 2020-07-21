@@ -409,34 +409,37 @@
             <span class="kt-badge kt-badge--warning kt-badge--inline">Untuk angka desimal pemisahnya menggunakan simbol titik</span>
             <form id="form1">
                 <div class="modal-body">
-                <div class="row mb2">
-                    <div class="col-8">
-                        <h5 class="boldd">List Produk</h5>
+                    <div class="row mb2">
+                        <div class="col-8">
+                            <h5 class="boldd">List Produk</h5>
+                        </div>
+                        @empty($aktivitasHarian->approve)
+                        <div class="col-4">
+                            <p class="btn btn-outline-success pull-right cursor pointer" onclick="tambah()"><i class="la la-plus"></i>
+                                Tambah</p>
+
+                        </div>
+                        @endempty
                     </div>
-                    @empty($aktivitasHarian->approve)
-                    <div class="col-4">
-                        <p class="btn btn-outline-success pull-right cursor pointer" onclick="tambah()"><i class="la la-plus"></i>
-                            Tambah</p>
-                    </div>
-                    @endempty
-                </div>
-                <div id="table_produk" style="border-bottom: 2px solid #F2F3F8">
-                    <div id="belumada" class="row kel">
-                        <div class="belum col-12 text-center">
-                            <label class="boldd dashed">Belum ada daftar produk</label>
+                    <div id="table_produk" style="border-bottom: 2px solid #F2F3F8">
+                        <div id="belumada" class="row kel">
+                            <div class="belum col-12 text-center">
+                                <label class="boldd dashed">Belum ada daftar produk</label>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-clean" data-dismiss="modal">Tutup</button>
-                 @empty ($aktivitasHarian->approve)
-                <button type="button" class="btn btn-primary ladda-button" data-style="zoom-in" id="btn_save">Simpan</button>
-                @endempty
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-clean" data-dismiss="modal">Tutup</button>
+                    @empty ($aktivitasHarian->approve)
+                    <button type="button" class="btn btn-primary ladda-button" data-style="zoom-in" id="btn_save">Simpan</button>
+                    @endempty
+                </div>
             </form>
         </div>
     </div>
+</div>
+<div id="image-adjs">
 </div>
 
 <div class="modal fade btn_close_modal" id="modal_detail" role="dialog" aria-labelledby="exampleModalLabel"
@@ -525,6 +528,7 @@ let datatable,
                 <div class="col-2">
                     <label class="visibility-hide">Area</label><br>
                     <button href="javascript:void(0)" type="button" class="btn btn-danger cursor pointer btn-elevate btn-icon button_hapus" data-container="body" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="Hapus"><i class="flaticon-delete"></i> </button>
+                    <button href="javascript:void(0)" onclick="modal_image('show',${rows})" type="button" class="btn btn-success cursor pointer btn-elevate btn-icon button_upload" data-container="body" data-placement="top" title="" data-original-title="Hapus"><i class="flaticon-upload"></i> </button>
                 </div>
             </div>
             `);
@@ -563,6 +567,31 @@ let datatable,
             placeholder: "Pilih Produk",
             dropdownParent:$(`#baris-produk-${rows}`)
         });
+
+        $('#image-adjs').append(`<div class="modal fade" id="modal-image-keluhan${rows}" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Upload Image</h5>
+                                                <button type="button" class="close" onclick="modal_image('hide',${rows})" aria-label="Close">
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="kt-dropzone dropzone" id="m-dropzone-one${rows}" >
+                                                    <div class="kt-dropzone__msg dz-message needsclick">
+                                                        <h3 class="kt-dropzone__msg-title">Seret berkas atau klik untuk mengunggah</h3>
+                                                        <span class="kt-dropzone__msg-desc">Hanya berkas dengan format <strong>pdf, jpg, png</strong> yang diizinkan untuk diunggah</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-success ladda-button" data-style="zoom-in" onclick="modal_image('hide',${rows})">Selesai</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`)
+        var dropzone = new Dropzone("#m-dropzone-one"+rows, { url: "/file/post"});
+        eval('myDropzone' + rows + " = dropzone");
         
          
     }
@@ -570,6 +599,13 @@ let datatable,
     $("body").on('click', '.button_hapus', function (e) {
         $(this).parent().parent().remove();
     });
+
+    function modal_image(type = 'show', id){
+        if(type == 'show')
+        $("#modal-image-keluhan"+id).modal({backdrop: "static", keyboard: false},"show");
+        else
+        $("#modal-image-keluhan"+id).modal("hide");
+    }
 
     function loadProduk(no, target, produk='', edit=true) {
         $.ajax({
