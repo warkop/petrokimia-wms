@@ -3124,6 +3124,7 @@ class ReportController extends Controller
                     ->where('aktivitas_harian.id_gudang', $value->id_gudang)
                     ;
                 })
+                ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
                 ->leftJoin('material_adjustment', function($join) use($value) {
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                     ->where('material_adjustment.id_gudang', $value->id_gudang)
@@ -3152,8 +3153,9 @@ class ReportController extends Controller
                 ->where('gudang_stok.id_gudang', $value->id_gudang)
                 ->where('status_pallet', $kondisi)
                 ->where('material_trans.id_material', $value->id_material)
-                ->whereNull('canceled')
-                ->whereNull('cancelable')
+                ->whereNull('aktivitas_harian.canceled')
+                ->whereNull('aktivitas_harian.cancelable')
+                ->whereNull('internal_gudang')
                 ->sum('material_trans.jumlah');
             
             $peralihanBerkurang += $transaksi;
@@ -3174,6 +3176,7 @@ class ReportController extends Controller
                     ->where('aktivitas_harian.id_gudang', $value->id_gudang)
                     ;
                 })
+                ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
                 ->leftJoin('material_adjustment', function($join) use($value){
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                     ->where('material_adjustment.id_gudang', $value->id_gudang)
@@ -3202,8 +3205,9 @@ class ReportController extends Controller
                 ->where('gudang_stok.id_gudang', $value->id_gudang)
                 ->where('status_pallet', $kondisi)
                 ->where('material_trans.id_material', $value->id_material)
-                ->whereNull('canceled')
-                ->whereNull('cancelable')
+                ->whereNull('aktivitas_harian.canceled')
+                ->whereNull('aktivitas_harian.cancelable')
+                ->whereNull('internal_gudang')
                 ->sum('material_trans.jumlah');
             
             $peralihanBertambah += $transaksi;
