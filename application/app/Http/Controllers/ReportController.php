@@ -6217,10 +6217,9 @@ class ReportController extends Controller
                             $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00 -1 day')));
                             $query->orWhere(function($query) use($tanggal){
                                 $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00 -1 day')));
-                                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 08:00:00')));
+                                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 07:00:00')));
                                 $query->where('id_shift', 2);
                             });
-                            // $query->orWhere('material_adjustment.tanggal', '<=', date('Y-m-d', strtotime($tanggal . '-1 day')));
                             $query->orWhere('material_adjustment.tanggal', '<=', date('Y-m-d', strtotime($tanggal . '-1 day')));
                             $query->orWhere(function ($query) use ($tanggal) {
                                     $query->where('material_adjustment.tanggal', '=', date('Y-m-d', strtotime($tanggal . '-1 day')));
@@ -6241,11 +6240,6 @@ class ReportController extends Controller
                                 ->where('draft', 0)
                                 ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00 -1 day')))
                                 ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 08:30:00')))
-                                // ->orWhere(function($query) use($tanggal) {
-                                //     $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 07:00:00')));
-                                //     $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 22:00:00')));
-                                //     $query->where('id_shift', 3);
-                                // })
                                 ;
                         })
                         ->leftJoin('aktivitas', function ($join){
@@ -6254,7 +6248,6 @@ class ReportController extends Controller
                         })
                         ->leftJoin('material_adjustment', function ($join) use ($tanggal, $resShift) {
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                                // ->where('material_adjustment.tanggal', $tanggal);
                                 ->where('material_adjustment.shift', '=', $resShift->id)
                                 ->where(function($query) use ($tanggal){
                                     $query->where('material_adjustment.tanggal', '<', $tanggal);
@@ -6293,10 +6286,6 @@ class ReportController extends Controller
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                                 ->where('material_adjustment.tanggal', $tanggal)
                                 ->where('material_adjustment.shift', '=', $resShift->id);
-                                // ->where(function($query) use ($tanggal){
-                                //     $query->where('material_adjustment.tanggal', '<', $tanggal);
-                                //     $query->orWhere('material_adjustment.tanggal', '=', $tanggal);
-                                // });
                         })
                         ->where(
                             function ($query) use ($resShift) {
@@ -6314,11 +6303,7 @@ class ReportController extends Controller
                             $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                                 ->where('draft', 0)
                                 ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 15:00:00')))
-                                ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 00:30:00 +1 day')))
-                                // ->orWhere(function($query) use($tanggal) {
-                                //     $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00')));
-                                //     $query->where('id_shift', 2);
-                                // })
+                                ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 07:00:00 +1 day')))
                                 ;
                         })
                         ->leftJoin('aktivitas', function ($join){
