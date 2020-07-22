@@ -5586,6 +5586,8 @@ class ReportController extends Controller
         ->where('id_shift', $shift)
         ->whereNotNull('pengiriman')
         ->whereNotNull('status_aktivitas')
+        ->whereNull('ah.canceled')
+        ->whereNull('ah.cancelable')
         ->sum('jumlah');
         
         return $materialTrans;
@@ -5602,6 +5604,8 @@ class ReportController extends Controller
         ->where('ah.id_gudang', $gudang)
         ->where('id_shift', $shift)
         ->where('jenis_aktivitas', 4)
+        ->whereNull('ah.canceled')
+        ->whereNull('ah.cancelable')
         ->sum('jumlah');
         
         return $materialTrans;
@@ -5618,6 +5622,8 @@ class ReportController extends Controller
         ->where('ah.id_gudang', $gudang)
         ->where('id_shift', $shift)
         ->where('jenis_aktivitas', 1)
+        ->whereNull('ah.canceled')
+        ->whereNull('ah.cancelable')
         ->sum('jumlah');
         
         return $materialTrans;
@@ -5635,6 +5641,8 @@ class ReportController extends Controller
         ->where('ah.id_gudang', '<>', $gudang)
         ->where('id_shift', $shift)
         ->whereNotNull('internal_gudang')
+        ->whereNull('ah.canceled')
+        ->whereNull('ah.cancelable')
         ->whereNotNull('approve')
         ->sum('jumlah');
         
@@ -5652,6 +5660,8 @@ class ReportController extends Controller
         ->where('draft', 0)
         ->where('id_shift', $shift)
         ->whereNotNull('connect_sistro')
+        ->whereNull('ah.canceled')
+        ->whereNull('ah.cancelable')
         ->sum('jumlah');
         
         return $materialTrans;
@@ -5668,6 +5678,8 @@ class ReportController extends Controller
         ->where('draft', 0)
         ->where('id_shift', $shift)
         ->whereNotNull('aktivitas.so')
+        ->whereNull('ah.canceled')
+        ->whereNull('ah.cancelable')
         ->sum('jumlah');
         
         return $materialTrans;
@@ -5689,6 +5701,8 @@ class ReportController extends Controller
         ->where('id_shift', $shift)
         ->whereNotNull('internal_gudang')
         ->whereNotNull('approve')
+        ->whereNull('ah.canceled')
+        ->whereNull('ah.cancelable')
         ->sum('jumlah');
         
         return $materialTrans;
