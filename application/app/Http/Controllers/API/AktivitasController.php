@@ -999,6 +999,9 @@ class AktivitasController extends Controller
                                         'status_produk'         => $status_produk,
                                         'id_area_stok'          => $area_stok->id,
                                         'id_area'               => $id_area,
+                                        'shift_id'              => $wannaSave->id_shift,
+                                        'created_at'            => date('Y-m-d H:i:s'),
+                                        'updated_at'            => date('Y-m-d H:i:s'),
                                     ];
     
                                     $material_trans->create($array);
@@ -1516,6 +1519,8 @@ class AktivitasController extends Controller
                             'status_produk'         => $status_produk,
                             'id_area_stok'          => $area_stok->id,
                             'id_area'               => $id_area,
+                            'created_at'            => date('Y-m-d H:i:s'),
+                            'updated_at'            => date('Y-m-d H:i:s'),
                         ];
 
                         $material_trans->create($array);
