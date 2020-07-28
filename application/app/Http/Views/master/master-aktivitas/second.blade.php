@@ -244,7 +244,7 @@
                             <div class="row form-group mb-0 mb2">
                                 <div class="col-6 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Digunakan untuk pengiriman posto">
-                                        <input type="checkbox" name="posto" id="posto" value="1"> Posto
+                                        <input type="checkbox" name="aktivitas_posto" id="aktivitas_posto" value="1"> Posto
                                         <span></span>
                                     </label>
                                 </div>

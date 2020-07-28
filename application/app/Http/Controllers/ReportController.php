@@ -1314,7 +1314,7 @@ class ReportController extends Controller
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                 $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
-            ->whereNotNull('aktivitas.posto')
+            ->whereNotNull('aktivitas.aktivitas_posto')
             ->whereNotNull('pengaruh_tgl_produksi')
             ->whereNotNull('status_aktivitas')
             ->whereNull('internal_gudang')
