@@ -310,6 +310,10 @@ function edit(id = '') {
                 $('#so').prop('checked', true);
             }
             
+            if (obj.data['posto'] != null) {
+                $('#posto').prop('checked', true);
+            }
+            
             if (obj.data['tanpa_tanggal'] != null) {
                 $('#tanpa_tanggal').prop('checked', true);
             }
