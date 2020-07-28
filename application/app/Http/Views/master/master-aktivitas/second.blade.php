@@ -241,6 +241,14 @@
                                     </label>
                                 </div>
                             </div>
+                            <div class="row form-group mb-0 mb2">
+                                <div class="col-6 offset-col-2">
+                                    <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Digunakan untuk pengiriman posto">
+                                        <input type="checkbox" name="posto" id="posto" value="1"> Posto
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
                             {{-- <div class="row form-group mb-0 mb2">
                                 <div class="col-12 offset-col-2">
                                     <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success" data-toggle="kt-tooltip" data-placement="top" title="Apabila tidak perlu tanggal produksi, biasanya untuk produk rusak">
