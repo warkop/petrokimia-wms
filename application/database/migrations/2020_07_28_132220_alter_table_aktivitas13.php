@@ -14,7 +14,7 @@ class AlterTableAktivitas13 extends Migration
     public function up()
     {
         Schema::table('aktivitas', function (Blueprint $table) {
-            $table->integer('posto')->nullable();
+            $table->integer('aktivitas_posto')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AlterTableAktivitas13 extends Migration
     public function down()
     {
         Schema::table('aktivitas', function (Blueprint $table) {
-            $table->dropColumn('posto');
+            $table->dropColumn('aktivitas_posto');
         });
     }
 }
