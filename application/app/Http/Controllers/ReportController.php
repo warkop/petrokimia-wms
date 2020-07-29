@@ -7552,7 +7552,12 @@ class ReportController extends Controller
 
             $col++;
             $abjad++;
-            $tonase = MaterialTrans::select('jumlah')->whereNotNull('status_pallet')->where('id_aktivitas_harian', $value->id)->get();
+            $tonase = MaterialTrans::select('jumlah')
+            ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'id_aktivitas_harian')
+            ->whereNotNull('aktivitas_harian.approve')
+            ->whereNotNull('status_pallet')
+            ->where('status_pallet', '<>', 1)
+            ->where('id_aktivitas_harian', $value->id)->get();
             $jumlahTonase = 0;
             foreach ($tonase as $key) {
                 $jumlahTonase += $key->jumlah;
