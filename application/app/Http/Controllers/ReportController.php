@@ -7509,10 +7509,15 @@ class ReportController extends Controller
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REALISASI TONASE MUAT PALLET');
         $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
+        
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'JUMLAH RITT');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
 
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'BIAYA Rp/Ton (Rupiah)');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'BIAYA Rp/Ritase (Rupiah)');
         $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
 
         $abjadOri++;
@@ -7527,6 +7532,7 @@ class ReportController extends Controller
         $no = 1;
         $totalBiaya = 0;
         $totalRealisasi = 0;
+        $totalRitt = 0;
         foreach ($res as $value) {
             $col = 1;
             $abjad = 'A';
@@ -7558,13 +7564,21 @@ class ReportController extends Controller
 
             $col++;
             $abjad++;
+            $ritt = ceil($jumlahTonase/120);
+            $totalRitt += $ritt;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $ritt);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom)->getNumberFormat()->setFormatCode('#,##0');
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
+
+            $col++;
+            $abjad++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($value->anggaran_pallet));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom)->getNumberFormat()->setFormatCode('#,##0');
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($jumlahTonase * $value->anggaran_pallet));
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($ritt * $value->anggaran_pallet));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom)->getNumberFormat()->setFormatCode('#,##0');
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
             $biaya = $jumlahTonase * $value->anggaran_pallet;
@@ -7592,6 +7606,12 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
+        $col++;
+        $abjad++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalRitt);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
+        
         $col++;
         $abjad++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '-');
