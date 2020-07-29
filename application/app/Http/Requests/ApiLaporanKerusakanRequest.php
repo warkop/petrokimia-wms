@@ -25,7 +25,7 @@ class ApiLaporanKerusakanRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'id_kerusakan'      => 'required|numeric',
+            'id_kerusakan'      => 'numeric',
             'id_alat_berat'     => 'numeric|exists:alat_berat,id',
             'id_operator'     => [
                 'numeric',
