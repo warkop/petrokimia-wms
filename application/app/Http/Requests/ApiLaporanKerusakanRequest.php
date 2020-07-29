@@ -26,13 +26,9 @@ class ApiLaporanKerusakanRequest extends FormRequest
     {
         $rules = [
             'id_kerusakan'      => 'required|numeric',
-            'id_alat_berat'     => 'required|numeric|exists:alat_berat,id',
+            'id_alat_berat'     => 'numeric|exists:alat_berat,id',
             'id_operator'     => [
-                'required',
                 'numeric',
-                Rule::exists('tenaga_kerja_non_organik', 'id')->where(function ($query) {
-                    $query->where('job_desk_id', 2);
-                }),
             ],
             'jam_rusak'         => 'date_format:d-m-Y H:i:s',
             'foto.*'            => 'nullable|image',
