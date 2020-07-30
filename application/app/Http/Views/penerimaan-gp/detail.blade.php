@@ -462,6 +462,7 @@
                                     <th scope="col">Nama produk</th>
                                     <th scope="col">Jumlah</th>
                                     <th scope="col">Keluhan</th>
+                                    <th scope="col">Foto</th>
                                 </tr>
                             </thead>
                             <tbody id="tubuh_produk">
@@ -481,6 +482,7 @@
 <script type="text/javascript">
 const id_gudang = "{{$aktivitasHarian->id_gudang}}";
 const id_aktivitas_harian = "{{$aktivitasHarian->id}}";
+const base_url = "{{url('watch')}}";
 
 let datatable,
     tableTarget = "#kt_table_1",
@@ -501,7 +503,7 @@ let datatable,
         $("#form1").on('submit',(function(e) {
         e.preventDefault();
         $.ajax({
-                url: ajaxUrl + "/test",
+                url: ajaxUrl + "/"+id_aktivitas_harian,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -598,7 +600,7 @@ let datatable,
                 <div class="col-3">
                     <label class="boldd-500">Upload File</label>
                     <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="image-${rows}" name="image_keluhan[]" />
+                        <input type="file" class="custom-file-input" id="image-${rows}" name="foto[]" />
                         <label class="custom-file-label" for="customFile">Pilih file</label>
                     </div>
                 </div>
@@ -657,7 +659,11 @@ let datatable,
     function loadProduk(no, target, produk='', edit=true) {
         $.ajax({
             url:  baseUrl + "penerimaan-gp" + "/" + "get-produk/"+id_aktivitas_harian,
+            beforeSend:()=>{
+                $('.se-pre-con').show();
+            },
             success: res => {
+                $('.se-pre-con').hide();
                 const obj = res.data;
                 let html = `<option value="">Pilih Produk</option>`;
                 obj.forEach((item, index) => {
@@ -675,7 +681,52 @@ let datatable,
                     });
                 }
             },
-            error: () => {}
+            error: (response) => {
+                $('.se-pre-con').hide();
+                $("#btn_save").prop("disabled", false);
+                let head = 'Maaf',
+                    message = 'Terjadi kesalahan koneksi',
+                    type = 'error';
+                laddaButton.stop();
+                window.onbeforeunload = false;
+                $('.btn_close_modal').removeClass('hide');
+                $('.se-pre-con').hide();
+
+                if (response['status'] == 401 || response['status'] == 419) {
+                    location.reload();
+                } else {
+                    if (response['status'] != 404 && response['status'] != 500) {
+                        let obj = JSON.parse(response['responseText']);
+
+                        if (!$.isEmptyObject(obj.message)) {
+                            if (obj.code > 450) {
+                                head = 'Maaf';
+                                message = obj.message;
+                                type = 'error';
+                            } else {
+                                head = 'Pemberitahuan';
+                                type = 'warning';
+
+                                obj = response.responseJSON.errors;
+                                laddaButton.stop();
+                                window.onbeforeunload = false;
+                                $('.btn_close_modal').removeClass('hide');
+                                $('.se-pre-con').hide();
+
+                                const temp = Object.values(obj);
+                                message = '';
+                                temp.forEach(element => {
+                                    element.forEach(row => {
+                                        message += row + "<br>"
+                                    });
+                                });
+                            }
+                        }
+                    }
+
+                    swal.fire(head, message, type);
+                }
+            }
         });
     }
 
@@ -1027,6 +1078,7 @@ function loadDetail() {
                         <td>${element.material.nama}</td>
                         <td>${element.jumlah}</td>
                         <td>${element.keluhan} Ton</td>
+                        <td><image src="${base_url+'/'+element.foto+'?un='+element.id_aktivitas_harian+'&ctg=keluhan_gp&src='+element.foto}"></td>
                     </tr>
                 `;
                 i++;

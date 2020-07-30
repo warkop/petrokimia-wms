@@ -130,10 +130,10 @@ class PenerimaanGpController extends Controller
                     ];
 
                     if (!empty($foto)) {
-                        if ($foto->isValid()) {
-                            $foto->storeAs('/app/public/keluhan_gp/'.$aktivitasHarian->id.'/', $foto->getClientOriginalName());
+                        if ($foto[$key]->isValid()) {
+                            $foto[$key]->storeAs('public/keluhan_gp/'.$aktivitasHarian->id.'/', $foto[$key]->getClientOriginalName());
 
-                            $temp['foto'] = $foto->getClientOriginalName();
+                            $temp['foto'] = $foto[$key]->getClientOriginalName();
                         }
                     }
                     array_push($arr, new AktivitasKeluhanGp($temp));
