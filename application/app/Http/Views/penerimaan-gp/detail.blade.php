@@ -500,8 +500,6 @@ let datatable,
         
         $("#form1").on('submit',(function(e) {
         e.preventDefault();
-        laddaButton = Ladda.create(this);
-        laddaButton.start();
         $.ajax({
                 url: ajaxUrl + "/test",
                 headers: {
@@ -518,7 +516,6 @@ let datatable,
                     $('.se-pre-con').show();
                 },
                 success: function(response) {
-                    laddaButton.stop();
                     window.onbeforeunload = false;
                     $('.btn_close_modal').removeClass('hide');
                     $('.se-pre-con').hide();
@@ -532,7 +529,6 @@ let datatable,
                     let head = 'Maaf',
                         message = 'Terjadi kesalahan koneksi',
                         type = 'error';
-                    laddaButton.stop();
                     window.onbeforeunload = false;
                     $('.btn_close_modal').removeClass('hide');
                     $('.se-pre-con').hide();
