@@ -684,43 +684,6 @@ let datatable,
     }
 
     function simpan() {
-        // $( '#form1' ).submit( function( e ) {
-        //     $.ajax( {
-        //     url: ajaxUrl + "/" + id_aktivitas_harian,
-        //     type: 'POST',
-        //     data: new FormData( this ),
-        //     processData: false,
-        //     contentType: false
-        //     } );
-        //     e.preventDefault();
-        // } );
-        // var form = $("#form1").get(0)
-        // var data = new FormData(form);     
-        // jQuery.each($('input[name^="image_keluhan[]"]')[0].files, function(i, file) {
-        //     data.append(i, file);
-        // });
-        // var form = $("#form1"),
-        // formData = new FormData(),
-        // formParams = form.serializeArray();
-
-        // $.each(form.find('input[type="file"]'), function(i, tag) {
-        //     $.each($(tag)[0].files, function(i, file) {
-        //         formData.append(tag.name, file);
-        //     });
-        // });
-
-        // $.each(formParams, function(i, val) {
-        //     formData.append(val.name, val.value);
-        // });
-
-        // var data = $("#form1").submit(function (e) {
-        //                                             return;
-        //                                         });
-        // var form = $("#form1").get(0);
-        // var data = new FormData(form);
-        // data.append('file', $('[name="image_keluhan[]"]')[0].files[0]);
-        // console.log(data)
-        alert('a')
         $.ajax({
             type: "PUT",
             headers: {
@@ -790,58 +753,6 @@ let datatable,
                 }
             }
         });
-
-        $(function(){
-            $("#form1").submit(function(){
-                $("#pesan").ajaxStart(function(){
-                    $(this).show();
-                }).ajaxComplete(function(){
-                    $(this).hide();
-                });
-                $.ajaxFileUpload({
-                    url: "upload.php",
-                    secureuri: false,
-                    fileElementId: "image-1",
-                    dataType: "json",
-                    success: function (json, status){
-                        if(json.status==1){
-                            $('td#filename').html(json.filename);
-                            $('td#size').html(json.size);
-                            $('td#type').html(json.type);
-                        }else{
-                            alert('Upload GAGAL!');
-                        }
-                    }
-                });
-                return false;
-            });
-        });
-
-        // $(function(){
-        //     $("#form1").submit(function(){
-        //         $("#pesan").ajaxStart(function(){
-        //             $(this).show();
-        //         }).ajaxComplete(function(){
-        //             $(this).hide();
-        //         });
-        //         $.ajaxFileUpload({
-        //             url: "upload.php",
-        //             secureuri: false,
-        //             fileElementId: "image-1",
-        //             dataType: "json",
-        //             success: function (json, status){
-        //                 if(json.status==1){
-        //                     $('td#filename').html(json.filename);
-        //                     $('td#size').html(json.size);
-        //                     $('td#type').html(json.type);
-        //                 }else{
-        //                     alert('Upload GAGAL!');
-        //                 }
-        //             }
-        //         });
-        //         return false;
-        //     });
-        // });
     }
 
     function loadKeluhan(){
