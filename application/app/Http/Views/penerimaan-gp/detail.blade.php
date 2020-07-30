@@ -407,7 +407,7 @@
                 </button>
             </div>
             <span class="kt-badge kt-badge--warning kt-badge--inline">Untuk angka desimal pemisahnya menggunakan simbol titik</span>
-            <form id="form1">
+            <form id="form1" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div class="row mb2">
                         <div class="col-8">
@@ -432,7 +432,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-clean" data-dismiss="modal">Tutup</button>
                     @empty ($aktivitasHarian->approve)
-                    <button type="button" class="btn btn-primary ladda-button" data-style="zoom-in" id="btn_save">Simpan</button>
+                    <button type="submit" class="btn btn-primary ladda-button" data-style="zoom-in" id="btn_save">Simpan</button>
                     @endempty
                 </div>
             </form>
@@ -491,12 +491,90 @@ let datatable,
     laddaButton;
 
     $(document).ready(()=>{
-        $("#btn_save").on("click", function(e) {
-            e.preventDefault();
-            laddaButton = Ladda.create(this);
-            laddaButton.start();
-            simpan();
-        });
+        // $("#btn_save").on("click", function(e) {
+        //     e.preventDefault();
+        //     laddaButton = Ladda.create(this);
+        //     laddaButton.start();
+        //     simpan();
+        // });
+        
+        $("#form1").on('submit',(function(e) {
+        e.preventDefault();
+        laddaButton = Ladda.create(this);
+        laddaButton.start();
+        $.ajax({
+                url: ajaxUrl + "/test",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "POST",
+                data:  new FormData(this),
+                contentType: false,
+                cache: false,
+                processData:false,
+                beforeSend : function(){
+                    preventLeaving();
+                    $('.btn_close_modal').addClass('hide');
+                    $('.se-pre-con').show();
+                },
+                success: function(response) {
+                    laddaButton.stop();
+                    window.onbeforeunload = false;
+                    $('.btn_close_modal').removeClass('hide');
+                    $('.se-pre-con').hide();
+                    let obj = response;
+                    $('#kt_keluhan').modal('hide');
+                    swal.fire('Ok', obj.message, 'success');
+                },
+                error: function(response) {
+                    
+                    $("#btn_save").prop("disabled", false);
+                    let head = 'Maaf',
+                        message = 'Terjadi kesalahan koneksi',
+                        type = 'error';
+                    laddaButton.stop();
+                    window.onbeforeunload = false;
+                    $('.btn_close_modal').removeClass('hide');
+                    $('.se-pre-con').hide();
+
+                    if (response['status'] == 401 || response['status'] == 419) {
+                        location.reload();
+                    } else {
+                        if (response['status'] != 404 && response['status'] != 500) {
+                            let obj = JSON.parse(response['responseText']);
+
+                            if (!$.isEmptyObject(obj.message)) {
+                                if (obj.code > 450) {
+                                    head = 'Maaf';
+                                    message = obj.message;
+                                    type = 'error';
+                                } else {
+                                    head = 'Pemberitahuan';
+                                    type = 'warning';
+
+                                    obj = response.responseJSON.errors;
+                                    laddaButton.stop();
+                                    window.onbeforeunload = false;
+                                    $('.btn_close_modal').removeClass('hide');
+                                    $('.se-pre-con').hide();
+
+                                    const temp = Object.values(obj);
+                                    message = '';
+                                    temp.forEach(element => {
+                                        element.forEach(row => {
+                                            message += row + "<br>"
+                                        });
+                                    });
+                                }
+                            }
+                        }
+
+                        swal.fire(head, message, type);
+                    }
+                }          
+            });
+        }));
+
     })
 
 
@@ -606,15 +684,50 @@ let datatable,
     }
 
     function simpan() {
-        let data = $("#form1").serializeArray();
-        
+        // $( '#form1' ).submit( function( e ) {
+        //     $.ajax( {
+        //     url: ajaxUrl + "/" + id_aktivitas_harian,
+        //     type: 'POST',
+        //     data: new FormData( this ),
+        //     processData: false,
+        //     contentType: false
+        //     } );
+        //     e.preventDefault();
+        // } );
+        // var form = $("#form1").get(0)
+        // var data = new FormData(form);     
+        // jQuery.each($('input[name^="image_keluhan[]"]')[0].files, function(i, file) {
+        //     data.append(i, file);
+        // });
+        // var form = $("#form1"),
+        // formData = new FormData(),
+        // formParams = form.serializeArray();
+
+        // $.each(form.find('input[type="file"]'), function(i, tag) {
+        //     $.each($(tag)[0].files, function(i, file) {
+        //         formData.append(tag.name, file);
+        //     });
+        // });
+
+        // $.each(formParams, function(i, val) {
+        //     formData.append(val.name, val.value);
+        // });
+
+        // var data = $("#form1").submit(function (e) {
+        //                                             return;
+        //                                         });
+        // var form = $("#form1").get(0);
+        // var data = new FormData(form);
+        // data.append('file', $('[name="image_keluhan[]"]')[0].files[0]);
+        // console.log(data)
+        alert('a')
         $.ajax({
             type: "PUT",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             url: ajaxUrl + "/" + id_aktivitas_harian,
-            data: data,
+            data: $("#form1").serializeArray(),
             beforeSend: function () {
                 preventLeaving();
                 $('.btn_close_modal').addClass('hide');
@@ -677,6 +790,58 @@ let datatable,
                 }
             }
         });
+
+        $(function(){
+            $("#form1").submit(function(){
+                $("#pesan").ajaxStart(function(){
+                    $(this).show();
+                }).ajaxComplete(function(){
+                    $(this).hide();
+                });
+                $.ajaxFileUpload({
+                    url: "upload.php",
+                    secureuri: false,
+                    fileElementId: "image-1",
+                    dataType: "json",
+                    success: function (json, status){
+                        if(json.status==1){
+                            $('td#filename').html(json.filename);
+                            $('td#size').html(json.size);
+                            $('td#type').html(json.type);
+                        }else{
+                            alert('Upload GAGAL!');
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+
+        // $(function(){
+        //     $("#form1").submit(function(){
+        //         $("#pesan").ajaxStart(function(){
+        //             $(this).show();
+        //         }).ajaxComplete(function(){
+        //             $(this).hide();
+        //         });
+        //         $.ajaxFileUpload({
+        //             url: "upload.php",
+        //             secureuri: false,
+        //             fileElementId: "image-1",
+        //             dataType: "json",
+        //             success: function (json, status){
+        //                 if(json.status==1){
+        //                     $('td#filename').html(json.filename);
+        //                     $('td#size').html(json.size);
+        //                     $('td#type').html(json.type);
+        //                 }else{
+        //                     alert('Upload GAGAL!');
+        //                 }
+        //             }
+        //         });
+        //         return false;
+        //     });
+        // });
     }
 
     function loadKeluhan(){

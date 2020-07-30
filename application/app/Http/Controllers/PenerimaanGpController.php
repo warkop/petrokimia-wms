@@ -29,6 +29,11 @@ class PenerimaanGpController extends Controller
         return view('penerimaan-gp.grid', $data);
     }
 
+    public function test(Request $request)
+    {
+        var_dump($request->image_keluhan);
+    }
+
     public function json(Request $req)
     {
         $models = new AktivitasHarian();

@@ -223,6 +223,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/', 'PenerimaanGpController@json');
         Route::put('/{aktivitasHarian}', 'PenerimaanGpController@store')->where('aktivitasHarian', '[0-9]+');
         Route::patch('/{aktivitasHarian}', 'PenerimaanGpController@approve')->where('aktivitasHarian', '[0-9]+');
+        Route::post('/test', 'PenerimaanGpController@test');
     });
 
     Route::group(['prefix' => 'log-aktivitas'], function () {
