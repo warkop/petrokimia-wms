@@ -121,11 +121,21 @@ class PenerimaanGpController extends Controller
             AktivitasKeluhanGp::where('id_aktivitas_harian', $aktivitasHarian->id)->delete();
             if ($req->input('produk')) {
                 foreach ($produk as $key => $value) {
+                    $foto = $req->file('foto');
+                    
                     $temp = [
                         'id_material'   => $req->input('produk')[$key],
                         'jumlah'        => $req->input('jumlah')[$key],
                         'keluhan'       => $req->input('keluhan')[$key],
                     ];
+
+                    if (!empty($foto)) {
+                        if ($foto->isValid()) {
+                            $foto->storeAs('/app/public/keluhan_gp/'.$aktivitasHarian->id.'/', $foto->getClientOriginalName());
+
+                            $temp['foto'] = $foto->getClientOriginalName();
+                        }
+                    }
                     array_push($arr, new AktivitasKeluhanGp($temp));
                 }
     

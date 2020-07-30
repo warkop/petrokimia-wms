@@ -1314,7 +1314,7 @@ class ReportController extends Controller
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
                 $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
-            ->whereNotNull('connect_sistro')
+            ->whereNotNull('aktivitas.aktivitas_posto')
             ->whereNotNull('pengaruh_tgl_produksi')
             ->whereNotNull('status_aktivitas')
             ->whereNull('internal_gudang')
@@ -3124,6 +3124,7 @@ class ReportController extends Controller
                     ->where('aktivitas_harian.id_gudang', $value->id_gudang)
                     ;
                 })
+                ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
                 ->leftJoin('material_adjustment', function($join) use($value) {
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                     ->where('material_adjustment.id_gudang', $value->id_gudang)
@@ -3152,8 +3153,9 @@ class ReportController extends Controller
                 ->where('gudang_stok.id_gudang', $value->id_gudang)
                 ->where('status_pallet', $kondisi)
                 ->where('material_trans.id_material', $value->id_material)
-                ->whereNull('canceled')
-                ->whereNull('cancelable')
+                ->whereNull('aktivitas_harian.canceled')
+                ->whereNull('aktivitas_harian.cancelable')
+                ->whereNull('internal_gudang')
                 ->sum('material_trans.jumlah');
             
             $peralihanBerkurang += $transaksi;
@@ -3174,6 +3176,7 @@ class ReportController extends Controller
                     ->where('aktivitas_harian.id_gudang', $value->id_gudang)
                     ;
                 })
+                ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
                 ->leftJoin('material_adjustment', function($join) use($value){
                     $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                     ->where('material_adjustment.id_gudang', $value->id_gudang)
@@ -3202,8 +3205,9 @@ class ReportController extends Controller
                 ->where('gudang_stok.id_gudang', $value->id_gudang)
                 ->where('status_pallet', $kondisi)
                 ->where('material_trans.id_material', $value->id_material)
-                ->whereNull('canceled')
-                ->whereNull('cancelable')
+                ->whereNull('aktivitas_harian.canceled')
+                ->whereNull('aktivitas_harian.cancelable')
+                ->whereNull('internal_gudang')
                 ->sum('material_trans.jumlah');
             
             $peralihanBertambah += $transaksi;
@@ -5586,6 +5590,8 @@ class ReportController extends Controller
         ->where('id_shift', $shift)
         ->whereNotNull('pengiriman')
         ->whereNotNull('status_aktivitas')
+        ->whereNull('ah.canceled')
+        ->whereNull('ah.cancelable')
         ->sum('jumlah');
         
         return $materialTrans;
@@ -5602,6 +5608,8 @@ class ReportController extends Controller
         ->where('ah.id_gudang', $gudang)
         ->where('id_shift', $shift)
         ->where('jenis_aktivitas', 4)
+        ->whereNull('ah.canceled')
+        ->whereNull('ah.cancelable')
         ->sum('jumlah');
         
         return $materialTrans;
@@ -5618,6 +5626,8 @@ class ReportController extends Controller
         ->where('ah.id_gudang', $gudang)
         ->where('id_shift', $shift)
         ->where('jenis_aktivitas', 1)
+        ->whereNull('ah.canceled')
+        ->whereNull('ah.cancelable')
         ->sum('jumlah');
         
         return $materialTrans;
@@ -5635,6 +5645,8 @@ class ReportController extends Controller
         ->where('ah.id_gudang', '<>', $gudang)
         ->where('id_shift', $shift)
         ->whereNotNull('internal_gudang')
+        ->whereNull('ah.canceled')
+        ->whereNull('ah.cancelable')
         ->whereNotNull('approve')
         ->sum('jumlah');
         
@@ -5652,6 +5664,8 @@ class ReportController extends Controller
         ->where('draft', 0)
         ->where('id_shift', $shift)
         ->whereNotNull('connect_sistro')
+        ->whereNull('ah.canceled')
+        ->whereNull('ah.cancelable')
         ->sum('jumlah');
         
         return $materialTrans;
@@ -5668,6 +5682,8 @@ class ReportController extends Controller
         ->where('draft', 0)
         ->where('id_shift', $shift)
         ->whereNotNull('aktivitas.so')
+        ->whereNull('ah.canceled')
+        ->whereNull('ah.cancelable')
         ->sum('jumlah');
         
         return $materialTrans;
@@ -5689,6 +5705,8 @@ class ReportController extends Controller
         ->where('id_shift', $shift)
         ->whereNotNull('internal_gudang')
         ->whereNotNull('approve')
+        ->whereNull('ah.canceled')
+        ->whereNull('ah.cancelable')
         ->sum('jumlah');
         
         return $materialTrans;
@@ -6217,10 +6235,9 @@ class ReportController extends Controller
                             $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00 -1 day')));
                             $query->orWhere(function($query) use($tanggal){
                                 $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00 -1 day')));
-                                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 00:30:00')));
+                                $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 07:00:00')));
                                 $query->where('id_shift', 2);
                             });
-                            // $query->orWhere('material_adjustment.tanggal', '<=', date('Y-m-d', strtotime($tanggal . '-1 day')));
                             $query->orWhere('material_adjustment.tanggal', '<=', date('Y-m-d', strtotime($tanggal . '-1 day')));
                             $query->orWhere(function ($query) use ($tanggal) {
                                     $query->where('material_adjustment.tanggal', '=', date('Y-m-d', strtotime($tanggal . '-1 day')));
@@ -6241,11 +6258,6 @@ class ReportController extends Controller
                                 ->where('draft', 0)
                                 ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00 -1 day')))
                                 ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 08:30:00')))
-                                // ->orWhere(function($query) use($tanggal) {
-                                //     $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 07:00:00')));
-                                //     $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 22:00:00')));
-                                //     $query->where('id_shift', 3);
-                                // })
                                 ;
                         })
                         ->leftJoin('aktivitas', function ($join){
@@ -6254,7 +6266,6 @@ class ReportController extends Controller
                         })
                         ->leftJoin('material_adjustment', function ($join) use ($tanggal, $resShift) {
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
-                                // ->where('material_adjustment.tanggal', $tanggal);
                                 ->where('material_adjustment.shift', '=', $resShift->id)
                                 ->where(function($query) use ($tanggal){
                                     $query->where('material_adjustment.tanggal', '<', $tanggal);
@@ -6293,10 +6304,6 @@ class ReportController extends Controller
                             $join->on('material_adjustment.id', '=', 'material_trans.id_adjustment')
                                 ->where('material_adjustment.tanggal', $tanggal)
                                 ->where('material_adjustment.shift', '=', $resShift->id);
-                                // ->where(function($query) use ($tanggal){
-                                //     $query->where('material_adjustment.tanggal', '<', $tanggal);
-                                //     $query->orWhere('material_adjustment.tanggal', '=', $tanggal);
-                                // });
                         })
                         ->where(
                             function ($query) use ($resShift) {
@@ -6314,11 +6321,7 @@ class ReportController extends Controller
                             $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                                 ->where('draft', 0)
                                 ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 15:00:00')))
-                                ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 00:30:00 +1 day')))
-                                // ->orWhere(function($query) use($tanggal) {
-                                //     $query->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tanggal . ' 23:00:00')));
-                                //     $query->where('id_shift', 2);
-                                // })
+                                ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tanggal . ' 07:00:00 +1 day')))
                                 ;
                         })
                         ->leftJoin('aktivitas', function ($join){
@@ -7506,10 +7509,15 @@ class ReportController extends Controller
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'REALISASI TONASE MUAT PALLET');
         $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
+        
+        $abjadOri++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'JUMLAH RITT');
+        $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
 
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'BIAYA Rp/Ton (Rupiah)');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'BIAYA Rp/Ritase (Rupiah)');
         $objSpreadsheet->getActiveSheet()->getStyle($abjadOri . $row)->applyFromArray($style_judul_kolom);
 
         $abjadOri++;
@@ -7524,6 +7532,7 @@ class ReportController extends Controller
         $no = 1;
         $totalBiaya = 0;
         $totalRealisasi = 0;
+        $totalRitt = 0;
         foreach ($res as $value) {
             $col = 1;
             $abjad = 'A';
@@ -7543,7 +7552,12 @@ class ReportController extends Controller
 
             $col++;
             $abjad++;
-            $tonase = MaterialTrans::select('jumlah')->whereNotNull('status_pallet')->where('id_aktivitas_harian', $value->id)->get();
+            $tonase = MaterialTrans::select('jumlah')
+            ->leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'id_aktivitas_harian')
+            ->whereNotNull('aktivitas_harian.approve')
+            ->whereNotNull('status_pallet')
+            ->where('status_pallet', '<>', 1)
+            ->where('id_aktivitas_harian', $value->id)->get();
             $jumlahTonase = 0;
             foreach ($tonase as $key) {
                 $jumlahTonase += $key->jumlah;
@@ -7555,13 +7569,21 @@ class ReportController extends Controller
 
             $col++;
             $abjad++;
+            $ritt = ceil($jumlahTonase/120);
+            $totalRitt += $ritt;
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $ritt);
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom)->getNumberFormat()->setFormatCode('#,##0');
+            $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
+
+            $col++;
+            $abjad++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($value->anggaran_pallet));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom)->getNumberFormat()->setFormatCode('#,##0');
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
             $col++;
             $abjad++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($jumlahTonase * $value->anggaran_pallet));
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, ($ritt * $value->anggaran_pallet));
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_kolom)->getNumberFormat()->setFormatCode('#,##0');
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
             $biaya = $jumlahTonase * $value->anggaran_pallet;
@@ -7589,6 +7611,12 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
         $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
+        $col++;
+        $abjad++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $totalRitt);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_isi_kolom);
+        $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
+        
         $col++;
         $abjad++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, '-');
