@@ -32,18 +32,13 @@ class AlatBeratController extends Controller
                 ->orderBy('rencana_harian.id', 'desc')
                 ->first();
             if (empty($rencana_tkbm)) {
-                $this->responseCode = 500;
-                $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
-                $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
-                return response()->json($response, $this->responseCode);
+                return false;
             }
             $rencana_harian = RencanaHarian::findOrFail($rencana_tkbm->id_rencana);
             $gudang = Gudang::findOrFail($rencana_harian->id_gudang);
         } else if (request()->get('my_auth')->role == 5) {
             $karu   = Karu::find(request()->get('my_auth')->id_karu);
             $gudang = Gudang::find($karu->id_gudang);
-        } else {
-            return false;
         }
 
         return $gudang;
@@ -53,63 +48,70 @@ class AlatBeratController extends Controller
     {
         $search = strip_tags($req->input('search'));
         $gudang = $this->getCheckerGudang();
-        $rencanaHarian = RencanaHarian::where('id_gudang', $gudang->id)
-        ->where('start_date', '<', date('Y-m-d H:i:s'))
-        ->where('end_date', '>', date('Y-m-d H:i:s'))
-        ->where('id_gudang', $gudang->id)
-        ->orderBy('id', 'desc')
-        ->first();
 
-        if (empty($rencanaHarian)) {
-            $this->responseMessage = 'Tidak ada Rencana Harian untuk hari ini!';
-            $this->responseCode = 403;
+        if ($gudang) {
+            $rencanaHarian = RencanaHarian::where('id_gudang', $gudang->id)
+            ->where('start_date', '<', date('Y-m-d H:i:s'))
+            ->where('end_date', '>', date('Y-m-d H:i:s'))
+            ->where('id_gudang', $gudang->id)
+            ->orderBy('id', 'desc')
+            ->first();
 
-            $response = [
-                'data' => $this->responseData,
-                'message' => $this->responseMessage,
-                'errors' => '',
-                'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]
-            ];
+            if (empty($rencanaHarian)) {
+                $this->responseMessage = 'Tidak ada Rencana Harian untuk hari ini!';
+                $this->responseCode = 403;
+
+                $response = [
+                    'data' => $this->responseData,
+                    'message' => $this->responseMessage,
+                    'errors' => '',
+                    'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]
+                ];
+                return response()->json($response, $this->responseCode);
+            }
+
+            $res = AlatBerat::
+                distinct()->select(
+                    'alat_berat.id', 
+                    'nomor_lambung', 
+                    'nama', 
+                    'status',
+                    DB::raw('
+                        CASE
+                            WHEN status=\'1\' THEN \'Aktif\'
+                        ELSE \'Rusak\'
+                    END AS text_status'),
+                    'alat_berat.created_at'
+                )
+                ->join('alat_berat_kat as abk', 'alat_berat.id_kategori', '=', 'abk.id')
+                ->join('rencana_alat_berat as rab', 'alat_berat.id', '=', 'rab.id_alat_berat')
+                ->join('rencana_harian as rh', 'rh.id', '=', 'rab.id_rencana')
+                ->where(function ($where) use ($search) {
+                    $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                    $where->orWhere(DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
+                })
+                ->where('rh.id', $rencanaHarian->id)
+                ->orWhere(function($query) use ($rencanaHarian){
+                    $query->where('status', 0);
+                    $query->where('rh.id_gudang', $rencanaHarian->id_gudang);
+                    $query->where('rab.id_alat_berat', DB::raw('alat_berat.id'));
+                })
+                ->orderBy('alat_berat.id', 'desc')
+                ->paginate(10);
+
+            $obj =  AktivitasResource::collection($res)->additional([
+                'status' => [
+                    'message' => '',
+                    'code' => Response::HTTP_OK
+                ],
+            ], Response::HTTP_OK);
+            return $obj;
+        } else {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
             return response()->json($response, $this->responseCode);
         }
-
-        $res = AlatBerat::
-            distinct()->select(
-                'alat_berat.id', 
-                'nomor_lambung', 
-                'nama', 
-                'status',
-                DB::raw('
-                    CASE
-                        WHEN status=\'1\' THEN \'Aktif\'
-                    ELSE \'Rusak\'
-                END AS text_status'),
-                'alat_berat.created_at'
-            )
-            ->join('alat_berat_kat as abk', 'alat_berat.id_kategori', '=', 'abk.id')
-            ->join('rencana_alat_berat as rab', 'alat_berat.id', '=', 'rab.id_alat_berat')
-            ->join('rencana_harian as rh', 'rh.id', '=', 'rab.id_rencana')
-            ->where(function ($where) use ($search) {
-                $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(DB::raw('LOWER(nomor_lambung)'), 'ILIKE', '%' . strtolower($search) . '%');
-            })
-            ->where('rh.id', $rencanaHarian->id)
-            ->orWhere(function($query) use ($rencanaHarian){
-                $query->where('status', 0);
-                $query->where('rh.id_gudang', $rencanaHarian->id_gudang);
-                $query->where('rab.id_alat_berat', DB::raw('alat_berat.id'));
-            })
-            ->orderBy('alat_berat.id', 'desc')
-            ->paginate(10);
-
-        $obj =  AktivitasResource::collection($res)->additional([
-            'status' => [
-                'message' => '',
-                'code' => Response::HTTP_OK
-            ],
-        ], Response::HTTP_OK);
-
-        return $obj;
     }
 
     public function history(Request $req)
@@ -226,6 +228,13 @@ class AlatBeratController extends Controller
 
         $gudang = $this->getCheckerGudang();
 
+        if ($gudang == false) {
+            $this->responseCode = 500;
+            $this->responseMessage = 'Checker tidak terdaftar pada rencana harian apapun!';
+            $response = ['data' => $this->responseData, 'status' => ['message' => $this->responseMessage, 'code' => $this->responseCode]];
+            return response()->json($response, $this->responseCode);
+        }
+
         if ($id_laporan != null) {
             $laporan = LaporanKerusakan::findOrFail($id_laporan);
 
@@ -275,10 +284,10 @@ class AlatBeratController extends Controller
                 ];
                 $resource = LaporanKerusakan::create($arr);
 
-                // $res = LaporanKerusakan::where(['id_alat_berat' => $req->input('id_alat_berat'), 'id_shift' => $laporan->id_shift])->update(['status' => 1]);
+                $res = LaporanKerusakan::where(['id_alat_berat' => $req->input('id_alat_berat'), 'id_shift' => $laporan->id_shift])->update(['status' => 1]);
 
-                // $laporan->status = 1;
-                // $laporan->save();
+                $laporan->status = 1;
+                $laporan->save();
 
                 $alatBerat = AlatBerat::findOrFail($laporan->id_alat_berat);
 
