@@ -275,10 +275,10 @@ class AlatBeratController extends Controller
                 ];
                 $resource = LaporanKerusakan::create($arr);
 
-                $res = LaporanKerusakan::where(['id_alat_berat' => $req->input('id_alat_berat'), 'id_shift' => $laporan->id_shift])->update(['status' => 1]);
+                // $res = LaporanKerusakan::where(['id_alat_berat' => $req->input('id_alat_berat'), 'id_shift' => $laporan->id_shift])->update(['status' => 1]);
 
-                $laporan->status = 1;
-                $laporan->save();
+                // $laporan->status = 1;
+                // $laporan->save();
 
                 $alatBerat = AlatBerat::findOrFail($laporan->id_alat_berat);
 
@@ -288,20 +288,20 @@ class AlatBeratController extends Controller
 
                 if ($resource) {
                     $foto = $req->file('foto');
-                    (new LaporanKerusakanFoto)->where('id_laporan', '=', $laporan->id)->delete();
-                    Storage::deleteDirectory('/public/history/' . $laporan->id);
+                    (new LaporanKerusakanFoto)->where('id_laporan', '=', $resource->id)->delete();
+                    Storage::deleteDirectory('/public/history/' . $resource->id);
                     if (!empty($foto)) {
                         foreach ($foto as $key => $value) {
                             if ($value->isValid()) {
                                 $res = new LaporanKerusakanFoto;
 
-                                storage_path('app/public/history/') . $laporan->id;
+                                storage_path('app/public/history/') . $resource->id;
                                 $md5Name = md5_file($value->getRealPath());
                                 $guessExtension = $value->getClientOriginalExtension();
-                                $value->storeAs('/public/history/' . $laporan->id, $md5Name . '.' . $guessExtension);
+                                $value->storeAs('/public/history/' . $resource->id, $md5Name . '.' . $guessExtension);
 
                                 $arrayFoto = [
-                                    'id_laporan'    => $laporan->id,
+                                    'id_laporan'    => $resource->id,
                                     'file_ori'      => $value->getClientOriginalName(),
                                     'size'          => $value->getSize(),
                                     'ekstensi'      => $value->getClientOriginalExtension(),
@@ -312,7 +312,7 @@ class AlatBeratController extends Controller
                             }
                         }
 
-                        $foto = LaporanKerusakanFoto::where('id_laporan', $laporan->id)->get();
+                        $foto = LaporanKerusakanFoto::where('id_laporan', $resource->id)->get();
                     } else {
                         $foto = null;
                     }
