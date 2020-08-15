@@ -7708,7 +7708,11 @@ class ReportController extends Controller
                 }
             }
     
-            $res = $res->orderBy('keluhan_operator.created_at')->get();
+            $res = $res
+            ->where('keluhan_operator.created_at', '>=', $tgl_awal)
+            ->where('keluhan_operator.created_at', '<=', $tgl_akhir)
+            ->orderBy('keluhan_operator.created_at')
+            ->get();
     
             $preview = false;
             if (request()->preview == true) {
