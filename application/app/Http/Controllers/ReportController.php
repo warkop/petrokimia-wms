@@ -1878,7 +1878,10 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->getStyle($abjad.$row)->applyFromArray($this->style_kolom);
 
             //start: stok awal kosong
-            $materialTransMengurangKosong = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            $materialTransMengurangKosong = MaterialTrans::leftJoin('aktivitas_harian', function($join) {
+                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0);
+                })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
                 ->leftJoin('gudang_stok', 'gudang_stok.id', '=', 'material_trans.id_gudang_stok')
                 ->where(function ($query) use ($value) {
@@ -1895,7 +1898,10 @@ class ReportController extends Controller
                 ->where('status_pallet', 3)
                 ->where('tipe', 1)
                 ->sum('material_trans.jumlah');
-            $materialTransMenambahKosong = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            $materialTransMenambahKosong = MaterialTrans::leftJoin('aktivitas_harian', function($join) {
+                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0);
+                })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
                 ->leftJoin('gudang_stok', 'gudang_stok.id', '=', 'material_trans.id_gudang_stok')
                 ->where(function ($query) use ($value) {
@@ -1926,7 +1932,10 @@ class ReportController extends Controller
             // end: stok awal kosong
 
             //start: stok awal pakai
-            $materialTransMengurang = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            $materialTransMengurang = MaterialTrans::leftJoin('aktivitas_harian', function($join) {
+                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0);
+                })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
                 ->leftJoin('gudang_stok', 'gudang_stok.id', '=', 'material_trans.id_gudang_stok')
                 ->where(function ($query) use ($value) {
@@ -1943,7 +1952,10 @@ class ReportController extends Controller
                 ->where('status_pallet', 2)
                 ->where('tipe', 1)
                 ->sum('material_trans.jumlah');
-            $materialTransMenambah = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            $materialTransMenambah = MaterialTrans::leftJoin('aktivitas_harian', function($join) {
+                    $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                        ->where('draft', 0);
+                })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
                 ->leftJoin('gudang_stok', 'gudang_stok.id', '=', 'material_trans.id_gudang_stok')
                 ->where(function ($query) use ($value) {
@@ -1974,7 +1986,10 @@ class ReportController extends Controller
             // end: stok awal pakai
 
             //start: stok awal rusak
-            $materialTransMengurangRusak = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            $materialTransMengurangRusak = MaterialTrans::leftJoin('aktivitas_harian', function($join) {
+                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0);
+                })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
                 ->leftJoin('gudang_stok', 'gudang_stok.id', '=', 'material_trans.id_gudang_stok')
                 ->where(function ($query) use ($value) {
@@ -1991,7 +2006,10 @@ class ReportController extends Controller
                 ->where('status_pallet', 4)
                 ->where('tipe', 1)
                 ->sum('material_trans.jumlah');
-            $materialTransMenambahRusak = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+            $materialTransMenambahRusak = MaterialTrans::leftJoin('aktivitas_harian', function($join) {
+                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
+                    ->where('draft', 0);
+                })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
                 ->leftJoin('gudang_stok', 'gudang_stok.id', '=', 'material_trans.id_gudang_stok')
                 ->where(function ($query) use ($value) {
