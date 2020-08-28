@@ -723,11 +723,9 @@ class AktivitasController extends Controller
                     'jumlah'                    => $jumlah,
                     'tipe'                      => $tipe,
                     'status_pallet'             => $status_pallet,
-                    'id_gudang_stok'            => $gudangStok->id,
                 ];
 
-                MaterialTrans::create($arr);
-                
+                $gudangStok->materialTrans()->create($arr);
             }
         }
 
