@@ -1879,8 +1879,7 @@ class ReportController extends Controller
 
             //start: stok awal kosong
             $materialTransMengurangKosong = MaterialTrans::leftJoin('aktivitas_harian', function($join) {
-                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                    ->where('draft', 0);
+                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian');
                 })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
                 ->leftJoin('gudang_stok', 'gudang_stok.id', '=', 'material_trans.id_gudang_stok')
@@ -1897,10 +1896,11 @@ class ReportController extends Controller
                 ->where('material_trans.id_material', $pallet)
                 ->where('status_pallet', 3)
                 ->where('tipe', 1)
+                ->whereRaw('( case when id_aktivitas_harian is not null then draft = 0 else id_aktivitas_harian is null end)')
                 ->sum('material_trans.jumlah');
             $materialTransMenambahKosong = MaterialTrans::leftJoin('aktivitas_harian', function($join) {
-                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-                    ->where('draft', 0);
+                $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian');
+                    
                 })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
                 ->leftJoin('gudang_stok', 'gudang_stok.id', '=', 'material_trans.id_gudang_stok')
@@ -1917,6 +1917,7 @@ class ReportController extends Controller
                 ->where('material_trans.id_material', $pallet)
                 ->where('status_pallet', 3)
                 ->where('tipe', 2)
+                ->whereRaw('( case when id_aktivitas_harian is not null then draft = 0 else id_aktivitas_harian is null end)')
                 ->sum('material_trans.jumlah');
             $stokAwalKosong = $materialTransMenambahKosong - $materialTransMengurangKosong;
             $totalPalletBaik += $stokAwalKosong;
@@ -1951,6 +1952,7 @@ class ReportController extends Controller
                 ->where('material_trans.id_material', $pallet)
                 ->where('status_pallet', 2)
                 ->where('tipe', 1)
+                ->whereRaw('( case when id_aktivitas_harian is not null then draft = 0 else id_aktivitas_harian is null end)')
                 ->sum('material_trans.jumlah');
             $materialTransMenambah = MaterialTrans::leftJoin('aktivitas_harian', function($join) {
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
@@ -1971,6 +1973,7 @@ class ReportController extends Controller
                 ->where('material_trans.id_material', $pallet)
                 ->where('status_pallet', 2)
                 ->where('tipe', 2)
+                ->whereRaw('( case when id_aktivitas_harian is not null then draft = 0 else id_aktivitas_harian is null end)')
                 ->sum('material_trans.jumlah');
             $stokAwalPakai = $materialTransMenambah - $materialTransMengurang;
             $totalPalletBaik += $stokAwalPakai;
