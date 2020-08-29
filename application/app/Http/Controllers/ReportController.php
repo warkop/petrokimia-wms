@@ -2773,7 +2773,7 @@ class ReportController extends Controller
                 leftJoin('aktivitas_harian', function($join) use($tgl_sekarang, $value){
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
-                        ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+                        // ->where('aktivitas_harian.id_gudang', $value->id_gudang)
                         ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . ' 23:00:00')));
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
@@ -2809,6 +2809,7 @@ class ReportController extends Controller
                 ->where('material_trans.id_material', $value->id_material)
                 ->where('gudang_stok.id_gudang', $value->id_gudang)
                 ->where('status_pallet', $kondisi) //harus + 2 step agar cocok dengan status pada databse
+                ->whereRaw('( case when id_aktivitas_harian is not null then draft = 0 else id_aktivitas_harian is null end)')
                 ->sum('material_trans.jumlah');
 
                 $pre_keluar     = MaterialTrans::
@@ -2851,6 +2852,7 @@ class ReportController extends Controller
                 ->where('material_trans.id_material', $value->id_material)
                 ->where('gudang_stok.id_gudang', $value->id_gudang)
                 ->where('status_pallet', $kondisi) //harus + 2 step agar cocok dengan status pada databse
+                ->whereRaw('( case when id_aktivitas_harian is not null then draft = 0 else id_aktivitas_harian is null end)')
                 ->sum('material_trans.jumlah');
 
                 $saldoAwal = $saldoAwal + $pre_masuk - $pre_keluar;
@@ -2859,7 +2861,7 @@ class ReportController extends Controller
                 leftJoin('aktivitas_harian', function($join) use($tgl_sekarang, $value){
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
-                        ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+                        // ->where('aktivitas_harian.id_gudang', $value->id_gudang)
                         ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT1)));
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
@@ -2897,6 +2899,7 @@ class ReportController extends Controller
                 ->where('tipe', 2)
                 ->where('material_trans.id_material', $value->id_material)
                 ->where('status_pallet', $kondisi) //harus + 2 step agar cocok dengan status pada databse
+                ->whereRaw('( case when id_aktivitas_harian is not null then draft = 0 else id_aktivitas_harian is null end)')
                 ->sum('material_trans.jumlah');
 
                 $pre_keluar     = MaterialTrans::
@@ -2941,6 +2944,7 @@ class ReportController extends Controller
                 ->where('tipe', 1)
                 ->where('material_trans.id_material', $value->id_material)
                 ->where('status_pallet', $kondisi) //harus + 2 step agar cocok dengan status pada databse
+                ->whereRaw('( case when id_aktivitas_harian is not null then draft = 0 else id_aktivitas_harian is null end)')
                 ->sum('material_trans.jumlah');
 
                 $saldoAwal = $saldoAwal + $pre_masuk - $pre_keluar;
@@ -2949,7 +2953,7 @@ class ReportController extends Controller
                 leftJoin('aktivitas_harian', function($join) use($tgl_sekarang, $value){
                     $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                         ->where('draft', 0)
-                        ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+                        // ->where('aktivitas_harian.id_gudang', $value->id_gudang)
                         ->where(DB::raw($this->AKTIVITAS_UPDATED_AT_FULLDATE), '<', date($this->FORMAT_FULLDATE, strtotime($tgl_sekarang . $this->START_SHIFT3)));
                 })
                 ->leftJoin('material_adjustment', function ($join) use ($tgl_sekarang, $value){
@@ -2985,6 +2989,7 @@ class ReportController extends Controller
                 ->where('material_trans.id_material', $value->id_material)
                 ->where('gudang_stok.id_gudang', $value->id_gudang)
                 ->where('status_pallet', $kondisi) //harus + 2 step agar cocok dengan status pada databse
+                ->whereRaw('( case when id_aktivitas_harian is not null then draft = 0 else id_aktivitas_harian is null end)')
                 ->sum('material_trans.jumlah');
 
                 $pre_keluar = MaterialTrans::
@@ -3027,6 +3032,7 @@ class ReportController extends Controller
                 ->where('material_trans.id_material', $value->id_material)
                 ->where('gudang_stok.id_gudang', $value->id_gudang)
                 ->where('status_pallet', $kondisi) //harus + 2 step agar cocok dengan status pada databse
+                ->whereRaw('( case when id_aktivitas_harian is not null then draft = 0 else id_aktivitas_harian is null end)')
                 ->sum('material_trans.jumlah');
 
                 $saldoAwal = $saldoAwal + $pre_masuk - $pre_keluar;
@@ -3142,7 +3148,7 @@ class ReportController extends Controller
             $transaksi = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($value){
                 $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                     ->where('draft', 0)
-                    ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+                    // ->where('aktivitas_harian.id_gudang', $value->id_gudang)
                     ;
                 })
                 ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
@@ -3177,6 +3183,7 @@ class ReportController extends Controller
                 ->whereNull('aktivitas_harian.canceled')
                 ->whereNull('aktivitas_harian.cancelable')
                 ->whereNull('internal_gudang')
+                ->whereRaw('( case when id_aktivitas_harian is not null then draft = 0 else id_aktivitas_harian is null end)')
                 ->sum('material_trans.jumlah');
             
             $peralihanBerkurang += $transaksi;
@@ -3194,7 +3201,7 @@ class ReportController extends Controller
             $transaksi = MaterialTrans::leftJoin('aktivitas_harian', function($join) use($value){
                 $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
                     ->where('draft', 0)
-                    ->where('aktivitas_harian.id_gudang', $value->id_gudang)
+                    // ->where('aktivitas_harian.id_gudang', $value->id_gudang)
                     ;
                 })
                 ->leftJoin('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
@@ -3229,6 +3236,7 @@ class ReportController extends Controller
                 ->whereNull('aktivitas_harian.canceled')
                 ->whereNull('aktivitas_harian.cancelable')
                 ->whereNull('internal_gudang')
+                ->whereRaw('( case when id_aktivitas_harian is not null then draft = 0 else id_aktivitas_harian is null end)')
                 ->sum('material_trans.jumlah');
             
             $peralihanBertambah += $transaksi;
