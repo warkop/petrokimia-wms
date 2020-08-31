@@ -827,12 +827,12 @@ class ReportController extends Controller
             if ($gudang) {
                 $resGudang = Gudang::select('id', 'nama')->whereIn('id', $gudang)->orderBy('id')->get()->pluck('id')->toArray();
                 
-                // $res = $res->whereHas('area.gudang', function ($query) use ($gudang) {
-                //     $query = $query->where('id_gudang', $gudang[0]);
-                //     foreach ($gudang as $key => $value) {
-                //         $query = $query->orWhere('id_gudang', $value);
-                //     }
-                // });
+                $res = $res->whereHas('area.gudang', function ($query) use ($gudang) {
+                    $query = $query->where('id_gudang', $gudang[0]);
+                    foreach ($gudang as $key => $value) {
+                        $query = $query->orWhere('id_gudang', $value);
+                    }
+                });
             } else {
                 $resGudang = Gudang::select('id', 'nama')->internal()->orderBy('id')->get()->pluck('id')->toArray();
             }
