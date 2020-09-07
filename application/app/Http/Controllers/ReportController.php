@@ -827,7 +827,7 @@ class ReportController extends Controller
             if ($gudang) {
                 $resGudang = Gudang::select('id', 'nama')->whereIn('id', $gudang)->orderBy('id')->get()->pluck('id')->toArray();
                 
-                $res = $res->whereHas('area.gudang', function ($query) use ($gudang) {
+                $res = $res->where(function ($query) use ($gudang) {
                     $query = $query->where('id_gudang', $gudang[0]);
                     foreach ($gudang as $key => $value) {
                         $query = $query->orWhere('id_gudang', $value);
@@ -1186,9 +1186,9 @@ class ReportController extends Controller
                 ;
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            // ->whereHas('areaStok.area', function ($query) use ($gudang) {
-            //     $query->whereIn('id_gudang', $gudang);
-            // })
+            ->whereHas('areaStok.area', function ($query) use ($gudang) {
+                $query->whereIn('id_gudang', $gudang);
+            })
             ->where('tipe', 2)
             ->where('id_material', $value->id_material)
             ->where(function($query) use($tgl_awal, $tgl_akhir) {
@@ -1273,9 +1273,9 @@ class ReportController extends Controller
                 ;
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            // ->whereHas('areaStok.area', function ($query) use ($gudang) {
-            //     $query->whereIn('id_gudang', $gudang);
-            // })
+            ->whereHas('areaStok.area', function ($query) use ($gudang) {
+                $query->whereIn('id_gudang', $gudang);
+            })
             ->where('tipe', 2)
             ->where('id_material', $value->id_material)
             ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
@@ -1305,9 +1305,9 @@ class ReportController extends Controller
                 ;
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            // ->whereHas('areaStok.area', function ($query) use ($gudang) {
-            //     $query->whereIn('id_gudang', $gudang);
-            // })
+            ->whereHas('areaStok.area', function ($query) use ($gudang) {
+                $query->whereIn('id_gudang', $gudang);
+            })
             ->where('tipe', 1)
             ->where('id_material', $value->id_material)
             ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
@@ -1337,9 +1337,9 @@ class ReportController extends Controller
                 ;
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            // ->whereHas('areaStok.area', function ($query) use ($gudang) {
-            //     $query->whereIn('id_gudang', $gudang);
-            // })
+            ->whereHas('areaStok.area', function ($query) use ($gudang) {
+                $query->whereIn('id_gudang', $gudang);
+            })
             ->where('tipe', 1)
             ->where('id_material', $value->id_material)
             ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
@@ -1368,9 +1368,9 @@ class ReportController extends Controller
                 ;
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            // ->whereHas('areaStok.area', function ($query) use ($gudang) {
-            //     $query->whereIn('id_gudang', $gudang);
-            // })
+            ->whereHas('areaStok.area', function ($query) use ($gudang) {
+                $query->whereIn('id_gudang', $gudang);
+            })
             ->where('tipe', 1)
             ->where('id_material', $value->id_material)
             ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
@@ -1397,9 +1397,9 @@ class ReportController extends Controller
                 ;
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            // ->whereHas('areaStok.area', function ($query) use ($gudang) {
-            //     $query->whereIn('id_gudang', $gudang);
-            // })
+            ->whereHas('areaStok.area', function ($query) use ($gudang) {
+                $query->whereIn('id_gudang', $gudang);
+            })
             ->where('tipe', 1)
             ->where('id_material', $value->id_material)
             ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
