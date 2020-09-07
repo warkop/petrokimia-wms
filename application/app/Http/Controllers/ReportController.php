@@ -5692,7 +5692,7 @@ class ReportController extends Controller
         ->where('ah.id_gudang', $gudang)
         ->where('draft', 0)
         ->where('id_shift', $shift)
-        ->whereNotNull('connect_sistro')
+        ->whereNotNull('aktivitas_posto')
         ->whereNull('ah.canceled')
         ->whereNull('ah.cancelable')
         ->sum('jumlah');
