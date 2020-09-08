@@ -89,7 +89,7 @@ class AktivitasHarian extends Model
             ->select(
                 'aktivitas_harian.id AS id', 
                 'aktivitas.nama as nama_aktivitas',
-                'aktivitas_harian.created_at as tanggal', 
+                'aktivitas_harian.updated_at as tanggal', 
                 'gudang.nama as nama_gudang', 
                 'shift_kerja.nama as nama_shift',
                 'aktivitas_harian.nopol',
@@ -150,7 +150,7 @@ class AktivitasHarian extends Model
                 $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere('gudang.nama', 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere('shift_kerja.nama', 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(DB::raw("TO_CHAR(aktivitas_harian.created_at, 'DD/MM/YYYY')"), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw("TO_CHAR(aktivitas_harian.created_at, 'DD-MM-YYYY')"), 'ILIKE', '%' . strtolower($search) . '%');
             });
         }
 
