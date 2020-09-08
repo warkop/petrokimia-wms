@@ -338,9 +338,10 @@ class AktivitasController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function getAreaStok($id_aktivitas, $id_material, $id_area) //memuat list tanggal apa saja yang tersedia pada gudang ini
+    public function getAreaStok(Request $req, $id_aktivitas, $id_material, $id_area) //memuat list tanggal apa saja yang tersedia pada gudang ini
     {
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
+        $tipe_list = strip_tags($req->input('tipe_list'));
         if ($aktivitas->pengaruh_tgl_produksi != null) {
             $detail = DB::table('')->selectRaw(
                 "
@@ -356,15 +357,22 @@ class AktivitasController extends Controller
                 ->join('area', 'area.id', '=', 'area_stok.id_area')
                 ->where('id_material', $id_material)
                 ->where('area_stok.id_area', $id_area);
-            if ($aktivitas->produk_rusak == 2) {
-                $detail = $detail->where('area_stok.status', 1);
-            } else if ($aktivitas->produk_rusak == 1) {
-                $detail = $detail->where('area_stok.status', 2);
-            } else if ($aktivitas->produk_rusak == 3) {
+            // if ($aktivitas->produk_rusak == 2) {
+            //     $detail = $detail->where('area_stok.status', 1);
+            // } else if ($aktivitas->produk_rusak == 1) {
+            //     $detail = $detail->where('area_stok.status', 2);
+            // } else if ($aktivitas->produk_rusak == 3) {
+            //     $detail = $detail->where('area_stok.status', 2);
+            // } else {
+            //     $detail = $detail->where('area_stok.status', 1);
+            // }
+
+            if ($tipe_list == 2) {
                 $detail = $detail->where('area_stok.status', 2);
             } else {
                 $detail = $detail->where('area_stok.status', 1);
             }
+
             if ($aktivitas->fifo != null) {
                 $detail = $detail->orderBy('tanggal', 'ASC');
             } else {
