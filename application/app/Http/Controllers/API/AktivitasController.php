@@ -247,13 +247,20 @@ class AktivitasController extends Controller
         $gudang = $this->getCheckerGudang();
 
         $search = strip_tags($req->input('search'));
+        $tipe_list = strip_tags($req->input('tipe_list'));
         $aktivitas = Aktivitas::findOrFail($id_aktivitas);
         $condition = '';
-        if ($aktivitas->produk_rusak == 2) {
-            $condition = ' and area_stok.status = 1';
-        } else if ($aktivitas->produk_rusak == 1) {
-            $condition = ' and area_stok.status = 2';
-        } else if ($aktivitas->produk_rusak == 3) {
+        // if ($aktivitas->produk_rusak == 2) {
+        //     $condition = ' and area_stok.status = 1';
+        // } else if ($aktivitas->produk_rusak == 1) {
+        //     $condition = ' and area_stok.status = 2';
+        // } else if ($aktivitas->produk_rusak == 3) {
+        //     $condition = ' and area_stok.status = 2';
+        // } else {
+        //     $condition = ' and area_stok.status = 1';
+        // }
+
+        if ($tipe_list == 2) {
             $condition = ' and area_stok.status = 2';
         } else {
             $condition = ' and area_stok.status = 1';
