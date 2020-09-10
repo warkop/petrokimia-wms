@@ -288,14 +288,15 @@ class AktivitasController extends Controller
             $resource = $resource->get();
             $data = GetAreaResource::collection($resource);
         } else {
-            $tanggal = date('Y-m-d', strtotime(now()));
+            // $tanggal = date('Y-m-d', strtotime(now()));
             $resource = Area::select(
                 'area.id',
                 'area.nama',
                 'area.kapasitas',
                 'area.tipe',
                 DB::raw("TO_CHAR(now(),'YYYY-MM-DD') as tanggal"),
-                DB::raw("to_char(COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = " . $id_material . " and tanggal = '".$tanggal."') ,0), 'FM999999990.000') as jumlah")
+                // DB::raw("to_char(COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = " . $id_material . " and tanggal = '".$tanggal."') ,0), 'FM999999990.000') as jumlah")
+                DB::raw("to_char(COALESCE((SELECT sum(jumlah) FROM area_stok where id_area = area.id and id_material = " . $id_material . "') ,0), 'FM999999990.000') as jumlah")
             )
             ->leftJoin('area_stok', 'area_stok.id_area', '=', 'area.id')
             ->where(function ($where) use ($search) {
