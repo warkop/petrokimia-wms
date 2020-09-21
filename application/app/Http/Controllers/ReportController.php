@@ -6411,7 +6411,11 @@ class ReportController extends Controller
 
             }
 
-            if ($jumlahStokAwal > 0 || $totalMasuk > 0 || $totalKeluar > 0) {
+            $testJumlahStokAwal = intval($jumlahStokAwal * ($p = pow(10, 3))) / $p;
+            $testTotalMasuk = intval($totalMasuk * ($p = pow(10, 3))) / $p;
+            $testTotalKeluar = intval($totalKeluar * ($p = pow(10, 3))) / $p;
+
+            if ($testJumlahStokAwal > 0 || $testTotalMasuk > 0 || $testTotalKeluar > 0) {
                 $col = 1;
                 $abjad = 'A';
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $roww[0]->nama);
