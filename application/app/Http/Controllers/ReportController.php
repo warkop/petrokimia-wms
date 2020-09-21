@@ -6414,7 +6414,7 @@ class ReportController extends Controller
 
             }
 
-            if ($jumlahStokAwal >0 || $totalMasuk > 0 || $totalKeluar > 0) {
+            // if ($jumlahStokAwal > 0 || $totalMasuk > 0 || $totalKeluar > 0) {
                 $col = 1;
                 $abjad = 'A';
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $roww[0]->nama);
@@ -6454,7 +6454,7 @@ class ReportController extends Controller
                 $totalStokAkhir += $jumlah;
 
                 $row++;
-            }
+            // }
         }
         $col = 1;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, 'Total');
