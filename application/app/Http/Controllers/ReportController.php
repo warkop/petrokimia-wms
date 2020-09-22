@@ -816,12 +816,9 @@ class ReportController extends Controller
     
             $res = AreaStok::distinct()->select(
                 'id_material',
-                'id_area'
+                'id_gudang'
             )
             ->join('area', 'area.id', '=', 'area_stok.id_area')
-            ->join('gudang', 'gudang.id', '=', 'area.id_gudang')
-            ->with('material')
-            ->with('area', 'area.gudang')
             ->where('status', 1);
     
             if ($gudang) {
@@ -851,10 +848,9 @@ class ReportController extends Controller
             }
     
             $res = $res
-            // ->orderBy('gudang.nama', 'asc')
             ->orderBy('id_material', 'asc')
             ->get()
-            ->groupBy('id_material');
+            ;
     
             if (!is_dir(storage_path() . '/app/public/excel/')) {
                 mkdir(storage_path() . '/app/public/excel', 755);
@@ -1095,7 +1091,6 @@ class ReportController extends Controller
             $no++;
             $col = 1;
             $row++;
-            $value = $value[0];
 
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row . ":" . $abjadPengeluaran . $row)->applyFromArray($style_kolom);
 
@@ -1105,9 +1100,8 @@ class ReportController extends Controller
             $objSpreadsheet->getActiveSheet()->getStyle($abjad . $row)->applyFromArray($style_no);
 
             $col++;
-            // dd($value->area->gudang->nama);
-            // return 0;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->area->gudang->nama??'-');
+            $gudangs = Gudang::withoutGlobalScopes()->find($value->id_gudang);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $gudangs->nama);
 
             //stok awal
             $materialTransMengurang = MaterialTrans::
@@ -1121,8 +1115,8 @@ class ReportController extends Controller
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
             ->where(function ($query) use ($value) {
-                $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
-                $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
+                $query->where('aktivitas_harian.id_gudang', $value->id_gudang);
+                $query->orWhere('material_adjustment.id_gudang', $value->id_gudang);
             })
             ->where('id_material', $value->id_material)
             ->where(function ($query) use ($tgl_awal) {
@@ -1145,8 +1139,8 @@ class ReportController extends Controller
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
             ->where(function ($query) use ($value) {
-                $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
-                $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
+                $query->where('aktivitas_harian.id_gudang', $value->id_gudang);
+                $query->orWhere('material_adjustment.id_gudang', $value->id_gudang);
             })
             ->where('id_material', $value->id_material)
             ->where(function ($query) use ($tgl_awal) {
@@ -1161,7 +1155,8 @@ class ReportController extends Controller
             $stokAwal = $materialTransMenambah - $materialTransMengurang;
 
             $col++;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $value->material->nama);
+            $materials = Material::withoutGlobalScopes()->find($value->id_material);
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $materials->nama);
             $col++;
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAwal, 3));
             $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.000');
@@ -1185,20 +1180,18 @@ class ReportController extends Controller
                 
                 ;
             })
-            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            ->whereHas('areaStok.area', function ($query) use ($gudang) {
-                $query->whereIn('id_gudang', $gudang);
-            })
-            ->where('tipe', 2)
-            ->where('id_material', $value->id_material)
+            ->join('area_stok', 'material_trans.id_area_stok', '=', 'area_stok.id')
+            ->join('area', 'area_stok.id_area', '=', 'area.id')
+            ->where('area.id_gudang', $value->id_gudang)
+            ->where('material_trans.tipe', 2)
+            ->where('material_trans.id_material', $value->id_material)
             ->where(function($query) use($tgl_awal, $tgl_akhir) {
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
-                $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
             ->where('jenis_aktivitas', 4)
             ->whereNull('aktivitas_harian.canceled')
             ->whereNull('aktivitas_harian.cancelable')
-            ->sum('jumlah');    
+            ->sum('material_trans.jumlah');    
             $stokAkhir += $produksi;
             $col++;    
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($produksi, 3));
@@ -1212,17 +1205,15 @@ class ReportController extends Controller
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
                 ;
             })
-            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
             ->join('area_stok', 'material_trans.id_area_stok', '=', 'area_stok.id')
             ->join('area', 'area_stok.id_area', '=', 'area.id')
             ->where('material_trans.tipe', 2)
             ->where('material_trans.id_material', $value->id_material)
             ->where(function($query) use($tgl_awal, $tgl_akhir) {
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
-                $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
             ->whereNotNull('aktivitas.pengiriman')
-            // ->whereIn('area.id_gudang', $gudang)
+            ->where('area.id_gudang', $value->id_gudang)
             ->whereNotNull('status_aktivitas')
             ->whereNull('internal_gudang')
             ->whereNull('aktivitas_harian.canceled')
@@ -1243,16 +1234,14 @@ class ReportController extends Controller
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
                 ;
             })
-            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
             ->join('area_stok', 'material_trans.id_area_stok', '=', 'area_stok.id')
             ->join('area', 'area_stok.id_area', '=', 'area.id')
             ->where('material_trans.tipe', 2)
             ->where('material_trans.id_material', $value->id_material)
             ->where(function($query) use($tgl_awal, $tgl_akhir) {
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
-                $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
-            // ->whereIn('area.id_gudang', $gudang)
+            ->where('area.id_gudang', $value->id_gudang)
             ->where('aktivitas.jenis_aktivitas', 1)
             ->whereNull('aktivitas_harian.canceled')
             ->whereNull('aktivitas_harian.cancelable')
@@ -1272,20 +1261,18 @@ class ReportController extends Controller
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
                 ;
             })
-            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            ->whereHas('areaStok.area', function ($query) use ($gudang) {
-                $query->whereIn('id_gudang', $gudang);
-            })
-            ->where('tipe', 2)
-            ->where('id_material', $value->id_material)
+            ->join('area_stok', 'material_trans.id_area_stok', '=', 'area_stok.id')
+            ->join('area', 'area_stok.id_area', '=', 'area.id')
+            ->where('area.id_gudang', $value->id_gudang)
+            ->where('material_trans.tipe', 2)
+            ->where('material_trans.id_material', $value->id_material)
             ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
-                $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
             ->where('aktivitas.jenis_aktivitas', 2)
             ->whereNull('aktivitas_harian.canceled')
             ->whereNull('aktivitas_harian.cancelable')
-            ->sum('jumlah');
+            ->sum('material_trans.jumlah');
 
             $stokAkhir += $rebagPlus;
             
@@ -1304,15 +1291,13 @@ class ReportController extends Controller
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
                 ;
             })
-            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            ->whereHas('areaStok.area', function ($query) use ($gudang) {
-                $query->whereIn('id_gudang', $gudang);
-            })
-            ->where('tipe', 1)
-            ->where('id_material', $value->id_material)
+            ->join('area_stok', 'material_trans.id_area_stok', '=', 'area_stok.id')
+            ->join('area', 'area_stok.id_area', '=', 'area.id')
+            ->where('area.id_gudang', $value->id_gudang)
+            ->where('material_trans.tipe', 1)
+            ->where('material_trans.id_material', $value->id_material)
             ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
-                $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
             ->whereNotNull('aktivitas.aktivitas_posto')
             ->whereNotNull('pengaruh_tgl_produksi')
@@ -1320,7 +1305,7 @@ class ReportController extends Controller
             ->whereNull('internal_gudang')
             ->whereNull('aktivitas_harian.canceled')
             ->whereNull('aktivitas_harian.cancelable')
-            ->sum('jumlah');
+            ->sum('material_trans.jumlah');
 
             $stokAkhir -= $posto;
             
@@ -1336,22 +1321,20 @@ class ReportController extends Controller
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
                 ;
             })
-            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            ->whereHas('areaStok.area', function ($query) use ($gudang) {
-                $query->whereIn('id_gudang', $gudang);
-            })
-            ->where('tipe', 1)
-            ->where('id_material', $value->id_material)
+            ->join('area_stok', 'material_trans.id_area_stok', '=', 'area_stok.id')
+            ->join('area', 'area_stok.id_area', '=', 'area.id')
+            ->where('area.id_gudang', $value->id_gudang)
+            ->where('material_trans.tipe', 1)
+            ->where('material_trans.id_material', $value->id_material)
             ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
-                $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
             ->whereNotNull('aktivitas.so')
             ->whereNotNull('pengaruh_tgl_produksi')
             ->whereNull('internal_gudang')
             ->whereNull('aktivitas_harian.canceled')
             ->whereNull('aktivitas_harian.cancelable')
-            ->sum('jumlah');
+            ->sum('material_trans.jumlah');
 
             $stokAkhir -= $so;
             
@@ -1367,20 +1350,18 @@ class ReportController extends Controller
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
                 ;
             })
-            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            ->whereHas('areaStok.area', function ($query) use ($gudang) {
-                $query->whereIn('id_gudang', $gudang);
-            })
-            ->where('tipe', 1)
-            ->where('id_material', $value->id_material)
+            ->join('area_stok', 'material_trans.id_area_stok', '=', 'area_stok.id')
+            ->join('area', 'area_stok.id_area', '=', 'area.id')
+            ->where('area.id_gudang', $value->id_gudang)
+            ->where('material_trans.tipe', 1)
+            ->where('material_trans.id_material', $value->id_material)
             ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
-                $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
             ->where('jenis_aktivitas', 3)
             ->whereNull('aktivitas_harian.canceled')
             ->whereNull('aktivitas_harian.cancelable')
-            ->sum('jumlah');
+            ->sum('material_trans.jumlah');
 
             $stokAkhir -= $reprod;
             
@@ -1396,20 +1377,18 @@ class ReportController extends Controller
                 $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
                 ;
             })
-            ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            ->whereHas('areaStok.area', function ($query) use ($gudang) {
-                $query->whereIn('id_gudang', $gudang);
-            })
-            ->where('tipe', 1)
-            ->where('id_material', $value->id_material)
+            ->join('area_stok', 'material_trans.id_area_stok', '=', 'area_stok.id')
+            ->join('area', 'area_stok.id_area', '=', 'area.id')
+            ->where('area.id_gudang', $value->id_gudang)
+            ->where('material_trans.tipe', 1)
+            ->where('material_trans.id_material', $value->id_material)
             ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
                 $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
-                $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
             })
             ->where('jenis_aktivitas', 2)
             ->whereNull('aktivitas_harian.canceled')
             ->whereNull('aktivitas_harian.cancelable')
-            ->sum('jumlah');
+            ->sum('material_trans.jumlah');
 
             $stokAkhir -= $rebagMinus;
             
@@ -1437,20 +1416,23 @@ class ReportController extends Controller
                 ;
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            ->where(function ($query) use ($value) {
-                $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
-                $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
-            })
+            // ->where(function ($query) use ($value) {
+            //     $query->where('aktivitas_harian.id_gudang', $value->id_gudang);
+            //     $query->orWhere('material_adjustment.id_gudang', $value->id_gudang);
+            // })
+            ->join('area_stok', 'material_trans.id_area_stok', '=', 'area_stok.id')
+            ->join('area', 'area_stok.id_area', '=', 'area.id')
+            ->where('area.id_gudang', $value->id_gudang)
             ->where('status_produk', 2)
-            ->where('id_material', $value->id_material)
+            ->where('material_trans.id_material', $value->id_material)
             ->where(function ($query) use ($tgl_awal) {
                 $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
                 $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
             })
-            ->where('tipe', 2)
+            ->where('material_trans.tipe', 2)
             ->whereNull('aktivitas_harian.canceled')
             ->whereNull('aktivitas_harian.cancelable')
-            ->sum('jumlah');
+            ->sum('material_trans.jumlah');
 
             $transRusakMengurang = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
             ->leftJoin('aktivitas', function ($join){
@@ -1459,20 +1441,23 @@ class ReportController extends Controller
                 ;
             })
             ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-            ->where(function ($query) use ($value) {
-                $query->where('aktivitas_harian.id_gudang', $value->area->id_gudang);
-                $query->orWhere('material_adjustment.id_gudang', $value->area->id_gudang);
-            })
+            // ->where(function ($query) use ($value) {
+            //     $query->where('aktivitas_harian.id_gudang', $value->id_gudang);
+            //     $query->orWhere('material_adjustment.id_gudang', $value->id_gudang);
+            // })
+            ->join('area_stok', 'material_trans.id_area_stok', '=', 'area_stok.id')
+            ->join('area', 'area_stok.id_area', '=', 'area.id')
+            ->where('area.id_gudang', $value->id_gudang)
             ->where('status_produk', 2)
-            ->where('id_material', $value->id_material)
+            ->where('material_trans.id_material', $value->id_material)
             ->where(function ($query) use ($tgl_awal) {
                 $query->where('aktivitas_harian.updated_at', '<', $tgl_awal);
                 $query->orWhere('material_adjustment.tanggal', '<', $tgl_awal);
             })
-            ->where('tipe', 1)
+            ->where('material_trans.tipe', 1)
             ->whereNull('aktivitas_harian.canceled')
             ->whereNull('aktivitas_harian.cancelable')
-            ->sum('jumlah');
+            ->sum('material_trans.jumlah');
 
             $rusakSaldoAwal += $transRusakMenambah - $transRusakMengurang;
 
@@ -1485,17 +1470,17 @@ class ReportController extends Controller
                     ;
                 })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-                ->whereHas('areaStok.area', function ($query) use ($value) {
-                    $query->where('id_gudang', $value->area->id_gudang);
-                })
+                ->join('area_stok', 'material_trans.id_area_stok', '=', 'area_stok.id')
+                ->join('area', 'area_stok.id_area', '=', 'area.id')
+                ->where('area.id_gudang', $value->id_gudang)
                 ->where('status_produk', 2)
-                ->where('id_material', $value->id_material)
+                ->where('material_trans.id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
                     $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
                     $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
                 })
-                ->where('tipe', 2)
-                ->sum('jumlah');
+                ->where('material_trans.tipe', 2)
+                ->sum('material_trans.jumlah');
 
             $rusakTambah += $materialTrans;
 
@@ -1507,17 +1492,17 @@ class ReportController extends Controller
                     ;
                 })
                 ->leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
-                ->whereHas('areaStok.area', function ($query) use ($value) {
-                    $query->where('id_gudang', $value->area->id_gudang);
-                })
+                ->join('area_stok', 'material_trans.id_area_stok', '=', 'area_stok.id')
+                ->join('area', 'area_stok.id_area', '=', 'area.id')
+                ->where('area.id_gudang', $value->id_gudang)
                 ->where('status_produk', 2)
-                ->where('id_material', $value->id_material)
+                ->where('material_trans.id_material', $value->id_material)
                 ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
                     $query->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir]);
                     $query->orWhereBetween('material_adjustment.tanggal', [$tgl_awal, $tgl_akhir]);
                 })
-                ->where('tipe', 1)
-                ->sum('jumlah');
+                ->where('material_trans.tipe', 1)
+                ->sum('material_trans.jumlah');
             
             $rusakKurang += $materialTrans;
 
@@ -4437,7 +4422,7 @@ class ReportController extends Controller
             })
             ->whereNull('penerimaan_gi')
             ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')))
-            ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00')))
+            ->where(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day')))
             ->whereNull('aktivitas_harian.canceled')
             ->whereNull('aktivitas_harian.cancelable')
             ->orderBy('gudang.nama', 'asc')
