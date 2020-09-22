@@ -4436,7 +4436,8 @@ class ReportController extends Controller
                 $query->where('draft', 0);
             })
             ->whereNull('penerimaan_gi')
-            ->whereBetween('aktivitas_harian.updated_at', [$tgl_awal, $tgl_akhir])
+            ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')))
+            ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00')))
             ->whereNull('aktivitas_harian.canceled')
             ->whereNull('aktivitas_harian.cancelable')
             ->orderBy('gudang.nama', 'asc')
