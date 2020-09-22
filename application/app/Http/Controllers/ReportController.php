@@ -6343,7 +6343,7 @@ class ReportController extends Controller
                         ->whereNull('aktivitas_harian.cancelable')
                         ->get();
                 } else if ($resShift->id == 2) {
-                    $stokTanggalIni = DB::table('material_transs')
+                    $stokTanggalIni = DB::table('material_trans')
                         ->where('material_trans.id_area_stok', $value->id)
                         ->leftJoin('aktivitas_harian', function ($join) use ($tanggal) {
                             $join->on('aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
