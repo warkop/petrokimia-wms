@@ -5982,7 +5982,7 @@ class ReportController extends Controller
             'area.nama'
         )
         ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
-        // ->where('id_gudang', $gudang)
+        ->where('id_gudang', $gudang)
         ->where('id_material', $pilih_produk)
         // ->whereNull('area.end_date')
         ->orderBy('id_area')
