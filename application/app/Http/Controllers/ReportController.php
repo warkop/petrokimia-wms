@@ -5687,7 +5687,6 @@ class ReportController extends Controller
         $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
         ->leftJoin('aktivitas','aktivitas.id', '=', 'ah.id_aktivitas')
         ->where('tipe', 1)
-        ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($tgl_sekarang)))
         ->where('id_material', $id_material)
         ->where('ah.id_gudang', $gudang)
         ->where('draft', 0)
@@ -5695,9 +5694,18 @@ class ReportController extends Controller
         ->whereNotNull('aktivitas_posto')
         ->whereNull('ah.canceled')
         ->whereNull('ah.cancelable')
-        ->sum('jumlah');
+        ;
+
+        if ($shift == 3) {
+            $materialTrans = $materialTrans
+            ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tgl_sekarang . ' 23:00:00 -1 day')))
+            ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_sekarang . ' 20:00:00')))
+            ;
+        } else {
+            $materialTrans = $materialTrans->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($tgl_sekarang)));
+        }
         
-        return $materialTrans;
+        return $materialTrans->sum('jumlah');
     }
 
     private function mutasiStokGetPengeluaranSo($id_material, $gudang, $tgl_sekarang, $shift)
@@ -5705,7 +5713,6 @@ class ReportController extends Controller
         $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
         ->leftJoin('aktivitas','aktivitas.id', '=', 'ah.id_aktivitas')
         ->where('tipe', 1)
-        ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($tgl_sekarang)))
         ->where('id_material', $id_material)
         ->where('ah.id_gudang', $gudang)
         ->where('draft', 0)
@@ -5713,9 +5720,18 @@ class ReportController extends Controller
         ->whereNotNull('aktivitas.so')
         ->whereNull('ah.canceled')
         ->whereNull('ah.cancelable')
-        ->sum('jumlah');
+        ;
+
+        if ($shift == 3) {
+            $materialTrans = $materialTrans
+            ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '>=', date('Y-m-d H:i:s', strtotime($tgl_sekarang . ' 23:00:00 -1 day')))
+            ->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), '<', date('Y-m-d H:i:s', strtotime($tgl_sekarang . ' 20:00:00')))
+            ;
+        } else {
+            $materialTrans = $materialTrans->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($tgl_sekarang)));
+        }
         
-        return $materialTrans;
+        return $materialTrans->sum('jumlah');
     }
 
     private function mutasiStokGetPengeluaranGudangInternal($id_material, $gudang, $tgl_sekarang, $shift)
