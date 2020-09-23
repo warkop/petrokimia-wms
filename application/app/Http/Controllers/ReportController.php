@@ -5597,10 +5597,13 @@ class ReportController extends Controller
     {
         $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
         ->leftJoin('aktivitas', 'aktivitas.id', '=', 'ah.id_aktivitas')
-        ->where('tipe', 2)
-        ->where('id_material', $id_material)
+        ->join('area_stok', 'area_stok.id', '=', 'id_area_stok')
+        ->join('area', 'area.id', '=', 'area_stok.id_area')
+        ->where('area.id_gudang', $gudang)
+        ->where('material_trans.tipe', 2)
+        ->where('material_trans.id_material', $id_material)
         ->where('draft', 0)
-        ->where('ah.id_gudang', $gudang)
+        // ->where('ah.id_gudang', $gudang)
         ->where('id_shift', $shift)
         ->whereNotNull('pengiriman')
         ->whereNotNull('status_aktivitas')
@@ -5617,17 +5620,20 @@ class ReportController extends Controller
             $materialTrans = $materialTrans->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($tgl_sekarang)));
         }
         
-        return $materialTrans->sum('jumlah');
+        return $materialTrans->sum('material_trans.jumlah');
     }
 
     private function mutasiStokGetPemasukanProduksi($id_material, $gudang, $tgl_sekarang, $shift)
     {
         $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
         ->leftJoin('aktivitas', 'aktivitas.id', '=', 'ah.id_aktivitas')
-        ->where('tipe', 2)
-        ->where('id_material', $id_material)
+        ->join('area_stok', 'area_stok.id', '=', 'id_area_stok')
+        ->join('area', 'area.id', '=', 'area_stok.id_area')
+        ->where('area.id_gudang', $gudang)
+        ->where('material_trans.tipe', 2)
+        ->where('material_trans.id_material', $id_material)
         ->where('draft', 0)
-        ->where('ah.id_gudang', $gudang)
+        // ->where('ah.id_gudang', $gudang)
         ->where('id_shift', $shift)
         ->where('jenis_aktivitas', 4)
         ->whereNull('ah.canceled')
@@ -5643,17 +5649,19 @@ class ReportController extends Controller
             $materialTrans = $materialTrans->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($tgl_sekarang)));
         }
         
-        return $materialTrans->sum('jumlah');
+        return $materialTrans->sum('material_trans.jumlah');
     }
 
     private function mutasiStokGetPemasukanImpor($id_material, $gudang, $tgl_sekarang, $shift)
     {
         $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
-        ->leftJoin('aktivitas', 'aktivitas.id', '=', 'ah.id_aktivitas')
-        ->where('tipe', 2)
-        ->where('id_material', $id_material)
+        ->leftJoin('aktivitas', 'aktivitas.id', '=', 'ah.id_aktivitas')->join('area_stok', 'area_stok.id', '=', 'id_area_stok')
+        ->join('area', 'area.id', '=', 'area_stok.id_area')
+        ->where('area.id_gudang', $gudang)
+        ->where('material_trans.tipe', 2)
+        ->where('material_trans.id_material', $id_material)
         ->where('draft', 0)
-        ->where('ah.id_gudang', $gudang)
+        // ->where('ah.id_gudang', $gudang)
         ->where('id_shift', $shift)
         ->where('jenis_aktivitas', 1)
         ->whereNull('ah.canceled')
@@ -5669,15 +5677,15 @@ class ReportController extends Controller
             $materialTrans = $materialTrans->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($tgl_sekarang)));
         }
         
-        return $materialTrans->sum('jumlah');
+        return $materialTrans->sum('material_trans.jumlah');
     }
 
     private function mutasiStokGetPemasukanGudangInternal($id_material, $gudang, $tgl_sekarang, $shift)
     {
         $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
         ->leftJoin('aktivitas', 'aktivitas.id', '=', 'ah.id_aktivitas')
-        ->where('id_material', $id_material)
-        ->where('tipe', 1)
+        ->where('material_trans.id_material', $id_material)
+        ->where('material_trans.tipe', 1)
         ->where('draft', 0)
         ->where('ah.id_gudang_tujuan', $gudang)
         ->where('ah.id_gudang', '<>', $gudang)
@@ -5704,9 +5712,12 @@ class ReportController extends Controller
     {
         $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
         ->leftJoin('aktivitas','aktivitas.id', '=', 'ah.id_aktivitas')
-        ->where('tipe', 1)
-        ->where('id_material', $id_material)
-        ->where('ah.id_gudang', $gudang)
+        ->join('area_stok', 'area_stok.id', '=', 'id_area_stok')
+        ->join('area', 'area.id', '=', 'area_stok.id_area')
+        ->where('area.id_gudang', $gudang)
+        ->where('material_trans.tipe', 1)
+        ->where('material_trans.id_material', $id_material)
+        // ->where('ah.id_gudang', $gudang)
         ->where('draft', 0)
         ->where('id_shift', $shift)
         ->whereNotNull('aktivitas_posto')
@@ -5723,16 +5734,19 @@ class ReportController extends Controller
             $materialTrans = $materialTrans->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($tgl_sekarang)));
         }
         
-        return $materialTrans->sum('jumlah');
+        return $materialTrans->sum('material_trans.jumlah');
     }
 
     private function mutasiStokGetPengeluaranSo($id_material, $gudang, $tgl_sekarang, $shift)
     {
         $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
         ->leftJoin('aktivitas','aktivitas.id', '=', 'ah.id_aktivitas')
-        ->where('tipe', 1)
-        ->where('id_material', $id_material)
-        ->where('ah.id_gudang', $gudang)
+        ->join('area_stok', 'area_stok.id', '=', 'id_area_stok')
+        ->join('area', 'area.id', '=', 'area_stok.id_area')
+        ->where('area.id_gudang', $gudang)
+        ->where('material_trans.tipe', 1)
+        ->where('material_trans.id_material', $id_material)
+        // ->where('ah.id_gudang', $gudang)
         ->where('draft', 0)
         ->where('id_shift', $shift)
         ->whereNotNull('aktivitas.so')
@@ -5749,7 +5763,7 @@ class ReportController extends Controller
             $materialTrans = $materialTrans->where(DB::raw("TO_CHAR(ah.updated_at, 'yyyy-mm-dd')"), date('Y-m-d', strtotime($tgl_sekarang)));
         }
         
-        return $materialTrans->sum('jumlah');
+        return $materialTrans->sum('material_trans.jumlah');
     }
 
     private function mutasiStokGetPengeluaranGudangInternal($id_material, $gudang, $tgl_sekarang, $shift)
@@ -5757,8 +5771,8 @@ class ReportController extends Controller
         $materialTrans = MaterialTrans::leftJoin('aktivitas_harian as ah', 'ah.id', '=', 'material_trans.id_aktivitas_harian')
         ->leftJoin('aktivitas', 'aktivitas.id', '=', 'ah.id_aktivitas')
         ->leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
-        ->where('tipe', 1)
-        ->where('id_material', $id_material)
+        ->where('material_trans.tipe', 1)
+        ->where('material_trans.id_material', $id_material)
         ->where('draft', 0)
         ->where(function($query) use ($gudang) {
             $query->where('ah.id_gudang_tujuan', '<>', $gudang);
