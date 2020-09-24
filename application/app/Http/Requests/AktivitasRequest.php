@@ -94,7 +94,7 @@ class AktivitasRequest extends FormRequest
             if (request()->input('pallet_kosong') != null) {
                 $rules['pallet_rusak'] = 'different:pallet_kosong';
             } else if (request()->input('pallet_dipakai') != null) {
-                $rules['pallet_rusak'] = 'different:pallet_kosong';
+                $rules['pallet_rusak'] = 'different:pallet_dipakai';
             } else if (request()->input('pallet_stok') != null) {
                 $rules['pallet_dipakai'] = 'same:pallet_stok';
             }
