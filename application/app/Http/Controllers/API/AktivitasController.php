@@ -578,9 +578,9 @@ class AktivitasController extends Controller
 
                             if (!empty($area_stok)) {
                                 if ($tipe == 1) {
-                                    $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
+                                    $area_stok->jumlah = round($area_stok->jumlah - $list_jumlah[$k]['jumlah'], 3);
                                 } else {
-                                    $area_stok->jumlah = $area_stok->jumlah + $list_jumlah[$k]['jumlah'];
+                                    $area_stok->jumlah = round($area_stok->jumlah + $list_jumlah[$k]['jumlah'], 3);
                                 }
 
                                 $area_stok->status      = $status_produk;
@@ -654,9 +654,9 @@ class AktivitasController extends Controller
                                 }
 
                                 if ($tipe == 1) {
-                                    $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
+                                    $area_stok->jumlah = round($area_stok->jumlah - $list_jumlah[$k]['jumlah'], 3);
                                 } else {
-                                    $area_stok->jumlah = $area_stok->jumlah + $list_jumlah[$k]['jumlah'];
+                                    $area_stok->jumlah = round($area_stok->jumlah + $list_jumlah[$k]['jumlah'], 3);
                                 }
 
                                 $area_stok->id_material   = $produk;
