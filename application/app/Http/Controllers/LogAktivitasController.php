@@ -87,7 +87,7 @@ class LogAktivitasController extends Controller
         $data['aktivitasHarian'] = $aktivitasHarian;
         $data['id_aktivitas_harian'] = $aktivitasHarian->id;
         $data['aktivitasFoto'] = AktivitasFoto::withoutGlobalScopes()->where('id_aktivitas_harian', $aktivitasHarian->id)->get();
-        $produk = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->where('status_produk', 1)->get();
+        $produk = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_produk')->get();
         $data['produk'] = MaterialTransResource::collection($produk);
         $pallet = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_pallet')->get();
         $data['pallet'] = $pallet;
