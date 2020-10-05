@@ -578,9 +578,9 @@ class AktivitasController extends Controller
 
                             if (!empty($area_stok)) {
                                 if ($tipe == 1) {
-                                    $area_stok->jumlah = round($area_stok->jumlah - $list_jumlah[$k]['jumlah'], 3);
+                                    $area_stok->jumlah = round(round($area_stok->jumlah, 3) - round($list_jumlah[$k]['jumlah'], 3), 3);
                                 } else {
-                                    $area_stok->jumlah = round($area_stok->jumlah + $list_jumlah[$k]['jumlah'], 3);
+                                    $area_stok->jumlah = round(round($area_stok->jumlah, 3) + round($list_jumlah[$k]['jumlah'], 3), 3);
                                 }
 
                                 $area_stok->status      = $status_produk;
@@ -590,7 +590,7 @@ class AktivitasController extends Controller
                                 $area_stok->id_material = $produk;
                                 $area_stok->tanggal     = $list_jumlah[$k]['tanggal'] != null ? date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])) : null;
                                 $area_stok->status      = $status_produk;
-                                $area_stok->jumlah      = $list_jumlah[$k]['jumlah'];
+                                $area_stok->jumlah      = round($list_jumlah[$k]['jumlah'], 3);
                             }
 
                             if ($aktivitasHarian->draft == 0) {
@@ -604,7 +604,7 @@ class AktivitasController extends Controller
                                 'id_aktivitas_harian'   => $aktivitasHarian->id,
                                 'tanggal'               => $list_jumlah[$k]['tanggal'] != null ?date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])):null,
                                 'tipe'                  => $tipe,
-                                'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                'jumlah'                => round($list_jumlah[$k]['jumlah'], 3),
                                 'status_produk'         => $status_produk,
                                 'id_area_stok'          => $area_stok->id,
                                 'id_area'               => $id_area,
@@ -614,7 +614,7 @@ class AktivitasController extends Controller
                             (new AktivitasHarianArea)->create([
                                 'id_aktivitas_harian'   => $aktivitasHarian->id,
                                 'id_area_stok'          => $area_stok->id,
-                                'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                'jumlah'                => round($list_jumlah[$k]['jumlah'], 3),
                                 'tipe'                  => $tipe,
                                 'created_at'            => date('Y-m-d H:i:s'),
                                 'created_by'            => $res_user->id,
@@ -654,9 +654,9 @@ class AktivitasController extends Controller
                                 }
 
                                 if ($tipe == 1) {
-                                    $area_stok->jumlah = round($area_stok->jumlah - $list_jumlah[$k]['jumlah'], 3);
+                                    $area_stok->jumlah = round(round($area_stok->jumlah, 3) - round($list_jumlah[$k]['jumlah'], 3), 3);
                                 } else {
-                                    $area_stok->jumlah = round($area_stok->jumlah + $list_jumlah[$k]['jumlah'], 3);
+                                    $area_stok->jumlah = round(round($area_stok->jumlah, 3) + round($list_jumlah[$k]['jumlah'], 3), 3);
                                 }
 
                                 $area_stok->id_material   = $produk;
@@ -675,7 +675,7 @@ class AktivitasController extends Controller
                                     'id_aktivitas_harian'   => $aktivitasHarian->id,
                                     'tanggal'               => date('Y-m-d H:i:s'),
                                     'tipe'                  => $tipe,
-                                    'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                    'jumlah'                => round($list_jumlah[$k]['jumlah'], 3),
                                     'status_produk'         => $status_produk,
                                     'id_area_stok'          => $area_stok->id,
                                     'id_area'               => $id_area,
@@ -685,7 +685,7 @@ class AktivitasController extends Controller
                                 (new AktivitasHarianArea)->create([
                                     'id_aktivitas_harian'   => $aktivitasHarian->id,
                                     'id_area_stok'          => $area_stok->id,
-                                    'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                    'jumlah'                => round($list_jumlah[$k]['jumlah'], 3),
                                     'tipe'                  => $tipe,
                                     'created_at'            => date('Y-m-d H:i:s'),
                                     'created_by'            => $res_user->id,
@@ -988,9 +988,9 @@ class AktivitasController extends Controller
     
                                     if (!empty($area_stok)) {
                                         if ($tipe == 1) {
-                                            $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
+                                            $area_stok->jumlah = round(round($area_stok->jumlah, 3) - round($list_jumlah[$k]['jumlah'], 3), 3);
                                         } else {
-                                            $area_stok->jumlah = $area_stok->jumlah + $list_jumlah[$k]['jumlah'];
+                                            $area_stok->jumlah = round(round($area_stok->jumlah, 3) + round($list_jumlah[$k]['jumlah'], 3), 3);
                                         }
     
                                         $area_stok->save();
@@ -999,7 +999,7 @@ class AktivitasController extends Controller
                                         $area_stok->id_area = $id_area;
                                         $area_stok->id_material = $produk;
                                         $area_stok->tanggal = $list_jumlah[$k]['tanggal'] != null ? date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])) : null;
-                                        $area_stok->jumlah = $list_jumlah[$k]['jumlah'];
+                                        $area_stok->jumlah = round($list_jumlah[$k]['jumlah'], 3);
                                         $area_stok->status      = $status_produk;
                                         $area_stok->save();
                                     }
@@ -1011,7 +1011,7 @@ class AktivitasController extends Controller
                                         'id_aktivitas_harian'   => $wannaSave->id,
                                         'tanggal'               => $list_jumlah[$k]['tanggal'] != null ? date('Y-m-d', strtotime($list_jumlah[$k]['tanggal'])) : null,
                                         'tipe'                  => $tipe,
-                                        'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                        'jumlah'                => round($list_jumlah[$k]['jumlah'], 3),
                                         'status_produk'         => $status_produk,
                                         'id_area_stok'          => $area_stok->id,
                                         'id_area'               => $id_area,
@@ -1025,7 +1025,7 @@ class AktivitasController extends Controller
                                     (new AktivitasHarianArea)->create([
                                         'id_aktivitas_harian'   => $wannaSave->id,
                                         'id_area_stok'          => $area_stok->id,
-                                        'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                        'jumlah'                => round($list_jumlah[$k]['jumlah'], 3),
                                         'tipe'                  => $tipe,
                                         'created_at'            => date('Y-m-d H:i:s'),
                                         'created_by'            => $res_user->id,
@@ -1064,7 +1064,7 @@ class AktivitasController extends Controller
                                         }
 
                                         if ($area_stok->jumlah > $list_jumlah[$k]['jumlah']) {
-                                            $area_stok->jumlah = $area_stok->jumlah - $list_jumlah[$k]['jumlah'];
+                                            $area_stok->jumlah = round(round($area_stok->jumlah, 3) - round($list_jumlah[$k]['jumlah'], 3), 3);
                                         } else {
                                             AktivitasHarian::find($aktivitasHarian->id)->forceDelete();
 
@@ -1090,7 +1090,7 @@ class AktivitasController extends Controller
                                             'id_aktivitas_harian'   => $aktivitasHarian->id,
                                             'tanggal'               => date('Y-m-d H:i:s'),
                                             'tipe'                  => $tipe,
-                                            'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                            'jumlah'                => round($list_jumlah[$k]['jumlah'], 3),
                                             'status_produk'         => $status_produk,
                                             'id_area_stok'          => $area_stok->id,
                                             'id_area'               => $id_area,
@@ -1100,7 +1100,7 @@ class AktivitasController extends Controller
                                         (new AktivitasHarianArea)->create([
                                             'id_aktivitas_harian'   => $aktivitasHarian->id,
                                             'id_area_stok'          => $area_stok->id,
-                                            'jumlah'                => $list_jumlah[$k]['jumlah'],
+                                            'jumlah'                => round($list_jumlah[$k]['jumlah'], 3),
                                             'tipe'                  => $tipe,
                                             'created_at'            => date('Y-m-d H:i:s'),
                                             'created_by'            => $res_user->id,
