@@ -6040,7 +6040,10 @@ class ReportController extends Controller
         ->leftJoin('area', 'area.id', '=', 'area_stok.id_area')
         ->where('id_gudang', $gudang)
         ->where('id_material', $pilih_produk)
-        // ->whereNull('area.end_date')
+        ->where(function($query){
+            $query->where(DB::raw("TO_CHAR(area.end_date, 'yyyy-mm-dd')"), '>=',date('Y-m-d', strtotime(request()->input('tanggal'))));
+            $query->orWhereNull('area.end_date');
+        })
         ->orderBy('id_area')
         ->get()
         ->groupBy('id_area')
