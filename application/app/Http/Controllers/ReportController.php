@@ -6398,8 +6398,7 @@ class ReportController extends Controller
                                 $query->orWhere('shift', $resShift->id);
                             }
                         )
-                        ->whereNull('aktivitas_harian.canceled')
-                        ->whereNull('aktivitas_harian.cancelable')
+                        ->whereRaw('( case when id_aktivitas_harian is not null then (aktivitas_harian.canceled is null and aktivitas_harian.cancelable is null) else id_aktivitas_harian is null end)')
                         ->get();
                 } else if ($resShift->id == 2) {
                     $stokTanggalIni = DB::table('material_trans')
