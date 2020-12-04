@@ -129,6 +129,9 @@ class AktivitasController extends Controller
     {
         $gudang = $this->getCheckerGudang();
         $search = strip_tags($req->input('search'));
+        $sort = strtolower($req->input('sort'));
+        $order = strtolower($req->input('order'));
+        $filter = $req->input('filter');
 
         $my_auth = request()->get('my_auth');
         $user = Users::findOrFail($my_auth->id_user);
@@ -142,12 +145,22 @@ class AktivitasController extends Controller
             ->where(function ($where) use ($search) {
                 $where->where(DB::raw('nama'), 'ILIKE', '%' . strtolower($search) . '%');
             })
-            ->orderBy('id', 'desc');
+            ;
 
         if ($user->role_id == 5) {
             $res = $res->whereNotNull('aktivitas.peminjaman');
         } else {
             $res = $res->whereNull('peminjaman');
+        }
+
+        if ($filter && is_numeric($filter)) {
+            $res = $res->where('aktivitas.jenis_aktivitas', $filter);
+        }
+
+        if ($sort == 'nama' && ($order == 'asc' || $order == 'desc')) {
+            $res = $res->orderBy($sort, $order);
+        } else {
+            $res = $res->orderBy('id', 'desc');
         }
 
         $obj =  AktivitasResource::collection($res->paginate(10))->additional([
@@ -1615,8 +1628,8 @@ class AktivitasController extends Controller
         $search = $req->input('search');
         $tanggal_awal = $req->input('tanggal_awal');
         $tanggal_selesai = $req->input('tanggal_selesai');
-        $my_auth = $req->get('my_auth');
-        $user = Users::findOrFail($my_auth->id_user);
+        $sort = strtolower($req->input('sort'));
+        $order = strtolower($req->input('order'));
         
         $res = AktivitasHarian::select(
             'aktivitas_harian.id',
@@ -1660,7 +1673,6 @@ class AktivitasController extends Controller
                 $where->orWhere(DB::raw('LOWER(aktivitas_harian.driver)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('LOWER(aktivitas_harian.posto)'), 'ILIKE', '%' . strtolower($search) . '%');
             })
-            ->orderBy('aktivitas_harian.created_at', 'desc')
             ;
             
         if (!empty($shift)) {
@@ -1669,6 +1681,12 @@ class AktivitasController extends Controller
 
         if (!empty($tanggal_awal) && !empty($tanggal_selesai)) {
             $res = $res->whereBetween('aktivitas_harian.created_at', [date('Y-m-d', strtotime($tanggal_awal)), date('Y-m-d', strtotime($tanggal_selesai . '+1 day'))]);
+        }
+
+        if ($sort == 'date' && ($order == 'asc' || $order == 'desc')) {
+            $res = $res->orderBy('aktivitas_harian.created_at', $order);
+        } else {
+            $res = $res->orderBy('aktivitas_harian.created_at', 'desc');
         }
 
         $obj =  AktivitasResource::collection($res->paginate(10))->additional([
