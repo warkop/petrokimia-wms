@@ -154,7 +154,11 @@ class AktivitasController extends Controller
         }
 
         if ($filter && is_numeric($filter)) {
-            $res = $res->where('aktivitas.jenis_aktivitas', $filter);
+            if ($filter == 3) {
+                $res = $res->whereNull('aktivitas.status_aktivitas');
+            } else {
+                $res = $res->where('aktivitas.status_aktivitas', $filter);
+            }
         }
 
         if ($sort == 'nama' && ($order == 'asc' || $order == 'desc')) {
@@ -540,6 +544,7 @@ class AktivitasController extends Controller
         $aktivitasHarian->nopol             = $req->input('nopol');
         $aktivitasHarian->id_yayasan        = $req->input('id_yayasan');
         $aktivitasHarian->id_tkbm           = $req->input('id_tkbm');
+        $aktivitasHarian->distributor       = $req->input('distributor');
         $aktivitasHarian->draft             = $draft;
 
         if (!empty($req->input('sistro'))) {
