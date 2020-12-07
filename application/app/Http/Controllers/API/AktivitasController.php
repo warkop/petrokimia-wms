@@ -1658,7 +1658,8 @@ class AktivitasController extends Controller
             'aktivitas_harian.nopol',
             'aktivitas_harian.driver',
             'aktivitas_harian.posto',
-            'aktivitas_harian.so'
+            'aktivitas_harian.so',
+            'distributor'
         )
             ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
             ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
