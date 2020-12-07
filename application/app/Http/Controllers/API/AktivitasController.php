@@ -1657,7 +1657,8 @@ class AktivitasController extends Controller
             'aktivitas_harian.cancelable as aktivitas_harian_cancelable',
             'aktivitas_harian.nopol',
             'aktivitas_harian.driver',
-            'aktivitas_harian.posto'
+            'aktivitas_harian.posto',
+            'aktivitas_harian.so'
         )
             ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
             ->join('gudang', 'aktivitas_harian.id_gudang', '=', 'gudang.id')
