@@ -1742,6 +1742,7 @@ class AktivitasController extends Controller
             'driver',
             'posto',
             'ba',
+            'aktivitas_harian.so',
             'distributor',
             DB::raw('(SELECT nama gudang FROM gudang WHERE id = aktivitas_harian.id_gudang)
                     AS text_gudang'),
