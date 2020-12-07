@@ -542,6 +542,7 @@ class AktivitasController extends Controller
         $aktivitasHarian->so                = $req->input('so');
         $aktivitasHarian->posto             = $req->input('posto');
         $aktivitasHarian->nopol             = $req->input('nopol');
+        $aktivitasHarian->driver            = $req->input('driver');
         $aktivitasHarian->id_yayasan        = $req->input('id_yayasan');
         $aktivitasHarian->id_tkbm           = $req->input('id_tkbm');
         $aktivitasHarian->distributor       = $req->input('distributor');
