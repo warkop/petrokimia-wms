@@ -67,6 +67,7 @@
                     <tr>
                         <th scope="col">No</th>
                         <th scope="col">Tanggal</th>
+                        <th scope="col">Checker</th>
                         <th scope="col">Aktivitas</th>
                         <th scope="col">Gudang</th>
                         <th scope="col">Shift</th>

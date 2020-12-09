@@ -132,6 +132,30 @@
                 </div>
                 <div class="row mb1">
                     <div class="col-12">
+                        <label>Checker</label>
+                        <h5 class="boldd"> {{$aktivitasHarian->checker->checker->nama??'-'}}</h5>
+                    </div>
+                </div>
+                <div class="row mb1">
+                    <div class="col-12">
+                        <label>Karu</label>
+                        <h5 class="boldd"> {{$aktivitasHarian->karu->karu->nama??'-'}}</h5>
+                    </div>
+                </div>
+                <div class="row mb1">
+                    <div class="col-12">
+                        <label>Tanggal</label>
+                        <h5 class="boldd"> {{date('d-m-Y', strtotime($aktivitasHarian->updated_at))}}</h5>
+                    </div>
+                </div>
+                <div class="row mb1">
+                    <div class="col-12">
+                        <label>Jam</label>
+                        <h5 class="boldd"> {{date('H:i', strtotime($aktivitasHarian->updated_at))}}</h5>
+                    </div>
+                </div>
+                <div class="row mb1">
+                    <div class="col-12">
                         <label>Foto Truk</label><br>
                         <a href="#" class="boldd color-green"  data-toggle="modal"
                         data-target="#kt_modal_2"> Lihat Foto</a>

@@ -83,6 +83,11 @@ class AktivitasHarian extends Model
         return $this->belongsToMany(AlatBerat::class, 'aktivitas_harian_alat_berat', 'id_aktivitas_harian', 'id_alat_berat');
     }
 
+    public function karu()
+    {
+        return $this->belongsTo(Users::class, 'id_karu');
+    }
+
     public function jsonGrid($start = 0, $length = 10, $search = '', $sort = 'asc', $field = 'id', $condition)
     {
         $result = DB::table($this->table)
@@ -96,11 +101,14 @@ class AktivitasHarian extends Model
                 'aktivitas_harian.driver',
                 'aktivitas_harian.posto',
                 'shift_kerja.nama as nama_shift',
-                'approve'
+                'approve',
+                'tenaga_kerja_non_organik.nama as checker'
             )
             ->join('aktivitas', 'aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
             ->join('gudang', 'gudang.id', '=', 'aktivitas_harian.id_gudang')
             ->join('shift_kerja', 'shift_kerja.id', '=', 'aktivitas_harian.id_shift')
+            ->join('users', 'users.id', '=', 'aktivitas_harian.updated_by')
+            ->join('tenaga_kerja_non_organik', 'tenaga_kerja_non_organik.id', '=', 'users.id_tkbm')
             ->where('draft', 0)
             ;
 
@@ -112,7 +120,7 @@ class AktivitasHarian extends Model
                 $where->orwhere(DB::raw('LOWER(posto)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere('gudang.nama', 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere('shift_kerja.nama', 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'DD-MM-YYYY')"), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'DD-MM-YYYY H:i')"), 'ILIKE', '%' . strtolower($search) . '%');
             });
         }
 

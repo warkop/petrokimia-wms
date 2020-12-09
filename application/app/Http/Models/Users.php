@@ -160,4 +160,14 @@ class Users extends Authenticatable
 
         return $result;
     }
+
+    public function karu()
+    {
+        return $this->belongsTo(Karu::class, 'id_karu');
+    }
+
+    public function checker()
+    {
+        return $this->belongsTo(TenagaKerjaNonOrganik::class, 'id_tkbm');
+    }
 }

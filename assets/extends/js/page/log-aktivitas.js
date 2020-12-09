@@ -38,6 +38,9 @@ const load_table = function (id_gudang='', id_shift='') {
                 mData: "tanggal"
             },
             {
+                mData: "checker"
+            },
+            {
                 mData: "nama_aktivitas"
             },
             {
@@ -70,7 +73,6 @@ const load_table = function (id_gudang='', id_shift='') {
                 mRender: function (data, type, full, draw) {
                     let row = draw.row;
                     let start = draw.settings._iDisplayStart;
-                    let length = draw.settings._iDisplayLength;
 
                     let counter = start + 1 + row;
 
@@ -81,7 +83,7 @@ const load_table = function (id_gudang='', id_shift='') {
                 aTargets: [1],
                 mData: "tanggal",
                 mRender: function (data, type, full, draw) {
-                    return helpDateFormat(full.tanggal, "si");
+                    return helpDateFormat(full.tanggal, "si")+" "+helpTime(full.tanggal);
                 }
             },
             {

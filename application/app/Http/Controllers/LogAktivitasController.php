@@ -84,7 +84,7 @@ class LogAktivitasController extends Controller
     public function show(AktivitasHarian $aktivitasHarian)
     {
         $data['title'] = 'Detail Aktivitas';
-        $data['aktivitasHarian'] = $aktivitasHarian;
+        $data['aktivitasHarian'] = $aktivitasHarian->load('checker.checker', 'karu.karu');
         $data['id_aktivitas_harian'] = $aktivitasHarian->id;
         $data['aktivitasFoto'] = AktivitasFoto::withoutGlobalScopes()->where('id_aktivitas_harian', $aktivitasHarian->id)->get();
         $produk = MaterialTrans::with('material')->where('id_aktivitas_harian', $aktivitasHarian->id)->whereNotNull('status_produk')->get();
@@ -109,7 +109,7 @@ class LogAktivitasController extends Controller
 
     public function print($id)
     {
-        $aktivitasHarian = AktivitasHarian::where('id', $id)
+        $aktivitasHarian = AktivitasHarian::with('checker.checker', 'karu.karu')->where('id', $id)
             ->whereHas('aktivitas', function ($query) {
                 $query->whereNotNull('pengiriman');
                 $query->orWhereNotNull('so');
