@@ -96,6 +96,30 @@
                         {{$aktivitasHarian->checker->name??'-'}}
                     </p>
                 </div>
+                <div class="col-md-6 mb1">
+                    <label>
+                        Tanggal dan jam
+                    </label>
+                    <p class="boldd-500">
+                        {{date('d-m-Y H:i', strtotime($aktivitasHarian->updated_at)).' WIB'}}
+                    </p>
+                </div>
+                <div class="col-md-6 mb1">
+                    <label>
+                        Nama Karu
+                    </label>
+                    <p class="boldd-500">
+                        {{$aktivitasHarian->karu->karu->nama}}
+                    </p>
+                </div>
+                <div class="col-md-6 mb1">
+                    <label>
+                        Gudang Asal
+                    </label>
+                    <p class="boldd-500">
+                        {{$aktivitasHarian->gudang->nama}}
+                    </p>
+                </div>
                 <section class="row col-md-12 mt2" style="margin:0">
                     <div class="col-md-6 mb-setengah">
                         <label class="boldd-500">
@@ -113,6 +137,7 @@
                         <table>
                             <thead>
                             <tr>
+                              <th scope="col">Produk</th>
                               <th scope="col">Area</th>
                               <th scope="col">Tanggal</th>
                               <th scope="col">Daya Tampung</th>
@@ -120,6 +145,7 @@
                             </thead>
                             @foreach ($produk as $item)
                                 <tr>
+                                    <td>Produk {{ $item->nama_material }}</td>
                                     <td>Area {{ $item->nama_area }}</td>
                                     <td>{{ helpDate($item->tanggal, 'mi') }}</td>
                                     <td>{{ $item->jumlah }} Ton</td>
