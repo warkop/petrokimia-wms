@@ -1312,19 +1312,13 @@ class ReportController extends Controller
             $totalPemasukan += $rebagPlus;
 
             // Adjustment (+)
-            $adjustmentPlus = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-            ->leftJoin('aktivitas', function ($join){
-                $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                ;
-            })
+            $adjustmentPlus = MaterialTrans::leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
             ->join('area_stok', 'material_trans.id_area_stok', '=', 'area_stok.id')
             ->join('area', 'area_stok.id_area', '=', 'area.id')
             ->where('area.id_gudang', $value->id_gudang)
             ->where('material_trans.tipe', 2)
             ->where('material_trans.id_material', $value->id_material)
-            ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
-                $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
-            })
+            ->whereBetween("material_adjustment.tanggal", [date('Y-m-d', strtotime($tgl_awal)),date('Y-m-d', strtotime($tgl_akhir))])
             ->whereNotNull('id_adjustment')
             ->sum('material_trans.jumlah');
 
@@ -1465,19 +1459,13 @@ class ReportController extends Controller
             $stokAkhir -= $rebagMinus;
 
             // Adjustment (-)
-            $adjustmentMinus = MaterialTrans::leftJoin('aktivitas_harian', 'aktivitas_harian.id', '=', 'material_trans.id_aktivitas_harian')
-            ->leftJoin('aktivitas', function ($join){
-                $join->on('aktivitas.id', '=', 'aktivitas_harian.id_aktivitas')
-                ;
-            })
+            $adjustmentMinus = MaterialTrans::leftJoin('material_adjustment', 'material_adjustment.id', '=', 'material_trans.id_adjustment')
             ->join('area_stok', 'material_trans.id_area_stok', '=', 'area_stok.id')
             ->join('area', 'area_stok.id_area', '=', 'area.id')
             ->where('area.id_gudang', $value->id_gudang)
             ->where('material_trans.tipe', 1)
             ->where('material_trans.id_material', $value->id_material)
-            ->where(function ($query) use ($tgl_awal, $tgl_akhir) {
-                $query->whereBetween(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'yyyy-mm-dd HH24-MI-SS')"), [date('Y-m-d H:i:s', strtotime($tgl_awal . ' 23:00:00 -1 day')), date('Y-m-d H:i:s', strtotime($tgl_akhir . ' 23:00:00 -1 day'))]);
-            })
+            ->whereBetween('material_adjustment.tanggal', [date('Y-m-d', strtotime($tgl_awal)),date('Y-m-d', strtotime($tgl_akhir))])
             ->whereNotNull('id_adjustment')
             ->sum('material_trans.jumlah');
 
@@ -5442,10 +5430,22 @@ class ReportController extends Controller
         $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
         
-        $row = 7;
-        $col = 8;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TOTAL GI');
-        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
+        // $row = 7;
+        // $col = 8;
+        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TOTAL GI');
+        // $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPemasukan)->setAutoSize(true);
+
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rebag(+)');
+        $col++;
+        $abjadPemasukan++;
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->mergeCells('I' . $row . ':'. 'I' . ($row + 1));
+
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Adjustment(+)');
+        $col++;
+        $abjadPemasukan++;
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->mergeCells('J' . $row . ':'. 'J' . ($row + 1));
 
         $row = 6;
         $col++;
@@ -5458,7 +5458,7 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':'. $abjadPemasukan . $row);
         // pemasukan: end
         // pengeluaranL start
-        $col = 10;
+        $col = 12;
         $abjadPemasukan++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'PENGELUARAN');
         
@@ -5478,14 +5478,21 @@ class ReportController extends Controller
         $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'GUDANG INTERNAL');
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
-        
-        $row++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TOTAL GI');
-        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
 
         $abjadPengeluaran++;
         $col++;
-        $row--;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rebag(-)');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':'. $abjadPengeluaran . ($row + 1));
+
+        $abjadPengeluaran++;
+        $col++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Adjustment(-)');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':'. $abjadPengeluaran . ($row + 1));
+
+        $abjadPengeluaran++;
+        $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'TOTAL PENGELUARAN');
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row+1));
@@ -5494,11 +5501,23 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPemasukan . $row . ':'. $abjadPengeluaran . $row);
         // pengeluaran: end
 
-        $row = 5;
+        // $row = 5;
         $col++;
         
         $abjadPengeluaran++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Stok Akhir');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row+2));
+
+        $col++;
+        $abjadPengeluaran++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Rusak');
+        $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row+2));
+
+        $col++;
+        $abjadPengeluaran++;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Siap Jual');
         $objSpreadsheet->getActiveSheet()->getColumnDimension($abjadPengeluaran)->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadPengeluaran . $row . ':' . $abjadPengeluaran . ($row+2));
         
@@ -5887,6 +5906,35 @@ class ReportController extends Controller
         return $materialTrans->sum('jumlah');
     }
 
+
+    private function mutasiStokGetAdjustmentPlus($id_material, $gudang, $tgl_sekarang, $shift)
+    {
+        $materialTrans = MaterialTrans::leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
+        ->where('material_trans.tipe', 1)
+        ->where('material_trans.id_material', $id_material)
+        ->where('ma.id_gudang', $gudang)
+        ->where('shift', $shift)
+        ->where('ma.tanggal', $tgl_sekarang)
+        ->whereNotNull('id_adjustment')
+        ;
+
+        return $materialTrans->sum('jumlah');
+    }
+
+    private function mutasiStokGetAdjustmentMinus($id_material, $gudang, $tgl_sekarang, $shift)
+    {
+        $materialTrans = MaterialTrans::leftJoin('material_adjustment as ma', 'ma.id', '=', 'material_trans.id_adjustment')
+        ->where('material_trans.tipe', 1)
+        ->where('material_trans.id_material', $id_material)
+        ->where('ma.id_gudang', $gudang)
+        ->where('shift', $shift)
+        ->where('ma.tanggal', $tgl_sekarang)
+        ->whereNotNull('id_adjustment')
+        ;
+
+        return $materialTrans->sum('jumlah');
+    }
+
     public function generateExcelMutasiStok($res, $gudang, $nama_file, $tgl_awal, $tgl_akhir, $preview)
     {
         $objSpreadsheet = new Spreadsheet();
@@ -6028,6 +6076,25 @@ class ReportController extends Controller
                     $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
                     $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
 
+                    // Stok Akhir
+                    $col++;
+                    $abjadIncrement++;
+                    $stokAkhir = $saldoAwal + $totalPemasukan - $totalPengeluaran;
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAkhir, 3));
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.000');
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+
+                    // Rusak
+                    $col++;
+                    $abjadIncrement++;
+                    $stokAkhir = $saldoAwal + $totalPemasukan - $totalPengeluaran;
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($stokAkhir, 3));
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.000');
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
+
+                    // Siap jual
                     $col++;
                     $abjadIncrement++;
                     $stokAkhir = $saldoAwal + $totalPemasukan - $totalPengeluaran;
