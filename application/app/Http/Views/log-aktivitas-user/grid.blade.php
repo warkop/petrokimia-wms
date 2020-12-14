@@ -36,6 +36,24 @@
             </div> --}}
         </div>
         <div class="kt-portlet__body">
+            <div class="col-12">
+                <div class="form-group row mt2" style="margin-bottom: 0;">
+                    <h4 class="col-form-label text-kiri">Tanggal Awal <span class="text-danger">*</span></h4>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="start_date" name="tgl_awal" readonly
+                                placeholder="Pilih tanggal" onchange="pilih()">
+                        </div>
+                    </div>
+                    <h4 class="col-form-label text-kiri">Tanggal Akhir <span class="text-danger">*</span></h4>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="end_date" name="tgl_akhir" readonly
+                                placeholder="Pilih tanggal" onchange="pilih()">
+                        </div>
+                    </div>
+                </div>
+            </div>
             <table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
                 <thead>
                     <tr class="text-center">
@@ -59,6 +77,21 @@
 <script>
 $('#selcWil').select2({
     placeholder: "Pilih Wilayah",
+});
+
+$('#start_date').datepicker({
+    rtl: KTUtil.isRTL(),
+    todayHighlight: true,
+    format: 'dd-mm-yyyy',
+    orientation: "bottom left",
+    clearBtn:true,
+});
+$('#end_date').datepicker({
+    rtl: KTUtil.isRTL(),
+    todayHighlight: true,
+    format: 'dd-mm-yyyy',
+    orientation: "bottom left",
+    clearBtn:true,
 });
 </script>
 @endsection

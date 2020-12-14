@@ -28,6 +28,8 @@ class LogAktivitasUserController extends Controller
         $echo    = $req->get('draw');
         $start   = $req->get('start');
         $perpage = $req->get('length');
+        $start_date = $req->get('start_date');
+        $end_date = $req->get('end_date');
 
         $search  = $req->get('search');
         $search  = $search['value'];
@@ -37,7 +39,15 @@ class LogAktivitasUserController extends Controller
         $sort = $numbcol[0]['dir'];
         $field = $columns[$numbcol[0]['column']]['data'];
 
-        $condition = '';
+        $condition = [];
+
+        if ($start_date) {
+            $condition['start_date'] = $start_date;
+        }
+
+        if ($end_date) {
+            $condition['end_date'] = $end_date;
+        }
 
         $page = ($start / $perpage) + 1;
         if ($page >= 0) {

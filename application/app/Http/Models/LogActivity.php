@@ -47,6 +47,14 @@ class LogActivity extends Model
             });
         }
 
+        if (isset($condition['start_date'])) {
+            $result = $result->where("log_activity.created_at", '>=', date('Y-m-d', strtotime($condition['start_date'])));
+        }
+
+        if (isset($condition['end_date'])) {
+            $result = $result->where("log_activity.created_at", '<=', date('Y-m-d', strtotime($condition['end_date'].'+1 day')));
+        }
+
         if ($count == true) {
             $result = $result->count();
         } else {

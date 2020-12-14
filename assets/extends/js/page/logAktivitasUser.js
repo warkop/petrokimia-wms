@@ -12,7 +12,7 @@ $(document).ready(function () {
 	load_table();
 });
 
-const load_table = function () {
+const load_table = function (start_date='', end_date='') {
 	datatable = $(tableTarget);
 	// begin first table
 	datatable.dataTable({
@@ -21,6 +21,10 @@ const load_table = function () {
 		serverSide: true,
 		ajax: {
 			url: ajaxSource,
+			data:{
+                start_date: start_date,
+                end_date: end_date
+            },
 			method: "POST",
 			headers: {
 				"X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
@@ -118,6 +122,12 @@ var KTDatatablesBasicPaginations = function() {
 	};
 
 }();
+
+function pilih() {
+    const start_date = $("#start_date").val();
+    const end_date = $("#end_date").val();
+    load_table(start_date, end_date);
+}
 
 // jQuery(document).ready(function() {
 // 	KTDatatablesBasicPaginations.init();

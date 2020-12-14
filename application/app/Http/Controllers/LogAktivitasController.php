@@ -47,6 +47,8 @@ class LogAktivitasController extends Controller
         
         $gudang     = $req->get('gudang');
         $shift      = $req->get('shift');
+        $start_date = $req->get('start_date');
+        $end_date   = $req->get('end_date');
         $sort = $numbcol[0]['dir'];
         $field = $columns[$numbcol[0]['column']]['data'];
         $condition = [];
@@ -56,6 +58,14 @@ class LogAktivitasController extends Controller
 
         if ($shift != '') {
             $condition['id_shift'] = $shift;
+        }
+
+        if ($start_date) {
+            $condition['start_date'] = $start_date;
+        }
+
+        if ($end_date) {
+            $condition['end_date'] = $end_date;
         }
 
         $page = ($start / $perpage) + 1;

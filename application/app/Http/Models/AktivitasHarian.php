@@ -124,10 +124,20 @@ class AktivitasHarian extends Model
             });
         }
 
-        if (!empty($condition)) {
-            foreach ($condition as $key => $value) {
-                $result = $result->where($key, $value);
-            }
+        if (isset($condition['id_gudang'])) {
+            $result = $result->where('id_gudang', $condition['id_gudang']);
+        }
+        
+        if (isset($condition['id_shift'])) {
+            $result = $result->where('id_shift', $condition['id_shift']);
+        }
+
+        if (isset($condition['start_date'])) {
+            $result = $result->where("aktivitas_harian.updated_at", '>=', date('Y-m-d', strtotime($condition['start_date'])));
+        }
+
+        if (isset($condition['end_date'])) {
+            $result = $result->where("aktivitas_harian.updated_at", '<=', date('Y-m-d', strtotime($condition['end_date'].'+1 day')));
         }
 
         $count      = $result->count();

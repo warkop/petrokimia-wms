@@ -12,7 +12,7 @@ $(document).ready(function () {
     KTSelect2.init();
 });
 
-const load_table = function (id_gudang='', id_shift='') {
+const load_table = function (id_gudang='', id_shift='', start_date='', end_date='') {
     datatable = $(tableTarget);
     // begin first table
     datatable.dataTable({
@@ -23,7 +23,9 @@ const load_table = function (id_gudang='', id_shift='') {
             url: ajaxSource,
             data:{
                 gudang: id_gudang,
-                shift: id_shift
+                shift: id_shift,
+                start_date: start_date,
+                end_date: end_date
             },
             method: "POST",
             headers: {
@@ -125,7 +127,9 @@ const load_table = function (id_gudang='', id_shift='') {
 function pilih() {
     const gudang = $("#gudang").val();
     const shift = $("#shift").val();
-    load_table(gudang, shift);
+    const start_date = $("#start_date").val();
+    const end_date = $("#end_date").val();
+    load_table(gudang, shift, start_date, end_date);
 }
 
 var KTDatatablesDataSourceHtml = function () {
