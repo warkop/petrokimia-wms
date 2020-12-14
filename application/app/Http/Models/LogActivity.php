@@ -43,7 +43,7 @@ class LogActivity extends Model
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
                 $where->where(DB::raw('LOWER(aktivitas)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(DB::raw('TO_CHAR(log_activity.created_at, \'dd-mm-yyyy\')'), 'ILIKE', '%' . $search . '%');
+                $where->orWhere(DB::raw('TO_CHAR(log_activity.created_at, \'dd-mm-yyyy HH24:MI\')'), 'ILIKE', '%' . $search . '%');
             });
         }
 

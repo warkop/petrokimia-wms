@@ -120,7 +120,7 @@ class AktivitasHarian extends Model
                 $where->orwhere(DB::raw('LOWER(posto)'), 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere('gudang.nama', 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere('shift_kerja.nama', 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'DD-MM-YYYY H:i')"), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->orWhere(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'DD-MM-YYYY HH24:MI')"), 'ILIKE', '%' . strtolower($search) . '%');
             });
         }
 
