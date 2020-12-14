@@ -145,6 +145,48 @@ class ReportController extends Controller
         return $gudang;
     }
 
+    private function logoWms($objSpreadsheet, $col, $row)
+    {
+        $logoWms = aset_extends('img/logo/logo_wms1.png');
+
+        if (strpos($logoWms, ".png") === false) {
+            $image_resource = imagecreatefromjpeg($logoWms);
+        } else {
+            $image_resource = imagecreatefrompng($logoWms);
+        }
+
+        $objDrawing = new MemoryDrawing;
+        $objDrawing->setImageResource($image_resource);
+        $objDrawing->setCoordinates(strtoupper(toAlpha($col - 1)) . $row);
+        //setOffsetX works properly
+        $objDrawing->setOffsetX(1);
+        $objDrawing->setOffsetY(-10);
+        //set width, height
+        $objDrawing->setWidth(120);
+        $objDrawing->setWorksheet($objSpreadsheet->getActiveSheet());
+    }
+
+    private function logoPetro($objSpreadsheet, $col, $row)
+    {
+        $logoPetro = aset_extends('img/logo/logo_petro1.png');
+
+        if (strpos($logoPetro, ".png") === false) {
+            $image_resource = imagecreatefromjpeg($logoPetro);
+        } else {
+            $image_resource = imagecreatefrompng($logoPetro);
+        }
+
+        $objDrawing = new MemoryDrawing;
+        $objDrawing->setImageResource($image_resource);
+        $objDrawing->setCoordinates(strtoupper(toAlpha($col - 1)) . $row);
+        //setOffsetX works properly
+        // $objDrawing->setOffsetX($x);
+        // $objDrawing->setOffsetY($y);
+        //set width, height
+        $objDrawing->setWidth(120);
+        $objDrawing->setWorksheet($objSpreadsheet->getActiveSheet());
+    }
+
     public function laporanAktivitas()
     {
         $data['title'] = 'Laporan Aktivitas';
@@ -327,6 +369,9 @@ class ReportController extends Controller
         $style_no['alignment'] = array(
             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
         );
+
+        $this->logoPetro($objSpreadsheet, 6, 2);
+        $this->logoWms($objSpreadsheet, 8, 2);
 
         // start : title
         $col = 1;
@@ -588,6 +633,8 @@ class ReportController extends Controller
 
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
+        $this->logoPetro($objSpreadsheet, 7, 2);
+        $this->logoWms($objSpreadsheet, 8, 2);
 
         $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(7);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(15);
@@ -714,6 +761,7 @@ class ReportController extends Controller
                         $objDrawing->setName($row2->file_ori);
                         $objDrawing->setDescription('gambar ' . $row2->file_ori);
                         $objDrawing->setImageResource($image_resource);
+                        // dd(strtoupper(toAlpha($col - 1)) . $row);
                         $objDrawing->setCoordinates(strtoupper(toAlpha($col - 1)) . $row);
                         //setOffsetX works properly
                         $objDrawing->setOffsetX($x);
@@ -946,6 +994,10 @@ class ReportController extends Controller
             )
         );
         // start : title
+
+        $this->logoPetro($objSpreadsheet, 16, 2);
+        $this->logoWms($objSpreadsheet, 18, 2);
+
         $col = 1;
         $row = 1;
 
@@ -1797,6 +1849,9 @@ class ReportController extends Controller
             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
             'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
         );
+
+        $this->logoPetro($objSpreadsheet, 8, 2);
+        $this->logoWms($objSpreadsheet, 11, 2);
 
         // start : title
         $col = 1;
@@ -3318,6 +3373,9 @@ class ReportController extends Controller
         $objSpreadsheet->createSheet($sheetIndex);
         $objSpreadsheet->setActiveSheetIndex($sheetIndex);
         // end : sheet
+
+        $this->logoPetro($objSpreadsheet, 26, 2);
+        $this->logoWms($objSpreadsheet, 28, 2);
         
         // start : draw title
         $this->headerExcelMutasiPallet($objSpreadsheet, $tgl_awal, $tgl_akhir, $pallet);
@@ -3939,6 +3997,10 @@ class ReportController extends Controller
         $style_no['alignment'] = array(
             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
         );
+
+        $this->logoPetro($objSpreadsheet, 8, 2);
+        $this->logoWms($objSpreadsheet, 11, 2);
+
         // start : title
         $col = 1;
         $row = 1;
@@ -4309,6 +4371,10 @@ class ReportController extends Controller
         $objSpreadsheet->createSheet($sheetIndex);
         $objSpreadsheet->setActiveSheetIndex($sheetIndex);
         // start : title
+
+        $this->logoPetro($objSpreadsheet, 6, 1);
+        $this->logoWms($objSpreadsheet, 8, 2);
+
         $col = 1;
         $row = 1;
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
@@ -4711,6 +4777,8 @@ class ReportController extends Controller
 
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
+        $this->logoPetro($objSpreadsheet, 7, 2);
+        $this->logoWms($objSpreadsheet, 9, 2);
 
         $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
@@ -5090,6 +5158,9 @@ class ReportController extends Controller
         }
         $abjadTitle++;
         
+        $this->logoPetro($objSpreadsheet, 6, 2);
+        $this->logoWms($objSpreadsheet, 7, 2);
+
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'POSISI STOK GUDANG GRESIK');
@@ -6000,6 +6071,9 @@ class ReportController extends Controller
 
         //end: style
 
+        $this->logoPetro($objSpreadsheet, 16, 2);
+        $this->logoWms($objSpreadsheet, 18, 2);
+
         // start : sheet title
         $this->headerExcelMutasiStokStokAwal($objSpreadsheet, $tgl_awal, $tgl_akhir);
         // end : sheet title
@@ -6407,6 +6481,9 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+
+        $this->logoPetro($objSpreadsheet, 3, 2);
+        $this->logoWms($objSpreadsheet, 5, 2);
 
         // start : title
         $col = 1;
@@ -7042,6 +7119,9 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
 
+        $this->logoPetro($objSpreadsheet, 7, 2);
+        $this->logoWms($objSpreadsheet, 8, 2);
+
         // start : title
         $col = 1;
         $row = 1;
@@ -7433,6 +7513,9 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
 
+        $this->logoPetro($objSpreadsheet, 6, 2);
+        $this->logoWms($objSpreadsheet, 7, 2);
+
         // start : title
         $col = 1;
         $row = 1;
@@ -7803,6 +7886,9 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
 
+        $this->logoPetro($objSpreadsheet, 6, 2);
+        $this->logoWms($objSpreadsheet, 7, 2);
+
         // start : title
         $col = 1;
         $row = 1;
@@ -8169,6 +8255,9 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
 
+        $this->logoPetro($objSpreadsheet, 7, 3);
+        $this->logoWms($objSpreadsheet, 9, 3);
+
         // start : title
         $col = 1;
         $row = 1;
@@ -8388,6 +8477,9 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+
+        $this->logoPetro($objSpreadsheet, 6, 3);
+        $this->logoWms($objSpreadsheet, 7, 3);
 
         // start : title
         $col = 1;
