@@ -90,8 +90,8 @@ class AktivitasHarian extends Model
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $sort = 'asc', $field = 'id', $condition)
     {
-        $result = DB::table($this->table)
-            ->select(
+        $result = AktivitasHarian::
+            select(
                 'aktivitas_harian.id AS id', 
                 'aktivitas.nama as nama_aktivitas',
                 'aktivitas_harian.updated_at as tanggal', 
@@ -109,6 +109,7 @@ class AktivitasHarian extends Model
             ->join('shift_kerja', 'shift_kerja.id', '=', 'aktivitas_harian.id_shift')
             ->join('users', 'users.id', '=', 'aktivitas_harian.updated_by')
             ->join('tenaga_kerja_non_organik', 'tenaga_kerja_non_organik.id', '=', 'users.id_tkbm')
+            ->with('materialTrans.material')
             ->where('draft', 0)
             ;
 
