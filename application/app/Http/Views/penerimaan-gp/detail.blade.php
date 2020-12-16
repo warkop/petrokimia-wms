@@ -93,7 +93,7 @@
                     </div>
                     <div class="row mb1">
                         <div class="col-12">
-                            <label>Gudang Tujuan</label>
+                            <label>Gudang Tujuan / Distributor</label>
                             <h5 class="boldd"> {{$aktivitasHarian->gudangTujuan->nama??'-'}}</h5>
                         </div>
                     </div>

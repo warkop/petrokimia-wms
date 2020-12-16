@@ -38,7 +38,7 @@
                 </div>
                 <div class="col-md-6 mb1">
                     <label>
-                        Gudang Tujuan
+                        Gudang Tujuan / Distributor
                     </label>
                     <p class="boldd-500">
                         {{$aktivitasHarian->gudangTujuan->nama??'-'}}
@@ -139,51 +139,19 @@
                             <tr>
                               <th scope="col">Produk</th>
                               <th scope="col">Area</th>
-                              <th scope="col">Tanggal</th>
-                              <th scope="col">Daya Tampung</th>
+                              <th scope="col">Kuantum</th>
                             </tr>
                             </thead>
                             @foreach ($produk as $item)
                                 <tr>
                                     <td>Produk {{ $item->nama_material }}</td>
                                     <td>Area {{ $item->nama_area }}</td>
-                                    <td>{{ helpDate($item->tanggal, 'mi') }}</td>
                                     <td>{{ $item->jumlah }} Ton</td>
                                 </tr>
                             @endforeach
                         </table>
                         @else
                             <p><strong>Tidak ada produk dalam transaksi</strong></p>
-                        @endif
-                    </div>
-
-                    <div class="col-md-5 mb1 ml1">
-                        @if (count($pallet) > 0)
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th scope="col">Jenis dan Jumlah</th>
-                                    <th scope="col">Tipe Aktivitas</th>
-                                  </tr>
-                            </thead>
-                            @foreach ($pallet as $key)
-                                @if ($key->status_pallet == 1)
-                                    @php $status = 'Stok' @endphp
-                                @elseif ($key->status_pallet == 2)
-                                    @php $status = 'Terpakai' @endphp
-                                @elseif ($key->status_pallet == 3)
-                                    @php $status = 'Kosong' @endphp
-                                @else
-                                    @php $status = 'Rusak' @endphp
-                                @endif
-                                <tr>
-                                <td>{{$key->material->nama}} - {{$key->jumlah}} ( Pallet {{ $status }} )</td>
-                                <td>{{ $key->tipe == 1?'Mengurangi':'Menambah' }}</td>
-                                </tr>
-                            @endforeach
-                        </table>
-                        @else
-                            <p><strong>Tidak ada pallet dalam transaksi</strong></p>
                         @endif
                     </div>
                     <div class="col-md-12 mb1">

@@ -97,7 +97,7 @@
                     </div>
                     <div class="row mb1">
                         <div class="col-12">
-                            <label>Gudang Tujuan</label>
+                            <label>Gudang Tujuan / Distributor</label>
                             <h5 class="boldd"> </h5>
                         </div>
                     </div>
@@ -260,7 +260,7 @@
                 </div>
                 <div class="col-md-6 mb1">
                     <label>
-                        Gudang Tujuan
+                        Gudang Tujuan / Distributor
                     </label>
                     <p class="boldd-500">
                         {{$aktivitasHarian->gudangTujuan->nama??'-'}}
@@ -336,7 +336,7 @@
                             <tr>
                               <th scope="col">Area</th>
                               <th scope="col">Tanggal</th>
-                              <th scope="col">Daya Tampung</th>
+                              <th scope="col">Kuantum</th>
                             </tr>
                             </thead>
                             @foreach ($produk as $item)
