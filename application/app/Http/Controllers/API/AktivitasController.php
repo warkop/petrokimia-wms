@@ -2128,143 +2128,145 @@ class AktivitasController extends Controller
     {
         $aktivitasHarian = AktivitasHarian::where('ref_number', $id)->first();
         $res = MaterialTrans::where('id_aktivitas_harian', $aktivitasHarian->id)->get();
-        DB::transaction(function () use ($res, $aktivitasHarian) {
-            DB::table('aktivitas_harian')->where('id', $aktivitasHarian->id)->update([
-                'canceled' => 1,
-            ]);
-
-            $id = DB::table('aktivitas_harian')->insertGetId([
-                'id_shift'          => $aktivitasHarian->id_shift,
-                'id_karu'           => $aktivitasHarian->id_karu,
-                'id_aktivitas'      => $aktivitasHarian->id_aktivitas,
-                'id_gudang'         => $aktivitasHarian->id_gudang,
-                'id_gudang_tujuan'  => $aktivitasHarian->id_gudang_tujuan,
-                'ref_number'        => $aktivitasHarian->id,
-                'sistro'            => $aktivitasHarian->sistro,
-                'approve'           => $aktivitasHarian->approve,
-                'kelayakan_before'  => $aktivitasHarian->kelayakan_before,
-                'kelayakan_after'   => $aktivitasHarian->kelayakan_after,
-                'dikembalikan'      => $aktivitasHarian->dikembalikan,
-                'alasan'            => $aktivitasHarian->alasan,
-                'so'                => $aktivitasHarian->so,
-                'id_yayasan'        => $aktivitasHarian->id_yayasan,
-                'id_tkbm'           => $aktivitasHarian->id_tkbm,
-                'draft'             => $aktivitasHarian->draft,
-                'cancelable'        => 1,
-                'created_by'        => $aktivitasHarian->created_by,
-                'updated_by'        => $aktivitasHarian->updated_by,
-                'created_at'        => now(),
-                'updated_at'        => now(),
-            ]);
-            
-            //produk
-            foreach ($res as $key) {
-                if (!empty($key->status_produk)) {
-                    if ($key->tipe == 1) {
-                        $areaStok = AreaStok::find($key->id_area_stok);
-
-                        $latestTotal = $areaStok->jumlah + $key->jumlah;
-
-                        DB::table('material_trans')->insert([
-                            'tipe'                  => 2,
-                            'jumlah'                => $key->jumlah,
-                            'tanggal'               => $key->tanggal,
-                            'id_material'           => $key->id_material,
-                            'id_aktivitas_harian'   => $id,
-                            'status_produk'         => $key->status_produk,
-                            'id_area_stok'          => $key->id_area_stok,
-                            'id_area'               => $key->id_area,
-                            'shift_id'              => $key->shift_id,
-                            'created_at'            => date('Y-m-d H:i:s'),
-                            'updated_at'            => date('Y-m-d H:i:s'),
-                        ]);
-
-                        DB::table('area_stok')
-                        ->where('id', $key->id_area_stok)
-                        ->update([
-                            'jumlah'      => $latestTotal,
-                        ]);
-                    } else {
-                        $areaStok = AreaStok::findOrFail($key->id_area_stok);
-
-                        $latestTotal = $areaStok->jumlah - $key->jumlah;
-
-                        DB::table('material_trans')->insert([
-                            'tipe'                  => 1,
-                            'jumlah'                => $key->jumlah,
-                            'tanggal'               => $key->tanggal,
-                            'id_material'           => $key->id_material,
-                            'id_aktivitas_harian'   => $id,
-                            'status_produk'         => $key->status_produk,
-                            'id_area_stok'          => $key->id_area_stok,
-                            'id_area'               => $key->id_area,
-                            'shift_id'              => $key->shift_id,
-                            'created_at'            => date('Y-m-d H:i:s'),
-                            'updated_at'            => date('Y-m-d H:i:s'),
-                        ]);
-
-                        DB::table('area_stok')
+        if ($res) {
+            DB::transaction(function () use ($res, $aktivitasHarian) {
+                DB::table('aktivitas_harian')->where('id', $aktivitasHarian->id)->update([
+                    'canceled' => 1,
+                ]);
+    
+                $id = DB::table('aktivitas_harian')->insertGetId([
+                    'id_shift'          => $aktivitasHarian->id_shift,
+                    'id_karu'           => $aktivitasHarian->id_karu,
+                    'id_aktivitas'      => $aktivitasHarian->id_aktivitas,
+                    'id_gudang'         => $aktivitasHarian->id_gudang,
+                    'id_gudang_tujuan'  => $aktivitasHarian->id_gudang_tujuan,
+                    'ref_number'        => $aktivitasHarian->id,
+                    'sistro'            => $aktivitasHarian->sistro,
+                    'approve'           => $aktivitasHarian->approve,
+                    'kelayakan_before'  => $aktivitasHarian->kelayakan_before,
+                    'kelayakan_after'   => $aktivitasHarian->kelayakan_after,
+                    'dikembalikan'      => $aktivitasHarian->dikembalikan,
+                    'alasan'            => $aktivitasHarian->alasan,
+                    'so'                => $aktivitasHarian->so,
+                    'id_yayasan'        => $aktivitasHarian->id_yayasan,
+                    'id_tkbm'           => $aktivitasHarian->id_tkbm,
+                    'draft'             => $aktivitasHarian->draft,
+                    'cancelable'        => 1,
+                    'created_by'        => $aktivitasHarian->created_by,
+                    'updated_by'        => $aktivitasHarian->updated_by,
+                    'created_at'        => now(),
+                    'updated_at'        => now(),
+                ]);
+                
+                //produk
+                foreach ($res as $key) {
+                    if (!empty($key->status_produk)) {
+                        if ($key->tipe == 1) {
+                            $areaStok = AreaStok::find($key->id_area_stok);
+    
+                            $latestTotal = $areaStok->jumlah + $key->jumlah;
+    
+                            DB::table('material_trans')->insert([
+                                'tipe'                  => 2,
+                                'jumlah'                => $key->jumlah,
+                                'tanggal'               => $key->tanggal,
+                                'id_material'           => $key->id_material,
+                                'id_aktivitas_harian'   => $id,
+                                'status_produk'         => $key->status_produk,
+                                'id_area_stok'          => $key->id_area_stok,
+                                'id_area'               => $key->id_area,
+                                'shift_id'              => $key->shift_id,
+                                'created_at'            => date('Y-m-d H:i:s'),
+                                'updated_at'            => date('Y-m-d H:i:s'),
+                            ]);
+    
+                            DB::table('area_stok')
                             ->where('id', $key->id_area_stok)
                             ->update([
                                 'jumlah'      => $latestTotal,
                             ]);
+                        } else {
+                            $areaStok = AreaStok::findOrFail($key->id_area_stok);
+    
+                            $latestTotal = $areaStok->jumlah - $key->jumlah;
+    
+                            DB::table('material_trans')->insert([
+                                'tipe'                  => 1,
+                                'jumlah'                => $key->jumlah,
+                                'tanggal'               => $key->tanggal,
+                                'id_material'           => $key->id_material,
+                                'id_aktivitas_harian'   => $id,
+                                'status_produk'         => $key->status_produk,
+                                'id_area_stok'          => $key->id_area_stok,
+                                'id_area'               => $key->id_area,
+                                'shift_id'              => $key->shift_id,
+                                'created_at'            => date('Y-m-d H:i:s'),
+                                'updated_at'            => date('Y-m-d H:i:s'),
+                            ]);
+    
+                            DB::table('area_stok')
+                                ->where('id', $key->id_area_stok)
+                                ->update([
+                                    'jumlah'      => $latestTotal,
+                                ]);
+                        }
+                    }
+    
+                    //pallet
+                    if (!empty($key->status_pallet)) {
+                        if ($key->tipe == 1) {
+                            $gudangStok = GudangStok::find($key->id_gudang_stok);
+    
+                            $latestTotal = $gudangStok->jumlah + $key->jumlah;
+    
+                            DB::table('material_trans')->insert([
+                                'tipe'                  => 2,
+                                'jumlah'                => $key->jumlah,
+                                'tanggal'               => $key->tanggal,
+                                'id_material'           => $key->id_material,
+                                'id_aktivitas_harian'   => $id,
+                                'status_pallet'         => $key->status_pallet,
+                                'id_gudang_stok'        => $key->id_gudang_stok,
+                                'id_area'               => $key->id_area,
+                                'shift_id'              => $key->shift_id,
+                                'created_at'            => date('Y-m-d H:i:s'),
+                                'updated_at'            => date('Y-m-d H:i:s'),
+                            ]);
+    
+                            DB::table('gudang_stok')
+                                ->where('id', $key->id_gudang_stok)
+                                ->update([
+                                    'jumlah'      => $latestTotal,
+                                ]);
+                        } else {
+                            $gudangStok = GudangStok::find($key->id_gudang_stok);
+    
+                            $latestTotal = $gudangStok->jumlah - $key->jumlah;
+    
+                            DB::table('material_trans')->insert([
+                                'tipe'                  => 1,
+                                'jumlah'                => $key->jumlah,            
+                                'tanggal'               => $key->tanggal,
+                                'id_material'           => $key->id_material,
+                                'id_aktivitas_harian'   => $id,
+                                'status_pallet'         => $key->status_pallet,
+                                'id_gudang_stok'        => $key->id_gudang_stok,
+                                'id_area'               => $key->id_area,
+                                'shift_id'              => $key->shift_id,
+                                'created_at'            => date('Y-m-d H:i:s'),
+                                'updated_at'            => date('Y-m-d H:i:s'),
+                            ]);
+    
+                            DB::table('gudang_stok')
+                                ->where('id', $key->id_gudang_stok)
+                                ->update([
+                                    'jumlah'      => $latestTotal,
+                                ]);
+                        }
                     }
                 }
-
-                //pallet
-                if (!empty($key->status_pallet)) {
-                    if ($key->tipe == 1) {
-                        $gudangStok = GudangStok::find($key->id_gudang_stok);
-
-                        $latestTotal = $gudangStok->jumlah + $key->jumlah;
-
-                        DB::table('material_trans')->insert([
-                            'tipe'                  => 2,
-                            'jumlah'                => $key->jumlah,
-                            'tanggal'               => $key->tanggal,
-                            'id_material'           => $key->id_material,
-                            'id_aktivitas_harian'   => $id,
-                            'status_pallet'         => $key->status_pallet,
-                            'id_gudang_stok'        => $key->id_gudang_stok,
-                            'id_area'               => $key->id_area,
-                            'shift_id'              => $key->shift_id,
-                            'created_at'            => date('Y-m-d H:i:s'),
-                            'updated_at'            => date('Y-m-d H:i:s'),
-                        ]);
-
-                        DB::table('gudang_stok')
-                            ->where('id', $key->id_gudang_stok)
-                            ->update([
-                                'jumlah'      => $latestTotal,
-                            ]);
-                    } else {
-                        $gudangStok = GudangStok::find($key->id_gudang_stok);
-
-                        $latestTotal = $gudangStok->jumlah - $key->jumlah;
-
-                        DB::table('material_trans')->insert([
-                            'tipe'                  => 1,
-                            'jumlah'                => $key->jumlah,            
-                            'tanggal'               => $key->tanggal,
-                            'id_material'           => $key->id_material,
-                            'id_aktivitas_harian'   => $id,
-                            'status_pallet'         => $key->status_pallet,
-                            'id_gudang_stok'        => $key->id_gudang_stok,
-                            'id_area'               => $key->id_area,
-                            'shift_id'              => $key->shift_id,
-                            'created_at'            => date('Y-m-d H:i:s'),
-                            'updated_at'            => date('Y-m-d H:i:s'),
-                        ]);
-
-                        DB::table('gudang_stok')
-                            ->where('id', $key->id_gudang_stok)
-                            ->update([
-                                'jumlah'      => $latestTotal,
-                            ]);
-                    }
-                }
-            }
-        });
+            });
+        }
     }
 
     public function cancelAktivitas(AktivitasHarian $aktivitasHarian)
