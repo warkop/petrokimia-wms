@@ -2127,8 +2127,8 @@ class AktivitasController extends Controller
     private function cancelAktivitasHasRefNumber($id)
     {
         $aktivitasHarian = AktivitasHarian::where('ref_number', $id)->first();
-        $res = MaterialTrans::where('id_aktivitas_harian', $aktivitasHarian->id)->get();
-        if ($res) {
+        if ($aktivitasHarian) {
+            $res = MaterialTrans::where('id_aktivitas_harian', $aktivitasHarian->id)->get();
             DB::transaction(function () use ($res, $aktivitasHarian) {
                 DB::table('aktivitas_harian')->where('id', $aktivitasHarian->id)->update([
                     'canceled' => 1,
