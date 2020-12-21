@@ -30,7 +30,8 @@
 		<!--begin::Global Theme Styles(used by all pages) -->
 		<link href="{{aset_tema()}}demo/default/base/style.bundle.css" rel="stylesheet" type="text/css" />
 		<link href="{{aset_extends()}}/css/theme_cus.css" rel="stylesheet" type="text/css" />
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" media="screen">
+		{{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" media="screen"> --}}
+		<link rel="stylesheet" href="{{aset_extends()}}/plugin/fancybox/dist/jquery.fancybox.min.css" media="screen">
 		<!--end::Global Theme Styles -->
 
 		<!--begin::Layout Skins(used by all pages) -->

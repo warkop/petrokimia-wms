@@ -55,13 +55,15 @@
 		<script src="{{aset_tema()}}app/custom/general/components/extended/sweetalert2.js" type="text/javascript"></script>
 		<script src="{{aset_tema()}}vendors/general/bootstrap-timepicker/js/bootstrap-timepicker.min.js" type="text/javascript"></script>
 		
-		<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+		{{-- <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script> --}}
+		<script src="{{aset_extends()}}/plugin/fancybox/dist/jquery.fancybox.min.js"></script>
 		<!--end::Page Vendors -->
-
+		
+		<script src="{{aset_extends()}}/plugin/autoNumeric.js"></script>
 		<!--begin::Page Scripts(used by this page) -->
 		{{-- <script src="{{ aset_extends('plugin/autoNumeric.js') }}" type="text/javascript"></script> --}}
 		{{-- <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.5.0"></script> --}}
-		<script src="http://www.decorplanit.com/plugin/autoNumeric-1.9.41.js"></script>
+		{{-- <script src="http://www.decorplanit.com/plugin/autoNumeric-1.9.41.js"></script> --}}
 		<!--end::Page Scripts -->
 		
 		<!--begin::Global App Bundle(used by all pages) -->
