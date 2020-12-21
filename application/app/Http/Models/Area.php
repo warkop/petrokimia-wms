@@ -36,14 +36,12 @@ class Area extends CustomModel
 
     public function jsonGrid($start = 0, $length = 10, $search = '', $count = false, $sort = 'asc', $field = 'id', $condition, $id_gudang)
     {
-        $result = DB::table($this->table)
-            ->select('id AS id', 'nama AS nama', 'kapasitas', 'tipe')
-            ->where('id_gudang', $id_gudang)
+        $result = Area::where('id_gudang', $id_gudang)
             ->whereNull('end_date');
 
         if (!empty($search)) {
             $result = $result->where(function ($where) use ($search) {
-                $where->where(DB::raw('LOWER(nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $where->where('nama', 'ILIKE', '%' . strtolower($search) . '%');
                 $where->orWhere(DB::raw('kapasitas::text'), 'ILIKE', '%' . $search . '%');
             });
         }
@@ -56,28 +54,7 @@ class Area extends CustomModel
 
         return $result;
     }
-    /*public function getStokArea($gudang, $produk, $pilih_produk, $tgl){
-        $res = DB::table($this->table)
-                ->select('area.id as id_area', 'gdg.nama as nama_gdg', 'area.nama as nama_area', 'stok.id_material', 'stok.total', 'area.kapasitas')
-                ->join(DB::raw("(SELECT 
-                        ar.id_gudang, 
-                        ars.id_area, 
-                        trans.id_material,
-                        sum(case when trans.tipe = 1 then -trans.jumlah::NUMERIC else trans.jumlah::NUMERIC end) as total
-                    FROM 
-                        public.area_stok as ars 
-                    join area ar on ar.id = ars.id_area
-                    join material_trans as trans on trans.id_area_stok = ars.id
-                    where trans.tanggal <= '{$tgl}'
-                    group by ar.id_gudang, 
-                        ars.id_area, 
-                        trans.id_material
-                    order by ar.id_gudang, 
-                        ars.id_area) stok"),"stok.id_area","=","area.id")
-                ->leftJoin("gudang as gdg", "gdg.id", "=", "area.id_gudang")
-                ->orderBy(DB::raw("gdg.nama, area.nama"),'asc');
-        return $res->get();
-    }*/
+
     public function getStokGudang($gudang, $produk, $pilih_produk, $tgl){
         $res = DB::table("gudang as gdg")
                 ->select('gdg.id as id_gudang', 'gdg.nama as nama_gudang', 'stok.id_material', 'stok.total', 'stok.kapasitas')

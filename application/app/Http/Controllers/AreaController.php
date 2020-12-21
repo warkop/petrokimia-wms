@@ -79,6 +79,9 @@ class AreaController extends Controller
         $models->nama           = strip_tags($req->input('nama'));
         $models->kapasitas      = strip_tags($req->input('kapasitas'));
         $models->tipe           = strip_tags($req->input('tipe'));
+        if ($req->input('tipe') == 2) {
+            $models->range          = strip_tags($req->input('range'));
+        }
         $models->start_date     = date('Y-m-d');
 
         $saved = $models->save();

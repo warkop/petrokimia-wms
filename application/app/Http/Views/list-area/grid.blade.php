@@ -32,6 +32,7 @@
                         <th scope="col">Nama area</th>
                         <th scope="col">Kapasitas (Ton)</th>
                         <th scope="col">Jenis</th>
+                        <th scope="col">Range</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -84,6 +85,10 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-group" id="range_form">
+                                <label>Range</label><br>
+                                <input type="text" class="form-control" name="range" id="range" placeholder="Masukkan nama range">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -119,6 +124,15 @@ function isNumberKey(txt, evt) {
     }
     return true;
 }
+
+$('input[type=radio][name=tipe]').change(function() {
+    if (this.value == '1') {
+        $('#range_form').hide();
+    }
+    else if (this.value == '2') {
+        $('#range_form').show();
+    }
+});
 </script>
 <script src="{{asset('assets/extends/js/page/list-area.js')}}" type="text/javascript"></script>
 @endsection

@@ -60,6 +60,9 @@ const load_table = function () {
                 "mData": "jenis"
             },
             {
+                "mData": "range"
+            },
+            {
                 "mData": "id"
             }
         ],
@@ -82,7 +85,7 @@ const load_table = function () {
                 }
             },
             {
-                "aTargets": -2,
+                "aTargets": -3,
                 "mData": "jenis",
                 "orderable": false,
                 render: function (data, type, full, meta) {
@@ -198,11 +201,14 @@ function edit(id = '') {
 
             if (obj.status == "OK") {
                 $('#nama').val(obj.data['nama']);
+                $('#range').val(obj.data['range']);
                 $('#kapasitas').val(obj.data['kapasitas']);
                 if (obj.data['tipe'] == 1) {
                     $('#indoor').prop('checked', true);
+                    $('#range_form').hide();
                 } else if (obj.data['tipe'] == 2) {
                     $('#outdoor').prop('checked', true);
+                    $('#range_form').show();
                 }
             } else {
                 swal.fire('Pemberitahuan', obj.message, 'warning');
@@ -328,6 +334,7 @@ function reset_form(method = '') {
     $('#nama').change();
     $('#kapasitas').val('');
     $('#kapasitas').change();
+    $('#range').val('');
     $('#indoor').prop('checked', false);
     $('#outdoor').prop('checked', false);
 }
