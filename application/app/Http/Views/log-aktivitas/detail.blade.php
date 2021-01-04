@@ -451,11 +451,16 @@
                 let temp = "";
                 let i=1;
                 response.forEach(element => {
+                    if (element.area_stok) {
+                        area = element.area_stok.area.nama
+                    } else {
+                        area = ""
+                    }
                     temp_nama = `
                         <div class="card-header" id="heading-${i}">
                             <div class="card-title" data-toggle="collapse show" data-target="#collapse-${i}"
                                 aria-expanded="true" aria-controls="collapse-${i}">
-                                <i class="flaticon2-shelter"></i> Area ${element.area_stok.area.nama}
+                                <i class="flaticon2-shelter"></i> Area ${area}
                             </div>
                         </div>
                     `;

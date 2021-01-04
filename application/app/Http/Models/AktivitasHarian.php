@@ -109,19 +109,35 @@ class AktivitasHarian extends Model
             ->join('shift_kerja', 'shift_kerja.id', '=', 'aktivitas_harian.id_shift')
             ->join('users', 'users.id', '=', 'aktivitas_harian.updated_by')
             ->join('tenaga_kerja_non_organik', 'tenaga_kerja_non_organik.id', '=', 'users.id_tkbm')
-            ->with('materialTrans.material')
+            ->join('material_trans', 'id_aktivitas_harian', '=', 'aktivitas_harian.id')
             ->where('draft', 0)
             ;
 
+        if (isset($condition['produk'])) {
+            $result = $result->with(['materialTrans.material' => function($query) use ($condition) {
+                foreach ($condition['produk'] as $data) {
+                    $query->orWhere('id', $data);
+                }
+            }]);
+
+            $result->where(function($query) use($condition) {
+                foreach ($condition['produk'] as $data) {
+                    $query->orWhere('material_trans.id_material', $data);
+                }
+            });
+        } else {
+            $result = $result->with('materialTrans.material');
+        }
+
         if (!empty($search)) {
-            $result = $result->where(function ($where) use ($search) {
-                $where->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orwhere(DB::raw('LOWER(nopol)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orwhere(DB::raw('LOWER(driver)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orwhere(DB::raw('LOWER(posto)'), 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere('gudang.nama', 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere('shift_kerja.nama', 'ILIKE', '%' . strtolower($search) . '%');
-                $where->orWhere(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'DD-MM-YYYY HH24:MI')"), 'ILIKE', '%' . strtolower($search) . '%');
+            $result = $result->where(function ($query) use ($search) {
+                $query->where(DB::raw('LOWER(aktivitas.nama)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $query->orwhere(DB::raw('LOWER(nopol)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $query->orwhere(DB::raw('LOWER(driver)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $query->orwhere(DB::raw('LOWER(posto)'), 'ILIKE', '%' . strtolower($search) . '%');
+                $query->orWhere('gudang.nama', 'ILIKE', '%' . strtolower($search) . '%');
+                $query->orWhere('shift_kerja.nama', 'ILIKE', '%' . strtolower($search) . '%');
+                $query->orWhere(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'DD-MM-YYYY HH24:MI')"), 'ILIKE', '%' . strtolower($search) . '%');
             });
         }
 

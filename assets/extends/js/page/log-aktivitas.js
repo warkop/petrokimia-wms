@@ -12,7 +12,7 @@ $(document).ready(function () {
     KTSelect2.init();
 });
 
-const load_table = function (id_gudang='', id_shift='', start_date='', end_date='') {
+const load_table = function (data="") {
     datatable = $(tableTarget);
     // begin first table
     datatable.dataTable({
@@ -22,10 +22,11 @@ const load_table = function (id_gudang='', id_shift='', start_date='', end_date=
         ajax: {
             url: ajaxSource,
             data:{
-                gudang: id_gudang,
-                shift: id_shift,
-                start_date: start_date,
-                end_date: end_date
+                gudang: data.gudang,
+                produk: data.produk,
+                shift: data.shift,
+                start_date: data.start_date,
+                end_date: data.end_date
             },
             method: "POST",
             headers: {
@@ -44,6 +45,12 @@ const load_table = function (id_gudang='', id_shift='', start_date='', end_date=
             },
             {
                 mData: "nama_aktivitas"
+            },
+            {
+                mData: null
+            },
+            {
+                mData: null
             },
             {
                 mData: "nama_gudang"
@@ -89,6 +96,38 @@ const load_table = function (id_gudang='', id_shift='', start_date='', end_date=
                 }
             },
             {
+                aTargets: [4],
+                mRender: function (data) {
+                    let materials = ""
+                    data.material_trans.forEach(element => {
+                        if (element.material && element.material.kategori == 1) {
+                            materials += element.material.nama +"<br>";
+                        }
+                    });
+
+                    if (materials == "") {
+                        return "Tidak ada produk"
+                    }
+                    return materials
+                }
+            },
+            {
+                aTargets: [5],
+                mData: "material_trans",
+                mRender: function (data) {
+                    let kuantum = ""
+                    data.material_trans.forEach(element => {
+                        if (element.material && element.material.kategori == 1) {
+                            kuantum += element.jumlah+"<br>";
+                        }
+                    })
+                    if (kuantum == "") {
+                        return "Tidak ada produk"
+                    }
+                    return kuantum
+                }
+            },
+            {
                 className: "text-center",
                 targets: -1,
                 title: "Actions",
@@ -126,10 +165,18 @@ const load_table = function (id_gudang='', id_shift='', start_date='', end_date=
 
 function pilih() {
     const gudang = $("#gudang").val();
+    const produk = $("#produk").val();
     const shift = $("#shift").val();
     const start_date = $("#start_date").val();
     const end_date = $("#end_date").val();
-    load_table(gudang, shift, start_date, end_date);
+    const data = {
+        "gudang": gudang,
+        "shift": shift,
+        "start_date": start_date,
+        "end_date": end_date,
+        "produk": produk
+    }
+    load_table(data);
 }
 
 var KTDatatablesDataSourceHtml = function () {

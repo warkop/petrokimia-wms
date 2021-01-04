@@ -47,7 +47,19 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="col-6">
+                    <div class="form-group row">
+                        <label class="col-form-label col-lg-3 col-sm-12">Pilih Produk</label>
+                        <div class="col-lg-7 col-md-9 col-sm-12">
+                            <select class="form-control m-select2" id="produk" name="produk[]" onchange="pilih()" multiple="multiple">
+                                <option></option>
+                                @foreach ($produk as $key)
+                                <option value="{{$key->id}}">{{$key->nama}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-6">
                     <div class="form-group row">
                         <label class="col-form-label col-lg-3 col-sm-12">Pilih Shift</label>
@@ -61,7 +73,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12">
+                <div class="col-6">
                     <div class="form-group row mt2" style="margin-bottom: 0;">
                         <h4 class="col-form-label text-kiri">Tanggal Awal <span class="text-danger">*</span></h4>
                         <div class="col-4">
@@ -87,6 +99,8 @@
                         <th scope="col">Tanggal</th>
                         <th scope="col">Checker</th>
                         <th scope="col">Aktivitas</th>
+                        <th scope="col">Produk</th>
+                        <th scope="col">Kuantum</th>
                         <th scope="col">Gudang</th>
                         <th scope="col">Shift</th>
                         <th scope="col">Nopol</th>
@@ -196,6 +210,11 @@
 <script>
     $("#gudang").select2({
         placeholder: "Pilih Semua Gudang",
+        allowClear: true
+    });
+
+    $("#produk").select2({
+        placeholder: "Pilih Semua Produk",
         allowClear: true
     });
 

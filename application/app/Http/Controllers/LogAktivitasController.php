@@ -26,6 +26,7 @@ class LogAktivitasController extends Controller
     {
         $data['shift'] = ShiftKerja::get();
         $data['gudang'] = Gudang::internal()->get();
+        $data['produk'] = Material::produk()->get();
         return view('log-aktivitas.grid', $data);
     }
 
@@ -49,6 +50,8 @@ class LogAktivitasController extends Controller
         $shift      = $req->get('shift');
         $start_date = $req->get('start_date');
         $end_date   = $req->get('end_date');
+        $produk   = $req->get('produk');
+
         $sort = $numbcol[0]['dir'];
         $field = $columns[$numbcol[0]['column']]['data'];
         $condition = [];
@@ -66,6 +69,10 @@ class LogAktivitasController extends Controller
 
         if ($end_date) {
             $condition['end_date'] = $end_date;
+        }
+
+        if ($produk) {
+            $condition['produk'] = $produk;
         }
 
         $page = ($start / $perpage) + 1;
