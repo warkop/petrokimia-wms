@@ -5043,19 +5043,21 @@ class ReportController extends Controller
         $tgl        = (request()->input('tgl_awal') == '') ? date('Y-m-d') : (request()->input('tgl_awal'));
         $tgl        = date('Y-m-d', strtotime($tgl));
 
-        $res        = [];
         $area       = new Area;
         $resProduk  = $area->getProduk($gudang, $tipe_produk, $produk, $tgl);
         $resArea    = $area->getStokGudang($gudang, $tipe_produk, $produk, $tgl);
         $nama_file  = date("YmdHis") . '_posisi_stok.xlsx';
+        $allRange = $area->getAllRange($gudang);
 
         $preview = false;
         if (request()->preview == true) {
             $preview = true;
         }
 
+        $areaOutdoor = $this->generateStokWithRange($gudang, $tipe_produk, $produk, $tgl);
+
         if(request()->input('validate') == true){
-            $this->generateExcelStok($res, $nama_file, $resProduk, $resArea, $tgl, $preview);
+            $this->generateExcelStok($nama_file, $resProduk, $resArea, $tgl, $preview, $areaOutdoor, $allRange);
         } else {
             return response()->json([
                 "code"=>200,
@@ -5066,7 +5068,14 @@ class ReportController extends Controller
         }
     }
 
-    public function generateExcelStok($res, $nama_file, $produk, $area, $tgl_awal, $preview)
+    public function generateStokWithRange($gudang, $tipe_produk, $produk, $tgl)
+    {
+        $area = new Area;
+        $resArea    = $area->getStokGudang($gudang, $tipe_produk, $produk, $tgl, true);
+        return $resArea;
+    }
+
+    public function generateExcelStok($nama_file, $produk, $area, $tgl_awal, $preview, $areaOutdoor, $allRange)
     {
         $objSpreadsheet = new Spreadsheet();
 
@@ -5191,7 +5200,7 @@ class ReportController extends Controller
 
         $abjadOri++;
         $col++;
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Area');
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Gudang');
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row + 1));
 
         $abjadOri++;
@@ -5235,48 +5244,100 @@ class ReportController extends Controller
 
         //coding transaksi di sini
         $id_gudang = null;
-        $id_material = null;
         $kapasitas = 0;
         $total_per_gudang = 0;
         $total_keseluruhan = 0;
         $total_kapasitas = 0;
         $total_per_produk = [];
+        $col = 1;
+        $row = 6;
+        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "range indoor");
+        $col = 1;
+        $row = 7;
         foreach($area as $dArea){
             $abjadProduk = 'D';
-            if($dArea->id_gudang != $id_gudang){
-                $no++;
-                $row++;
-                $id_gudang = $dArea->id_gudang;
-                $kapasitas = $dArea->kapasitas;
-                $total_per_gudang = $dArea->total;
-            } else {
-                $kapasitas = $kapasitas + $dArea->kapasitas;
-                $total_per_gudang = $total_per_gudang + $dArea->total;
+            if ($dArea->id_material) {
+                if($dArea->id_gudang != $id_gudang){
+                    $no++;
+                    $row++;
+                    $id_gudang = $dArea->id_gudang;
+                    $kapasitas = $dArea->kapasitas;
+                    $total_per_gudang = $dArea->total;
+                } else {
+                    $kapasitas = $kapasitas + $dArea->kapasitas;
+                    $total_per_gudang = $total_per_gudang + $dArea->total;
+                }
+                if(isset($total_per_produk[$dArea->id_material]))
+                    $total_per_produk[$dArea->id_material] = $total_per_produk[$dArea->id_material] + $dArea->total;
+                else
+                    $total_per_produk[$dArea->id_material] = $dArea->total;
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $no); //nomor
+                $objSpreadsheet->getActiveSheet()->getStyle('A'.$row)->applyFromArray($style_no);
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $dArea->nama_gudang); //nama gudang
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $kapasitas); //nama area
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
+    
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($listProduk[$dArea->id_material], $row, round($dArea->total, 3)); //nama area
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($listProduk[$dArea->id_material], $row)->getNumberFormat()->setFormatCode('#,##0.00');
+    
+                $abjadProduk++;
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
+    
+                $abjadProduk++;
+                $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($total_per_gudang, 3)); //nama area
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.000');
+                
+                $total_keseluruhan = $total_keseluruhan + $dArea->total;
+                $total_kapasitas = $total_kapasitas + $dArea->kapasitas;
             }
-            if(isset($total_per_produk[$dArea->id_material]))
-                $total_per_produk[$dArea->id_material] = $total_per_produk[$dArea->id_material] + $dArea->total;
-            else
-                $total_per_produk[$dArea->id_material] = $dArea->total;
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $no); //nomor
-            $objSpreadsheet->getActiveSheet()->getStyle('A'.$row)->applyFromArray($style_no);
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $dArea->nama_gudang); //nama gudang
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $kapasitas); //nama area
-            $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
+        }
 
-            $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($listProduk[$dArea->id_material], $row, round($dArea->total, 3)); //nama area
-            $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($listProduk[$dArea->id_material], $row)->getNumberFormat()->setFormatCode('#,##0.00');
-
-            $abjadProduk++;
-            $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
-
-            $abjadProduk++;
-            $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($total_per_gudang, 3)); //nama area
-            $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.000');
-            
-            $total_keseluruhan = $total_keseluruhan + $dArea->total;
-            $total_kapasitas = $total_kapasitas + $dArea->kapasitas;
+        $col=1;
+        $row++;
+        foreach ($allRange as $keyRange => $range) {
+            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "range ".$range->range);
+            $col=4;
+            foreach($areaOutdoor as $dArea){
+                $abjadProduk = 'D';
+                if ($dArea->id_material) {
+                    if($dArea->id_gudang != $id_gudang){
+                        $no++;
+                        $row++;
+                        $id_gudang = $dArea->id_gudang;
+                        $kapasitas = $dArea->kapasitas;
+                        $total_per_gudang = $dArea->total;
+                    } else {
+                        $kapasitas = $kapasitas + $dArea->kapasitas;
+                        $total_per_gudang = $total_per_gudang + $dArea->total;
+                    }
+                    if(isset($total_per_produk[$dArea->id_material]))
+                        $total_per_produk[$dArea->id_material] = $total_per_produk[$dArea->id_material] + $dArea->total;
+                    else
+                        $total_per_produk[$dArea->id_material] = $dArea->total;
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $no); //nomor
+                    $objSpreadsheet->getActiveSheet()->getStyle('A'.$row)->applyFromArray($style_no);
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $dArea->nama_gudang); //nama gudang
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $kapasitas); //nama area
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
+        
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($listProduk[$dArea->id_material], $row, round($dArea->total, 3)); //nama area
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($listProduk[$dArea->id_material], $row)->getNumberFormat()->setFormatCode('#,##0.00');
+        
+                    $abjadProduk++;
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
+        
+                    $abjadProduk++;
+                    $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, round($total_per_gudang, 3)); //nama area
+                    $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.000');
+                    
+                    $total_keseluruhan = $total_keseluruhan + $dArea->total;
+                    $total_kapasitas = $total_kapasitas + $dArea->kapasitas;
+                }
+            }
         }
         $objSpreadsheet->getActiveSheet()->getStyle("A7:" . $abjadPemasukan . ($row))->applyFromArray($style_isi_kolom);
 
@@ -5289,8 +5350,10 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0.000');
         
         foreach ($produk as $key) {
-            $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($listProduk[$key->id_material], $row, round($total_per_produk[$key->id_material], 3)); //jumlah produk
-            $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($listProduk[$key->id_material], $row)->getNumberFormat()->setFormatCode('#,##0.00');
+            if (isset($listProduk[$key->id_material]) && isset($total_per_produk[$key->id_material])) {
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($listProduk[$key->id_material], $row, round($total_per_produk[$key->id_material], 3)); //jumlah produk
+                $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($listProduk[$key->id_material], $row)->getNumberFormat()->setFormatCode('#,##0.00');
+            }
         }
         $objSpreadsheet->getActiveSheet()->getStyle("B{$row}:{$abjadPemasukan}{$row}")->applyFromArray($style_title);
         
