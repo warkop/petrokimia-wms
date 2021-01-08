@@ -168,7 +168,7 @@ class ReportController extends Controller
 
     private function logoPetro($objSpreadsheet, $col, $row)
     {
-        $logoPetro = aset_extends('img/logo/logo_petro1.png');
+        $logoPetro = aset_extends('img/logo/2logo_wms2.png');
 
         if (strpos($logoPetro, ".png") === false) {
             $image_resource = imagecreatefromjpeg($logoPetro);
@@ -183,7 +183,7 @@ class ReportController extends Controller
         // $objDrawing->setOffsetX($x);
         // $objDrawing->setOffsetY($y);
         //set width, height
-        $objDrawing->setWidth(120);
+        $objDrawing->setWidth(260);
         $objDrawing->setWorksheet($objSpreadsheet->getActiveSheet());
     }
 
@@ -370,8 +370,7 @@ class ReportController extends Controller
             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
         );
 
-        $this->logoPetro($objSpreadsheet, 6, 2);
-        $this->logoWms($objSpreadsheet, 8, 2);
+        $this->logoPetro($objSpreadsheet, 6, 1);
 
         // start : title
         $col = 1;
@@ -633,8 +632,7 @@ class ReportController extends Controller
 
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
-        $this->logoPetro($objSpreadsheet, 7, 2);
-        $this->logoWms($objSpreadsheet, 8, 2);
+        $this->logoPetro($objSpreadsheet, 7, 1);
 
         $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(7);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(15);
@@ -995,8 +993,7 @@ class ReportController extends Controller
         );
         // start : title
 
-        $this->logoPetro($objSpreadsheet, 16, 2);
-        $this->logoWms($objSpreadsheet, 18, 2);
+        $this->logoPetro($objSpreadsheet, 16, 1);
 
         $col = 1;
         $row = 1;
@@ -1850,8 +1847,7 @@ class ReportController extends Controller
             'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
         );
 
-        $this->logoPetro($objSpreadsheet, 8, 2);
-        $this->logoWms($objSpreadsheet, 11, 2);
+        $this->logoPetro($objSpreadsheet, 8, 1);
 
         // start : title
         $col = 1;
@@ -3374,8 +3370,7 @@ class ReportController extends Controller
         $objSpreadsheet->setActiveSheetIndex($sheetIndex);
         // end : sheet
 
-        $this->logoPetro($objSpreadsheet, 26, 2);
-        $this->logoWms($objSpreadsheet, 28, 2);
+        $this->logoPetro($objSpreadsheet, 26, 1);
         
         // start : draw title
         $this->headerExcelMutasiPallet($objSpreadsheet, $tgl_awal, $tgl_akhir, $pallet);
@@ -3998,8 +3993,7 @@ class ReportController extends Controller
             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
         );
 
-        $this->logoPetro($objSpreadsheet, 8, 2);
-        $this->logoWms($objSpreadsheet, 11, 2);
+        $this->logoPetro($objSpreadsheet, 8, 1);
 
         // start : title
         $col = 1;
@@ -4373,7 +4367,6 @@ class ReportController extends Controller
         // start : title
 
         $this->logoPetro($objSpreadsheet, 6, 1);
-        $this->logoWms($objSpreadsheet, 8, 2);
 
         $col = 1;
         $row = 1;
@@ -4777,8 +4770,7 @@ class ReportController extends Controller
 
         $objSpreadsheet->getActiveSheet()->getStyle("A" . $row)->applyFromArray($style_note);
 
-        $this->logoPetro($objSpreadsheet, 7, 2);
-        $this->logoWms($objSpreadsheet, 9, 2);
+        $this->logoPetro($objSpreadsheet, 6, 1);
 
         $objSpreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
@@ -5167,8 +5159,7 @@ class ReportController extends Controller
         }
         $abjadTitle++;
         
-        $this->logoPetro($objSpreadsheet, 6, 2);
-        $this->logoWms($objSpreadsheet, 7, 2);
+        $this->logoPetro($objSpreadsheet, 3+count($produk), 1);
 
         $objSpreadsheet->getActiveSheet()->setShowGridlines(false);
         $objSpreadsheet->getActiveSheet()->mergeCells('A' . $row . ':'.$abjadTitle . $row);
@@ -5196,10 +5187,10 @@ class ReportController extends Controller
         $row = 5;
         $abjadOri = 'A';
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row + 1));
-        $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No');
+        // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'No');
 
-        $abjadOri++;
-        $col++;
+        // $abjadOri++;
+        // $col++;
         $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, 'Gudang');
         $objSpreadsheet->getActiveSheet()->mergeCells($abjadOri . $row . ':' . $abjadOri . ($row + 1));
 
@@ -5237,10 +5228,7 @@ class ReportController extends Controller
 
         // start : isi kolom
         $no = 0;
-        $total = [];
         $total_kapasitas = 0;
-        $total_kesamping = 0;
-        $j=0;
 
         //coding transaksi di sini
         $id_gudang = null;
@@ -5255,7 +5243,7 @@ class ReportController extends Controller
         $col = 1;
         $row = 7;
         foreach($area as $dArea){
-            $abjadProduk = 'D';
+            $abjadProduk = 'C';
             if ($dArea->id_material) {
                 if($dArea->id_gudang != $id_gudang){
                     $no++;
@@ -5271,10 +5259,10 @@ class ReportController extends Controller
                     $total_per_produk[$dArea->id_material] = $total_per_produk[$dArea->id_material] + $dArea->total;
                 else
                     $total_per_produk[$dArea->id_material] = $dArea->total;
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $no); //nomor
-                $objSpreadsheet->getActiveSheet()->getStyle('A'.$row)->applyFromArray($style_no);
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $dArea->nama_gudang); //nama gudang
-                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $kapasitas); //nama area
+                // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $no); //nomor
+                // $objSpreadsheet->getActiveSheet()->getStyle('A'.$row)->applyFromArray($style_no);
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $dArea->nama_gudang); //nama gudang
+                $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $kapasitas); //nama area
                 $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
     
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
@@ -5298,9 +5286,9 @@ class ReportController extends Controller
         $row++;
         foreach ($allRange as $keyRange => $range) {
             $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "range ".$range->range);
-            $col=4;
+            $col=3;
             foreach($areaOutdoor as $dArea){
-                $abjadProduk = 'D';
+                $abjadProduk = 'C';
                 if ($dArea->id_material) {
                     if($dArea->id_gudang != $id_gudang){
                         $no++;
@@ -5316,10 +5304,10 @@ class ReportController extends Controller
                         $total_per_produk[$dArea->id_material] = $total_per_produk[$dArea->id_material] + $dArea->total;
                     else
                         $total_per_produk[$dArea->id_material] = $dArea->total;
-                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $no); //nomor
-                    $objSpreadsheet->getActiveSheet()->getStyle('A'.$row)->applyFromArray($style_no);
-                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $dArea->nama_gudang); //nama gudang
-                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(3, $row, $kapasitas); //nama area
+                    // $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $no); //nomor
+                    // $objSpreadsheet->getActiveSheet()->getStyle('A'.$row)->applyFromArray($style_no);
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(1, $row, $dArea->nama_gudang); //nama gudang
+                    $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow(2, $row, $kapasitas); //nama area
                     $objSpreadsheet->getActiveSheet()->getStyleByColumnAndRow($col, $row)->getNumberFormat()->setFormatCode('#,##0');
         
                     $objSpreadsheet->getActiveSheet()->getStyle($abjadProduk . $row)->applyFromArray($style_no);
@@ -6134,8 +6122,7 @@ class ReportController extends Controller
 
         //end: style
 
-        $this->logoPetro($objSpreadsheet, 16, 2);
-        $this->logoWms($objSpreadsheet, 18, 2);
+        $this->logoPetro($objSpreadsheet, 18, 1);
 
         // start : sheet title
         $this->headerExcelMutasiStokStokAwal($objSpreadsheet, $tgl_awal, $tgl_akhir);
@@ -6154,7 +6141,7 @@ class ReportController extends Controller
                 $objSpreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, date('d', strtotime($tgl_sekarang)));
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_kolom);
                 $objSpreadsheet->getActiveSheet()->getStyle($abjadIncrement . $row)->applyFromArray($this->style_no);
-                $objSpreadsheet->getActiveSheet()->mergeCells($abjadIncrement . $row . ':' . $abjadIncrement . ($row + 3));
+                $objSpreadsheet->getActiveSheet()->mergeCells($abjadIncrement . $row . ':' . $abjadIncrement . ($row + 2));
     
                 $countMergePerTanggal = 0;
                 $rowPerTanggal = $row;
@@ -6334,7 +6321,8 @@ class ReportController extends Controller
                     $objSpreadsheet->getActiveSheet()->mergeCells('B' . $rowPerShift . ':' . 'B' . ($rowPerShift+$countMergePerShift-1));
                     $countMergePerTanggal += $countMergePerShift;
                 }
-    
+                
+                $row++;
                 $objSpreadsheet->getActiveSheet()->mergeCells('A' . $rowPerTanggal . ':' . 'A' . ($rowPerTanggal+$countMergePerTanggal-1));
                 $tgl_sekarang = date($this->FORMAT_DATE, strtotime($tgl_sekarang.$this->INCREMENT_DAY));
             } while($tgl_sekarang != $tgl_akhir);
@@ -6545,8 +6533,7 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
 
-        $this->logoPetro($objSpreadsheet, 3, 2);
-        $this->logoWms($objSpreadsheet, 5, 2);
+        $this->logoPetro($objSpreadsheet, 3, 1);
 
         // start : title
         $col = 1;
@@ -7182,8 +7169,7 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
 
-        $this->logoPetro($objSpreadsheet, 7, 2);
-        $this->logoWms($objSpreadsheet, 8, 2);
+        $this->logoPetro($objSpreadsheet, 8, 1);
 
         // start : title
         $col = 1;
@@ -7576,8 +7562,7 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
 
-        $this->logoPetro($objSpreadsheet, 6, 2);
-        $this->logoWms($objSpreadsheet, 7, 2);
+        $this->logoPetro($objSpreadsheet, 6, 1);
 
         // start : title
         $col = 1;
@@ -7948,9 +7933,9 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+        $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
 
-        $this->logoPetro($objSpreadsheet, 6, 2);
-        $this->logoWms($objSpreadsheet, 7, 2);
+        $this->logoPetro($objSpreadsheet, 7, 1);
 
         // start : title
         $col = 1;
@@ -8318,8 +8303,7 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
 
-        $this->logoPetro($objSpreadsheet, 7, 3);
-        $this->logoWms($objSpreadsheet, 9, 3);
+        $this->logoPetro($objSpreadsheet, 7, 1);
 
         // start : title
         $col = 1;
@@ -8541,8 +8525,7 @@ class ReportController extends Controller
         $objSpreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
         $objSpreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
 
-        $this->logoPetro($objSpreadsheet, 6, 3);
-        $this->logoWms($objSpreadsheet, 7, 3);
+        $this->logoPetro($objSpreadsheet, 6, 1);
 
         // start : title
         $col = 1;
