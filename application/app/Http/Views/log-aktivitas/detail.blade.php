@@ -96,6 +96,16 @@
                 </div>
                 <div class="row mb1">
                     <div class="col-12">
+                    <label>
+                        Gudang Asal
+                    </label>
+                    <h5 class="boldd">
+                        {{$aktivitasHarian->gudang->nama}}
+                    </h5>
+                </div>
+                </div>
+                <div class="row mb1">
+                    <div class="col-12">
                         <label>Paket Alat Berat</label>
                         @php $no = 1; @endphp
                         <h5 class="boldd"> 

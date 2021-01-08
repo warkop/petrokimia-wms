@@ -59,10 +59,10 @@ const load_table = function (data="") {
                 mData: "nama_shift"
             },
             {
-                mData: "driver"
+                mData: "nopol"
             },
             {
-                mData: "nopol"
+                mData: "driver"
             },
             {
                 mData: "posto"
@@ -97,6 +97,7 @@ const load_table = function (data="") {
             },
             {
                 aTargets: [4],
+                orderable:false,
                 mRender: function (data) {
                     let materials = ""
                     data.material_trans.forEach(element => {
@@ -114,6 +115,7 @@ const load_table = function (data="") {
             {
                 aTargets: [5],
                 mData: "material_trans",
+                orderable:false,
                 mRender: function (data) {
                     let kuantum = ""
                     data.material_trans.forEach(element => {

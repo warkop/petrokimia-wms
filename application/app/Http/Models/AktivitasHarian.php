@@ -110,6 +110,7 @@ class AktivitasHarian extends Model
             ->join('users', 'users.id', '=', 'aktivitas_harian.updated_by')
             ->join('tenaga_kerja_non_organik', 'tenaga_kerja_non_organik.id', '=', 'users.id_tkbm')
             ->join('material_trans', 'id_aktivitas_harian', '=', 'aktivitas_harian.id')
+            ->join('material', 'material.id', '=', 'material_trans.id_material')
             ->where('draft', 0)
             ;
 
@@ -138,6 +139,8 @@ class AktivitasHarian extends Model
                 $query->orWhere('gudang.nama', 'ILIKE', '%' . strtolower($search) . '%');
                 $query->orWhere('shift_kerja.nama', 'ILIKE', '%' . strtolower($search) . '%');
                 $query->orWhere(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'DD-MM-YYYY HH24:MI')"), 'ILIKE', '%' . strtolower($search) . '%');
+                $query->orWhere('material.nama', 'ilike', '%'. $search . '%');
+                $query->orWhere('material_trans.jumlah', $search);
             });
         }
 

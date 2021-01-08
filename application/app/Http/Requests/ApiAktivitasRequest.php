@@ -94,12 +94,17 @@ class ApiAktivitasRequest extends FormRequest
         $request = request();
 
         $gudang = $this->getRencana();
-        
+       
+        $aktivitas = Aktivitas::find($request->id_aktivitas);
 
+        $validationIDGudangTujuan = 'nullable|exists:gudang,id|not_in:'.$gudang->id;
+        if ($aktivitas->so == 1) {
+            $validationIDGudangTujuan = 'required|exists:gudang,id|not_in:'.$gudang->id;
+        }
 
         $rules = [
             'id_aktivitas'      => 'required|exists:aktivitas,id',
-            'id_gudang_tujuan'  => 'nullable|exists:gudang,id|not_in:'.$gudang->id,
+            'id_gudang_tujuan'  => $validationIDGudangTujuan,
             'id_alat_berat'     => 'nullable|exists:alat_berat,id',
             'id_tkbm'           => [
                 'nullable',

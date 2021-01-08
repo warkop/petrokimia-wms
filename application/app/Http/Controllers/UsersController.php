@@ -116,6 +116,9 @@ class UsersController extends Controller
         $peg = '';
         
         switch ($kategori) {
+            case 2:
+                $peg = TenagaKerjaNonOrganik::operatorAlatBerat()->get();
+                break;
             case 5:
                 $peg = Karu::all();
                 break;
