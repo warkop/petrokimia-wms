@@ -6318,11 +6318,9 @@ class ReportController extends Controller
                         $countMergePerShift++;
                     }
     
-                    $objSpreadsheet->getActiveSheet()->mergeCells('B' . $rowPerShift . ':' . 'B' . ($rowPerShift+$countMergePerShift-1));
                     $countMergePerTanggal += $countMergePerShift;
                 }
                 
-                $row++;
                 $objSpreadsheet->getActiveSheet()->mergeCells('A' . $rowPerTanggal . ':' . 'A' . ($rowPerTanggal+$countMergePerTanggal-1));
                 $tgl_sekarang = date($this->FORMAT_DATE, strtotime($tgl_sekarang.$this->INCREMENT_DAY));
             } while($tgl_sekarang != $tgl_akhir);
