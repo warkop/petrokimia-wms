@@ -140,7 +140,7 @@ class AktivitasHarian extends Model
                 $query->orWhere('shift_kerja.nama', 'ILIKE', '%' . strtolower($search) . '%');
                 $query->orWhere(DB::raw("TO_CHAR(aktivitas_harian.updated_at, 'DD-MM-YYYY HH24:MI')"), 'ILIKE', '%' . strtolower($search) . '%');
                 $query->orWhere('material.nama', 'ilike', '%'. $search . '%');
-                $query->orWhere('material_trans.jumlah', $search);
+                // $query->orWhere('material_trans.jumlah', $search);
             });
         }
 
