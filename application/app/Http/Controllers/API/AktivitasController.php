@@ -1960,7 +1960,7 @@ class AktivitasController extends Controller
 
     public function testFirebase()
     {
-        send_firebase('cUPB0QDTmaY%3AAPA91bH2_xBCMhYXEhQf9j-JaNTtKGugs3DLFPBc7wNg627qHooXcyqomepmYvKGgCWihGN54QN6Y-lWWMSIPjJsX-YpakGyIxIPhGeQjRd6AbZ9W4B0qsjlv4fBEtpNeeKgIZMd6tMe', 'Testing Wisnu');
+        send_firebase('', 'Testing Wisnu');
     }
 
     public function listNotifikasi()
